@@ -1,0 +1,38 @@
+---
+alwaysApply: true
+---
+
+# Project Context
+
+This project is a custom wedding event platform inspired by Attack on Titan aesthetics.
+
+Goal:
+Create a cross-platform app (web + mobile) for wedding guests.
+
+Features include:
+- RSVP confirmation
+- Team selection (Scout Regiment, Military Police, Garrison)
+- Guest dashboard
+- QR code event access
+- Travel hub (hotels, contacts, logistics)
+- Admin dashboard
+- Optional mini-game
+- Optional AI concierge
+
+Stack:
+
+Frontend:
+- Flutter
+
+Backend:
+- Python
+- FastAPI
+
+Database:
+- PostgreSQL
+
+The project should remain simple, readable and modular.
+Avoid over-engineering.
+
+This is both a real project and a learning project for backend development.
+Code must prioritize clarity over complexity.

@@ -1,0 +1,30 @@
+---
+alwaysApply: true
+---
+# General Coding Rules
+
+This project prioritizes:
+
+- simplicity
+- readability
+- maintainability
+- modular code
+
+Avoid:
+
+- unnecessary libraries
+- premature optimization
+- complex design patterns
+
+When generating code:
+
+- explain unfamiliar concepts
+- prefer explicit code
+- avoid magic behavior
+- keep functions short
+- add short, descriptive comments for files/functions/components when useful
+- use explicit, context-rich names to avoid ambiguous duplicates
+
+The user is experienced in frontend but beginner in backend.
+
+Always explain backend logic clearly.

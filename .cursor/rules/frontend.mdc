@@ -1,0 +1,55 @@
+---
+alwaysApply: true
+---
+# Frontend Rules
+
+Frontend is built using Flutter.
+
+Architecture guidelines:
+
+State management:
+Riverpod
+
+Routing:
+go_router
+
+Networking:
+Dio
+
+Code structure:
+
+lib/
+    core/
+    features/
+    widgets/
+    services/
+
+Feature-based structure preferred.
+
+Example:
+
+features/
+    rsvp/
+    teams/
+    dashboard/
+    travel/
+
+UI Guidelines:
+
+Theme inspired by military aesthetic similar to Attack on Titan.
+
+Colors:
+- military green
+- parchment beige
+- bronze accents
+- dark background
+
+Avoid overly complex UI before core functionality works.
+
+Commenting rule:
+- add short and descriptive comments to files, widgets/components and non-obvious functions
+
+Naming rule:
+- use speaking names for screens, widgets and providers
+- include feature context in file/component names to avoid ambiguity
+- prefer names like `RsvpConfirmationScreen`, `GuestTravelHubCard`, `AdminRsvpStatsPanel`
