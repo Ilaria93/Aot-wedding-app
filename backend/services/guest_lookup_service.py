@@ -1,12 +1,14 @@
 import secrets
+from typing import Optional, Tuple
 
 from sqlalchemy.orm import Session
 
 from models.guest_model import Guest
+from models.rsvp_model import RSVP
 
 
 # Finds a guest by invitation token.
-def get_guest_by_token(db: Session, token: str):
+def get_guest_by_token(db: Session, token: str) -> Optional[Guest]:
     return db.query(Guest).filter(Guest.invitation_token == token).first()
 
 
@@ -27,3 +29,13 @@ def create_guest_invitation(db: Session, full_name: str) -> Guest:
     db.commit()
     db.refresh(new_guest)
     return new_guest
+
+
+# Finds RSVP record using the guest invitation token.
+def get_rsvp_by_invitation_token(db: Session, token: str) -> Tuple[Optional[Guest], Optional[RSVP]]:
+    guest = get_guest_by_token(db, token)
+    if not guest:
+        return None, None
+
+    rsvp_record = db.query(RSVP).filter(RSVP.guest_id == guest.id).first()
+    return guest, rsvp_record

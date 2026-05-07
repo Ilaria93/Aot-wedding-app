@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+.venv/
+venv/
+backend/venv/
+
+# Environment
+.env
+.env.*
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Flutter / Dart
+.dart_tool/
+build/
+
+# Cursor local files
+.cursor/
+
+# Local backend artifacts
+backend/wedding.db
