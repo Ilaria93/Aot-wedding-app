@@ -12,7 +12,7 @@ Cross-platform wedding platform inspired by Attack on Titan aesthetics.
 
 - `backend/` API, models, schemas, services, tests
 - `frontend/` Flutter app (placeholder for now)
-- `doc/` project notes and documentation
+- `docs/` project notes and documentation
 
 ## Backend quick start
 
@@ -22,10 +22,11 @@ Cross-platform wedding platform inspired by Attack on Titan aesthetics.
 cd backend
 ```
 
-2. Install dependencies inside venv:
+2. Create and activate a virtual environment, then install dependencies:
 
 ```bash
-./venv/bin/pip install fastapi uvicorn sqlalchemy pydantic httpx pytest
+python3 -m venv venv
+./venv/bin/pip install -r requirements.txt
 ```
 
 3. Run the API:
@@ -45,6 +46,7 @@ cd backend
 - `GET /guest/{token}` get guest by invitation token
 - `POST /rsvp/confirm` submit RSVP
 - `GET /rsvp/by-token/{token}` read RSVP status by invitation token
+- `GET /admin/guests` list all guests with RSVP status (admin)
 
 ## Backend tests
 
@@ -57,6 +59,7 @@ Run tests from `backend/`:
 Current coverage includes:
 - invite creation + guest lookup flow
 - RSVP lookup before and after confirmation
+- admin guest list with and without RSVP
 
 ## Frontend tests plan
 
