@@ -10,7 +10,10 @@ from routes.rsvp_confirmation_route import router as rsvp_router
 from routes.admin_guest_list_route import router as admin_guest_router
 from settings import read_cors_allow_origins
 
-app = FastAPI()
+app = FastAPI(
+    title="AOT Wedding API",
+    swagger_ui_parameters={"persistAuthorization": True},
+)
 
 cors_origins = read_cors_allow_origins()
 _open_cors = cors_origins == ["*"]

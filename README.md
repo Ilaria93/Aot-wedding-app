@@ -54,6 +54,8 @@ For local development, `settings.py` picks sensible default browser origins if `
 
 - [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
+In Swagger UI, open **Authorize** (lock icon), enter your `ADMIN_API_KEY` in the API key field, then call protected endpoints. Authorization persists while the docs tab stays open (`persistAuthorization`).
+
 Protected routes require header `X-Admin-Api-Key` matching `ADMIN_API_KEY`:
 
 - `POST /guest/create-invite`
