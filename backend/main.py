@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from database.base import Base, engine
 
 # Imports models so SQLAlchemy can create tables at startup.
@@ -6,8 +8,20 @@ from models import guest_model, rsvp_model  # noqa: F401
 from routes.guest_lookup_route import router as guest_router
 from routes.rsvp_confirmation_route import router as rsvp_router
 from routes.admin_guest_list_route import router as admin_guest_router
+from settings import read_cors_allow_origins
 
 app = FastAPI()
+
+cors_origins = read_cors_allow_origins()
+_open_cors = cors_origins == ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_credentials=not _open_cors,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 def startup():
