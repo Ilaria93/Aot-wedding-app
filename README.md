@@ -4,14 +4,14 @@ Cross-platform wedding platform inspired by Attack on Titan aesthetics.
 
 ## Current stack
 
-- Frontend: Flutter (web + mobile, to be implemented)
+- Frontend: Expo (React Native + web, to be implemented)
 - Backend: FastAPI + SQLAlchemy
 - Local DB: SQLite (`backend/wedding.db`)
 
 ## Project structure
 
 - `backend/` API, models, schemas, services, tests
-- `frontend/` Flutter app (placeholder for now)
+- `frontend/` Expo client (placeholder for now)
 - `docs/` project notes and documentation
 
 ## Backend quick start
@@ -22,31 +22,53 @@ Cross-platform wedding platform inspired by Attack on Titan aesthetics.
 cd backend
 ```
 
-2. Create and activate a virtual environment, then install dependencies:
+2. Configure environment variables:
+
+```bash
+cp env.example .env
+# Edit .env and set a strong ADMIN_API_KEY (required).
+```
+
+3. Create and activate a virtual environment, then install dependencies:
 
 ```bash
 python3 -m venv venv
 ./venv/bin/pip install -r requirements.txt
 ```
 
-3. Run the API:
+You can also export variables in the shell instead of using `.env`:
+
+```bash
+export ADMIN_API_KEY='local-dev-secret-change-me'
+```
+
+For local development, `settings.py` picks sensible default browser origins if `CORS_ALLOW_ORIGINS` is omitted. Override with a comma-separated list when your Expo or Vite URL differs.
+
+4. Run the API:
 
 ```bash
 ./venv/bin/uvicorn main:app --reload
 ```
 
-4. Open API docs:
+5. Open API docs:
 
 - [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+Protected routes require header `X-Admin-Api-Key` matching `ADMIN_API_KEY`:
+
+- `POST /guest/create-invite`
+- `GET /admin/guests`
+- `GET /admin/rsvp-stats`
 
 ## Implemented API endpoints
 
 - `GET /health` healthcheck
-- `POST /guest/create-invite` create guest + invitation token
+- `POST /guest/create-invite` create guest + invitation token (requires `X-Admin-Api-Key`)
 - `GET /guest/{token}` get guest by invitation token
 - `POST /rsvp/confirm` submit RSVP
 - `GET /rsvp/by-token/{token}` read RSVP status by invitation token
-- `GET /admin/guests` list all guests with RSVP status (admin)
+- `GET /admin/guests` list all guests with RSVP status (requires `X-Admin-Api-Key`)
+- `GET /admin/rsvp-stats` aggregated RSVP statistics (requires `X-Admin-Api-Key`)
 
 ## Backend tests
 
@@ -63,13 +85,8 @@ Current coverage includes:
 
 ## Frontend tests plan
 
-Frontend folder is still empty, so Playwright/Storybook setup now would be premature.
-Recommended sequence:
+Recommended sequence once Expo is scaffolded:
 
-1. Build first Flutter RSVP flow screen
-2. Add Flutter widget tests for core widgets
-3. Add Flutter integration tests for app flow
-4. Add Playwright e2e only for deployed web flow (optional, later)
-
-Storybook alternative for Flutter:
-- Prefer `Widgetbook` for Flutter component catalog/testing.
+1. Build first RSVP flow screen on web targets
+2. Add component tests (`@testing-library/react-native` pattern) for core widgets
+3. Use Detox-style E2E for native bundles only when critical flows stabilize

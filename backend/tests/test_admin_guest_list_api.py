@@ -1,15 +1,19 @@
-def test_admin_guest_list_is_empty_on_fresh_db(api_client):
+def test_admin_guest_list_is_empty_on_fresh_db(api_client, admin_headers):
     # Admin list must be empty when no guests exist.
-    response = api_client.get("/admin/guests")
+    response = api_client.get("/admin/guests", headers=admin_headers)
     assert response.status_code == 200
     assert response.json() == []
 
 
-def test_admin_guest_list_shows_guest_without_rsvp(api_client):
+def test_admin_guest_list_shows_guest_without_rsvp(api_client, admin_headers):
     # Creates a guest with no RSVP and checks it appears correctly.
-    api_client.post("/guest/create-invite", json={"full_name": "Armin Arlert"})
+    api_client.post(
+        "/guest/create-invite",
+        headers=admin_headers,
+        json={"full_name": "Armin Arlert"},
+    )
 
-    response = api_client.get("/admin/guests")
+    response = api_client.get("/admin/guests", headers=admin_headers)
     assert response.status_code == 200
     guests = response.json()
     assert len(guests) == 1
@@ -19,10 +23,11 @@ def test_admin_guest_list_shows_guest_without_rsvp(api_client):
     assert guests[0]["faction"] is None
 
 
-def test_admin_guest_list_shows_guest_with_confirmed_rsvp(api_client):
+def test_admin_guest_list_shows_guest_with_confirmed_rsvp(api_client, admin_headers):
     # Creates a guest, confirms RSVP and verifies admin list reflects it.
     create_response = api_client.post(
         "/guest/create-invite",
+        headers=admin_headers,
         json={"full_name": "Eren Yeager"},
     )
     token = create_response.json()["invitation_token"]
@@ -36,7 +41,7 @@ def test_admin_guest_list_shows_guest_with_confirmed_rsvp(api_client):
         },
     )
 
-    response = api_client.get("/admin/guests")
+    response = api_client.get("/admin/guests", headers=admin_headers)
     assert response.status_code == 200
     guests = response.json()
     assert len(guests) == 1
@@ -46,12 +51,20 @@ def test_admin_guest_list_shows_guest_with_confirmed_rsvp(api_client):
     assert guests[0]["faction"] == "garrison"
 
 
-def test_admin_guest_list_shows_multiple_guests(api_client):
+def test_admin_guest_list_shows_multiple_guests(api_client, admin_headers):
     # Creates multiple guests and verifies all appear in the list.
-    api_client.post("/guest/create-invite", json={"full_name": "Levi Ackerman"})
-    api_client.post("/guest/create-invite", json={"full_name": "Historia Reiss"})
+    api_client.post(
+        "/guest/create-invite",
+        headers=admin_headers,
+        json={"full_name": "Levi Ackerman"},
+    )
+    api_client.post(
+        "/guest/create-invite",
+        headers=admin_headers,
+        json={"full_name": "Historia Reiss"},
+    )
 
-    response = api_client.get("/admin/guests")
+    response = api_client.get("/admin/guests", headers=admin_headers)
     assert response.status_code == 200
     names = [g["full_name"] for g in response.json()]
     assert "Levi Ackerman" in names

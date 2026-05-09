@@ -1,7 +1,8 @@
-def test_create_invite_then_lookup_guest(api_client):
+def test_create_invite_then_lookup_guest(api_client, admin_headers):
     # Creates a guest invitation token from API.
     create_response = api_client.post(
         "/guest/create-invite",
+        headers=admin_headers,
         json={"full_name": "Levi Ackerman"},
     )
     assert create_response.status_code == 200
@@ -18,10 +19,11 @@ def test_create_invite_then_lookup_guest(api_client):
     assert lookup_payload["invitation_token"] == token
 
 
-def test_rsvp_lookup_before_and_after_confirmation(api_client):
+def test_rsvp_lookup_before_and_after_confirmation(api_client, admin_headers):
     # Creates invite used to test RSVP lookup flow.
     create_response = api_client.post(
         "/guest/create-invite",
+        headers=admin_headers,
         json={"full_name": "Mikasa Ackerman"},
     )
     token = create_response.json()["invitation_token"]

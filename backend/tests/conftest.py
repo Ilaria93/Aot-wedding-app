@@ -1,3 +1,7 @@
+import os
+
+os.environ.setdefault("ADMIN_API_KEY", "test-admin-api-key-value")
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -18,3 +22,9 @@ def reset_database():
 def api_client():
     with TestClient(app) as client:
         yield client
+
+
+# Sends the configured admin secret for secured routes during tests.
+@pytest.fixture
+def admin_headers():
+    return {"X-Admin-Api-Key": os.environ["ADMIN_API_KEY"]}

@@ -9,7 +9,7 @@ __pycache__/
 venv/
 backend/venv/
 
-# Environment
+# Environment (keep templates like env.example tracked)
 .env
 .env.*
 

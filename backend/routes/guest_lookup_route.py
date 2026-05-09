@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from dependencies.admin_auth_dependency import require_admin_api_key
 from database.base import get_db
 from schemas.guest_invitation_schema import (
     GuestInvitationCreateRequest,
@@ -22,7 +23,11 @@ def guest_by_token(token: str, db: Session = Depends(get_db)):
 
 # Creates a new guest invitation with a unique token.
 @router.post("/guest/create-invite", response_model=GuestInvitationCreateResponse)
-def create_guest_invite(payload: GuestInvitationCreateRequest, db: Session = Depends(get_db)):
+def create_guest_invite(
+    payload: GuestInvitationCreateRequest,
+    db: Session = Depends(get_db),
+    _admin_ok: None = Depends(require_admin_api_key),
+):
     normalized_full_name = payload.full_name.strip()
     if not normalized_full_name:
         raise HTTPException(status_code=400, detail="Full name cannot be empty")
