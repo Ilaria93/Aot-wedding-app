@@ -12,7 +12,7 @@ import {
 import { AxiosError } from 'axios';
 
 import { aotTheme } from '@/constants/aotTheme';
-import { adminApiKey } from '@/constants/apiConfig';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   createAdminLogisticsContact,
   deleteAdminLogisticsContact,
@@ -122,6 +122,7 @@ function normalizeOptionalText(value: string) {
 
 // Admin dashboard with RSVP overview, photo moderation and logistics management.
 export default function AdminDashboardScreen() {
+  const { isAdmin, isAuthenticated, isBootstrapping } = useAuth();
   const [stats, setStats] = useState<AdminRsvpStats | null>(null);
   const [guests, setGuests] = useState<AdminGuestListItem[]>([]);
   const [photos, setPhotos] = useState<AdminPhotoAlbumItem[]>([]);
@@ -137,8 +138,14 @@ export default function AdminDashboardScreen() {
   const [contactMessage, setContactMessage] = useState<string | null>(null);
 
   const loadAdminDashboard = useCallback(async () => {
-    if (!adminApiKey) {
-      setError('Manca EXPO_PUBLIC_ADMIN_API_KEY nel frontend.');
+    if (!isAuthenticated) {
+      setError('Accedi con il tuo account per aprire la dashboard admin.');
+      setLoading(false);
+      return;
+    }
+
+    if (!isAdmin) {
+      setError('Questa sezione è visibile solo agli account admin autorizzati.');
       setLoading(false);
       return;
     }
@@ -165,7 +172,7 @@ export default function AdminDashboardScreen() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [isAdmin, isAuthenticated]);
 
   useEffect(() => {
     loadAdminDashboard();
@@ -294,10 +301,26 @@ export default function AdminDashboardScreen() {
     }
   }
 
-  if (loading) {
+  if (isBootstrapping || loading) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator color={aotTheme.bronze} size="large" />
+      </View>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.emptyText}>Accedi dal profilo per usare la dashboard admin.</Text>
+      </View>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.emptyText}>Area riservata agli account admin autorizzati.</Text>
       </View>
     );
   }

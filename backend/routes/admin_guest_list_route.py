@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from dependencies.admin_auth_dependency import require_admin_api_key
+from dependencies.auth_user_dependency import require_admin_user
 from database.base import get_db
 from schemas.admin_guest_list_schema import AdminGuestListItem
 from services.admin_guest_query_service import get_all_guests_with_rsvp_status
@@ -13,11 +13,11 @@ router = APIRouter(prefix="/admin")
 
 # Returns all invited guests with their RSVP status.
 @router.get("/guests", response_model=list[AdminGuestListItem])
-def list_all_guests(db: Session = Depends(get_db), _admin_ok: None = Depends(require_admin_api_key)):
+def list_all_guests(db: Session = Depends(get_db), _admin_ok=Depends(require_admin_user)):
     return get_all_guests_with_rsvp_status(db)
 
 
 # Returns aggregated RSVP statistics for the admin dashboard.
 @router.get("/rsvp-stats", response_model=AdminRsvpStatsResponse)
-def get_rsvp_stats(db: Session = Depends(get_db), _admin_ok: None = Depends(require_admin_api_key)):
+def get_rsvp_stats(db: Session = Depends(get_db), _admin_ok=Depends(require_admin_user)):
     return compute_rsvp_stats(db)

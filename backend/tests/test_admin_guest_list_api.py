@@ -51,6 +51,33 @@ def test_admin_guest_list_shows_guest_with_confirmed_rsvp(api_client, admin_head
     assert guests[0]["faction"] == "garrison"
 
 
+def test_admin_guest_list_shows_declined_guest_without_faction(api_client, admin_headers):
+    # Declined guests should not expose a fake faction in admin list.
+    create_response = api_client.post(
+        "/guest/create-invite",
+        headers=admin_headers,
+        json={"full_name": "Reiner Braun"},
+    )
+    token = create_response.json()["invitation_token"]
+
+    api_client.post(
+        "/rsvp/confirm",
+        json={
+            "invitation_token": token,
+            "attending": False,
+        },
+    )
+
+    response = api_client.get("/admin/guests", headers=admin_headers)
+    assert response.status_code == 200
+    guests = response.json()
+    assert len(guests) == 1
+    assert guests[0]["full_name"] == "Reiner Braun"
+    assert guests[0]["has_rsvp"] is True
+    assert guests[0]["attending"] is False
+    assert guests[0]["faction"] is None
+
+
 def test_admin_guest_list_shows_multiple_guests(api_client, admin_headers):
     # Creates multiple guests and verifies all appear in the list.
     api_client.post(

@@ -44,7 +44,7 @@ def test_rsvp_stats_with_not_attending_guest(api_client, admin_headers):
 
     api_client.post(
         "/rsvp/confirm",
-        json={"invitation_token": token, "attending": False, "faction": "garrison"},
+        json={"invitation_token": token, "attending": False},
     )
 
     response = api_client.get("/admin/rsvp-stats", headers=admin_headers)

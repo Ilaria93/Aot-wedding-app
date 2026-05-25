@@ -10,6 +10,13 @@ from services.guest_lookup_service import get_guest_by_token, get_rsvp_by_invita
 router = APIRouter(prefix="/rsvp")
 
 
+def build_stored_faction_value(payload: RSVPConfirmRequest) -> str:
+    # Ignores faction when the guest is not attending.
+    if not payload.attending or payload.faction is None:
+        return ""
+    return payload.faction.value
+
+
 # Saves one RSVP confirmation for the invited guest.
 @router.post("/confirm")
 def confirm_rsvp_submission(payload: RSVPConfirmRequest, db: Session = Depends(get_db)):
@@ -24,13 +31,17 @@ def confirm_rsvp_submission(payload: RSVPConfirmRequest, db: Session = Depends(g
     rsvp = RSVP(
         guest_id=guest.id,
         attending=payload.attending,
-        faction=payload.faction.value,
+        faction=build_stored_faction_value(payload),
         dietary_notes=payload.dietary_notes,
     )
     db.add(rsvp)
     db.commit()
 
-    return {"ok": True, "guest": guest.full_name, "faction": payload.faction}
+    return {
+        "ok": True,
+        "guest": guest.full_name,
+        "faction": payload.faction if payload.attending else None,
+    }
 
 # Returns RSVP status for a guest token.
 @router.get("/by-token/{token}", response_model=RsvpLookupResponse)
@@ -50,6 +61,6 @@ def get_rsvp_status_by_token(token: str, db: Session = Depends(get_db)):
         has_rsvp=True,
         guest_full_name=guest.full_name,
         attending=rsvp_record.attending,
-        faction=rsvp_record.faction,
+        faction=rsvp_record.faction or None,
         dietary_notes=rsvp_record.dietary_notes,
     )

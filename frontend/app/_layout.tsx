@@ -6,6 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
+import { AuthProvider } from '@/contexts/AuthContext';
 import { aotTheme } from '@/constants/aotTheme';
 
 export {
@@ -47,31 +48,51 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <ThemeProvider
-      value={{
-        ...DefaultTheme,
-        colors: {
-          ...DefaultTheme.colors,
-          background: aotTheme.background,
-          card: aotTheme.surface,
-          text: aotTheme.textPrimary,
-          border: aotTheme.border,
-          primary: aotTheme.bronze,
-        },
-      }}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="rsvp/[token]"
-          options={{
-            title: 'RSVP',
-            headerStyle: { backgroundColor: aotTheme.surface },
-            headerTintColor: aotTheme.textPrimary,
-            headerShadowVisible: false,
-          }}
-        />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider
+        value={{
+          ...DefaultTheme,
+          colors: {
+            ...DefaultTheme.colors,
+            background: aotTheme.background,
+            card: aotTheme.surface,
+            text: aotTheme.textPrimary,
+            border: aotTheme.border,
+            primary: aotTheme.bronze,
+          },
+        }}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="rsvp/[token]"
+            options={{
+              title: 'RSVP',
+              headerStyle: { backgroundColor: aotTheme.surface },
+              headerTintColor: aotTheme.textPrimary,
+              headerShadowVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="auth/login"
+            options={{
+              title: 'Accedi',
+              headerStyle: { backgroundColor: aotTheme.surface },
+              headerTintColor: aotTheme.textPrimary,
+              headerShadowVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="auth/register"
+            options={{
+              title: 'Registrati',
+              headerStyle: { backgroundColor: aotTheme.surface },
+              headerTintColor: aotTheme.textPrimary,
+              headerShadowVisible: false,
+            }}
+          />
+          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        </Stack>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }

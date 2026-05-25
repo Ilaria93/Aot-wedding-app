@@ -55,3 +55,49 @@ def test_rsvp_lookup_before_and_after_confirmation(api_client, admin_headers):
     assert post_rsvp_lookup_payload["guest_full_name"] == "Mikasa Ackerman"
     assert post_rsvp_lookup_payload["attending"] is True
     assert post_rsvp_lookup_payload["faction"] == "scout_regiment"
+
+
+def test_rsvp_confirm_requires_faction_when_attending(api_client, admin_headers):
+    # Attending guests must still choose a faction.
+    create_response = api_client.post(
+        "/guest/create-invite",
+        headers=admin_headers,
+        json={"full_name": "Sasha Blouse"},
+    )
+    token = create_response.json()["invitation_token"]
+
+    response = api_client.post(
+        "/rsvp/confirm",
+        json={
+            "invitation_token": token,
+            "attending": True,
+        },
+    )
+    assert response.status_code == 422
+
+
+def test_rsvp_confirm_allows_missing_faction_when_not_attending(api_client, admin_headers):
+    # Guests who decline should not need a faction.
+    create_response = api_client.post(
+        "/guest/create-invite",
+        headers=admin_headers,
+        json={"full_name": "Connie Springer"},
+    )
+    token = create_response.json()["invitation_token"]
+
+    response = api_client.post(
+        "/rsvp/confirm",
+        json={
+            "invitation_token": token,
+            "attending": False,
+        },
+    )
+    assert response.status_code == 200
+    assert response.json()["faction"] is None
+
+    lookup_response = api_client.get(f"/rsvp/by-token/{token}")
+    assert lookup_response.status_code == 200
+    lookup_payload = lookup_response.json()
+    assert lookup_payload["has_rsvp"] is True
+    assert lookup_payload["attending"] is False
+    assert lookup_payload["faction"] is None
