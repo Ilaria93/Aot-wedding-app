@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from database.base import get_db
+from dependencies.auth_user_dependency import require_current_user
 from models.rsvp_model import RSVP
 from schemas.rsvp_confirmation_schema import RSVPConfirmRequest
 from schemas.rsvp_lookup_schema import RsvpLookupResponse
@@ -19,7 +20,11 @@ def build_stored_faction_value(payload: RSVPConfirmRequest) -> str:
 
 # Saves one RSVP confirmation for the invited guest.
 @router.post("/confirm")
-def confirm_rsvp_submission(payload: RSVPConfirmRequest, db: Session = Depends(get_db)):
+def confirm_rsvp_submission(
+    payload: RSVPConfirmRequest,
+    db: Session = Depends(get_db),
+    _current_user=Depends(require_current_user),
+):
     guest = get_guest_by_token(db, payload.invitation_token)
     if not guest:
         raise HTTPException(status_code=404, detail="Invitation token not found")

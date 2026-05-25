@@ -19,7 +19,7 @@ def test_create_invite_then_lookup_guest(api_client, admin_headers):
     assert lookup_payload["invitation_token"] == token
 
 
-def test_rsvp_lookup_before_and_after_confirmation(api_client, admin_headers):
+def test_rsvp_lookup_before_and_after_confirmation(api_client, admin_headers, invited_headers):
     # Creates invite used to test RSVP lookup flow.
     create_response = api_client.post(
         "/guest/create-invite",
@@ -38,6 +38,7 @@ def test_rsvp_lookup_before_and_after_confirmation(api_client, admin_headers):
     # Confirms RSVP.
     confirm_response = api_client.post(
         "/rsvp/confirm",
+        headers=invited_headers,
         json={
             "invitation_token": token,
             "attending": True,
@@ -57,7 +58,7 @@ def test_rsvp_lookup_before_and_after_confirmation(api_client, admin_headers):
     assert post_rsvp_lookup_payload["faction"] == "scout_regiment"
 
 
-def test_rsvp_confirm_requires_faction_when_attending(api_client, admin_headers):
+def test_rsvp_confirm_requires_faction_when_attending(api_client, admin_headers, invited_headers):
     # Attending guests must still choose a faction.
     create_response = api_client.post(
         "/guest/create-invite",
@@ -68,6 +69,7 @@ def test_rsvp_confirm_requires_faction_when_attending(api_client, admin_headers)
 
     response = api_client.post(
         "/rsvp/confirm",
+        headers=invited_headers,
         json={
             "invitation_token": token,
             "attending": True,
@@ -76,7 +78,7 @@ def test_rsvp_confirm_requires_faction_when_attending(api_client, admin_headers)
     assert response.status_code == 422
 
 
-def test_rsvp_confirm_allows_missing_faction_when_not_attending(api_client, admin_headers):
+def test_rsvp_confirm_allows_missing_faction_when_not_attending(api_client, admin_headers, invited_headers):
     # Guests who decline should not need a faction.
     create_response = api_client.post(
         "/guest/create-invite",
@@ -87,6 +89,7 @@ def test_rsvp_confirm_allows_missing_faction_when_not_attending(api_client, admi
 
     response = api_client.post(
         "/rsvp/confirm",
+        headers=invited_headers,
         json={
             "invitation_token": token,
             "attending": False,
@@ -101,3 +104,22 @@ def test_rsvp_confirm_allows_missing_faction_when_not_attending(api_client, admi
     assert lookup_payload["has_rsvp"] is True
     assert lookup_payload["attending"] is False
     assert lookup_payload["faction"] is None
+
+
+def test_rsvp_confirm_rejects_when_user_is_not_logged_in(api_client, admin_headers):
+    create_response = api_client.post(
+        "/guest/create-invite",
+        headers=admin_headers,
+        json={"full_name": "Annie Leonhart"},
+    )
+    token = create_response.json()["invitation_token"]
+
+    response = api_client.post(
+        "/rsvp/confirm",
+        json={
+            "invitation_token": token,
+            "attending": True,
+            "faction": "garrison",
+        },
+    )
+    assert response.status_code == 401

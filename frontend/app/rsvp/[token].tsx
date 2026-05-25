@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from 'expo-router';
+import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -12,6 +12,7 @@ import {
 import { AxiosError } from 'axios';
 
 import { aotTheme } from '@/constants/aotTheme';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   FactionId,
   fetchGuestByToken,
@@ -45,6 +46,8 @@ function getFactionLabel(factionId: FactionId | null) {
 
 // RSVP screen opened via /rsvp/{invitation_token}.
 export default function RsvpByTokenScreen() {
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const { token } = useLocalSearchParams<{ token: string }>();
   const invitationToken = typeof token === 'string' ? token : '';
 
@@ -103,6 +106,11 @@ export default function RsvpByTokenScreen() {
   }, [loadGuest]);
 
   async function handleSubmit() {
+    if (!isAuthenticated) {
+      router.push('/auth/login');
+      return;
+    }
+
     try {
       setSubmitting(true);
       setError(null);
@@ -130,6 +138,8 @@ export default function RsvpByTokenScreen() {
       } else if (statusCode === 409) {
         await loadGuest();
         setError('RSVP già confermato in precedenza.');
+      } else if (statusCode === 401) {
+        router.push('/auth/login');
       } else {
         setError('Conferma non riuscita. Riprova tra poco.');
       }
@@ -189,6 +199,16 @@ export default function RsvpByTokenScreen() {
         ) : (
           <View style={styles.sectionCard}>
             <Text style={styles.sectionTitle}>Parteciperai?</Text>
+            {!isAuthenticated ? (
+              <View style={styles.loginPromptCard}>
+                <Text style={styles.helperText}>
+                  Per confermare RSVP devi prima accedere con il tuo account.
+                </Text>
+                <Link href="/auth/login" style={styles.loginLink}>
+                  Vai al login
+                </Link>
+              </View>
+            ) : null}
             <View style={styles.segmentRow}>
               <Pressable
                 style={[styles.segmentButton, attending && styles.segmentButtonActive]}
@@ -246,7 +266,11 @@ export default function RsvpByTokenScreen() {
               disabled={submitting}
             >
               <Text style={styles.primaryButtonText}>
-                {submitting ? 'Invio in corso...' : 'Conferma RSVP'}
+                {isAuthenticated
+                  ? submitting
+                    ? 'Invio in corso...'
+                    : 'Conferma RSVP'
+                  : 'Accedi per confermare RSVP'}
               </Text>
             </Pressable>
           </View>
@@ -392,6 +416,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 22,
     marginTop: 16,
+  },
+  loginPromptCard: {
+    borderWidth: 1,
+    borderColor: aotTheme.border,
+    borderRadius: 16,
+    backgroundColor: aotTheme.surfaceMuted,
+    padding: 14,
+    marginBottom: 16,
+  },
+  loginLink: {
+    color: aotTheme.bronze,
+    fontSize: 14,
+    fontWeight: '700',
+    marginTop: 10,
   },
   primaryButton: {
     marginTop: 24,
