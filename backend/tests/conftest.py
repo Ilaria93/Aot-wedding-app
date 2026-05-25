@@ -1,6 +1,11 @@
 import os
 
 os.environ.setdefault("ADMIN_API_KEY", "test-admin-api-key-value")
+os.environ.setdefault("S3_BUCKET_NAME", "test-wedding-album")
+os.environ.setdefault("S3_REGION", "eu-central-1")
+os.environ.setdefault("S3_ACCESS_KEY_ID", "test-access-key")
+os.environ.setdefault("S3_SECRET_ACCESS_KEY", "test-secret-key")
+os.environ.setdefault("S3_PUBLIC_BASE_URL", "https://cdn.test-wedding.app")
 
 import pytest
 from fastapi.testclient import TestClient

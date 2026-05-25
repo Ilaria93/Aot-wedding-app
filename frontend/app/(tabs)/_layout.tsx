@@ -70,13 +70,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="camera" color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="travel"
-        options={{
-          title: 'Contatti',
-          tabBarIcon: ({ color }) => <TabBarIcon name="map-signs" color={color} />,
-        }}
-      />
     </Tabs>
   );
 }
