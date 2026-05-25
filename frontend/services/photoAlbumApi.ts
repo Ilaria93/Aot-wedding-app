@@ -1,4 +1,4 @@
-import { apiClient, withAdminHeaders } from '@/services/apiClient';
+import { apiClient } from '@/services/apiClient';
 
 export type PublicPhotoAlbumItem = {
   id: number;
@@ -62,7 +62,7 @@ export async function fetchPublicPhotoAlbum(): Promise<PublicPhotoAlbumItem[]> {
   return data;
 }
 
-// Requests a presigned upload target before sending bytes directly to storage.
+// Requests a presigned upload target before sending bytes directly to S3.
 export async function createPhotoUploadIntent(
   payload: PhotoUploadIntentPayload,
 ): Promise<PhotoUploadIntentResponse> {
@@ -80,9 +80,7 @@ export async function completePhotoUpload(
 
 // Loads all uploaded photos for admin moderation.
 export async function fetchAdminPhotoAlbum(): Promise<AdminPhotoAlbumItem[]> {
-  const { data } = await apiClient.get<AdminPhotoAlbumItem[]>('/admin/photos', {
-    headers: withAdminHeaders(),
-  });
+  const { data } = await apiClient.get<AdminPhotoAlbumItem[]>('/admin/photos');
   return data;
 }
 
@@ -91,12 +89,6 @@ export async function updateAdminPhotoStatus(
   photoId: number,
   status: AdminPhotoStatus,
 ): Promise<AdminPhotoAlbumItem> {
-  const { data } = await apiClient.patch<AdminPhotoAlbumItem>(
-    `/admin/photos/${photoId}`,
-    { status },
-    {
-      headers: withAdminHeaders(),
-    },
-  );
+  const { data } = await apiClient.patch<AdminPhotoAlbumItem>(`/admin/photos/${photoId}`, { status });
   return data;
 }

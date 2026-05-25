@@ -10,7 +10,7 @@ def test_rsvp_stats_with_empty_db(api_client, admin_headers):
     assert data["by_faction"] == {}
 
 
-def test_rsvp_stats_with_one_attending_guest(api_client, admin_headers):
+def test_rsvp_stats_with_one_attending_guest(api_client, admin_headers, invited_headers):
     # Creates one guest, confirms RSVP as attending and checks stats.
     create_response = api_client.post(
         "/guest/create-invite",
@@ -21,6 +21,7 @@ def test_rsvp_stats_with_one_attending_guest(api_client, admin_headers):
 
     api_client.post(
         "/rsvp/confirm",
+        headers=invited_headers,
         json={"invitation_token": token, "attending": True, "faction": "scout_regiment"},
     )
 
@@ -33,7 +34,7 @@ def test_rsvp_stats_with_one_attending_guest(api_client, admin_headers):
     assert data["by_faction"] == {"scout_regiment": 1}
 
 
-def test_rsvp_stats_with_not_attending_guest(api_client, admin_headers):
+def test_rsvp_stats_with_not_attending_guest(api_client, admin_headers, invited_headers):
     # Not-attending guest must not appear in by_faction counts.
     create_response = api_client.post(
         "/guest/create-invite",
@@ -44,7 +45,8 @@ def test_rsvp_stats_with_not_attending_guest(api_client, admin_headers):
 
     api_client.post(
         "/rsvp/confirm",
-        json={"invitation_token": token, "attending": False, "faction": "garrison"},
+        headers=invited_headers,
+        json={"invitation_token": token, "attending": False},
     )
 
     response = api_client.get("/admin/rsvp-stats", headers=admin_headers)
@@ -55,7 +57,7 @@ def test_rsvp_stats_with_not_attending_guest(api_client, admin_headers):
     assert data["by_faction"] == {}
 
 
-def test_rsvp_stats_with_multiple_factions(api_client, admin_headers):
+def test_rsvp_stats_with_multiple_factions(api_client, admin_headers, invited_headers):
     # Counts must reflect correct faction distribution.
     guests = [
         ("Mikasa Ackerman", "scout_regiment"),
@@ -71,6 +73,7 @@ def test_rsvp_stats_with_multiple_factions(api_client, admin_headers):
         token = res.json()["invitation_token"]
         api_client.post(
             "/rsvp/confirm",
+            headers=invited_headers,
             json={"invitation_token": token, "attending": True, "faction": faction},
         )
 

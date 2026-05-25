@@ -13,12 +13,14 @@ import { AxiosError } from 'axios';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import { aotTheme } from '@/constants/aotTheme';
-import { adminApiKey, apiBaseUrl } from '@/constants/apiConfig';
+import { apiBaseUrl } from '@/constants/apiConfig';
+import { useAuth } from '@/contexts/AuthContext';
 import { createGuestInvitation } from '@/services/guestApi';
 
 // Home screen styled like an editorial wedding landing page.
 export default function LandingScreen() {
   const router = useRouter();
+  const { isAdmin, isAuthenticated } = useAuth();
   const scrollViewRef = useRef<ScrollView | null>(null);
   const sectionOffsets = useRef<Record<string, number>>({});
   const floralFloat = useRef(new Animated.Value(0)).current;
@@ -82,15 +84,10 @@ export default function LandingScreen() {
       router.push(`/rsvp/${encodeURIComponent(createdInvitation.invitation_token)}`);
     } catch (caughtError) {
       const requestError = caughtError as AxiosError<{ detail?: string }>;
-      const backendMessage = requestError.response?.data?.detail;
-
-      if (!adminApiKey) {
-        setCreateInviteError('Manca EXPO_PUBLIC_ADMIN_API_KEY nel frontend.');
-      } else {
-        setCreateInviteError(
-          backendMessage || 'Creazione invito non riuscita. Controlla backend e admin key.',
-        );
-      }
+      setCreateInviteError(
+        requestError.response?.data?.detail ||
+          'Creazione invito non riuscita. Devi essere loggata/o come admin.',
+      );
     } finally {
       setIsCreatingInvite(false);
     }
@@ -114,9 +111,14 @@ export default function LandingScreen() {
             <Pressable onPress={() => scrollToSection('rsvp')}>
               <Text style={styles.navLink}>RSVP</Text>
             </Pressable>
-            <Pressable onPress={() => router.push('/admin')}>
-              <Text style={styles.navLink}>Admin</Text>
+            <Pressable onPress={() => router.push('/profile')}>
+              <Text style={styles.navLink}>{isAuthenticated ? 'Profilo' : 'Accedi'}</Text>
             </Pressable>
+            {isAdmin ? (
+              <Pressable onPress={() => router.push('/admin')}>
+                <Text style={styles.navLink}>Admin</Text>
+              </Pressable>
+            ) : null}
           </View>
         </View>
 
@@ -245,20 +247,18 @@ export default function LandingScreen() {
               <Pressable
                 style={[
                   styles.primaryButton,
-                  (!guestFullName.trim() || isCreatingInvite || !adminApiKey) &&
-                    styles.buttonDisabled,
+                  (!guestFullName.trim() || isCreatingInvite || !isAdmin) && styles.buttonDisabled,
                 ]}
                 onPress={createInviteAndOpenRsvp}
-                disabled={!guestFullName.trim() || isCreatingInvite || !adminApiKey}
-              >
+                disabled={!guestFullName.trim() || isCreatingInvite || !isAdmin}>
                 <Text style={styles.primaryButtonText}>
                   {isCreatingInvite ? 'Generazione invito...' : 'Genera token e apri RSVP'}
                 </Text>
               </Pressable>
               {createInviteError ? <Text style={styles.error}>{createInviteError}</Text> : null}
-              {!adminApiKey ? (
+              {!isAdmin ? (
                 <Text style={styles.hint}>
-                  Imposta `EXPO_PUBLIC_ADMIN_API_KEY` per usare la generazione rapida.
+                  Questa azione e riservata agli account admin autorizzati.
                 </Text>
               ) : null}
             </View>

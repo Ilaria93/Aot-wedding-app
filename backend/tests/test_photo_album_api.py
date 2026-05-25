@@ -4,9 +4,23 @@ def test_public_photo_album_is_empty_on_fresh_db(api_client):
     assert response.json() == []
 
 
-def test_photo_upload_intent_requires_valid_invitation_token(api_client):
+def test_photo_upload_intent_requires_login(api_client):
     response = api_client.post(
         "/photos/upload-intent",
+        json={
+            "invitation_token": "missing-token",
+            "original_filename": "friends.jpg",
+            "mime_type": "image/jpeg",
+            "file_size_bytes": 2048,
+        },
+    )
+    assert response.status_code == 401
+
+
+def test_photo_upload_intent_requires_valid_invitation_token(api_client, invited_headers):
+    response = api_client.post(
+        "/photos/upload-intent",
+        headers=invited_headers,
         json={
             "invitation_token": "missing-token",
             "original_filename": "friends.jpg",
@@ -17,7 +31,7 @@ def test_photo_upload_intent_requires_valid_invitation_token(api_client):
     assert response.status_code == 404
 
 
-def test_photo_upload_intent_returns_signed_upload_data(api_client, admin_headers):
+def test_photo_upload_intent_returns_signed_upload_data(api_client, admin_headers, invited_headers):
     create_response = api_client.post(
         "/guest/create-invite",
         headers=admin_headers,
@@ -28,6 +42,7 @@ def test_photo_upload_intent_returns_signed_upload_data(api_client, admin_header
 
     response = api_client.post(
         "/photos/upload-intent",
+        headers=invited_headers,
         json={
             "invitation_token": token,
             "original_filename": "squad-photo.jpg",
@@ -44,7 +59,7 @@ def test_photo_upload_intent_returns_signed_upload_data(api_client, admin_header
     assert payload["upload_url"]
 
 
-def test_photo_stays_hidden_until_admin_approves_it(api_client, admin_headers):
+def test_photo_stays_hidden_until_admin_approves_it(api_client, admin_headers, invited_headers):
     create_response = api_client.post(
         "/guest/create-invite",
         headers=admin_headers,
@@ -54,6 +69,7 @@ def test_photo_stays_hidden_until_admin_approves_it(api_client, admin_headers):
 
     upload_intent_response = api_client.post(
         "/photos/upload-intent",
+        headers=invited_headers,
         json={
             "invitation_token": token,
             "original_filename": "ceremony.png",
@@ -65,6 +81,7 @@ def test_photo_stays_hidden_until_admin_approves_it(api_client, admin_headers):
 
     complete_response = api_client.post(
         "/photos/complete-upload",
+        headers=invited_headers,
         json={
             "invitation_token": token,
             "storage_key": storage_key,
@@ -106,7 +123,7 @@ def test_photo_stays_hidden_until_admin_approves_it(api_client, admin_headers):
     assert approved_photos[0]["image_url"].endswith(storage_key)
 
 
-def test_photo_complete_upload_rejects_reused_storage_key(api_client, admin_headers):
+def test_photo_complete_upload_rejects_reused_storage_key(api_client, admin_headers, invited_headers):
     create_response = api_client.post(
         "/guest/create-invite",
         headers=admin_headers,
@@ -116,6 +133,7 @@ def test_photo_complete_upload_rejects_reused_storage_key(api_client, admin_head
 
     upload_intent_response = api_client.post(
         "/photos/upload-intent",
+        headers=invited_headers,
         json={
             "invitation_token": token,
             "original_filename": "friends.webp",
@@ -127,6 +145,7 @@ def test_photo_complete_upload_rejects_reused_storage_key(api_client, admin_head
 
     first_complete = api_client.post(
         "/photos/complete-upload",
+        headers=invited_headers,
         json={
             "invitation_token": token,
             "storage_key": storage_key,
@@ -139,6 +158,7 @@ def test_photo_complete_upload_rejects_reused_storage_key(api_client, admin_head
 
     second_complete = api_client.post(
         "/photos/complete-upload",
+        headers=invited_headers,
         json={
             "invitation_token": token,
             "storage_key": storage_key,
@@ -148,3 +168,17 @@ def test_photo_complete_upload_rejects_reused_storage_key(api_client, admin_head
         },
     )
     assert second_complete.status_code == 400
+
+
+def test_photo_complete_upload_requires_login(api_client):
+    response = api_client.post(
+        "/photos/complete-upload",
+        json={
+            "invitation_token": "missing-token",
+            "storage_key": "wedding-album/1/fake.jpg",
+            "original_filename": "fake.jpg",
+            "mime_type": "image/jpeg",
+            "file_size_bytes": 2048,
+        },
+    )
+    assert response.status_code == 401

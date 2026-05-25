@@ -1,9 +1,11 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { ActivityIndicator, View } from 'react-native';
 import { Tabs } from 'expo-router';
 
 import Colors from '@/constants/Colors';
 import { aotTheme } from '@/constants/aotTheme';
+import { useAuth } from '@/contexts/AuthContext';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 
@@ -17,6 +19,21 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { isAdmin, isBootstrapping } = useAuth();
+
+  if (isBootstrapping) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: aotTheme.background,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <ActivityIndicator color={aotTheme.bronze} size="large" />
+      </View>
+    );
+  }
 
   return (
     <Tabs
@@ -59,6 +76,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="admin"
         options={{
+          href: isAdmin ? undefined : null,
           title: 'Admin',
           tabBarIcon: ({ color }) => <TabBarIcon name="shield" color={color} />,
         }}
@@ -68,6 +86,20 @@ export default function TabLayout() {
         options={{
           title: 'Album',
           tabBarIcon: ({ color }) => <TabBarIcon name="camera" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="travel"
+        options={{
+          title: 'Contatti',
+          tabBarIcon: ({ color }) => <TabBarIcon name="map-signs" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profilo',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
     </Tabs>

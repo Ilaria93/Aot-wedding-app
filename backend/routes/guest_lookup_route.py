@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from dependencies.admin_auth_dependency import require_admin_api_key
+from dependencies.auth_user_dependency import require_admin_user
 from database.base import get_db
 from schemas.guest_invitation_schema import (
     GuestInvitationCreateRequest,
@@ -26,7 +26,7 @@ def guest_by_token(token: str, db: Session = Depends(get_db)):
 def create_guest_invite(
     payload: GuestInvitationCreateRequest,
     db: Session = Depends(get_db),
-    _admin_ok: None = Depends(require_admin_api_key),
+    _admin_ok=Depends(require_admin_user),
 ):
     normalized_full_name = payload.full_name.strip()
     if not normalized_full_name:

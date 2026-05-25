@@ -1,6 +1,7 @@
 import os
 
-os.environ.setdefault("ADMIN_API_KEY", "test-admin-api-key-value")
+os.environ.setdefault("JWT_SECRET_KEY", "test-jwt-secret-key-for-local-tests")
+os.environ.setdefault("ADMIN_ALLOWED_EMAILS", "admin@test.app,dawcorp@test.app,example@test.app")
 os.environ.setdefault("S3_BUCKET_NAME", "test-wedding-album")
 os.environ.setdefault("S3_REGION", "eu-central-1")
 os.environ.setdefault("S3_ACCESS_KEY_ID", "test-access-key")
@@ -29,7 +30,35 @@ def api_client():
         yield client
 
 
-# Sends the configured admin secret for secured routes during tests.
+# Creates a reusable admin bearer token for secured routes during tests.
 @pytest.fixture
-def admin_headers():
-    return {"X-Admin-Api-Key": os.environ["ADMIN_API_KEY"]}
+def admin_headers(api_client):
+    response = api_client.post(
+        "/auth/register",
+        json={
+            "first_name": "Admin",
+            "last_name": "Tester",
+            "email": "admin@test.app",
+            "password": "super-secure-password",
+            "remember_me": True,
+        },
+    )
+    access_token = response.json()["access_token"]
+    return {"Authorization": f"Bearer {access_token}"}
+
+
+# Creates a normal invited user token to verify admin protections.
+@pytest.fixture
+def invited_headers(api_client):
+    response = api_client.post(
+        "/auth/register",
+        json={
+            "first_name": "Guest",
+            "last_name": "Tester",
+            "email": "guest@test.app",
+            "password": "super-secure-password",
+            "remember_me": False,
+        },
+    )
+    access_token = response.json()["access_token"]
+    return {"Authorization": f"Bearer {access_token}"}

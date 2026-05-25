@@ -5,9 +5,44 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def read_admin_api_key() -> str:
-    """Loads the secret used to authorize admin endpoints and invitation creation."""
-    return os.getenv("ADMIN_API_KEY", "").strip()
+def read_jwt_secret_key() -> str:
+    """Secret used to sign access and refresh JWT tokens."""
+    return os.getenv("JWT_SECRET_KEY", "").strip()
+
+
+def read_access_token_expiration_minutes() -> int:
+    """Short-lived access token lifetime in minutes."""
+    raw_value = os.getenv("ACCESS_TOKEN_EXPIRES_MINUTES", "30").strip()
+    try:
+        return max(5, int(raw_value))
+    except ValueError:
+        return 30
+
+
+def read_refresh_token_expiration_days() -> int:
+    """Persistent refresh token lifetime in days for remembered sessions."""
+    raw_value = os.getenv("REFRESH_TOKEN_EXPIRES_DAYS", "30").strip()
+    try:
+        return max(1, int(raw_value))
+    except ValueError:
+        return 30
+
+
+def read_short_refresh_token_expiration_hours() -> int:
+    """Refresh token lifetime for sessions that should not stay connected for long."""
+    raw_value = os.getenv("SHORT_SESSION_REFRESH_TOKEN_EXPIRES_HOURS", "24").strip()
+    try:
+        return max(1, int(raw_value))
+    except ValueError:
+        return 24
+
+
+def read_admin_allowed_emails() -> set[str]:
+    """Emails that should receive the admin role instead of the default invited role."""
+    raw_value = os.getenv("ADMIN_ALLOWED_EMAILS", "").strip()
+    if not raw_value:
+        return set()
+    return {email.strip().lower() for email in raw_value.split(",") if email.strip()}
 
 
 def read_cors_allow_origins() -> list[str]:

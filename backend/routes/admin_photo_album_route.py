@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from database.base import get_db
-from dependencies.admin_auth_dependency import require_admin_api_key
+from dependencies.auth_user_dependency import require_admin_user
 from schemas.photo_album_schema import AdminPhotoAlbumItem, AdminPhotoStatusUpdateRequest
 from services.photo_album_service import (
     PhotoAlbumNotFoundError,
@@ -17,7 +17,7 @@ router = APIRouter(prefix="/admin/photos")
 @router.get("", response_model=list[AdminPhotoAlbumItem])
 def list_admin_photos(
     db: Session = Depends(get_db),
-    _admin_ok: None = Depends(require_admin_api_key),
+    _admin_ok=Depends(require_admin_user),
 ):
     return list_admin_photo_album_items(db)
 
@@ -28,7 +28,7 @@ def update_admin_photo_status(
     photo_id: int,
     payload: AdminPhotoStatusUpdateRequest,
     db: Session = Depends(get_db),
-    _admin_ok: None = Depends(require_admin_api_key),
+    _admin_ok=Depends(require_admin_user),
 ):
     try:
         update_photo_status(db, photo_id, payload.status)

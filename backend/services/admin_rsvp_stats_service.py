@@ -15,7 +15,7 @@ def compute_rsvp_stats(db: Session) -> dict:
 
     by_faction: dict[str, int] = {}
     for rsvp in all_rsvps:
-        if rsvp.attending:
+        if rsvp.attending and rsvp.faction:
             by_faction[rsvp.faction] = by_faction.get(rsvp.faction, 0) + 1
 
     return {

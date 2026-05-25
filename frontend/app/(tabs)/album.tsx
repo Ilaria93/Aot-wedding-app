@@ -1,4 +1,5 @@
 import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -13,6 +14,7 @@ import {
 import { AxiosError } from 'axios';
 
 import { aotTheme } from '@/constants/aotTheme';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   completePhotoUpload,
   createPhotoUploadIntent,
@@ -40,6 +42,8 @@ function formatBytes(value: number) {
 
 // Guest-facing wedding album with upload flow based on invitation token.
 export default function AlbumScreen() {
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const [photos, setPhotos] = useState<PublicPhotoAlbumItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -75,6 +79,11 @@ export default function AlbumScreen() {
   async function handlePickImage() {
     setUploadMessage(null);
 
+    if (!isAuthenticated) {
+      router.push('/auth/login');
+      return;
+    }
+
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted && permission.canAskAgain === false) {
       setError('Permesso galleria negato. Abilitalo dalle impostazioni del dispositivo.');
@@ -95,6 +104,11 @@ export default function AlbumScreen() {
   }
 
   async function handleUpload() {
+    if (!isAuthenticated) {
+      router.push('/auth/login');
+      return;
+    }
+
     const normalizedToken = invitationToken.trim();
     if (!normalizedToken) {
       setUploadMessage('Inserisci il token invito prima di caricare una foto.');
@@ -148,6 +162,10 @@ export default function AlbumScreen() {
       await loadAlbum();
     } catch (caughtError) {
       const requestError = caughtError as AxiosError<{ detail?: string }>;
+      if (requestError.response?.status === 401) {
+        router.push('/auth/login');
+        return;
+      }
       setUploadMessage(
         requestError.response?.data?.detail || 'Caricamento non riuscito. Controlla token e rete.',
       );
@@ -195,6 +213,11 @@ export default function AlbumScreen() {
           <Text style={styles.sectionDescription}>
             Inserisci il token invito, scegli una foto e aggiungi una breve didascalia se vuoi.
           </Text>
+          {!isAuthenticated ? (
+            <Text style={styles.helperText}>
+              Per caricare una foto devi prima accedere con il tuo account.
+            </Text>
+          ) : null}
           <TextInput
             style={styles.input}
             placeholder="Token invito"
@@ -214,7 +237,11 @@ export default function AlbumScreen() {
           />
           <Pressable style={styles.secondaryButton} onPress={handlePickImage}>
             <Text style={styles.secondaryButtonText}>
-              {selectedAsset ? 'Cambia foto selezionata' : 'Scegli foto dalla galleria'}
+              {isAuthenticated
+                ? selectedAsset
+                  ? 'Cambia foto selezionata'
+                  : 'Scegli foto dalla galleria'
+                : 'Accedi per scegliere una foto'}
             </Text>
           </Pressable>
           {selectedAsset ? (
@@ -232,7 +259,11 @@ export default function AlbumScreen() {
             onPress={handleUpload}
             disabled={uploading}>
             <Text style={styles.primaryButtonText}>
-              {uploading ? 'Caricamento in corso...' : 'Invia foto all’album'}
+              {isAuthenticated
+                ? uploading
+                  ? 'Caricamento in corso...'
+                  : 'Invia foto all’album'
+                : 'Accedi per inviare una foto'}
             </Text>
           </Pressable>
           {uploadMessage ? <Text style={styles.helperText}>{uploadMessage}</Text> : null}

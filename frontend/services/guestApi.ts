@@ -1,4 +1,4 @@
-import { apiClient, withAdminHeaders } from '@/services/apiClient';
+import { apiClient } from '@/services/apiClient';
 
 export type GuestPublic = {
   full_name: string;
@@ -48,11 +48,7 @@ export async function fetchGuestByToken(token: string): Promise<GuestPublic> {
 export async function createGuestInvitation(
   payload: GuestInvitationCreatePayload,
 ): Promise<GuestInvitationCreateResponse> {
-  const { data } = await apiClient.post<GuestInvitationCreateResponse>(
-    '/guest/create-invite',
-    payload,
-    { headers: withAdminHeaders() },
-  );
+  const { data } = await apiClient.post<GuestInvitationCreateResponse>('/guest/create-invite', payload);
   return data;
 }
 

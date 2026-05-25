@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from database.base import get_db
+from dependencies.auth_user_dependency import require_current_user
 from schemas.photo_album_schema import (
     PhotoUploadCompleteRequest,
     PhotoUploadCompleteResponse,
@@ -32,6 +33,7 @@ def list_public_photos(db: Session = Depends(get_db)):
 def create_guest_photo_upload_intent(
     payload: PhotoUploadIntentRequest,
     db: Session = Depends(get_db),
+    _current_user=Depends(require_current_user),
 ):
     try:
         return create_photo_upload_intent(db, payload)
@@ -48,6 +50,7 @@ def create_guest_photo_upload_intent(
 def complete_guest_photo_upload(
     payload: PhotoUploadCompleteRequest,
     db: Session = Depends(get_db),
+    _current_user=Depends(require_current_user),
 ):
     try:
         created_photo = register_completed_photo_upload(db, payload)

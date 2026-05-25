@@ -1,16 +1,24 @@
-def test_create_invite_rejects_without_admin_header(api_client):
+def test_create_invite_rejects_without_bearer_token(api_client):
     response = api_client.post("/guest/create-invite", json={"full_name": "Nobody"})
     assert response.status_code == 401
 
 
-def test_create_invite_rejects_wrong_admin_key(api_client, admin_headers):
-    bad_headers = {**admin_headers, "X-Admin-Api-Key": "not-the-real-secret"}
+def test_create_invite_rejects_invalid_bearer_token(api_client):
     response = api_client.post(
         "/guest/create-invite",
-        headers=bad_headers,
+        headers={"Authorization": "Bearer not-a-real-token"},
         json={"full_name": "Nobody"},
     )
     assert response.status_code == 401
+
+
+def test_create_invite_rejects_non_admin_user(api_client, invited_headers):
+    response = api_client.post(
+        "/guest/create-invite",
+        headers=invited_headers,
+        json={"full_name": "Nobody"},
+    )
+    assert response.status_code == 403
 
 
 def test_admin_guest_list_rejects_without_header(api_client):
@@ -18,6 +26,34 @@ def test_admin_guest_list_rejects_without_header(api_client):
     assert response.status_code == 401
 
 
+def test_admin_guest_list_rejects_non_admin_user(api_client, invited_headers):
+    response = api_client.get("/admin/guests", headers=invited_headers)
+    assert response.status_code == 403
+
+
 def test_admin_rsvp_stats_rejects_without_header(api_client):
     response = api_client.get("/admin/rsvp-stats")
     assert response.status_code == 401
+
+
+def test_admin_photo_list_rejects_without_header(api_client):
+    response = api_client.get("/admin/photos")
+    assert response.status_code == 401
+
+
+def test_admin_contacts_reject_without_header(api_client):
+    list_response = api_client.get("/admin/contacts")
+    create_response = api_client.post(
+        "/admin/contacts",
+        json={
+            "category": "hotel",
+            "label": "Hotel Test",
+        },
+    )
+    assert list_response.status_code == 401
+    assert create_response.status_code == 401
+
+
+def test_admin_contacts_reject_non_admin_user(api_client, invited_headers):
+    response = api_client.get("/admin/contacts", headers=invited_headers)
+    assert response.status_code == 403

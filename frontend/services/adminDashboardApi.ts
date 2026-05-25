@@ -1,4 +1,4 @@
-import { apiClient, withAdminHeaders } from '@/services/apiClient';
+import { apiClient } from '@/services/apiClient';
 
 export type AdminGuestListItem = {
   id: number;
@@ -19,16 +19,12 @@ export type AdminRsvpStats = {
 
 // Loads admin guest list for the local dashboard.
 export async function fetchAdminGuestList(): Promise<AdminGuestListItem[]> {
-  const { data } = await apiClient.get<AdminGuestListItem[]>('/admin/guests', {
-    headers: withAdminHeaders(),
-  });
+  const { data } = await apiClient.get<AdminGuestListItem[]>('/admin/guests');
   return data;
 }
 
 // Loads aggregate RSVP stats for the local admin dashboard.
 export async function fetchAdminRsvpStats(): Promise<AdminRsvpStats> {
-  const { data } = await apiClient.get<AdminRsvpStats>('/admin/rsvp-stats', {
-    headers: withAdminHeaders(),
-  });
+  const { data } = await apiClient.get<AdminRsvpStats>('/admin/rsvp-stats');
   return data;
 }

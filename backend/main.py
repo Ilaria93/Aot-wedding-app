@@ -4,10 +4,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from database.base import Base, engine
 
 # Imports models so SQLAlchemy can create tables at startup.
-from models import guest_model, photo_album_item_model, rsvp_model  # noqa: F401
+from models import (  # noqa: F401
+    guest_model,
+    logistics_contact_model,
+    photo_album_item_model,
+    refresh_token_session_model,
+    rsvp_model,
+    user_model,
+)
+from routes.auth_route import router as auth_router
+from routes.admin_logistics_contact_route import router as admin_logistics_contact_router
+from routes.guest_lookup_route import router as guest_router
+from routes.logistics_contact_route import router as logistics_contact_router
 from routes.admin_photo_album_route import router as admin_photo_album_router
 from routes.photo_album_route import router as photo_album_router
-from routes.guest_lookup_route import router as guest_router
 from routes.rsvp_confirmation_route import router as rsvp_router
 from routes.admin_guest_list_route import router as admin_guest_router
 from settings import read_cors_allow_origins
@@ -39,5 +49,8 @@ def health():
 app.include_router(guest_router)
 app.include_router(rsvp_router)
 app.include_router(admin_guest_router)
+app.include_router(auth_router)
 app.include_router(photo_album_router)
 app.include_router(admin_photo_album_router)
+app.include_router(logistics_contact_router)
+app.include_router(admin_logistics_contact_router)

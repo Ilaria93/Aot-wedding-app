@@ -18,7 +18,13 @@ backend/venv/
 .vscode/
 .idea/
 
-# Flutter / Dart
+# Node / Expo
+node_modules/
+frontend/.expo/
+frontend/dist/
+.expo/
+
+# Flutter / Dart (legacy)
 .dart_tool/
 build/
 

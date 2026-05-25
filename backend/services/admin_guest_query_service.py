@@ -16,6 +16,6 @@ def get_all_guests_with_rsvp_status(db: Session) -> list:
             "invitation_token": guest.invitation_token,
             "has_rsvp": rsvp is not None,
             "attending": rsvp.attending if rsvp else None,
-            "faction": rsvp.faction if rsvp else None,
+            "faction": (rsvp.faction or None) if rsvp else None,
         })
     return result
