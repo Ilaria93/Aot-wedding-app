@@ -1,24 +1,24 @@
 import { Link, Stack } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { aotTheme } from '@/constants/aotTheme';
-import { Text, View } from '@/components/Themed';
+import { useI18n } from '@/contexts/I18nContext';
 
 // Modern fallback screen for unknown routes.
 export default function NotFoundScreen() {
+  const { t } = useI18n();
+
   return (
     <>
-      <Stack.Screen options={{ title: 'Pagina non trovata' }} />
+      <Stack.Screen options={{ title: t('navigation.stack.notFound') }} />
       <View style={styles.container}>
         <View style={styles.card}>
           <Text style={styles.eyebrow}>404</Text>
-          <Text style={styles.title}>Questa pagina non esiste.</Text>
-          <Text style={styles.body}>
-            Il link potrebbe essere incompleto oppure la pagina non e ancora stata creata.
-          </Text>
+          <Text style={styles.title}>{t('notFound.title')}</Text>
+          <Text style={styles.body}>{t('notFound.body')}</Text>
 
           <Link href="/" style={styles.link}>
-            <Text style={styles.linkText}>Torna alla home</Text>
+            <Text style={styles.linkText}>{t('notFound.backHome')}</Text>
           </Link>
         </View>
       </View>

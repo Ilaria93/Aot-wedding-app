@@ -7,7 +7,15 @@ from pydantic import BaseModel, field_validator
 
 class UserRoleEnum(str, Enum):
     invited = "invited"
+    bride = "bride"
+    groom = "groom"
     admin = "admin"
+
+
+class AuthSelectableRoleEnum(str, Enum):
+    invited = "invited"
+    bride = "bride"
+    groom = "groom"
 
 
 class AuthRegisterRequest(BaseModel):
@@ -15,6 +23,7 @@ class AuthRegisterRequest(BaseModel):
     last_name: str
     email: str
     password: str
+    role: AuthSelectableRoleEnum = AuthSelectableRoleEnum.invited
     remember_me: bool = True
 
     @field_validator("first_name", "last_name", "password", "email")

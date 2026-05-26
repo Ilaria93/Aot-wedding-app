@@ -1,14 +1,17 @@
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { aotTheme } from '@/constants/aotTheme';
 import { useAuth } from '@/contexts/AuthContext';
+import { useI18n } from '@/contexts/I18nContext';
 
-// Login screen for returning guests and admin users.
+// Login screen that recognizes the user role from the saved account.
 export default function LoginScreen() {
   const router = useRouter();
   const { signIn } = useAuth();
+  const { t } = useI18n();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
@@ -24,9 +27,9 @@ export default function LoginScreen() {
         password,
         remember_me: rememberMe,
       });
-      router.replace('/profile');
+      router.replace('/');
     } catch (caughtError) {
-      setError(caughtError instanceof Error ? caughtError.message : 'Accesso non riuscito.');
+      setError(caughtError instanceof Error ? caughtError.message : t('login.genericError'));
     } finally {
       setSubmitting(false);
     }
@@ -35,16 +38,13 @@ export default function LoginScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.eyebrow}>Accesso</Text>
-        <Text style={styles.title}>Rientra nell’app del matrimonio.</Text>
-        <Text style={styles.subtitle}>
-          Accedi con email e password. Se vuoi, puoi restare connessa/o anche dopo la chiusura
-          dell’app.
-        </Text>
+        <Text style={styles.eyebrow}>{t('login.eyebrow')}</Text>
+        <Text style={styles.title}>{t('login.title')}</Text>
+        <Text style={styles.subtitle}>{t('login.subtitle')}</Text>
 
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder={t('common.fields.email')}
           placeholderTextColor={aotTheme.textMuted}
           autoCapitalize="none"
           autoCorrect={false}
@@ -54,7 +54,7 @@ export default function LoginScreen() {
         />
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          placeholder={t('common.fields.password')}
           placeholderTextColor={aotTheme.textMuted}
           secureTextEntry
           value={password}
@@ -62,8 +62,10 @@ export default function LoginScreen() {
         />
 
         <Pressable style={styles.inlineToggle} onPress={() => setRememberMe((current) => !current)}>
-          <View style={[styles.checkbox, rememberMe && styles.checkboxActive]} />
-          <Text style={styles.inlineToggleText}>Resta connesso</Text>
+          <View style={[styles.checkbox, rememberMe && styles.checkboxActive]}>
+            {rememberMe ? <FontAwesome name="check" size={11} color={aotTheme.surface} /> : null}
+          </View>
+          <Text style={styles.inlineToggleText}>{t('login.rememberMe')}</Text>
         </Pressable>
 
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
@@ -73,12 +75,12 @@ export default function LoginScreen() {
           onPress={handleLogin}
           disabled={submitting}>
           <Text style={styles.primaryButtonText}>
-            {submitting ? 'Accesso in corso...' : 'Accedi'}
+            {submitting ? t('login.submitLoading') : t('login.submitLabel')}
           </Text>
         </Pressable>
 
         <Link href="/auth/register" style={styles.link}>
-          Non hai ancora un account? Registrati
+          {t('login.registerLink')}
         </Link>
       </View>
     </ScrollView>
@@ -145,6 +147,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: aotTheme.border,
     backgroundColor: aotTheme.surfaceMuted,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   checkboxActive: {
     backgroundColor: aotTheme.bronze,

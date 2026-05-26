@@ -20,7 +20,6 @@ from schemas.auth_schema import (
 )
 from settings import (
     read_access_token_expiration_minutes,
-    read_admin_allowed_emails,
     read_jwt_secret_key,
     read_refresh_token_expiration_days,
     read_short_refresh_token_expiration_hours,
@@ -28,6 +27,11 @@ from settings import (
 
 PASSWORD_HASH_ITERATIONS = 390000
 JWT_ALGORITHM = "HS256"
+PRIVILEGED_USER_ROLES = {
+    UserRoleEnum.admin.value,
+    UserRoleEnum.bride.value,
+    UserRoleEnum.groom.value,
+}
 
 
 class AuthConfigError(Exception):
@@ -75,22 +79,6 @@ def verify_password(password: str, stored_password_hash: str) -> bool:
 
 def hash_refresh_token(refresh_token: str) -> str:
     return hashlib.sha256(refresh_token.encode("utf-8")).hexdigest()
-
-
-def resolve_role_for_email(email: str) -> UserRoleEnum:
-    normalized_email = normalize_email(email)
-    if normalized_email in read_admin_allowed_emails():
-        return UserRoleEnum.admin
-    return UserRoleEnum.invited
-
-
-def sync_user_role_from_email(db: Session, user: User) -> User:
-    desired_role = resolve_role_for_email(user.email).value
-    if user.role != desired_role:
-        user.role = desired_role
-        db.commit()
-        db.refresh(user)
-    return user
 
 
 def serialize_user(user: User) -> AuthUserResponse:
@@ -189,7 +177,7 @@ def register_user(db: Session, payload: AuthRegisterRequest) -> AuthSessionRespo
         last_name=payload.last_name.strip(),
         email=normalized_email,
         password_hash=hash_password(payload.password),
-        role=resolve_role_for_email(normalized_email).value,
+        role=payload.role.value,
         created_at=datetime.utcnow(),
         last_login_at=datetime.utcnow(),
     )
@@ -206,7 +194,6 @@ def authenticate_user(db: Session, payload: AuthLoginRequest) -> AuthSessionResp
     if not user or not verify_password(payload.password, user.password_hash):
         raise AuthValidationError("Invalid email or password.")
 
-    user = sync_user_role_from_email(db, user)
     user.last_login_at = datetime.utcnow()
     db.commit()
     db.refresh(user)
@@ -237,7 +224,7 @@ def get_user_by_access_token(db: Session, access_token: str) -> User:
     if not user:
         raise AuthValidationError("User not found for this token.")
 
-    return sync_user_role_from_email(db, user)
+    return user
 
 
 def refresh_auth_session(db: Session, refresh_token: str) -> AuthSessionResponse:
@@ -269,7 +256,6 @@ def refresh_auth_session(db: Session, refresh_token: str) -> AuthSessionResponse
         raise AuthValidationError("User not found for this refresh token.")
 
     _revoke_session(db, refresh_session)
-    user = sync_user_role_from_email(db, user)
     return issue_auth_session(db, user, remember_me)
 
 
@@ -306,5 +292,5 @@ def update_user_profile(db: Session, user: User, payload: ProfileUpdateRequest) 
 
 
 def require_admin_role(user: User):
-    if user.role != UserRoleEnum.admin.value:
-        raise AuthPermissionError("Admin role required.")
+    if user.role not in PRIVILEGED_USER_ROLES:
+        raise AuthPermissionError("Bride, groom or admin role required.")

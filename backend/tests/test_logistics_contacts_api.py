@@ -13,7 +13,11 @@ def test_admin_can_create_contact_and_guests_can_view_it(api_client, admin_heade
             "label": "Hotel Paradis",
             "contact_person": "Front desk",
             "phone": "+39 000 111 222",
+            "whatsapp_phone": "+39 333 444 555",
             "website": "https://hotel.example.com",
+            "instagram_url": "https://instagram.com/hotelparadis",
+            "facebook_url": "https://facebook.com/hotelparadis",
+            "tiktok_url": "https://tiktok.com/@hotelparadis",
             "address": "Via Mura 12, Ravenna",
             "notes": "Check-in dalle 15:00",
             "sort_order": 2,
@@ -22,6 +26,7 @@ def test_admin_can_create_contact_and_guests_can_view_it(api_client, admin_heade
     )
     assert create_response.status_code == 200
     assert create_response.json()["label"] == "Hotel Paradis"
+    assert create_response.json()["instagram_url"] == "https://instagram.com/hotelparadis"
 
     public_response = api_client.get("/contacts")
     assert public_response.status_code == 200
@@ -29,6 +34,8 @@ def test_admin_can_create_contact_and_guests_can_view_it(api_client, admin_heade
     assert len(public_contacts) == 1
     assert public_contacts[0]["category"] == "hotel"
     assert public_contacts[0]["phone"] == "+39 000 111 222"
+    assert public_contacts[0]["whatsapp_phone"] == "+39 333 444 555"
+    assert public_contacts[0]["facebook_url"] == "https://facebook.com/hotelparadis"
 
 
 def test_public_contacts_hide_inactive_items(api_client, admin_headers):
@@ -83,11 +90,15 @@ def test_admin_can_update_and_delete_contacts(api_client, admin_headers):
         headers=admin_headers,
         json={
             "notes": "Consegna express disponibile",
+            "whatsapp_phone": "+39 340 555 1000",
+            "instagram_url": "https://instagram.com/stireriacentro",
             "is_active": False,
         },
     )
     assert update_response.status_code == 200
     assert update_response.json()["notes"] == "Consegna express disponibile"
+    assert update_response.json()["whatsapp_phone"] == "+39 340 555 1000"
+    assert update_response.json()["instagram_url"] == "https://instagram.com/stireriacentro"
     assert update_response.json()["is_active"] is False
 
     public_response = api_client.get("/contacts")

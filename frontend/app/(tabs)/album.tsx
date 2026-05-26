@@ -11,20 +11,18 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { AxiosError } from 'axios';
 
 import { aotTheme } from '@/constants/aotTheme';
 import { useAuth } from '@/contexts/AuthContext';
+import { useI18n } from '@/contexts/I18nContext';
 import {
   completePhotoUpload,
   createPhotoUploadIntent,
   fetchPublicPhotoAlbum,
   PublicPhotoAlbumItem,
 } from '@/services/photoAlbumApi';
-
-function formatPhotoDate(value: string) {
-  return new Date(value).toLocaleDateString('it-IT');
-}
+import { getApiErrorMessage, getApiStatusCode } from '@/utils/apiErrors';
+import { formatDateByLocale } from '@/utils/formatters';
 
 function buildAssetFilename(asset: ImagePicker.ImagePickerAsset) {
   return asset.fileName || asset.uri.split('/').pop() || `guest-photo-${Date.now()}.jpg`;
@@ -44,6 +42,7 @@ function formatBytes(value: number) {
 export default function AlbumScreen() {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
+  const { locale, t } = useI18n();
   const [photos, setPhotos] = useState<PublicPhotoAlbumItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -60,12 +59,12 @@ export default function AlbumScreen() {
       const publicPhotos = await fetchPublicPhotoAlbum();
       setPhotos(publicPhotos);
     } catch {
-      setError('Impossibile caricare l’album in questo momento.');
+      setError(t('album.loadError'));
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     loadAlbum();
@@ -86,7 +85,7 @@ export default function AlbumScreen() {
 
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted && permission.canAskAgain === false) {
-      setError('Permesso galleria negato. Abilitalo dalle impostazioni del dispositivo.');
+      setError(t('album.galleryPermissionError'));
       return;
     }
 
@@ -111,11 +110,11 @@ export default function AlbumScreen() {
 
     const normalizedToken = invitationToken.trim();
     if (!normalizedToken) {
-      setUploadMessage('Inserisci il token invito prima di caricare una foto.');
+      setUploadMessage(t('album.missingTokenError'));
       return;
     }
     if (!selectedAsset) {
-      setUploadMessage('Seleziona prima una foto dalla galleria.');
+      setUploadMessage(t('album.missingPhotoError'));
       return;
     }
 
@@ -158,17 +157,14 @@ export default function AlbumScreen() {
 
       setCaption('');
       setSelectedAsset(null);
-      setUploadMessage('Foto inviata. Sara visibile nell’album dopo l’approvazione admin.');
+      setUploadMessage(t('album.uploadSuccess'));
       await loadAlbum();
     } catch (caughtError) {
-      const requestError = caughtError as AxiosError<{ detail?: string }>;
-      if (requestError.response?.status === 401) {
+      if (getApiStatusCode(caughtError) === 401) {
         router.push('/auth/login');
         return;
       }
-      setUploadMessage(
-        requestError.response?.data?.detail || 'Caricamento non riuscito. Controlla token e rete.',
-      );
+      setUploadMessage(getApiErrorMessage(caughtError, t('album.uploadError')));
     } finally {
       setUploading(false);
     }
@@ -186,18 +182,15 @@ export default function AlbumScreen() {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.content}>
         <View style={styles.heroCard}>
-          <Text style={styles.eyebrow}>Album</Text>
-          <Text style={styles.title}>Raccogliamo i ricordi del matrimonio in un solo posto.</Text>
-          <Text style={styles.subtitle}>
-            Gli invitati possono inviare nuove foto con il token dell’invito. Le immagini restano in
-            attesa finche l’admin non le approva.
-          </Text>
+          <Text style={styles.eyebrow}>{t('album.eyebrow')}</Text>
+          <Text style={styles.title}>{t('album.title')}</Text>
+          <Text style={styles.subtitle}>{t('album.subtitle')}</Text>
           <Pressable
             style={[styles.secondaryButton, refreshing && styles.buttonDisabled]}
             onPress={handleRefresh}
             disabled={refreshing}>
             <Text style={styles.secondaryButtonText}>
-              {refreshing ? 'Aggiornamento...' : 'Aggiorna album'}
+              {refreshing ? t('album.refreshLoading') : t('album.refreshButton')}
             </Text>
           </Pressable>
         </View>
@@ -209,18 +202,14 @@ export default function AlbumScreen() {
         ) : null}
 
         <View style={styles.sectionCard}>
-          <Text style={styles.sectionTitle}>Invia una foto</Text>
-          <Text style={styles.sectionDescription}>
-            Inserisci il token invito, scegli una foto e aggiungi una breve didascalia se vuoi.
-          </Text>
+          <Text style={styles.sectionTitle}>{t('album.uploadTitle')}</Text>
+          <Text style={styles.sectionDescription}>{t('album.uploadDescription')}</Text>
           {!isAuthenticated ? (
-            <Text style={styles.helperText}>
-              Per caricare una foto devi prima accedere con il tuo account.
-            </Text>
+            <Text style={styles.helperText}>{t('album.loginHint')}</Text>
           ) : null}
           <TextInput
             style={styles.input}
-            placeholder="Token invito"
+            placeholder={t('common.fields.invitationToken')}
             placeholderTextColor={aotTheme.textMuted}
             autoCapitalize="none"
             autoCorrect={false}
@@ -229,7 +218,7 @@ export default function AlbumScreen() {
           />
           <TextInput
             style={[styles.input, styles.multilineInput]}
-            placeholder="Didascalia opzionale"
+            placeholder={t('album.captionPlaceholder')}
             placeholderTextColor={aotTheme.textMuted}
             value={caption}
             onChangeText={setCaption}
@@ -239,9 +228,9 @@ export default function AlbumScreen() {
             <Text style={styles.secondaryButtonText}>
               {isAuthenticated
                 ? selectedAsset
-                  ? 'Cambia foto selezionata'
-                  : 'Scegli foto dalla galleria'
-                : 'Accedi per scegliere una foto'}
+                  ? t('album.changePhoto')
+                  : t('album.choosePhoto')
+                : t('album.loginChoosePhoto')}
             </Text>
           </Pressable>
           {selectedAsset ? (
@@ -261,27 +250,25 @@ export default function AlbumScreen() {
             <Text style={styles.primaryButtonText}>
               {isAuthenticated
                 ? uploading
-                  ? 'Caricamento in corso...'
-                  : 'Invia foto all’album'
-                : 'Accedi per inviare una foto'}
+                  ? t('album.uploadLoading')
+                  : t('album.uploadButton')
+                : t('album.loginUploadButton')}
             </Text>
           </Pressable>
           {uploadMessage ? <Text style={styles.helperText}>{uploadMessage}</Text> : null}
         </View>
 
         <View style={styles.sectionCard}>
-          <Text style={styles.sectionTitle}>Foto approvate</Text>
+          <Text style={styles.sectionTitle}>{t('album.approvedTitle')}</Text>
           {photos.length === 0 ? (
-            <Text style={styles.emptyText}>
-              Nessuna foto approvata ancora. Le prime appariranno qui appena moderate.
-            </Text>
+            <Text style={styles.emptyText}>{t('album.approvedEmpty')}</Text>
           ) : (
             photos.map((photo) => (
               <View key={photo.id} style={styles.photoCard}>
                 <Image source={{ uri: photo.image_url }} style={styles.photoImage} />
                 <View style={styles.photoBody}>
                   <Text style={styles.photoGuest}>{photo.guest_full_name}</Text>
-                  <Text style={styles.photoMeta}>{formatPhotoDate(photo.uploaded_at)}</Text>
+                  <Text style={styles.photoMeta}>{formatDateByLocale(photo.uploaded_at, locale)}</Text>
                   {photo.caption ? <Text style={styles.photoCaption}>{photo.caption}</Text> : null}
                 </View>
               </View>

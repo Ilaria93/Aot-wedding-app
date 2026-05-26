@@ -37,14 +37,6 @@ def read_short_refresh_token_expiration_hours() -> int:
         return 24
 
 
-def read_admin_allowed_emails() -> set[str]:
-    """Emails that should receive the admin role instead of the default invited role."""
-    raw_value = os.getenv("ADMIN_ALLOWED_EMAILS", "").strip()
-    if not raw_value:
-        return set()
-    return {email.strip().lower() for email in raw_value.split(",") if email.strip()}
-
-
 def read_cors_allow_origins() -> list[str]:
     """Comma-separated origins for browser clients. '*' allows any origin."""
     raw = os.getenv("CORS_ALLOW_ORIGINS", "").strip()

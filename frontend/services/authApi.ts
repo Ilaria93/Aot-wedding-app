@@ -1,6 +1,9 @@
 import { apiClient } from '@/services/apiClient';
+import type { TranslateFn } from '@/i18n/translations';
 
-export type UserRole = 'invited' | 'admin';
+export type UserRole = 'invited' | 'bride' | 'groom' | 'admin';
+export type ManagementRole = Extract<UserRole, 'bride' | 'groom' | 'admin'>;
+export type SelectableUserRole = Exclude<UserRole, 'admin'>;
 
 export type AuthUser = {
   id: number;
@@ -23,6 +26,7 @@ export type RegisterPayload = {
   last_name: string;
   email: string;
   password: string;
+  role: SelectableUserRole;
   remember_me: boolean;
 };
 
@@ -40,6 +44,23 @@ export type AuthSessionResponse = {
   remember_me: boolean;
   user: AuthUser;
 };
+
+export function canManageWedding(role: UserRole | null | undefined): role is ManagementRole {
+  return role === 'bride' || role === 'groom' || role === 'admin';
+}
+
+export function formatUserRoleLabel(role: UserRole, t: TranslateFn): string {
+  switch (role) {
+    case 'bride':
+      return t('common.roles.bride');
+    case 'groom':
+      return t('common.roles.groom');
+    case 'admin':
+      return t('common.roles.admin');
+    default:
+      return t('common.roles.invited');
+  }
+}
 
 // Registers a new user and returns the initial session.
 export async function registerAccount(payload: RegisterPayload): Promise<AuthSessionResponse> {

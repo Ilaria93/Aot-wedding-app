@@ -9,22 +9,18 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { AxiosError } from 'axios';
 
 import { aotTheme } from '@/constants/aotTheme';
+import { getFactionLabel, getFactionOptions, isFactionId } from '@/constants/factions';
 import { useAuth } from '@/contexts/AuthContext';
+import { useI18n } from '@/contexts/I18nContext';
 import {
   FactionId,
   fetchGuestByToken,
   fetchRsvpByToken,
   submitRsvpConfirmation,
 } from '@/services/guestApi';
-
-const FACTIONS: { id: FactionId; label: string }[] = [
-  { id: 'scout_regiment', label: 'Ricognizione' },
-  { id: 'military_police', label: 'Gendarmeria' },
-  { id: 'garrison', label: 'Guarnigione' },
-];
+import { getApiStatusCode } from '@/utils/apiErrors';
 
 type ConfirmedRsvpState = {
   attending: boolean;
@@ -32,22 +28,11 @@ type ConfirmedRsvpState = {
   dietaryNotes: string | null;
 };
 
-function isFactionId(value: string | null | undefined): value is FactionId {
-  return FACTIONS.some((item) => item.id === value);
-}
-
-function getFactionLabel(factionId: FactionId | null) {
-  if (!factionId) {
-    return null;
-  }
-
-  return FACTIONS.find((item) => item.id === factionId)?.label ?? factionId;
-}
-
 // RSVP screen opened via /rsvp/{invitation_token}.
 export default function RsvpByTokenScreen() {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
+  const { t } = useI18n();
   const { token } = useLocalSearchParams<{ token: string }>();
   const invitationToken = typeof token === 'string' ? token : '';
 
@@ -63,7 +48,7 @@ export default function RsvpByTokenScreen() {
 
   const loadGuest = useCallback(async () => {
     if (!invitationToken) {
-      setError('Link invito non valido.');
+      setError(t('rsvp.invalidLink'));
       setLoading(false);
       return;
     }
@@ -95,11 +80,11 @@ export default function RsvpByTokenScreen() {
         setConfirmedRsvp(null);
       }
     } catch {
-      setError('Invito non trovato o scaduto.');
+      setError(t('rsvp.notFound'));
     } finally {
       setLoading(false);
     }
-  }, [invitationToken]);
+  }, [invitationToken, t]);
 
   useEffect(() => {
     loadGuest();
@@ -130,18 +115,17 @@ export default function RsvpByTokenScreen() {
       });
       setAlreadyConfirmed(true);
     } catch (caughtError) {
-      const requestError = caughtError as AxiosError<{ detail?: string }>;
-      const statusCode = requestError.response?.status;
+      const statusCode = getApiStatusCode(caughtError);
 
       if (statusCode === 404) {
-        setError('Invito non trovato o scaduto.');
+        setError(t('rsvp.notFound'));
       } else if (statusCode === 409) {
         await loadGuest();
-        setError('RSVP già confermato in precedenza.');
+        setError(t('rsvp.alreadyConfirmedError'));
       } else if (statusCode === 401) {
         router.push('/auth/login');
       } else {
-        setError('Conferma non riuscita. Riprova tra poco.');
+        setError(t('rsvp.submitError'));
       }
     } finally {
       setSubmitting(false);
@@ -160,12 +144,9 @@ export default function RsvpByTokenScreen() {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.content}>
         <View style={styles.heroCard}>
-          <Text style={styles.eyebrow}>RSVP</Text>
-          <Text style={styles.title}>{guestName || 'Invitato'}</Text>
-          <Text style={styles.subtitle}>
-            Conferma la tua presenza in modo semplice e, se parteciperai, scegli la fazione che ti
-            rappresenta.
-          </Text>
+          <Text style={styles.eyebrow}>{t('rsvp.eyebrow')}</Text>
+          <Text style={styles.title}>{guestName || t('rsvp.guestFallbackName')}</Text>
+          <Text style={styles.subtitle}>{t('rsvp.subtitle')}</Text>
         </View>
 
         {error ? (
@@ -176,36 +157,36 @@ export default function RsvpByTokenScreen() {
 
         {alreadyConfirmed ? (
           <View style={styles.sectionCard}>
-            <Text style={styles.sectionTitle}>RSVP gia confermato</Text>
+            <Text style={styles.sectionTitle}>{t('rsvp.confirmedTitle')}</Text>
             <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Stato</Text>
+              <Text style={styles.summaryLabel}>{t('rsvp.statusLabel')}</Text>
               <Text style={styles.summaryValue}>
-                {confirmedRsvp?.attending ? 'Presente' : 'Non presente'}
+                {confirmedRsvp?.attending
+                  ? t('rsvp.attendingStatus')
+                  : t('rsvp.notAttendingStatus')}
               </Text>
             </View>
             {confirmedRsvp?.attending && confirmedRsvp.faction ? (
               <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>Fazione</Text>
-                <Text style={styles.summaryValue}>{getFactionLabel(confirmedRsvp.faction)}</Text>
+                <Text style={styles.summaryLabel}>{t('rsvp.factionLabel')}</Text>
+                <Text style={styles.summaryValue}>{getFactionLabel(confirmedRsvp.faction, t)}</Text>
               </View>
             ) : null}
             {confirmedRsvp?.attending && confirmedRsvp.dietaryNotes ? (
               <View style={styles.summaryRow}>
-                <Text style={styles.summaryLabel}>Note alimentari</Text>
+                <Text style={styles.summaryLabel}>{t('rsvp.dietaryLabel')}</Text>
                 <Text style={styles.summaryValue}>{confirmedRsvp.dietaryNotes}</Text>
               </View>
             ) : null}
           </View>
         ) : (
           <View style={styles.sectionCard}>
-            <Text style={styles.sectionTitle}>Parteciperai?</Text>
+            <Text style={styles.sectionTitle}>{t('rsvp.formTitle')}</Text>
             {!isAuthenticated ? (
               <View style={styles.loginPromptCard}>
-                <Text style={styles.helperText}>
-                  Per confermare RSVP devi prima accedere con il tuo account.
-                </Text>
+                <Text style={styles.helperText}>{t('rsvp.loginHint')}</Text>
                 <Link href="/auth/login" style={styles.loginLink}>
-                  Vai al login
+                  {t('rsvp.loginLink')}
                 </Link>
               </View>
             ) : null}
@@ -215,7 +196,7 @@ export default function RsvpByTokenScreen() {
                 onPress={() => setAttending(true)}
               >
                 <Text style={[styles.segmentButtonText, attending && styles.segmentButtonTextActive]}>
-                  Si
+                  {t('common.yes')}
                 </Text>
               </Pressable>
               <Pressable
@@ -224,40 +205,36 @@ export default function RsvpByTokenScreen() {
               >
                 <Text
                   style={[styles.segmentButtonText, !attending && styles.segmentButtonTextActive]}>
-                  No
+                  {t('common.no')}
                 </Text>
               </Pressable>
             </View>
 
             {attending ? (
               <>
-                <Text style={styles.label}>Scegli la tua fazione</Text>
-                {FACTIONS.map((item) => (
+                <Text style={styles.label}>{t('rsvp.chooseFaction')}</Text>
+                {getFactionOptions(t).map((item) => (
                   <Pressable
                     key={item.id}
                     style={[styles.factionCard, faction === item.id && styles.factionCardActive]}
                     onPress={() => setFaction(item.id)}
                   >
                     <Text style={styles.factionTitle}>{item.label}</Text>
-                    <Text style={styles.factionDescription}>
-                      Selezione simbolica usata per badge e organizzazione evento.
-                    </Text>
+                    <Text style={styles.factionDescription}>{t('rsvp.factionDescription')}</Text>
                   </Pressable>
                 ))}
 
-                <Text style={styles.label}>Note alimentari</Text>
+                <Text style={styles.label}>{t('rsvp.dietaryLabel')}</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Allergie, intolleranze, vegetariano..."
+                  placeholder={t('rsvp.dietaryPlaceholder')}
                   placeholderTextColor={aotTheme.textMuted}
                   value={dietaryNotes}
                   onChangeText={setDietaryNotes}
                 />
               </>
             ) : (
-              <Text style={styles.helperText}>
-                Se selezioni No, non serve indicare nessuna fazione.
-              </Text>
+              <Text style={styles.helperText}>{t('rsvp.notAttendingHint')}</Text>
             )}
 
             <Pressable
@@ -268,9 +245,9 @@ export default function RsvpByTokenScreen() {
               <Text style={styles.primaryButtonText}>
                 {isAuthenticated
                   ? submitting
-                    ? 'Invio in corso...'
-                    : 'Conferma RSVP'
-                  : 'Accedi per confermare RSVP'}
+                    ? t('rsvp.submitLoading')
+                    : t('rsvp.submitLabel')
+                  : t('rsvp.loginSubmitLabel')}
               </Text>
             </Pressable>
           </View>

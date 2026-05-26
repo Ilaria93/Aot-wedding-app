@@ -3,10 +3,10 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { ActivityIndicator, View } from 'react-native';
 import { Tabs } from 'expo-router';
 
-import Colors from '@/constants/Colors';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { aotTheme } from '@/constants/aotTheme';
 import { useAuth } from '@/contexts/AuthContext';
-import { useColorScheme } from '@/components/useColorScheme';
+import { useI18n } from '@/contexts/I18nContext';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -18,8 +18,8 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const { isAdmin, isBootstrapping } = useAuth();
+  const { canManageWedding, isBootstrapping } = useAuth();
+  const { t } = useI18n();
 
   if (isBootstrapping) {
     return (
@@ -38,8 +38,8 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        tabBarInactiveTintColor: Colors[colorScheme ?? 'light'].tabIconDefault,
+        tabBarActiveTintColor: aotTheme.bronze,
+        tabBarInactiveTintColor: aotTheme.textMuted,
         tabBarStyle: {
           backgroundColor: 'rgba(249, 248, 243, 0.92)',
           borderTopColor: 'transparent',
@@ -62,6 +62,7 @@ export default function TabLayout() {
           fontSize: 12,
           fontWeight: '600',
         },
+        headerRight: () => <LanguageSwitcher compact />,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
@@ -69,36 +70,36 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Invito',
+          title: t('navigation.tabs.invitation'),
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
       <Tabs.Screen
         name="admin"
         options={{
-          href: isAdmin ? undefined : null,
-          title: 'Admin',
+          href: canManageWedding ? undefined : null,
+          title: t('navigation.tabs.admin'),
           tabBarIcon: ({ color }) => <TabBarIcon name="shield" color={color} />,
         }}
       />
       <Tabs.Screen
         name="album"
         options={{
-          title: 'Album',
+          title: t('navigation.tabs.album'),
           tabBarIcon: ({ color }) => <TabBarIcon name="camera" color={color} />,
         }}
       />
       <Tabs.Screen
         name="travel"
         options={{
-          title: 'Contatti',
+          title: t('navigation.tabs.travel'),
           tabBarIcon: ({ color }) => <TabBarIcon name="map-signs" color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profilo',
+          title: t('navigation.tabs.profile'),
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />

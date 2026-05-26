@@ -2,12 +2,16 @@ import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { aotTheme } from '@/constants/aotTheme';
 import { useAuth } from '@/contexts/AuthContext';
+import { useI18n } from '@/contexts/I18nContext';
+import { formatUserRoleLabel } from '@/services/authApi';
 
 // Dedicated profile screen for account info, role and session actions.
 export default function ProfileScreen() {
   const { user, isAuthenticated, isBootstrapping, signOut, saveProfile } = useAuth();
+  const { t } = useI18n();
   const [firstName, setFirstName] = useState(user?.first_name || '');
   const [lastName, setLastName] = useState(user?.last_name || '');
   const [saving, setSaving] = useState(false);
@@ -26,9 +30,9 @@ export default function ProfileScreen() {
         first_name: firstName.trim(),
         last_name: lastName.trim(),
       });
-      setMessage('Profilo aggiornato.');
+      setMessage(t('profile.updatedMessage'));
     } catch (caughtError) {
-      setMessage(caughtError instanceof Error ? caughtError.message : 'Aggiornamento non riuscito.');
+      setMessage(caughtError instanceof Error ? caughtError.message : t('profile.updateError'));
     } finally {
       setSaving(false);
     }
@@ -42,7 +46,7 @@ export default function ProfileScreen() {
   if (isBootstrapping) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.loadingText}>Caricamento sessione...</Text>
+        <Text style={styles.loadingText}>{t('common.loadingSession')}</Text>
       </View>
     );
   }
@@ -51,17 +55,17 @@ export default function ProfileScreen() {
     return (
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.card}>
-          <Text style={styles.eyebrow}>Profilo</Text>
-          <Text style={styles.title}>Accedi per salvare il tuo account.</Text>
-          <Text style={styles.subtitle}>
-            Da qui puoi registrarti, entrare nell’app e mantenere la sessione attiva tra una visita e
-            l’altra.
-          </Text>
+          <Text style={styles.eyebrow}>{t('profile.eyebrow')}</Text>
+          <Text style={styles.title}>{t('profile.guestTitle')}</Text>
+          <Text style={styles.subtitle}>{t('profile.guestSubtitle')}</Text>
+          <View style={styles.preferenceCard}>
+            <LanguageSwitcher />
+          </View>
           <Link href="/auth/login" style={styles.primaryLink}>
-            Vai al login
+            {t('profile.loginLink')}
           </Link>
           <Link href="/auth/register" style={styles.secondaryLink}>
-            Crea un nuovo account
+            {t('profile.registerLink')}
           </Link>
         </View>
       </ScrollView>
@@ -71,31 +75,33 @@ export default function ProfileScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.eyebrow}>Profilo</Text>
+        <Text style={styles.eyebrow}>{t('profile.eyebrow')}</Text>
         <Text style={styles.title}>
           {user.first_name} {user.last_name}
         </Text>
-        <Text style={styles.subtitle}>
-          Qui puoi vedere il tuo ruolo, aggiornare nome e cognome e chiudere la sessione quando vuoi.
-        </Text>
+        <Text style={styles.subtitle}>{t('profile.subtitle')}</Text>
 
         <View style={styles.summaryCard}>
-          <Text style={styles.summaryLabel}>Email</Text>
+          <Text style={styles.summaryLabel}>{t('profile.emailLabel')}</Text>
           <Text style={styles.summaryValue}>{user.email}</Text>
-          <Text style={styles.summaryLabel}>Ruolo</Text>
-          <Text style={styles.summaryValue}>{user.role === 'admin' ? 'Admin' : 'Invitato'}</Text>
+          <Text style={styles.summaryLabel}>{t('profile.roleLabel')}</Text>
+          <Text style={styles.summaryValue}>{formatUserRoleLabel(user.role, t)}</Text>
+        </View>
+
+        <View style={styles.preferenceCard}>
+          <LanguageSwitcher />
         </View>
 
         <TextInput
           style={styles.input}
-          placeholder="Nome"
+          placeholder={t('common.fields.firstName')}
           placeholderTextColor={aotTheme.textMuted}
           value={firstName}
           onChangeText={setFirstName}
         />
         <TextInput
           style={styles.input}
-          placeholder="Cognome"
+          placeholder={t('common.fields.lastName')}
           placeholderTextColor={aotTheme.textMuted}
           value={lastName}
           onChangeText={setLastName}
@@ -108,12 +114,12 @@ export default function ProfileScreen() {
           onPress={handleSaveProfile}
           disabled={saving}>
           <Text style={styles.primaryButtonText}>
-            {saving ? 'Salvataggio...' : 'Aggiorna profilo'}
+            {saving ? t('profile.updateLoading') : t('profile.updateButton')}
           </Text>
         </Pressable>
 
         <Pressable style={styles.secondaryButton} onPress={handleLogout}>
-          <Text style={styles.secondaryButtonText}>Esci</Text>
+          <Text style={styles.secondaryButtonText}>{t('profile.signOut')}</Text>
         </Pressable>
       </View>
     </ScrollView>
@@ -169,6 +175,14 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   summaryCard: {
+    borderWidth: 1,
+    borderColor: aotTheme.border,
+    borderRadius: 18,
+    backgroundColor: aotTheme.surfaceMuted,
+    padding: 16,
+    marginBottom: 16,
+  },
+  preferenceCard: {
     borderWidth: 1,
     borderColor: aotTheme.border,
     borderRadius: 18,

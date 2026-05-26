@@ -14,8 +14,12 @@ export type LogisticsContactItem = {
   label: string;
   contact_person?: string | null;
   phone?: string | null;
+  whatsapp_phone?: string | null;
   email?: string | null;
   website?: string | null;
+  instagram_url?: string | null;
+  facebook_url?: string | null;
+  tiktok_url?: string | null;
   address?: string | null;
   notes?: string | null;
   sort_order: number;
@@ -27,8 +31,12 @@ export type LogisticsContactPayload = {
   label: string;
   contact_person?: string;
   phone?: string;
+  whatsapp_phone?: string;
   email?: string;
   website?: string;
+  instagram_url?: string;
+  facebook_url?: string;
+  tiktok_url?: string;
   address?: string;
   notes?: string;
   sort_order?: number;

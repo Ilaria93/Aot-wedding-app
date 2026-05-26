@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from database.base import Base, engine
+from database.bootstrap import ensure_logistics_contact_columns
 
 # Imports models so SQLAlchemy can create tables at startup.
 from models import (  # noqa: F401
@@ -41,6 +42,7 @@ app.add_middleware(
 @app.on_event("startup")
 def startup():
     Base.metadata.create_all(bind=engine)
+    ensure_logistics_contact_columns(engine)
 
 @app.get("/health")
 def health():

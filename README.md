@@ -2,6 +2,15 @@
 
 Cross-platform wedding platform inspired by Attack on Titan aesthetics.
 
+## Current features
+
+- authenticated guest and management accounts
+- role-based wedding management area
+- invitation token generation and RSVP flow
+- guest photo album with moderation
+- travel hub with logistics contacts and supplier social links
+- multilingual frontend (`it`, `en`, `fr`, `de`)
+
 ## Current stack
 
 - Frontend: Expo (React Native + web)
@@ -11,7 +20,8 @@ Cross-platform wedding platform inspired by Attack on Titan aesthetics.
 ## Project structure
 
 - `backend/` API, models, schemas, services, tests
-- `frontend/` Expo client (placeholder for now)
+- `frontend/` Expo client with auth, RSVP, album, travel hub e admin dashboard
+- `frontend/i18n/` locale dictionaries and translation helpers
 - `docs/` project notes and documentation
 
 ## Backend quick start
@@ -112,7 +122,7 @@ Current coverage includes:
 
 ## Frontend quick start (Expo)
 
-1. Backend must be running (`uvicorn` on port 8000).
+1. Backend must be running on port `8000`.
 
 2. From `frontend/`:
 
@@ -126,12 +136,20 @@ npm run web
    Create a real token via Swagger `POST /guest/create-invite` while logged in as an admin user, then open  
    `http://localhost:8081/rsvp/YOUR_TOKEN` (port may vary; check terminal output).
 
-On a physical phone, set `EXPO_PUBLIC_API_URL` to your computer LAN IP (not `127.0.0.1`).
+4. On a physical phone, set `EXPO_PUBLIC_API_URL` to your computer LAN IP (not `127.0.0.1`).
 
-## Frontend tests plan
+## Quick launch scripts
 
-Recommended sequence:
+From the project root you can use:
 
-1. Widget tests for RSVP form components
-2. Integration test for token → confirm flow
-3. E2E on web only when flows stabilize
+```bash
+./scripts/run-backend.sh
+./scripts/run-frontend.sh
+./scripts/run-dev.sh
+```
+
+What they do:
+
+- `scripts/run-backend.sh` creates `backend/.env` if missing, creates `backend/venv` if needed, installs backend dependencies on first run, then starts `uvicorn`
+- `scripts/run-frontend.sh` creates `frontend/.env` if missing, installs frontend dependencies on first run, then starts Expo Web
+- `scripts/run-dev.sh` starts backend and frontend together in one terminal and stops both with `Ctrl+C`
