@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { ComponentProps, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Linking,
@@ -11,18 +12,24 @@ import {
 
 import { aotTheme } from '@/constants/aotTheme';
 import {
+  getLogisticsContactCategoryLabel,
+  LOGISTICS_CONTACT_CATEGORY_IDS,
+} from '@/constants/logistics';
+import { useI18n } from '@/contexts/I18nContext';
+import {
   fetchPublicLogisticsContacts,
   LogisticsContactCategory,
   LogisticsContactItem,
 } from '@/services/logisticsContactsApi';
 
-const CATEGORY_LABELS: Record<LogisticsContactCategory, string> = {
-  hair: 'Parrucchiere',
-  makeup: 'Truccatrice',
-  laundry: 'Stireria',
-  hotel: 'Albergo',
-  transfer: 'Transfer',
-  car_rental: 'Noleggio auto',
+type Translate = ReturnType<typeof useI18n>['t'];
+
+type ContactAction = {
+  id: string;
+  label: string;
+  iconName: ComponentProps<typeof FontAwesome6>['name'];
+  url: string;
+  accentColor: string;
 };
 
 function buildGroupedContacts(contacts: LogisticsContactItem[]) {
@@ -42,15 +49,114 @@ function buildGroupedContacts(contacts: LogisticsContactItem[]) {
   );
 }
 
-function normalizeWebsiteUrl(website: string) {
-  if (website.startsWith('http://') || website.startsWith('https://')) {
-    return website;
+function normalizeExternalUrl(url: string) {
+  if (
+    url.startsWith('http://') ||
+    url.startsWith('https://') ||
+    url.startsWith('mailto:') ||
+    url.startsWith('tel:') ||
+    url.startsWith('whatsapp://')
+  ) {
+    return url;
   }
-  return `https://${website}`;
+  return `https://${url}`;
+}
+
+function buildWhatsappUrl(value: string) {
+  if (
+    value.startsWith('http://') ||
+    value.startsWith('https://') ||
+    value.startsWith('whatsapp://')
+  ) {
+    return value;
+  }
+
+  const digitsOnly = value.replace(/\D/g, '');
+  return `https://wa.me/${digitsOnly}`;
+}
+
+function buildContactActions(
+  contact: LogisticsContactItem,
+  t: Translate,
+): ContactAction[] {
+  const actions: ContactAction[] = [];
+
+  if (contact.phone) {
+    actions.push({
+      id: 'phone',
+      label: t('contactActions.call'),
+      iconName: 'phone',
+      url: `tel:${contact.phone}`,
+      accentColor: aotTheme.militaryGreen,
+    });
+  }
+
+  if (contact.whatsapp_phone) {
+    actions.push({
+      id: 'whatsapp',
+      label: t('contactActions.whatsapp'),
+      iconName: 'whatsapp',
+      url: buildWhatsappUrl(contact.whatsapp_phone),
+      accentColor: '#25D366',
+    });
+  }
+
+  if (contact.email) {
+    actions.push({
+      id: 'email',
+      label: t('contactActions.email'),
+      iconName: 'envelope',
+      url: `mailto:${contact.email}`,
+      accentColor: aotTheme.bronze,
+    });
+  }
+
+  if (contact.website) {
+    actions.push({
+      id: 'website',
+      label: t('contactActions.website'),
+      iconName: 'globe',
+      url: normalizeExternalUrl(contact.website),
+      accentColor: aotTheme.textPrimary,
+    });
+  }
+
+  if (contact.instagram_url) {
+    actions.push({
+      id: 'instagram',
+      label: t('contactActions.instagram'),
+      iconName: 'instagram',
+      url: normalizeExternalUrl(contact.instagram_url),
+      accentColor: '#E4405F',
+    });
+  }
+
+  if (contact.facebook_url) {
+    actions.push({
+      id: 'facebook',
+      label: t('contactActions.facebook'),
+      iconName: 'facebook',
+      url: normalizeExternalUrl(contact.facebook_url),
+      accentColor: '#1877F2',
+    });
+  }
+
+  if (contact.tiktok_url) {
+    actions.push({
+      id: 'tiktok',
+      label: t('contactActions.tiktok'),
+      iconName: 'tiktok',
+      url: normalizeExternalUrl(contact.tiktok_url),
+      accentColor: '#111111',
+    });
+  }
+
+  return actions;
 }
 
 // Guest-facing logistics hub with grouped contacts and useful actions.
 export default function TravelScreen() {
+  const { t } = useI18n();
   const [contacts, setContacts] = useState<LogisticsContactItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -64,12 +170,12 @@ export default function TravelScreen() {
       const publicContacts = await fetchPublicLogisticsContacts();
       setContacts(publicContacts);
     } catch {
-      setError('Impossibile caricare i contatti logistici.');
+      setError(t('travel.loadError'));
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     loadContacts();
@@ -96,18 +202,15 @@ export default function TravelScreen() {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.content}>
         <View style={styles.heroCard}>
-          <Text style={styles.eyebrow}>Travel Hub</Text>
-          <Text style={styles.title}>Tutti i riferimenti utili in un’unica schermata.</Text>
-          <Text style={styles.subtitle}>
-            Qui trovi i contatti operativi per preparazione, albergo, transfer e altri servizi
-            comodi per il matrimonio.
-          </Text>
+          <Text style={styles.eyebrow}>{t('travel.eyebrow')}</Text>
+          <Text style={styles.title}>{t('travel.title')}</Text>
+          <Text style={styles.subtitle}>{t('travel.subtitle')}</Text>
           <Pressable
             style={[styles.secondaryButton, refreshing && styles.buttonDisabled]}
             onPress={handleRefresh}
             disabled={refreshing}>
             <Text style={styles.secondaryButtonText}>
-              {refreshing ? 'Aggiornamento...' : 'Aggiorna contatti'}
+              {refreshing ? t('travel.refreshLoading') : t('travel.refreshButton')}
             </Text>
           </Pressable>
         </View>
@@ -120,51 +223,60 @@ export default function TravelScreen() {
 
         {contacts.length === 0 ? (
           <View style={styles.sectionCard}>
-            <Text style={styles.sectionTitle}>Nessun contatto disponibile</Text>
-            <Text style={styles.emptyText}>
-              Quando l’admin inserira i servizi logistici, li troverai qui divisi per categoria.
-            </Text>
+            <Text style={styles.sectionTitle}>{t('travel.emptyTitle')}</Text>
+            <Text style={styles.emptyText}>{t('travel.emptyBody')}</Text>
           </View>
         ) : (
-          (Object.keys(CATEGORY_LABELS) as LogisticsContactCategory[])
+          (LOGISTICS_CONTACT_CATEGORY_IDS as LogisticsContactCategory[])
             .filter((category) => groupedContacts[category].length > 0)
             .map((category) => (
               <View key={category} style={styles.sectionCard}>
-                <Text style={styles.sectionTitle}>{CATEGORY_LABELS[category]}</Text>
-                {groupedContacts[category].map((contact) => (
-                  <View key={contact.id} style={styles.contactCard}>
-                    <Text style={styles.contactLabel}>{contact.label}</Text>
-                    {contact.contact_person ? (
-                      <Text style={styles.contactMeta}>Referente: {contact.contact_person}</Text>
-                    ) : null}
-                    {contact.address ? <Text style={styles.contactMeta}>{contact.address}</Text> : null}
-                    {contact.notes ? <Text style={styles.contactNotes}>{contact.notes}</Text> : null}
+                <Text style={styles.sectionTitle}>
+                  {getLogisticsContactCategoryLabel(category, t)}
+                </Text>
+                {groupedContacts[category].map((contact) => {
+                  const contactActions = buildContactActions(contact, t);
 
-                    <View style={styles.actionsRow}>
-                      {contact.phone ? (
-                        <Pressable
-                          style={styles.actionButton}
-                          onPress={() => openExternalUrl(`tel:${contact.phone}`)}>
-                          <Text style={styles.actionButtonText}>Chiama</Text>
-                        </Pressable>
+                  return (
+                    <View key={contact.id} style={styles.contactCard}>
+                      <Text style={styles.contactLabel}>{contact.label}</Text>
+                      {contact.contact_person ? (
+                        <Text style={styles.contactMeta}>
+                          {t('travel.contactPerson', { value: contact.contact_person })}
+                        </Text>
                       ) : null}
-                      {contact.email ? (
-                        <Pressable
-                          style={styles.actionButton}
-                          onPress={() => openExternalUrl(`mailto:${contact.email}`)}>
-                          <Text style={styles.actionButtonText}>Email</Text>
-                        </Pressable>
-                      ) : null}
-                      {contact.website ? (
-                        <Pressable
-                          style={styles.actionButton}
-                          onPress={() => openExternalUrl(normalizeWebsiteUrl(contact.website!))}>
-                          <Text style={styles.actionButtonText}>Sito</Text>
-                        </Pressable>
+                      {contact.address ? <Text style={styles.contactMeta}>{contact.address}</Text> : null}
+                      {contact.notes ? <Text style={styles.contactNotes}>{contact.notes}</Text> : null}
+
+                      {contactActions.length > 0 ? (
+                        <View style={styles.actionsRow}>
+                          {contactActions.map((action) => (
+                            <Pressable
+                              key={action.id}
+                              style={styles.actionButton}
+                              onPress={() => openExternalUrl(action.url)}>
+                              <View
+                                style={[
+                                  styles.actionIconBadge,
+                                  {
+                                    borderColor: action.accentColor,
+                                    backgroundColor: `${action.accentColor}18`,
+                                  },
+                                ]}>
+                                <FontAwesome6
+                                  name={action.iconName}
+                                  size={14}
+                                  color={action.accentColor}
+                                />
+                              </View>
+                              <Text style={styles.actionButtonText}>{action.label}</Text>
+                            </Pressable>
+                          ))}
+                        </View>
                       ) : null}
                     </View>
-                  </View>
-                ))}
+                  );
+                })}
               </View>
             ))
         )}
@@ -270,12 +382,23 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     backgroundColor: aotTheme.surfaceMuted,
     borderWidth: 1,
     borderColor: aotTheme.border,
     borderRadius: 12,
     paddingVertical: 10,
     paddingHorizontal: 14,
+  },
+  actionIconBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: 999,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   actionButtonText: {
     color: aotTheme.textPrimary,

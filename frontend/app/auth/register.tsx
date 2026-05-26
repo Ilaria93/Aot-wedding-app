@@ -1,21 +1,38 @@
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { aotTheme } from '@/constants/aotTheme';
 import { useAuth } from '@/contexts/AuthContext';
+import { useI18n } from '@/contexts/I18nContext';
+import { SelectableUserRole } from '@/services/authApi';
 
-// Registration screen for invited and admin users.
+function getRoleOptions(t: ReturnType<typeof useI18n>['t']) {
+  return [
+    { value: 'bride' as const, label: t('common.roles.bride') },
+    { value: 'groom' as const, label: t('common.roles.groom') },
+    { value: 'invited' as const, label: t('common.roles.invited') },
+  ];
+}
+
+// Registration screen shared by bride, groom and guests.
 export default function RegisterScreen() {
   const router = useRouter();
   const { signUp } = useAuth();
+  const { t } = useI18n();
+  const roleOptions = useMemo(() => getRoleOptions(t), [t]);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState<SelectableUserRole>('invited');
+  const [isRoleSelectOpen, setIsRoleSelectOpen] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const selectedRoleOption = roleOptions.find((option) => option.value === role) || roleOptions[2];
 
   async function handleRegister() {
     try {
@@ -26,11 +43,12 @@ export default function RegisterScreen() {
         last_name: lastName.trim(),
         email: email.trim(),
         password,
+        role,
         remember_me: rememberMe,
       });
-      router.replace('/profile');
+      router.replace('/');
     } catch (caughtError) {
-      setError(caughtError instanceof Error ? caughtError.message : 'Registrazione non riuscita.');
+      setError(caughtError instanceof Error ? caughtError.message : t('register.genericError'));
     } finally {
       setSubmitting(false);
     }
@@ -39,30 +57,27 @@ export default function RegisterScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.eyebrow}>Registrazione</Text>
-        <Text style={styles.title}>Crea il tuo account personale.</Text>
-        <Text style={styles.subtitle}>
-          Salva nome, cognome, email e password. Le tre mail admin riceveranno automaticamente il
-          ruolo corretto, tutti gli altri resteranno invitati.
-        </Text>
+        <Text style={styles.eyebrow}>{t('register.eyebrow')}</Text>
+        <Text style={styles.title}>{t('register.title')}</Text>
+        <Text style={styles.subtitle}>{t('register.subtitle')}</Text>
 
         <TextInput
           style={styles.input}
-          placeholder="Nome"
+          placeholder={t('common.fields.firstName')}
           placeholderTextColor={aotTheme.textMuted}
           value={firstName}
           onChangeText={setFirstName}
         />
         <TextInput
           style={styles.input}
-          placeholder="Cognome"
+          placeholder={t('common.fields.lastName')}
           placeholderTextColor={aotTheme.textMuted}
           value={lastName}
           onChangeText={setLastName}
         />
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder={t('common.fields.email')}
           placeholderTextColor={aotTheme.textMuted}
           autoCapitalize="none"
           autoCorrect={false}
@@ -72,16 +87,58 @@ export default function RegisterScreen() {
         />
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          placeholder={t('common.fields.password')}
           placeholderTextColor={aotTheme.textMuted}
           secureTextEntry
           value={password}
           onChangeText={setPassword}
         />
 
+        <Text style={styles.fieldLabel}>{t('register.roleLabel')}</Text>
+        <View style={styles.selectWrapper}>
+          <Pressable
+            style={styles.selectField}
+            onPress={() => setIsRoleSelectOpen((current) => !current)}>
+            <Text style={styles.selectValue}>{selectedRoleOption.label}</Text>
+            <FontAwesome
+              name={isRoleSelectOpen ? 'chevron-up' : 'chevron-down'}
+              size={14}
+              color={aotTheme.textMuted}
+            />
+          </Pressable>
+
+          {isRoleSelectOpen ? (
+            <View style={styles.selectDropdown}>
+              {roleOptions.map((option) => {
+                const isSelected = option.value === role;
+
+                return (
+                  <Pressable
+                    key={option.value}
+                    style={[styles.selectOption, isSelected && styles.selectOptionSelected]}
+                    onPress={() => {
+                      setRole(option.value);
+                      setIsRoleSelectOpen(false);
+                    }}>
+                    <Text
+                      style={[styles.selectOptionText, isSelected && styles.selectOptionTextSelected]}>
+                      {option.label}
+                    </Text>
+                    {isSelected ? (
+                      <FontAwesome name="check" size={12} color={aotTheme.bronze} />
+                    ) : null}
+                  </Pressable>
+                );
+              })}
+            </View>
+          ) : null}
+        </View>
+
         <Pressable style={styles.inlineToggle} onPress={() => setRememberMe((current) => !current)}>
-          <View style={[styles.checkbox, rememberMe && styles.checkboxActive]} />
-          <Text style={styles.inlineToggleText}>Resta connesso</Text>
+          <View style={[styles.checkbox, rememberMe && styles.checkboxActive]}>
+            {rememberMe ? <FontAwesome name="check" size={11} color={aotTheme.surface} /> : null}
+          </View>
+          <Text style={styles.inlineToggleText}>{t('register.rememberMe')}</Text>
         </Pressable>
 
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
@@ -91,12 +148,12 @@ export default function RegisterScreen() {
           onPress={handleRegister}
           disabled={submitting}>
           <Text style={styles.primaryButtonText}>
-            {submitting ? 'Registrazione in corso...' : 'Registrati'}
+            {submitting ? t('register.submitLoading') : t('register.submitLabel')}
           </Text>
         </Pressable>
 
         <Link href="/auth/login" style={styles.link}>
-          Hai già un account? Accedi
+          {t('register.loginLink')}
         </Link>
       </View>
     </ScrollView>
@@ -141,6 +198,57 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     marginBottom: 16,
   },
+  fieldLabel: {
+    color: aotTheme.textPrimary,
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 10,
+  },
+  selectWrapper: {
+    marginBottom: 12,
+  },
+  selectField: {
+    borderWidth: 1,
+    borderColor: aotTheme.border,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    backgroundColor: aotTheme.surfaceMuted,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  selectValue: {
+    color: aotTheme.textPrimary,
+    fontSize: 15,
+  },
+  selectDropdown: {
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: aotTheme.border,
+    borderRadius: 14,
+    backgroundColor: aotTheme.surface,
+    overflow: 'hidden',
+  },
+  selectOption: {
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderTopWidth: 1,
+    borderTopColor: aotTheme.border,
+  },
+  selectOptionSelected: {
+    backgroundColor: aotTheme.surfaceMuted,
+  },
+  selectOptionText: {
+    color: aotTheme.textPrimary,
+    fontSize: 15,
+  },
+  selectOptionTextSelected: {
+    fontWeight: '700',
+  },
   input: {
     borderWidth: 1,
     borderColor: aotTheme.border,
@@ -163,6 +271,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: aotTheme.border,
     backgroundColor: aotTheme.surfaceMuted,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   checkboxActive: {
     backgroundColor: aotTheme.bronze,

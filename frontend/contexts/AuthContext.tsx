@@ -1,8 +1,8 @@
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import { AxiosError } from 'axios';
 
 import {
   AuthUser,
+  canManageWedding,
   fetchCurrentUserProfile,
   loginAccount,
   LoginPayload,
@@ -18,14 +18,16 @@ import {
   setCurrentSession,
   subscribeToSessionChanges,
 } from '@/services/authSession';
+import { translate } from '@/contexts/I18nContext';
+import { getApiErrorMessage } from '@/utils/apiErrors';
 
 type AuthContextValue = {
   user: AuthUser | null;
   isAuthenticated: boolean;
-  isAdmin: boolean;
+  canManageWedding: boolean;
   isBootstrapping: boolean;
-  signIn: (payload: LoginPayload) => Promise<void>;
-  signUp: (payload: RegisterPayload) => Promise<void>;
+  signIn: (payload: LoginPayload) => Promise<AuthUser>;
+  signUp: (payload: RegisterPayload) => Promise<AuthUser>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   saveProfile: (payload: UpdateProfilePayload) => Promise<void>;
@@ -74,9 +76,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         rememberMe: sessionResponse.remember_me,
       });
       setUser(sessionResponse.user);
+      return sessionResponse.user;
     } catch (caughtError) {
-      const requestError = caughtError as AxiosError<{ detail?: string }>;
-      throw new Error(requestError.response?.data?.detail || 'Accesso non riuscito.');
+      throw new Error(getApiErrorMessage(caughtError, translate('login.genericError')));
     }
   }
 
@@ -89,9 +91,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         rememberMe: sessionResponse.remember_me,
       });
       setUser(sessionResponse.user);
+      return sessionResponse.user;
     } catch (caughtError) {
-      const requestError = caughtError as AxiosError<{ detail?: string }>;
-      throw new Error(requestError.response?.data?.detail || 'Registrazione non riuscita.');
+      throw new Error(getApiErrorMessage(caughtError, translate('register.genericError')));
     }
   }
 
@@ -110,8 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const updatedUser = await updateCurrentUserProfile(payload);
       setUser(updatedUser);
     } catch (caughtError) {
-      const requestError = caughtError as AxiosError<{ detail?: string }>;
-      throw new Error(requestError.response?.data?.detail || 'Aggiornamento profilo non riuscito.');
+      throw new Error(getApiErrorMessage(caughtError, translate('profile.updateError')));
     }
   }
 
@@ -119,7 +120,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       user,
       isAuthenticated: Boolean(user),
-      isAdmin: user?.role === 'admin',
+      canManageWedding: canManageWedding(user?.role),
       isBootstrapping,
       signIn,
       signUp,

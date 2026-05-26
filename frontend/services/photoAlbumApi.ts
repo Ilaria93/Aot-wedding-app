@@ -18,7 +18,7 @@ export type PhotoUploadIntentPayload = {
 export type PhotoUploadIntentResponse = {
   storage_key: string;
   upload_url: string;
-  upload_method: 'PUT';
+  upload_method: PhotoUploadMethod;
   upload_headers: Record<string, string>;
   max_file_size_bytes: number;
   expires_in_seconds: number;
@@ -36,8 +36,11 @@ export type PhotoUploadCompletePayload = {
 export type PhotoUploadCompleteResponse = {
   ok: boolean;
   photo_id: number;
-  status: 'pending' | 'approved' | 'rejected';
+  status: PhotoAlbumStatus;
 };
+
+export type PhotoUploadMethod = 'PUT';
+export type PhotoAlbumStatus = 'pending' | 'approved' | 'rejected';
 
 export type AdminPhotoAlbumItem = {
   id: number;
@@ -47,7 +50,7 @@ export type AdminPhotoAlbumItem = {
   original_filename: string;
   mime_type: string;
   caption?: string | null;
-  status: 'pending' | 'approved' | 'rejected';
+  status: PhotoAlbumStatus;
   image_url: string;
   file_size_bytes: number;
   uploaded_at: string;

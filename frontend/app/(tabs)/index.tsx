@@ -9,18 +9,20 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { AxiosError } from 'axios';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import { aotTheme } from '@/constants/aotTheme';
 import { apiBaseUrl } from '@/constants/apiConfig';
 import { useAuth } from '@/contexts/AuthContext';
+import { useI18n } from '@/contexts/I18nContext';
 import { createGuestInvitation } from '@/services/guestApi';
+import { getApiErrorMessage } from '@/utils/apiErrors';
 
 // Home screen styled like an editorial wedding landing page.
 export default function LandingScreen() {
   const router = useRouter();
-  const { isAdmin, isAuthenticated } = useAuth();
+  const { canManageWedding, isAuthenticated } = useAuth();
+  const { t } = useI18n();
   const scrollViewRef = useRef<ScrollView | null>(null);
   const sectionOffsets = useRef<Record<string, number>>({});
   const floralFloat = useRef(new Animated.Value(0)).current;
@@ -70,7 +72,7 @@ export default function LandingScreen() {
   async function createInviteAndOpenRsvp() {
     const normalizedGuestFullName = guestFullName.trim();
     if (!normalizedGuestFullName) {
-      setCreateInviteError('Inserisci un nome prima di generare l invito.');
+      setCreateInviteError(t('landing.devTools.generate.emptyNameError'));
       return;
     }
 
@@ -83,10 +85,11 @@ export default function LandingScreen() {
       setInvitationToken(createdInvitation.invitation_token);
       router.push(`/rsvp/${encodeURIComponent(createdInvitation.invitation_token)}`);
     } catch (caughtError) {
-      const requestError = caughtError as AxiosError<{ detail?: string }>;
       setCreateInviteError(
-        requestError.response?.data?.detail ||
-          'Creazione invito non riuscita. Devi essere loggata/o come admin.',
+        getApiErrorMessage(
+          caughtError,
+          t('landing.devTools.generate.createError'),
+        ),
       );
     } finally {
       setIsCreatingInvite(false);
@@ -103,20 +106,22 @@ export default function LandingScreen() {
           </View>
           <View style={styles.navLinks}>
             <Pressable onPress={() => scrollToSection('story')}>
-              <Text style={styles.navLink}>Noi</Text>
+              <Text style={styles.navLink}>{t('landing.nav.story')}</Text>
             </Pressable>
             <Pressable onPress={() => scrollToSection('ceremony')}>
-              <Text style={styles.navLink}>Cerimonia</Text>
+              <Text style={styles.navLink}>{t('landing.nav.ceremony')}</Text>
             </Pressable>
             <Pressable onPress={() => scrollToSection('rsvp')}>
-              <Text style={styles.navLink}>RSVP</Text>
+              <Text style={styles.navLink}>{t('landing.nav.rsvp')}</Text>
             </Pressable>
             <Pressable onPress={() => router.push('/profile')}>
-              <Text style={styles.navLink}>{isAuthenticated ? 'Profilo' : 'Accedi'}</Text>
+              <Text style={styles.navLink}>
+                {isAuthenticated ? t('landing.nav.profile') : t('landing.nav.login')}
+              </Text>
             </Pressable>
-            {isAdmin ? (
+            {canManageWedding ? (
               <Pressable onPress={() => router.push('/admin')}>
-                <Text style={styles.navLink}>Admin</Text>
+                <Text style={styles.navLink}>{t('landing.nav.admin')}</Text>
               </Pressable>
             ) : null}
           </View>
@@ -145,13 +150,13 @@ export default function LandingScreen() {
           />
 
           <View style={styles.heroInner}>
-            <Text style={styles.heroEyebrow}>Attack on Titan inspired wedding</Text>
+            <Text style={styles.heroEyebrow}>{t('landing.hero.eyebrow')}</Text>
             <Text style={styles.heroNames}>ILARIA</Text>
             <Text style={styles.heroAmpersand}>&</Text>
             <Text style={styles.heroNames}>DAVIDE</Text>
 
             <Pressable style={styles.heroButton} onPress={() => scrollToSection('rsvp')}>
-              <Text style={styles.heroButtonText}>RSVP qui</Text>
+              <Text style={styles.heroButtonText}>{t('landing.hero.button')}</Text>
             </Pressable>
           </View>
         </View>
@@ -159,10 +164,10 @@ export default function LandingScreen() {
         <View style={styles.storySection}>
           <View style={styles.photoColumn}>
             <View style={styles.photoFrame}>
-              <Text style={styles.photoPlaceholderText}>Foto sposi 01</Text>
+              <Text style={styles.photoPlaceholderText}>{t('landing.story.photoOne')}</Text>
             </View>
             <View style={styles.photoFrameTall}>
-              <Text style={styles.photoPlaceholderText}>Foto sposi 02</Text>
+              <Text style={styles.photoPlaceholderText}>{t('landing.story.photoTwo')}</Text>
             </View>
             <View style={styles.initialBadge}>
               <Text style={styles.initialBadgeText}>I & D</Text>
@@ -170,15 +175,9 @@ export default function LandingScreen() {
           </View>
 
           <View style={styles.storyTextCard}>
-            <Text style={styles.sectionHeading}>Un amore travolgente</Text>
-            <Text style={styles.storyParagraph}>
-              Ilaria e Davide stanno costruendo una pagina che racconti il loro giorno in modo piu
-              intimo, elegante e personale.
-            </Text>
-            <Text style={styles.storyParagraph}>
-              L idea e unire il linguaggio di un wedding site editoriale con una navigazione moderna,
-              un RSVP digitale e dettagli organizzati in un unico posto.
-            </Text>
+            <Text style={styles.sectionHeading}>{t('landing.story.heading')}</Text>
+            <Text style={styles.storyParagraph}>{t('landing.story.paragraphOne')}</Text>
+            <Text style={styles.storyParagraph}>{t('landing.story.paragraphTwo')}</Text>
           </View>
         </View>
 
@@ -188,16 +187,14 @@ export default function LandingScreen() {
             sectionOffsets.current.ceremony = event.nativeEvent.layout.y;
           }}>
           <View style={styles.ceremonyInfoCard}>
-            <Text style={styles.sectionHeading}>Partecipa alla loro intima cerimonia</Text>
-            <Text style={styles.ceremonyLine}>Ravenna</Text>
-            <Text style={styles.ceremonyLine}>Cerimonia sul mare</Text>
-            <Text style={styles.ceremonyLineMuted}>
-              Qui inseriremo data, location, programma e indicazioni pratiche per gli invitati.
-            </Text>
+            <Text style={styles.sectionHeading}>{t('landing.ceremony.heading')}</Text>
+            <Text style={styles.ceremonyLine}>{t('landing.ceremony.city')}</Text>
+            <Text style={styles.ceremonyLine}>{t('landing.ceremony.venue')}</Text>
+            <Text style={styles.ceremonyLineMuted}>{t('landing.ceremony.body')}</Text>
           </View>
 
           <View style={styles.ceremonyPhotoFrame}>
-            <Text style={styles.photoPlaceholderText}>Foto hero / artwork coppia</Text>
+            <Text style={styles.photoPlaceholderText}>{t('landing.ceremony.artworkPlaceholder')}</Text>
             <View style={styles.decorativeFlowerCluster}>
               <FontAwesome name="pagelines" size={24} color={aotTheme.bronze} />
               <FontAwesome name="leaf" size={22} color={aotTheme.militaryGreen} />
@@ -210,15 +207,12 @@ export default function LandingScreen() {
           onLayout={(event) => {
             sectionOffsets.current.rsvp = event.nativeEvent.layout.y;
           }}>
-          <Text style={styles.rsvpHeading}>Non vedono l ora di festeggiare con te</Text>
-          <Text style={styles.rsvpBody}>
-            Da qui puoi confermare la tua presenza, aprire un invito esistente o generare un token
-            di sviluppo per testare il flusso completo.
-          </Text>
+          <Text style={styles.rsvpHeading}>{t('landing.rsvp.heading')}</Text>
+          <Text style={styles.rsvpBody}>{t('landing.rsvp.body')}</Text>
 
           <View style={styles.rsvpActionRow}>
             <Pressable style={styles.heroButton} onPress={() => scrollToSection('devTools')}>
-              <Text style={styles.heroButtonText}>Vai a RSVP</Text>
+              <Text style={styles.heroButtonText}>{t('landing.rsvp.button')}</Text>
             </Pressable>
           </View>
         </View>
@@ -228,18 +222,15 @@ export default function LandingScreen() {
           onLayout={(event) => {
             sectionOffsets.current.devTools = event.nativeEvent.layout.y;
           }}>
-          <Text style={styles.devToolsTitle}>Area RSVP e strumenti</Text>
-          <Text style={styles.devToolsDescription}>
-            Questa parte resta pensata per sviluppo e testing, ma ora e inserita in una home piu
-            ordinata.
-          </Text>
+          <Text style={styles.devToolsTitle}>{t('landing.devTools.title')}</Text>
+          <Text style={styles.devToolsDescription}>{t('landing.devTools.description')}</Text>
 
           <View style={styles.devGrid}>
             <View style={styles.devCard}>
-              <Text style={styles.devCardTitle}>Genera invito rapido</Text>
+              <Text style={styles.devCardTitle}>{t('landing.devTools.generate.title')}</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Nome invitato per generare il token"
+                placeholder={t('landing.devTools.generate.placeholder')}
                 placeholderTextColor={aotTheme.textMuted}
                 value={guestFullName}
                 onChangeText={setGuestFullName}
@@ -247,27 +238,28 @@ export default function LandingScreen() {
               <Pressable
                 style={[
                   styles.primaryButton,
-                  (!guestFullName.trim() || isCreatingInvite || !isAdmin) && styles.buttonDisabled,
+                  (!guestFullName.trim() || isCreatingInvite || !canManageWedding) &&
+                    styles.buttonDisabled,
                 ]}
                 onPress={createInviteAndOpenRsvp}
-                disabled={!guestFullName.trim() || isCreatingInvite || !isAdmin}>
+                disabled={!guestFullName.trim() || isCreatingInvite || !canManageWedding}>
                 <Text style={styles.primaryButtonText}>
-                  {isCreatingInvite ? 'Generazione invito...' : 'Genera token e apri RSVP'}
+                  {isCreatingInvite
+                    ? t('landing.devTools.generate.loadingButton')
+                    : t('landing.devTools.generate.button')}
                 </Text>
               </Pressable>
               {createInviteError ? <Text style={styles.error}>{createInviteError}</Text> : null}
-              {!isAdmin ? (
-                <Text style={styles.hint}>
-                  Questa azione e riservata agli account admin autorizzati.
-                </Text>
+              {!canManageWedding ? (
+                <Text style={styles.hint}>{t('landing.devTools.generate.hint')}</Text>
               ) : null}
             </View>
 
             <View style={styles.devCard}>
-              <Text style={styles.devCardTitle}>Apri un invito esistente</Text>
+              <Text style={styles.devCardTitle}>{t('landing.devTools.open.title')}</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Incolla qui il tuo invitation token"
+                placeholder={t('landing.devTools.open.placeholder')}
                 placeholderTextColor={aotTheme.textMuted}
                 autoCapitalize="none"
                 autoCorrect={false}
@@ -279,64 +271,55 @@ export default function LandingScreen() {
                 onPress={openInvitationLink}
                 disabled={!invitationToken.trim()}
               >
-                <Text style={styles.secondaryButtonText}>Apri schermata RSVP</Text>
+                <Text style={styles.secondaryButtonText}>{t('landing.devTools.open.button')}</Text>
               </Pressable>
               <Link href="/rsvp/demo-token-001" style={styles.link}>
-                Apri il link demo di sviluppo
+                {t('landing.devTools.open.demoLink')}
               </Link>
             </View>
           </View>
         </View>
 
         <View style={styles.faqSection}>
-          <Text style={styles.darkSectionEyebrow}>FAQ</Text>
-          <Text style={styles.darkSectionTitle}>Domande frequenti</Text>
+          <Text style={styles.darkSectionEyebrow}>{t('landing.faq.eyebrow')}</Text>
+          <Text style={styles.darkSectionTitle}>{t('landing.faq.title')}</Text>
 
           <View style={styles.faqList}>
             <View style={styles.faqItem}>
-              <Text style={styles.faqQuestion}>La location e accessibile?</Text>
-              <Text style={styles.faqAnswer}>
-                La sezione e pronta per ospitare tutte le informazioni pratiche utili agli invitati,
-                inclusi eventuali dettagli sull accessibilita.
-              </Text>
+              <Text style={styles.faqQuestion}>{t('landing.faq.locationQuestion')}</Text>
+              <Text style={styles.faqAnswer}>{t('landing.faq.locationAnswer')}</Text>
             </View>
 
             <View style={styles.faqItem}>
-              <Text style={styles.faqQuestion}>Come comunico allergie o esigenze alimentari?</Text>
-              <Text style={styles.faqAnswer}>
-                Potrai farlo direttamente nel form RSVP, cosi tutte le note restano collegate al tuo
-                invito personale.
-              </Text>
+              <Text style={styles.faqQuestion}>{t('landing.faq.foodQuestion')}</Text>
+              <Text style={styles.faqAnswer}>{t('landing.faq.foodAnswer')}</Text>
             </View>
 
             <View style={styles.faqItem}>
-              <Text style={styles.faqQuestion}>Posso usare il telefono durante la cerimonia?</Text>
-              <Text style={styles.faqAnswer}>
-                Questa area puo raccogliere le regole che volete dare agli invitati in modo chiaro,
-                elegante e sempre accessibile.
-              </Text>
+              <Text style={styles.faqQuestion}>{t('landing.faq.phoneQuestion')}</Text>
+              <Text style={styles.faqAnswer}>{t('landing.faq.phoneAnswer')}</Text>
             </View>
           </View>
 
           <View style={styles.aotDecorativeRow}>
             <View style={styles.decorativePill}>
               <FontAwesome name="shield" size={16} color={aotTheme.bronze} />
-              <Text style={styles.decorativePillText}>Wings of Freedom</Text>
+              <Text style={styles.decorativePillText}>{t('landing.decorative.wings')}</Text>
             </View>
             <View style={styles.decorativePill}>
               <FontAwesome name="compass" size={16} color={aotTheme.bronze} />
-              <Text style={styles.decorativePillText}>Mission Log</Text>
+              <Text style={styles.decorativePillText}>{t('landing.decorative.mission')}</Text>
             </View>
             <View style={styles.decorativePill}>
               <FontAwesome name="map" size={16} color={aotTheme.bronze} />
-              <Text style={styles.decorativePillText}>Walls & Routes</Text>
+              <Text style={styles.decorativePillText}>{t('landing.decorative.routes')}</Text>
             </View>
           </View>
         </View>
 
         <View style={styles.contactSection}>
           <View style={styles.contactHeader}>
-            <Text style={styles.contactTitle}>Contatti utili</Text>
+            <Text style={styles.contactTitle}>{t('landing.contacts.title')}</Text>
             <View style={styles.contactEmblem}>
               <FontAwesome name="leaf" size={24} color={aotTheme.militaryGreenDark} />
               <FontAwesome name="star" size={18} color={aotTheme.bronze} />
@@ -345,32 +328,26 @@ export default function LandingScreen() {
 
           <View style={styles.contactGrid}>
             <View style={styles.contactCard}>
-              <Text style={styles.contactCardTitle}>Wedding team</Text>
-              <Text style={styles.contactLine}>Ilaria & Davide</Text>
-              <Text style={styles.contactLineMuted}>
-                Qui possiamo aggiungere numeri, email o una persona di riferimento per gli invitati.
-              </Text>
+              <Text style={styles.contactCardTitle}>{t('landing.contacts.teamTitle')}</Text>
+              <Text style={styles.contactLine}>{t('landing.contacts.teamLine')}</Text>
+              <Text style={styles.contactLineMuted}>{t('landing.contacts.teamBody')}</Text>
             </View>
 
             <View style={styles.contactCard}>
-              <Text style={styles.contactCardTitle}>Travel support</Text>
-              <Text style={styles.contactLine}>Hotel, spostamenti, parcheggi</Text>
-              <Text style={styles.contactLineMuted}>
-                Questa sezione puo evolvere nella futura travel area del progetto.
-              </Text>
+              <Text style={styles.contactCardTitle}>{t('landing.contacts.travelTitle')}</Text>
+              <Text style={styles.contactLine}>{t('landing.contacts.travelLine')}</Text>
+              <Text style={styles.contactLineMuted}>{t('landing.contacts.travelBody')}</Text>
             </View>
 
             <View style={styles.contactCard}>
-              <Text style={styles.contactCardTitle}>Cerimonia</Text>
-              <Text style={styles.contactLine}>Dettagli location e accessi</Text>
-              <Text style={styles.contactLineMuted}>
-                Perfetta per raccogliere le ultime informazioni pratiche senza sovraccaricare la home.
-              </Text>
+              <Text style={styles.contactCardTitle}>{t('landing.contacts.ceremonyTitle')}</Text>
+              <Text style={styles.contactLine}>{t('landing.contacts.ceremonyLine')}</Text>
+              <Text style={styles.contactLineMuted}>{t('landing.contacts.ceremonyBody')}</Text>
             </View>
           </View>
         </View>
 
-        <Text style={styles.api}>API collegata: {apiBaseUrl}</Text>
+        <Text style={styles.api}>{t('landing.apiConnected', { apiBaseUrl })}</Text>
       </View>
     </ScrollView>
   );
