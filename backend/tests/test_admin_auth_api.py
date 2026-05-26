@@ -31,6 +31,11 @@ def test_admin_guest_list_rejects_non_admin_user(api_client, invited_headers):
     assert response.status_code == 403
 
 
+def test_admin_guest_list_allows_groom_role(api_client, groom_headers):
+    response = api_client.get("/admin/guests", headers=groom_headers)
+    assert response.status_code == 200
+
+
 def test_admin_rsvp_stats_rejects_without_header(api_client):
     response = api_client.get("/admin/rsvp-stats")
     assert response.status_code == 401

@@ -1,7 +1,9 @@
 import os
 
 os.environ.setdefault("JWT_SECRET_KEY", "test-jwt-secret-key-for-local-tests")
-os.environ.setdefault("ADMIN_ALLOWED_EMAILS", "admin@test.app,dawcorp@test.app,example@test.app")
+os.environ.setdefault("BRIDE_ALLOWED_EMAILS", "bride@test.app")
+os.environ.setdefault("GROOM_ALLOWED_EMAILS", "groom@test.app")
+os.environ.setdefault("ADMIN_ALLOWED_EMAILS", "legacy-admin@test.app")
 os.environ.setdefault("S3_BUCKET_NAME", "test-wedding-album")
 os.environ.setdefault("S3_REGION", "eu-central-1")
 os.environ.setdefault("S3_ACCESS_KEY_ID", "test-access-key")
@@ -30,16 +32,35 @@ def api_client():
         yield client
 
 
-# Creates a reusable admin bearer token for secured routes during tests.
+# Creates a reusable privileged bearer token for secured routes during tests.
 @pytest.fixture
 def admin_headers(api_client):
     response = api_client.post(
         "/auth/register",
         json={
-            "first_name": "Admin",
-            "last_name": "Tester",
-            "email": "admin@test.app",
+            "first_name": "Ilaria",
+            "last_name": "Bride",
+            "email": "bride@test.app",
             "password": "super-secure-password",
+            "role": "bride",
+            "remember_me": True,
+        },
+    )
+    access_token = response.json()["access_token"]
+    return {"Authorization": f"Bearer {access_token}"}
+
+
+# Creates a groom bearer token to verify both spouse roles can manage the wedding area.
+@pytest.fixture
+def groom_headers(api_client):
+    response = api_client.post(
+        "/auth/register",
+        json={
+            "first_name": "Davide",
+            "last_name": "Groom",
+            "email": "groom@test.app",
+            "password": "super-secure-password",
+            "role": "groom",
             "remember_me": True,
         },
     )
@@ -57,6 +78,7 @@ def invited_headers(api_client):
             "last_name": "Tester",
             "email": "guest@test.app",
             "password": "super-secure-password",
+            "role": "invited",
             "remember_me": False,
         },
     )

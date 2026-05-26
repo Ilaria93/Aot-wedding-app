@@ -36,7 +36,7 @@ def require_current_user(
         ) from error
 
 
-# Ensures the current user exists and has the admin role.
+# Ensures the current user can access the wedding management area.
 def require_admin_user(current_user: User = Depends(require_current_user)) -> User:
     try:
         require_admin_role(current_user)

@@ -18,8 +18,12 @@ class LogisticsContactBase(BaseModel):
     label: str
     contact_person: Optional[str] = None
     phone: Optional[str] = None
+    whatsapp_phone: Optional[str] = None
     email: Optional[str] = None
     website: Optional[str] = None
+    instagram_url: Optional[str] = None
+    facebook_url: Optional[str] = None
+    tiktok_url: Optional[str] = None
     address: Optional[str] = None
     notes: Optional[str] = None
     sort_order: int = 0
@@ -29,8 +33,12 @@ class LogisticsContactBase(BaseModel):
         "label",
         "contact_person",
         "phone",
+        "whatsapp_phone",
         "email",
         "website",
+        "instagram_url",
+        "facebook_url",
+        "tiktok_url",
         "address",
         "notes",
         mode="before",
@@ -59,8 +67,12 @@ class LogisticsContactUpdateRequest(BaseModel):
     label: Optional[str] = None
     contact_person: Optional[str] = None
     phone: Optional[str] = None
+    whatsapp_phone: Optional[str] = None
     email: Optional[str] = None
     website: Optional[str] = None
+    instagram_url: Optional[str] = None
+    facebook_url: Optional[str] = None
+    tiktok_url: Optional[str] = None
     address: Optional[str] = None
     notes: Optional[str] = None
     sort_order: Optional[int] = None
@@ -70,8 +82,12 @@ class LogisticsContactUpdateRequest(BaseModel):
         "label",
         "contact_person",
         "phone",
+        "whatsapp_phone",
         "email",
         "website",
+        "instagram_url",
+        "facebook_url",
+        "tiktok_url",
         "address",
         "notes",
         mode="before",

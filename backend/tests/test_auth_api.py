@@ -6,6 +6,7 @@ def test_register_creates_invited_user_by_default(api_client):
             "last_name": "Ackerman",
             "email": "mikasa@example.com",
             "password": "strong-password",
+            "role": "invited",
             "remember_me": True,
         },
     )
@@ -20,19 +21,36 @@ def test_register_creates_invited_user_by_default(api_client):
     assert payload["refresh_token"]
 
 
-def test_register_assigns_admin_role_for_allowed_email(api_client):
+def test_register_persists_selected_bride_role(api_client):
     response = api_client.post(
         "/auth/register",
         json={
             "first_name": "Ilaria",
             "last_name": "Bride",
-            "email": "admin@test.app",
+            "email": "bride@test.app",
             "password": "strong-password",
+            "role": "bride",
             "remember_me": True,
         },
     )
     assert response.status_code == 200
-    assert response.json()["user"]["role"] == "admin"
+    assert response.json()["user"]["role"] == "bride"
+
+
+def test_register_persists_selected_groom_role(api_client):
+    response = api_client.post(
+        "/auth/register",
+        json={
+            "first_name": "Davide",
+            "last_name": "Groom",
+            "email": "groom@test.app",
+            "password": "strong-password",
+            "role": "groom",
+            "remember_me": True,
+        },
+    )
+    assert response.status_code == 200
+    assert response.json()["user"]["role"] == "groom"
 
 
 def test_login_returns_fresh_session(api_client):
@@ -43,6 +61,7 @@ def test_login_returns_fresh_session(api_client):
             "last_name": "Arlert",
             "email": "armin@example.com",
             "password": "strong-password",
+            "role": "invited",
             "remember_me": False,
         },
     )
@@ -61,6 +80,32 @@ def test_login_returns_fresh_session(api_client):
     assert payload["user"]["email"] == "armin@example.com"
 
 
+def test_login_keeps_role_saved_during_registration(api_client):
+    api_client.post(
+        "/auth/register",
+        json={
+            "first_name": "Ilaria",
+            "last_name": "Bride",
+            "email": "ilaria@example.com",
+            "password": "strong-password",
+            "role": "bride",
+            "remember_me": True,
+        },
+    )
+
+    response = api_client.post(
+        "/auth/login",
+        json={
+            "email": "ilaria@example.com",
+            "password": "strong-password",
+            "remember_me": True,
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["user"]["role"] == "bride"
+
+
 def test_me_returns_authenticated_user(api_client):
     register_response = api_client.post(
         "/auth/register",
@@ -69,6 +114,7 @@ def test_me_returns_authenticated_user(api_client):
             "last_name": "Ackerman",
             "email": "levi@example.com",
             "password": "strong-password",
+            "role": "invited",
             "remember_me": True,
         },
     )
@@ -87,6 +133,7 @@ def test_refresh_rotates_session_and_logout_revokes_it(api_client):
             "last_name": "Reiss",
             "email": "historia@example.com",
             "password": "strong-password",
+            "role": "invited",
             "remember_me": True,
         },
     )
@@ -112,6 +159,7 @@ def test_profile_update_changes_first_and_last_name(api_client):
             "last_name": "Kirschtein",
             "email": "jean@example.com",
             "password": "strong-password",
+            "role": "invited",
             "remember_me": True,
         },
     )
