@@ -4,6 +4,19 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+DEFAULT_DATABASE_URL = "postgresql+psycopg://postgres:postgres@127.0.0.1:5432/aot_wedding_app"
+DEFAULT_TEST_DATABASE_URL = "postgresql+psycopg://postgres:postgres@127.0.0.1:5432/aot_wedding_app_test"
+
+
+def read_database_url() -> str:
+    """Primary database used by the FastAPI app."""
+    return os.getenv("DATABASE_URL", DEFAULT_DATABASE_URL).strip()
+
+
+def read_test_database_url() -> str:
+    """Dedicated database used by automated tests."""
+    return os.getenv("TEST_DATABASE_URL", DEFAULT_TEST_DATABASE_URL).strip()
+
 
 def read_jwt_secret_key() -> str:
     """Secret used to sign access and refresh JWT tokens."""
