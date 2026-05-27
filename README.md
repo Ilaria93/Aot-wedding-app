@@ -15,7 +15,8 @@ Cross-platform wedding platform inspired by Attack on Titan aesthetics.
 
 - Frontend: Expo (React Native + web)
 - Backend: FastAPI + SQLAlchemy
-- Local DB: SQLite (`backend/wedding.db`)
+- Local DB: PostgreSQL via Docker (`aot_wedding_app`)
+- Test DB: PostgreSQL via Docker (`aot_wedding_app_test`)
 
 ## Project structure
 
@@ -32,15 +33,21 @@ Cross-platform wedding platform inspired by Attack on Titan aesthetics.
 cd backend
 ```
 
-2. Configure environment variables:
+2. Start PostgreSQL:
+
+```bash
+docker compose up -d postgres
+```
+
+3. Configure environment variables:
 
 ```bash
 cp env.example .env
 # Edit .env and set a strong JWT_SECRET_KEY (required).
-# Also set ADMIN_ALLOWED_EMAILS with the auth emails that should become admins.
+# DATABASE_URL already points to the local Docker PostgreSQL by default.
 ```
 
-3. Create and activate a virtual environment, then install dependencies:
+4. Create and activate a virtual environment, then install dependencies:
 
 ```bash
 python3 -m venv venv
@@ -51,28 +58,30 @@ You can also export variables in the shell instead of using `.env`:
 
 ```bash
 export JWT_SECRET_KEY='local-dev-secret-change-me'
-export ADMIN_ALLOWED_EMAILS='example@test.app'
+export DATABASE_URL='postgresql+psycopg://postgres:postgres@127.0.0.1:5432/aot_wedding_app'
 ```
-
-For local auth testing, any user registered with this email will receive the `admin` role:
-
-- `example@test.app`
 
 For local development, `settings.py` picks sensible default browser origins if `CORS_ALLOW_ORIGINS` is omitted. Override with a comma-separated list when your Expo or Vite URL differs.
 
-4. Run the API:
+5. Apply database migrations:
+
+```bash
+./venv/bin/alembic -c alembic.ini upgrade head
+```
+
+6. Run the API:
 
 ```bash
 ./venv/bin/uvicorn main:app --reload
 ```
 
-5. Open API docs:
+7. Open API docs:
 
 - [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 In Swagger UI, open **Authorize** (lock icon), register or log in via `/auth/register` or `/auth/login`, then paste the returned `access_token` as a bearer token. Authorization persists while the docs tab stays open (`persistAuthorization`).
 
-Protected admin routes require a bearer token for a user whose email is listed in `ADMIN_ALLOWED_EMAILS`:
+Protected admin routes require a bearer token for a user with role `admin`, `bride`, or `groom`:
 
 - `POST /guest/create-invite`
 - `GET /admin/guests`
@@ -111,6 +120,7 @@ Protected admin routes require a bearer token for a user whose email is listed i
 Run tests from `backend/`:
 
 ```bash
+docker compose up -d postgres
 ./venv/bin/pytest
 ```
 
@@ -150,6 +160,6 @@ From the project root you can use:
 
 What they do:
 
-- `scripts/run-backend.sh` creates `backend/.env` if missing, creates `backend/venv` if needed, installs backend dependencies on first run, then starts `uvicorn`
+- `scripts/run-backend.sh` creates `backend/.env` if missing, creates `backend/venv` if needed, installs backend dependencies on first run, starts the local PostgreSQL container, ensures app/test databases exist, applies Alembic migrations, then starts `uvicorn`
 - `scripts/run-frontend.sh` creates `frontend/.env` if missing, installs frontend dependencies on first run, then starts Expo Web
 - `scripts/run-dev.sh` starts backend and frontend together in one terminal and stops both with `Ctrl+C`

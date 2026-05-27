@@ -1,18 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from database.base import Base, engine
-from database.bootstrap import ensure_logistics_contact_columns
-
-# Imports models so SQLAlchemy can create tables at startup.
-from models import (  # noqa: F401
-    guest_model,
-    logistics_contact_model,
-    photo_album_item_model,
-    refresh_token_session_model,
-    rsvp_model,
-    user_model,
-)
 from routes.auth_route import router as auth_router
 from routes.admin_logistics_contact_route import router as admin_logistics_contact_router
 from routes.guest_lookup_route import router as guest_router
@@ -38,11 +26,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.on_event("startup")
-def startup():
-    Base.metadata.create_all(bind=engine)
-    ensure_logistics_contact_columns(engine)
 
 @app.get("/health")
 def health():
