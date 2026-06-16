@@ -1,0 +1,26 @@
+---
+description: Codice pulito e diff minimi — regola sempre attiva
+alwaysApply: true
+---
+
+# Codice pulito
+
+## Sempre
+
+- **Diff minimi**: modifica solo ciò che serve alla richiesta; niente refactor non richiesti
+- **Una responsabilità**: un file/funzione = un compito chiaro
+- **Nomi espliciti**: `fetchAdminGuestList` sì, `getData` no
+- **Niente duplicazione**: riusa service, hook e utility esistenti
+- **Tipi espliciti**: TypeScript strict; Pydantic per ogni I/O API
+
+## Documentazione nel codice
+
+- **FE**: JSDoc su funzioni/hook/componenti esportati (cosa fanno, cosa restituiscono)
+- **BE**: commento una riga sopra ogni route handler
+
+## Evitare
+
+- `any` in TypeScript
+- catch vuoti
+- logica business sparsa in route o componenti UI
+- stringhe utente hardcoded (usare i18n)

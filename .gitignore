@@ -28,8 +28,10 @@ frontend/dist/
 .dart_tool/
 build/
 
-# Cursor local files
-.cursor/
+# Cursor local files (project rules in .cursor/rules/ are tracked)
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
 
 # Local backend artifacts
 backend/wedding.db

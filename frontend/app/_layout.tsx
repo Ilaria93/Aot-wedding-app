@@ -80,7 +80,9 @@ function AuthNavigation() {
   const { t } = useI18n();
 
   const isAuthRoute = segments[0] === 'auth';
-  const shouldRedirectToLogin = !isBootstrapping && !isAuthenticated && !isAuthRoute;
+  const isHomeTab = segments[0] === '(tabs)' && segments.length === 1;
+  const isPublicRoute = isAuthRoute || isHomeTab;
+  const shouldRedirectToLogin = !isBootstrapping && !isAuthenticated && !isPublicRoute;
   const shouldRedirectToApp = !isBootstrapping && isAuthenticated && isAuthRoute;
 
   useEffect(() => {

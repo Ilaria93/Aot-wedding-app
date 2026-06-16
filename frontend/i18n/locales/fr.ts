@@ -84,6 +84,7 @@ export const fr = {
       story: 'Nous',
       ceremony: 'Cérémonie',
       rsvp: 'RSVP',
+      gift: 'Cadeau',
       profile: 'Profil',
       login: 'Connexion',
       admin: 'Admin',
@@ -104,8 +105,8 @@ export const fr = {
     ceremony: {
       heading: 'Participez à leur cérémonie intime',
       city: 'Ravenne',
-      venue: 'Cérémonie au bord de la mer',
-      body: 'Nous ajouterons ici la date, le lieu, le programme et les indications pratiques pour les invités.',
+      venue: 'Lido Adriano · Amarissimo Cala Celeste',
+      body: 'Cérémonie en bord de mer avec vue sur la côte ravennate. Nous avons hâte de célébrer ce jour avec vous.',
       artworkPlaceholder: 'Photo principale / illustration du couple',
     },
     rsvp: {
@@ -113,6 +114,20 @@ export const fr = {
       body:
         'Depuis ici, vous pouvez confirmer votre présence, ouvrir une invitation existante ou générer un token de développement pour tester le flux complet.',
       button: 'Aller au RSVP',
+    },
+    gift: {
+      eyebrow: 'Notre rêve',
+      title: 'Direction le Japon',
+      intro:
+        'Votre présence est le plus beau cadeau que nous puissions recevoir. Si vous souhaitez nous faire un petit geste en plus, une contribution nous aidera à vivre la lune de miel dont nous rêvons : temples anciens, paysages magnifiques et beaucoup de ramen à partager.',
+      gratitude: 'Chaque attention, petite ou grande, sera accueillie avec une profonde gratitude.',
+      coordinatesTitle: 'Coordonnées bancaires',
+      accountHolder: 'Titulaire du compte',
+      iban: 'IBAN',
+      bic: 'BIC/SWIFT',
+      reference: 'Libellé du virement',
+      copyIban: "Copier l'IBAN",
+      copiedIban: 'IBAN copié',
     },
     devTools: {
       title: 'Zone RSVP et outils',

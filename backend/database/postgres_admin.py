@@ -1,7 +1,18 @@
+from typing import Optional
+
 from psycopg import connect, sql
 from sqlalchemy.engine import make_url
 
 from settings import read_database_url, read_test_database_url
+
+
+def _psycopg_connection_url(database_url: str, database: Optional[str] = None) -> str:
+    """Normalize a SQLAlchemy PostgreSQL URL for psycopg.connect()."""
+    url = make_url(database_url)
+    base_driver = url.drivername.split("+", 1)[0]
+    if database is not None:
+        url = url.set(database=database)
+    return url.set(drivername=base_driver).render_as_string(hide_password=False)
 
 
 def ensure_database_exists(database_url: str):
@@ -15,7 +26,7 @@ def ensure_database_exists(database_url: str):
         return
 
     maintenance_database = "postgres" if database_name != "postgres" else "template1"
-    admin_url = url.set(database=maintenance_database).render_as_string(hide_password=False)
+    admin_url = _psycopg_connection_url(database_url, database=maintenance_database)
 
     with connect(admin_url, autocommit=True) as connection:
         with connection.cursor() as cursor:

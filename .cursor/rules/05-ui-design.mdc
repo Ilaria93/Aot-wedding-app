@@ -1,0 +1,31 @@
+---
+description: UI semplice e bella — regola sempre attiva
+alwaysApply: true
+---
+
+# UI design
+
+## Principi
+
+- **Semplice**: pochi controlli per schermata, gerarchia chiara (titolo → contenuto → azione)
+- **Bella**: palette AoT da `aotTheme`, spaziature generose, contrasto leggibile
+- **Coerente**: stessi pattern di card, bottoni e input in tutta l'app
+
+## Palette (da `aotTheme`)
+
+- Sfondo: verde chiaro / pergamena
+- Accenti: `militaryGreen`, `bronze`
+- Testo: `textPrimary` / `textMuted`
+- Errori: `danger`
+
+## Layout
+
+- Padding consistente (16–24px)
+- Bottoni primari evidenti; azioni secondarie più discrete
+- Stati loading/errore/vuoto sempre gestiti in UI
+
+## Mai
+
+- Stringhe utente hardcoded (sempre i18n)
+- Colori hex inventati fuori dal tema
+- UI affollata o con troppi passaggi per azioni comuni (RSVP, upload foto)

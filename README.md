@@ -1,165 +1,117 @@
 # AOT Wedding App
 
-Cross-platform wedding platform inspired by Attack on Titan aesthetics.
+Piattaforma matrimonio cross-platform con estetica Attack on Titan.
 
-## Current features
+**Stack:** Expo (React Native + Web) · FastAPI + SQLAlchemy · PostgreSQL (Docker)
 
-- authenticated guest and management accounts
-- role-based wedding management area
-- invitation token generation and RSVP flow
-- guest photo album with moderation
-- travel hub with logistics contacts and supplier social links
-- multilingual frontend (`it`, `en`, `fr`, `de`)
+**Feature:** account con ruoli, inviti RSVP, album foto con moderazione, travel hub contatti logistica, i18n (`it`, `en`, `fr`, `de`).
 
-## Current stack
+## Struttura
 
-- Frontend: Expo (React Native + web)
-- Backend: FastAPI + SQLAlchemy
-- Local DB: PostgreSQL via Docker (`aot_wedding_app`)
-- Test DB: PostgreSQL via Docker (`aot_wedding_app_test`)
+```
+backend/     routes, services, models, schemas, tests
+frontend/    app (screen), components, services, i18n
+.cursor/     regole Cursor per sviluppo assistito da AI
+scripts/     run-backend.sh · run-frontend.sh · run-dev.sh
+```
 
-## Project structure
+**Architettura:** BE `routes → services → models` · FE `app → components → services` (API). Ruoli: `guest`, `admin`, `bride`, `groom`.
 
-- `backend/` API, models, schemas, services, tests
-- `frontend/` Expo client with auth, RSVP, album, travel hub e admin dashboard
-- `frontend/i18n/` locale dictionaries and translation helpers
-- `docs/` project notes and documentation
+## Avvio rapido
 
-## Backend quick start
+```bash
+./scripts/run-dev.sh
+```
 
-1. Go to backend directory:
+| Script | Cosa fa |
+|--------|---------|
+| `run-dev.sh` | Backend + frontend insieme (`Ctrl+C` ferma entrambi) |
+| `run-backend.sh` | `.env`, `venv`, PostgreSQL, migrazioni, `uvicorn` |
+| `run-frontend.sh` | `.env`, dipendenze, Expo Web |
+
+API: [localhost:8000/docs](http://127.0.0.1:8000/docs) · RSVP test: `/rsvp/{token}`
+
+---
+
+## Backend
 
 ```bash
 cd backend
-```
-
-2. Start PostgreSQL:
-
-```bash
 docker compose up -d postgres
-```
-
-3. Configure environment variables:
-
-```bash
-cp env.example .env
-# Edit .env and set a strong JWT_SECRET_KEY (required).
-# DATABASE_URL already points to the local Docker PostgreSQL by default.
-```
-
-4. Create and activate a virtual environment, then install dependencies:
-
-```bash
+cp env.example .env          # imposta JWT_SECRET_KEY
 python3 -m venv venv
 ./venv/bin/pip install -r requirements.txt
-```
-
-You can also export variables in the shell instead of using `.env`:
-
-```bash
-export JWT_SECRET_KEY='local-dev-secret-change-me'
-export DATABASE_URL='postgresql+psycopg://postgres:postgres@127.0.0.1:5432/aot_wedding_app'
-```
-
-For local development, `settings.py` picks sensible default browser origins if `CORS_ALLOW_ORIGINS` is omitted. Override with a comma-separated list when your Expo or Vite URL differs.
-
-5. Apply database migrations:
-
-```bash
 ./venv/bin/alembic -c alembic.ini upgrade head
-```
-
-6. Run the API:
-
-```bash
 ./venv/bin/uvicorn main:app --reload
 ```
 
-7. Open API docs:
+DB sviluppo: `aot_wedding_app` · DB test: `aot_wedding_app_test`
 
-- [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+In Swagger: **Authorize** → incolla `access_token` da login/register.
 
-In Swagger UI, open **Authorize** (lock icon), register or log in via `/auth/register` or `/auth/login`, then paste the returned `access_token` as a bearer token. Authorization persists while the docs tab stays open (`persistAuthorization`).
-
-Protected admin routes require a bearer token for a user with role `admin`, `bride`, or `groom`:
-
-- `POST /guest/create-invite`
-- `GET /admin/guests`
-- `GET /admin/rsvp-stats`
-- `GET /admin/photos`
-- `GET /admin/contacts`
-
-## Implemented API endpoints
-
-- `GET /health` healthcheck
-- `POST /auth/register` create account + initial session
-- `POST /auth/login` log in and get access/refresh tokens
-- `POST /auth/refresh` rotate refresh session
-- `POST /auth/logout` revoke current refresh session
-- `GET /auth/me` read current authenticated profile
-- `PATCH /auth/me` update first and last name
-- `POST /guest/create-invite` create guest + invitation token (requires admin bearer token)
-- `GET /guest/{token}` get guest by invitation token
-- `POST /rsvp/confirm` submit RSVP
-- `GET /rsvp/by-token/{token}` read RSVP status by invitation token
-- `GET /photos` list approved album photos
-- `POST /photos/upload-intent` get presigned guest upload target
-- `POST /photos/complete-upload` persist uploaded photo metadata
-- `GET /contacts` list public logistics contacts
-- `GET /admin/guests` list all guests with RSVP status (requires admin bearer token)
-- `GET /admin/rsvp-stats` aggregated RSVP statistics (requires admin bearer token)
-- `GET /admin/photos` list all uploaded photos for moderation (requires admin bearer token)
-- `PATCH /admin/photos/{photo_id}` update moderation status (requires admin bearer token)
-- `GET /admin/contacts` list all logistics contacts (requires admin bearer token)
-- `POST /admin/contacts` create logistics contact (requires admin bearer token)
-- `PATCH /admin/contacts/{contact_id}` update logistics contact (requires admin bearer token)
-- `DELETE /admin/contacts/{contact_id}` delete logistics contact (requires admin bearer token)
-
-## Backend tests
-
-Run tests from `backend/`:
+**Test:**
 
 ```bash
-docker compose up -d postgres
-./venv/bin/pytest
+cd backend && ./venv/bin/pytest -q
 ```
 
-Current coverage includes:
-- registration, login, refresh token rotation and profile reads/updates
-- invite creation + guest lookup flow
-- RSVP lookup before and after confirmation
-- admin guest list with and without RSVP
+---
 
-## Frontend quick start (Expo)
+## Frontend
 
-1. Backend must be running on port `8000`.
-
-2. From `frontend/`:
+Backend su porta `8000`, poi:
 
 ```bash
+cd frontend
 cp env.example .env
 npm install
 npm run web
 ```
 
-3. Open the app in the browser. Guest RSVP flow: `/rsvp/{invitation_token}`  
-   Create a real token via Swagger `POST /guest/create-invite` while logged in as an admin user, then open  
-   `http://localhost:8081/rsvp/YOUR_TOKEN` (port may vary; check terminal output).
+Test RSVP: `POST /guest/create-invite` (admin su Swagger) → `http://localhost:8081/rsvp/YOUR_TOKEN`
 
-4. On a physical phone, set `EXPO_PUBLIC_API_URL` to your computer LAN IP (not `127.0.0.1`).
+Su telefono: `EXPO_PUBLIC_API_URL` = IP LAN del computer.
 
-## Quick launch scripts
+---
 
-From the project root you can use:
+## API
 
-```bash
-./scripts/run-backend.sh
-./scripts/run-frontend.sh
-./scripts/run-dev.sh
-```
+Swagger: [localhost:8000/docs](http://127.0.0.1:8000/docs)
 
-What they do:
+| Endpoint | Note |
+|----------|------|
+| `GET /health` | Healthcheck |
+| `POST /auth/register` · `/login` · `/refresh` · `/logout` | Sessione JWT |
+| `GET /auth/me` · `PATCH /auth/me` | Profilo |
+| `POST /guest/create-invite` | Admin — crea invito |
+| `GET /guest/{token}` | Lookup ospite |
+| `POST /rsvp/confirm` · `GET /rsvp/by-token/{token}` | RSVP |
+| `GET /photos` · `POST /photos/upload-intent` · `POST /photos/complete-upload` | Album |
+| `GET /contacts` | Contatti pubblici |
+| `GET /admin/guests` · `GET /admin/rsvp-stats` | Admin |
+| `GET /admin/photos` · `PATCH /admin/photos/{id}` | Moderazione foto |
+| `GET/POST/PATCH/DELETE /admin/contacts` | Gestione contatti |
 
-- `scripts/run-backend.sh` creates `backend/.env` if missing, creates `backend/venv` if needed, installs backend dependencies on first run, starts the local PostgreSQL container, ensures app/test databases exist, applies Alembic migrations, then starts `uvicorn`
-- `scripts/run-frontend.sh` creates `frontend/.env` if missing, installs frontend dependencies on first run, then starts Expo Web
-- `scripts/run-dev.sh` starts backend and frontend together in one terminal and stops both with `Ctrl+C`
+Route **admin** richiedono bearer token con ruolo `admin`, `bride` o `groom`.
+
+---
+
+## Convenzioni codice
+
+- **Diff minimi** — modifica solo ciò che serve alla richiesta
+- **FE:** componenti &lt; 150 righe, JSDoc su export, testi da `i18n`, colori da `aotTheme`, API solo in `services/`
+- **BE:** route sottili, logica in `services/`, commento su ogni handler, Pydantic per I/O
+- **Test:** nuova route → `backend/tests/`; logica FE → Jest/RTL quando configurato
+- **UI:** semplice, spaziature generose, stati loading/errore/vuoto sempre gestiti
+
+Regole dettagliate per Cursor: `.cursor/rules/` (sempre attive).
+
+---
+
+## Contribuire
+
+1. `./scripts/run-dev.sh` per verificare in locale
+2. `pytest` verde se tocchi il backend
+3. Nuove stringhe UI in tutte e 4 le lingue
+4. Migrazione Alembic se cambia lo schema DB
+5. Nessun segreto in commit (`.env`, token)

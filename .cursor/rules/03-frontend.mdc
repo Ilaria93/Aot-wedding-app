@@ -1,0 +1,33 @@
+---
+description: Convenzioni Expo/React Native — regola sempre attiva
+alwaysApply: true
+---
+
+# Frontend Expo
+
+## Componenti piccoli
+
+- Target **< 150 righe** per file; se cresce → sotto-componenti + `use*.ts`
+- **Presentazionali**: props in, callback out — niente `fetch` nel render
+- Screen in `app/` orchestrano; il markup vive in `components/`
+
+```tsx
+/** Card ospite admin con badge stato RSVP. */
+export function GuestListCard({ guest, onPress }: Props) { ... }
+```
+
+## API e stato
+
+- HTTP solo in `services/` con tipi export
+- Token/sessione via `AuthContext`; lingua via `I18nContext`
+- Import `@/`; tipi con `import type`
+
+## Stile
+
+- Colori da `@/constants/aotTheme`
+- `StyleSheet.create` in fondo al file
+- Testi utente solo `t('chiave')` in tutte e 4 le lingue se nuove chiavi
+
+## Evitare
+
+Componenti monolitici (500+ righe), `any`, hex sparsi, logica business nei componenti.

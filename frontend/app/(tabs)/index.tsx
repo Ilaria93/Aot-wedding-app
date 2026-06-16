@@ -11,8 +11,13 @@ import {
 } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
+import { HoneymoonGiftSection } from '@/components/HoneymoonGiftSection';
 import { aotTheme } from '@/constants/aotTheme';
 import { apiBaseUrl } from '@/constants/apiConfig';
+import {
+  formatWeddingDateDisplay,
+  formatWeddingTimeDisplay,
+} from '@/constants/weddingEvent';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
 import { createGuestInvitation } from '@/services/guestApi';
@@ -22,7 +27,7 @@ import { getApiErrorMessage } from '@/utils/apiErrors';
 export default function LandingScreen() {
   const router = useRouter();
   const { canManageWedding, isAuthenticated } = useAuth();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const scrollViewRef = useRef<ScrollView | null>(null);
   const sectionOffsets = useRef<Record<string, number>>({});
   const floralFloat = useRef(new Animated.Value(0)).current;
@@ -114,6 +119,9 @@ export default function LandingScreen() {
             <Pressable onPress={() => scrollToSection('rsvp')}>
               <Text style={styles.navLink}>{t('landing.nav.rsvp')}</Text>
             </Pressable>
+            <Pressable onPress={() => scrollToSection('gift')}>
+              <Text style={styles.navLink}>{t('landing.nav.gift')}</Text>
+            </Pressable>
             <Pressable onPress={() => router.push('/profile')}>
               <Text style={styles.navLink}>
                 {isAuthenticated ? t('landing.nav.profile') : t('landing.nav.login')}
@@ -188,8 +196,10 @@ export default function LandingScreen() {
           }}>
           <View style={styles.ceremonyInfoCard}>
             <Text style={styles.sectionHeading}>{t('landing.ceremony.heading')}</Text>
-            <Text style={styles.ceremonyLine}>{t('landing.ceremony.city')}</Text>
+            <Text style={styles.ceremonyLine}>{formatWeddingDateDisplay(locale)}</Text>
+            <Text style={styles.ceremonyLine}>{formatWeddingTimeDisplay(locale)}</Text>
             <Text style={styles.ceremonyLine}>{t('landing.ceremony.venue')}</Text>
+            <Text style={styles.ceremonyLine}>{t('landing.ceremony.city')}</Text>
             <Text style={styles.ceremonyLineMuted}>{t('landing.ceremony.body')}</Text>
           </View>
 
@@ -215,6 +225,13 @@ export default function LandingScreen() {
               <Text style={styles.heroButtonText}>{t('landing.rsvp.button')}</Text>
             </Pressable>
           </View>
+        </View>
+
+        <View
+          onLayout={(event) => {
+            sectionOffsets.current.gift = event.nativeEvent.layout.y;
+          }}>
+          <HoneymoonGiftSection />
         </View>
 
         <View

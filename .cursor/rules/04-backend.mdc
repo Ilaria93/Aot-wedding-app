@@ -1,0 +1,37 @@
+---
+description: Convenzioni FastAPI — regola sempre attiva
+alwaysApply: true
+---
+
+# Backend FastAPI
+
+## Layer (non mescolare)
+
+| Layer | Ruolo |
+|-------|-------|
+| `routes/` | HTTP, Depends, HTTPException |
+| `services/` | business logic, query DB, eccezioni dominio |
+| `schemas/` | Pydantic DTO |
+| `models/` | SQLAlchemy ORM |
+| `dependencies/` | auth e permessi ruolo |
+
+Route **sottili** → delega al service. Niente SQL nelle route.
+
+## Handler
+
+```python
+# Creates a guest invitation token for admin users.
+@router.post("/create-invite", response_model=...)
+def create_invite(...):
+    try:
+        return service_fn(db, payload)
+    except DomainError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+```
+
+## Convenzioni
+
+- `snake_case`; file `{dominio}_route.py`, `{dominio}_service.py`
+- `response_model` su ogni endpoint
+- Route admin: bearer token con ruolo `admin`, `bride` o `groom`
+- Migrazioni Alembic se cambia lo schema DB

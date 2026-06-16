@@ -99,6 +99,7 @@ echo "Verifico che i database PostgreSQL esistano..."
 ./venv/bin/python -c "from database.postgres_admin import ensure_default_databases_exist; ensure_default_databases_exist()"
 
 echo "Applico le migrazioni Alembic..."
+./venv/bin/python -c "from database.alembic_bootstrap import reconcile_stale_alembic_version; reconcile_stale_alembic_version()"
 ./venv/bin/alembic -c alembic.ini upgrade head
 
 echo "Avvio backend su http://127.0.0.1:8000"

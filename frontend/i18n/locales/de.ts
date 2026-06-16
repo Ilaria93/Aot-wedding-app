@@ -84,6 +84,7 @@ export const de = {
       story: 'Wir',
       ceremony: 'Zeremonie',
       rsvp: 'RSVP',
+      gift: 'Geschenk',
       profile: 'Profil',
       login: 'Anmelden',
       admin: 'Admin',
@@ -104,8 +105,8 @@ export const de = {
     ceremony: {
       heading: 'Nehmt an ihrer intimen Zeremonie teil',
       city: 'Ravenna',
-      venue: 'Zeremonie am Meer',
-      body: 'Hier fügen wir Datum, Ort, Ablauf und praktische Hinweise für die Gäste ein.',
+      venue: 'Lido Adriano · Amarissimo Cala Celeste',
+      body: 'Zeremonie am Meer mit Blick auf die Küste bei Ravenna. Wir freuen uns, diesen Tag mit euch zu feiern.',
       artworkPlaceholder: 'Hero-Foto / Artwork des Paares',
     },
     rsvp: {
@@ -113,6 +114,20 @@ export const de = {
       body:
         'Von hier aus kannst du deine Teilnahme bestätigen, eine bestehende Einladung öffnen oder ein Entwicklungs-Token erzeugen, um den gesamten Ablauf zu testen.',
       button: 'Zum RSVP',
+    },
+    gift: {
+      eyebrow: 'Unser Traum',
+      title: 'Auf nach Japan',
+      intro:
+        'Eure Anwesenheit ist das schönste Geschenk, das wir bekommen können. Wenn ihr uns zusätzlich etwas Gutes tun möchtet, hilft uns ein Beitrag dabei, die Flitterwochen zu erleben, von denen wir träumen: alte Tempel, wunderschöne Landschaften und viel Ramen zu zweit.',
+      gratitude: 'Jede Geste, ob groß oder klein, wird mit großer Dankbarkeit angenommen.',
+      coordinatesTitle: 'Bankverbindung',
+      accountHolder: 'Kontoinhaber',
+      iban: 'IBAN',
+      bic: 'BIC/SWIFT',
+      reference: 'Verwendungszweck',
+      copyIban: 'IBAN kopieren',
+      copiedIban: 'IBAN kopiert',
     },
     devTools: {
       title: 'RSVP-Bereich und Tools',

@@ -1,0 +1,12 @@
+---
+description: Contesto progetto — leggi README.md
+alwaysApply: true
+---
+
+# Contesto progetto
+
+AOT Wedding App: Expo + FastAPI + PostgreSQL.
+
+Per setup, API, architettura e convenzioni leggi **`README.md`** nella root. Non duplicare quel contenuto nelle risposte o nel codice.
+
+Applica anche le regole `01`–`05` in questa cartella.

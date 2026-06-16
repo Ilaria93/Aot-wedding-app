@@ -1,0 +1,30 @@
+---
+description: Test obbligatori su ogni feature — regola sempre attiva
+alwaysApply: true
+---
+
+# Testing obbligatorio
+
+## Backend (pytest)
+
+Ogni nuova o modificata route **deve** avere test in `backend/tests/test_*_api.py`:
+
+- happy path
+- errore validazione (400)
+- 401/403 se route protetta
+
+```bash
+cd backend && ./venv/bin/pytest -q
+```
+
+Usa fixture `conftest.py` e DB `aot_wedding_app_test`.
+
+## Frontend (Jest + RTL)
+
+- `utils/` e hook custom → test unitario obbligatorio
+- componenti con stato/validazione → almeno un test RTL
+- mock `services/*` e context; mai API reali nei test
+
+## Regola
+
+Feature non completata senza i test corrispondenti.
