@@ -2,6 +2,7 @@ import { Link, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import {
   Animated,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -11,6 +12,7 @@ import {
 } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
+import { CinematicHeroSection } from '@/components/cinematic/CinematicHeroSection';
 import { HoneymoonGiftSection } from '@/components/HoneymoonGiftSection';
 import { aotTheme } from '@/constants/aotTheme';
 import { apiBaseUrl } from '@/constants/apiConfig';
@@ -42,12 +44,12 @@ export default function LandingScreen() {
         Animated.timing(floralFloat, {
           toValue: -10,
           duration: 2600,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
         Animated.timing(floralFloat, {
           toValue: 10,
           duration: 2600,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
       ]),
     ).start();
@@ -103,6 +105,12 @@ export default function LandingScreen() {
 
   return (
     <ScrollView ref={scrollViewRef} contentContainerStyle={styles.container}>
+      {Platform.OS === 'web' ? (
+        <View style={styles.cinematicBreakout}>
+          <CinematicHeroSection scrollerRef={scrollViewRef} />
+        </View>
+      ) : null}
+
       <View style={styles.page}>
         <View style={styles.navbar}>
           <View>
@@ -377,6 +385,13 @@ const styles = StyleSheet.create({
     paddingTop: 28,
     paddingBottom: 120,
     alignItems: 'center',
+  },
+  cinematicBreakout: {
+    width: '100vw' as unknown as number,
+    alignSelf: 'center',
+    marginHorizontal: -20,
+    marginTop: -28,
+    backgroundColor: aotTheme.cinematicBackground,
   },
   page: {
     width: '100%',

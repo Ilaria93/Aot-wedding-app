@@ -93,6 +93,20 @@ export const fr = {
       eyebrow: 'Mariage inspiré par Attack on Titan',
       button: 'RSVP ici',
     },
+    cinematic: {
+      scrollHint: 'Faites défiler pour continuer',
+      countdownSeparator: '·',
+      days: 'j',
+      hours: 'h',
+      minutes: 'm',
+      seconds: 's',
+      countdownOverlayLabel: 'Détails de la cérémonie et compte à rebours',
+      countdownLiveSummary:
+        '{{days}} jours, {{hours}} heures, {{minutes}} minutes et {{seconds}} secondes avant la cérémonie',
+      dateLabel: 'Date de l’opération',
+      locationLabel: 'Lieu de l’opération',
+      documentStamp: 'Document réservé — invités autorisés uniquement',
+    },
     story: {
       photoOne: 'Photo du couple 01',
       photoTwo: 'Photo du couple 02',

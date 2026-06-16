@@ -93,6 +93,20 @@ export const it = {
       eyebrow: 'Matrimonio ispirato ad Attack on Titan',
       button: 'RSVP qui',
     },
+    cinematic: {
+      scrollHint: 'Scorri per continuare',
+      countdownSeparator: '·',
+      days: 'g',
+      hours: 'h',
+      minutes: 'm',
+      seconds: 's',
+      countdownOverlayLabel: 'Dettagli cerimonia e conto alla rovescia',
+      countdownLiveSummary:
+        '{{days}} giorni, {{hours}} ore, {{minutes}} minuti e {{seconds}} secondi alla cerimonia',
+      dateLabel: 'Data operazione',
+      locationLabel: 'Luogo operazione',
+      documentStamp: 'Documento riservato — per gli invitati autorizzati',
+    },
     story: {
       photoOne: 'Foto sposi 01',
       photoTwo: 'Foto sposi 02',

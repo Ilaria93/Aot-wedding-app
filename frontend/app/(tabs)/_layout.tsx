@@ -1,6 +1,6 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Platform, View } from 'react-native';
 import { Tabs } from 'expo-router';
 
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
@@ -52,11 +52,15 @@ export default function TabLayout() {
           paddingBottom: 8,
           paddingTop: 8,
           paddingHorizontal: 10,
-          shadowColor: '#243024',
-          shadowOpacity: 0.08,
-          shadowRadius: 18,
-          shadowOffset: { width: 0, height: 8 },
-          elevation: 6,
+          ...(Platform.OS === 'web'
+            ? { boxShadow: '0 8px 18px rgba(36, 48, 36, 0.08)' }
+            : {
+                shadowColor: '#243024',
+                shadowOpacity: 0.08,
+                shadowRadius: 18,
+                shadowOffset: { width: 0, height: 8 },
+                elevation: 6,
+              }),
         },
         tabBarLabelStyle: {
           fontSize: 12,

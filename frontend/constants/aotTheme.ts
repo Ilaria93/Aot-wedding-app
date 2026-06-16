@@ -11,4 +11,5 @@ export const aotTheme = {
   textPrimary: '#243024',
   textMuted: '#596554',
   danger: '#b45454',
+  cinematicBackground: '#1a211d',
 } as const;
