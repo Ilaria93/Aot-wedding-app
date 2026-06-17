@@ -1,0 +1,25 @@
+.titan-preview-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--aot-background);
+}
+
+.titan-preview-page__back {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 11;
+  padding: 8px 12px;
+  border: 1px solid var(--aot-border);
+  border-radius: 8px;
+  background: rgba(28, 32, 30, 0.92);
+  color: var(--aot-text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.titan-preview-page__back:hover {
+  border-color: var(--aot-bronze);
+}

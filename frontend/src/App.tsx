@@ -14,6 +14,7 @@ import { NotFoundPage } from '@/pages/NotFoundPage/index';
 import { ProfilePage } from '@/pages/ProfilePage/index';
 import { RegisterPage } from '@/pages/RegisterPage/index';
 import { RsvpPage } from '@/pages/RsvpPage/index';
+import { TitanPreviewPage } from '@/pages/TitanPreviewPage/index';
 import { TravelPage } from '@/pages/TravelPage/index';
 
 /** Root router for the Vite web app. */
@@ -38,6 +39,8 @@ export function App() {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/admin" element={<AdminPage />} />
               </Route>
+
+              <Route path="/dev/titan-preview" element={<TitanPreviewPage />} />
 
               <Route path="/home" element={<Navigate to="/" replace />} />
               <Route path="*" element={<NotFoundPage />} />

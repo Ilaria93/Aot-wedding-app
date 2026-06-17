@@ -1,4 +1,13 @@
-const PUBLIC_PATHS = new Set(['/', '/album', '/travel', '/auth/login', '/auth/register']);
+const DEV_PUBLIC_PATHS = import.meta.env.DEV ? ['/dev/titan-preview'] : [];
+
+const PUBLIC_PATHS = new Set([
+  '/',
+  '/album',
+  '/travel',
+  '/auth/login',
+  '/auth/register',
+  ...DEV_PUBLIC_PATHS,
+]);
 const PUBLIC_PREFIXES = ['/rsvp/'];
 const ALWAYS_PROTECTED_PATHS = new Set(['/profile', '/admin']);
 
