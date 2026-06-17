@@ -9,25 +9,25 @@ describe('coupleStrikeSequence', () => {
   describe('getCoupleStrikeProgress', () => {
     it('returns 0 before the coupleStrike scene', () => {
       expect(getCoupleStrikeProgress(0)).toBe(0);
-      expect(getCoupleStrikeProgress(0.79)).toBe(0);
+      expect(getCoupleStrikeProgress(0.71)).toBe(0);
     });
 
     it('returns 1 after the coupleStrike scene', () => {
-      expect(getCoupleStrikeProgress(0.96)).toBe(1);
+      expect(getCoupleStrikeProgress(0.9)).toBe(1);
       expect(getCoupleStrikeProgress(1)).toBe(1);
     });
 
     it('maps local progress inside the coupleStrike window', () => {
-      expect(getCoupleStrikeProgress(0.8)).toBe(0);
-      expect(getCoupleStrikeProgress(0.875)).toBeCloseTo(0.5, 5);
-      expect(getCoupleStrikeProgress(0.95)).toBe(1);
+      expect(getCoupleStrikeProgress(0.72)).toBe(0);
+      expect(getCoupleStrikeProgress(0.78)).toBeCloseTo(0.5, 5);
+      expect(getCoupleStrikeProgress(0.84)).toBe(1);
     });
   });
 
   describe('isCoupleStrikeSceneActive', () => {
     it('is active during coupleStrike and countdownTransition', () => {
-      expect(isCoupleStrikeSceneActive(0.79)).toBe(false);
-      expect(isCoupleStrikeSceneActive(0.8)).toBe(true);
+      expect(isCoupleStrikeSceneActive(0.71)).toBe(false);
+      expect(isCoupleStrikeSceneActive(0.72)).toBe(true);
       expect(isCoupleStrikeSceneActive(0.9)).toBe(true);
       expect(isCoupleStrikeSceneActive(0.97)).toBe(true);
     });

@@ -27,7 +27,12 @@ type HeroCanvasProps = SceneManagerProps;
 /**
  * Full-viewport WebGL canvas hosting the cinematic hero scene (web only).
  */
-export function HeroCanvas({ progress = 0 }: HeroCanvasProps) {
+export function HeroCanvas({
+  progress = 0,
+  progressRef,
+  cameraDebugRef,
+  showCameraPathHelpers = false,
+}: HeroCanvasProps) {
   return (
     <View style={styles.root}>
       <Canvas
@@ -41,7 +46,12 @@ export function HeroCanvas({ progress = 0 }: HeroCanvasProps) {
         }}
         gl={{ antialias: true, alpha: false }}>
         <Suspense fallback={<CinematicCanvasFallback />}>
-          <SceneManager progress={progress} />
+          <SceneManager
+            progress={progress}
+            progressRef={progressRef}
+            cameraDebugRef={cameraDebugRef}
+            showCameraPathHelpers={showCameraPathHelpers}
+          />
         </Suspense>
       </Canvas>
     </View>

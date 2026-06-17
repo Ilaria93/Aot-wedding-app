@@ -20,7 +20,6 @@ export function WhiteFlashOverlay({ opacity }: WhiteFlashOverlayProps) {
         pointerEvents: 'none',
         backgroundColor: '#ffffff',
         opacity,
-        transition: 'opacity 120ms linear',
       }}
     />
   );

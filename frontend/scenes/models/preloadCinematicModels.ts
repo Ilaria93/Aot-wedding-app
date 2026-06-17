@@ -2,6 +2,7 @@ import { useGLTF } from '@react-three/drei';
 import type { GLTF } from 'three-stdlib';
 import type { ObjectMap } from '@react-three/fiber';
 
+import { BULL_TERRIER_TITAN_GLB } from '@/constants/titanCorridorTitan';
 import {
   CINEMATIC_SCENE_MODEL_ENTRIES,
   getCinematicModelSources,
@@ -23,6 +24,8 @@ export function preloadCinematicModels(): void {
   for (const source of getCinematicModelSources()) {
     useGLTF.preload(asGltfPath(source), dracoBySource.get(source) ?? true);
   }
+
+  useGLTF.preload(asGltfPath(BULL_TERRIER_TITAN_GLB));
 }
 
 /** Clears the drei GLTF cache for a single scene source. */

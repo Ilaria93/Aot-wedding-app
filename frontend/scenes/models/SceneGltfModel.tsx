@@ -5,13 +5,14 @@ import { SkeletonUtils } from 'three-stdlib';
 
 import type { CinematicSceneModelEntry, GltfTransform } from '@/constants/cinematicModelRegistry';
 import type { LoadedSceneGltf } from '@/scenes/models/preloadCinematicModels';
+import { sceneHasRenderableMeshes } from '@/utils/sceneGeometry';
 
 import '@/scenes/models/dracoLoader';
 
 type SceneGltfModelProps = {
   entry: CinematicSceneModelEntry;
   visible: boolean;
-  onLoaded?: () => void;
+  onLoaded?: (hasRenderableGeometry: boolean) => void;
 };
 
 function resolveScale(scale: GltfTransform['scale']): [number, number, number] {
@@ -51,7 +52,7 @@ export function SceneGltfModel({ entry, visible, onLoaded }: SceneGltfModelProps
   const { position = [0, 0, 0], rotation = [0, 0, 0], scale } = entry.transform;
 
   useEffect(() => {
-    onLoaded?.();
+    onLoaded?.(sceneHasRenderableMeshes(clonedScene));
   }, [clonedScene, onLoaded]);
 
   if (!visible) {

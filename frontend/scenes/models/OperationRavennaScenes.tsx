@@ -2,10 +2,7 @@ import { Suspense, useCallback, useState } from 'react';
 
 import type { CinematicSceneModelEntry } from '@/constants/cinematicModelRegistry';
 import type { OperationRavennaSceneId } from '@/types/scene';
-import {
-  isCinematicSceneLoaded,
-  markCinematicSceneLoaded,
-} from '@/scenes/models/loadedCinematicScenes';
+import { markCinematicSceneLoaded } from '@/scenes/models/loadedCinematicScenes';
 import { OperationRavennaSceneFallback } from '@/scenes/models/OperationRavennaSceneFallback';
 import { SceneGltfLoadingFallback } from '@/scenes/models/SceneGltfLoadingFallback';
 import { SceneGltfModel } from '@/scenes/models/SceneGltfModel';
@@ -19,12 +16,20 @@ type CinematicSceneSlotProps = {
  * Mounts procedural fallback, suspense loader and GLTF for a single Operation Ravenna scene.
  */
 function CinematicSceneSlot({ entry, activeSceneId }: CinematicSceneSlotProps) {
-  const [hasLoadedGltf, setHasLoadedGltf] = useState(() => isCinematicSceneLoaded(entry.sceneId));
-  const showPlaceholder = !hasLoadedGltf;
-  const markSceneLoaded = useCallback(() => {
-    markCinematicSceneLoaded(entry.sceneId);
-    setHasLoadedGltf(true);
-  }, [entry.sceneId]);
+  const [hasRenderableGltf, setHasRenderableGltf] = useState(false);
+  const showPlaceholder = !hasRenderableGltf;
+
+  const markSceneLoaded = useCallback(
+    (hasRenderableGeometry: boolean) => {
+      if (!hasRenderableGeometry) {
+        return;
+      }
+
+      markCinematicSceneLoaded(entry.sceneId);
+      setHasRenderableGltf(true);
+    },
+    [entry.sceneId],
+  );
 
   return (
     <group name={`scene-slot-${entry.sceneId}`}>

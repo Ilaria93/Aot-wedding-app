@@ -1,3 +1,4 @@
+import { isOperationRavennaGrayboxEnabled } from '@/constants/operationRavennaGraybox';
 import type { OperationRavennaSceneId } from '@/types/scene';
 import { FinalArenaEnvironment } from '@/scenes/environments/FinalArenaEnvironment';
 import { GiantWallsEnvironment } from '@/scenes/environments/GiantWallsEnvironment';
@@ -16,7 +17,7 @@ export function OperationRavennaSceneFallback({
   sceneId,
   visible,
 }: OperationRavennaSceneFallbackProps) {
-  if (!visible) {
+  if (!visible || isOperationRavennaGrayboxEnabled()) {
     return null;
   }
 
