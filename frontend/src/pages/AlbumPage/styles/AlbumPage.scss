@@ -1,0 +1,57 @@
+.preview-card {
+  margin-bottom: 12px;
+  padding: 12px;
+  border: 1px solid var(--aot-border);
+  border-radius: 18px;
+  background: var(--aot-surface-muted);
+}
+
+.preview-card__image {
+  display: block;
+  width: 100%;
+  height: 220px;
+  margin-bottom: 10px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: var(--aot-border);
+}
+
+.preview-card__meta {
+  margin: 0 0 4px;
+  color: var(--aot-text-muted);
+  font-size: 13px;
+}
+
+.photo-card {
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: 1px solid var(--aot-border);
+}
+
+.photo-card__image {
+  display: block;
+  width: 100%;
+  height: 260px;
+  margin-bottom: 12px;
+  border-radius: 18px;
+  object-fit: cover;
+  background: var(--aot-border);
+}
+
+.photo-card__guest {
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.photo-card__meta {
+  margin: 0;
+  color: var(--aot-text-muted);
+  font-size: 13px;
+}
+
+.photo-card__caption {
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 1.45;
+}

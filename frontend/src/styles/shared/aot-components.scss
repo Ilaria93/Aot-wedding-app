@@ -1,0 +1,307 @@
+/* Shared UI — ported from the original Expo StyleSheets (main branch). */
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--aot-bronze);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.125em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0 0 10px;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.subtitle {
+  margin: 0 0 16px;
+  color: var(--aot-text-muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.subtitle--flush {
+  margin-bottom: 0;
+}
+
+.section-heading,
+.section-title {
+  margin: 0 0 14px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.section-description {
+  margin: 0 0 16px;
+  color: var(--aot-text-muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.card,
+.aot-card {
+  width: 100%;
+  max-width: 520px;
+  padding: 24px;
+  border: 1px solid var(--aot-border);
+  border-radius: 24px;
+  background: var(--aot-surface);
+}
+
+.aot-card--wide {
+  max-width: 640px;
+}
+
+.page-centered,
+.auth-screen {
+  display: grid;
+  flex-grow: 1;
+  place-items: center;
+  width: 100%;
+  min-height: calc(100vh - 56px);
+  padding: 24px;
+  background: var(--aot-background);
+}
+
+.page-shell,
+.aot-screen {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  width: 100%;
+  padding: 32px 24px 48px;
+  background: var(--aot-background);
+}
+
+.aot-content {
+  width: 100%;
+  max-width: 960px;
+}
+
+.hero-card,
+.aot-hero-card {
+  margin-bottom: 16px;
+  padding: 28px;
+  border: 1px solid var(--aot-border);
+  border-radius: 24px;
+  background: var(--aot-surface);
+}
+
+.hero-card .title,
+.aot-hero-card .title {
+  font-size: 32px;
+}
+
+.section-card,
+.aot-section-card {
+  margin-bottom: 16px;
+  padding: 24px;
+  border: 1px solid var(--aot-border);
+  border-radius: 24px;
+  background: var(--aot-surface);
+}
+
+.field-label {
+  display: block;
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.field {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--aot-border);
+  border-radius: 14px;
+  background: var(--aot-surface-muted);
+  color: var(--aot-text-primary);
+}
+
+.textarea,
+.input--multiline {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.button,
+.aot-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button-primary,
+.aot-btn-primary {
+  background: var(--aot-bronze);
+  color: var(--aot-surface);
+}
+
+.button-secondary,
+.aot-btn-secondary {
+  width: auto;
+  align-self: flex-start;
+  border: 1px solid var(--aot-border);
+  background: var(--aot-surface-muted);
+  color: var(--aot-text-primary);
+}
+
+.button-secondary--block,
+.aot-btn-secondary--block {
+  width: 100%;
+  align-self: stretch;
+}
+
+.button:disabled,
+.aot-btn:disabled,
+.is-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-text,
+.aot-error {
+  margin: 0 0 12px;
+  color: var(--aot-danger);
+}
+
+.error-text--flush {
+  margin-bottom: 0;
+}
+
+.helper-text,
+.aot-helper {
+  margin: 12px 0 0;
+  color: var(--aot-text-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.helper-text--flush {
+  margin-top: 0;
+}
+
+.field-label--spaced {
+  margin-top: 16px;
+}
+
+.button--spaced-top {
+  margin-top: 24px;
+}
+
+.button--spaced-top-sm {
+  margin-top: 4px;
+}
+
+.text-link,
+.aot-link {
+  color: var(--aot-bronze);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.aot-link--large {
+  display: inline-block;
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.aot-link--secondary {
+  color: var(--aot-text-primary);
+  font-weight: 600;
+}
+
+.link-row {
+  margin-top: 0;
+}
+
+.alert-card,
+.aot-alert {
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid var(--aot-alert-border);
+  border-radius: 18px;
+  background: var(--aot-alert-bg);
+}
+
+.summary-card,
+.aot-summary-card,
+.preference-card,
+.aot-preference-card {
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid var(--aot-border);
+  border-radius: 18px;
+  background: var(--aot-surface-muted);
+}
+
+.summary-label,
+.aot-summary-label {
+  margin: 0 0 4px;
+  color: var(--aot-text-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.summary-value,
+.aot-summary-value {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.summary-value--flush {
+  margin-bottom: 0;
+}
+
+.summary-row,
+.aot-summary-row {
+  padding: 12px 0;
+  border-top: 1px solid var(--aot-border);
+}
+
+.summary-row:first-child,
+.aot-summary-row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.empty-text {
+  margin: 0;
+  color: var(--aot-text-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.loading-screen {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  background: var(--aot-background);
+  color: var(--aot-bronze);
+}
+
+.loading-text {
+  color: var(--aot-text-muted);
+  font-size: 15px;
+}

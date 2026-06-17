@@ -1,0 +1,51 @@
+.dev-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.dev-grid--spaced {
+  margin-bottom: 24px;
+}
+
+.dev-card {
+  flex: 1;
+  min-width: min(100%, 200px);
+  padding: 16px;
+  border: 1px solid var(--aot-border);
+  border-radius: 18px;
+  background: var(--aot-surface-muted);
+}
+
+.landing-section {
+  margin-bottom: 24px;
+}
+
+.admin-hero-card {
+  max-width: none;
+  margin-bottom: 20px;
+}
+
+.admin-guest-list {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-photo-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.admin-photo-thumb {
+  width: 100%;
+  border-radius: 12px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.admin-photo-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
