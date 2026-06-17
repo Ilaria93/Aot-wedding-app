@@ -53,6 +53,14 @@ export const GRAYBOX_TITAN_SILHOUETTES: readonly GrayboxTitanSilhouetteSpec[] = 
     torsoLean: -0.04,
   },
   {
+    id: 'titan-left-close',
+    position: [-28, 0, -198],
+    rotationY: 0.55,
+    scale: 1.2,
+    armSpread: 0.24,
+    torsoLean: 0.07,
+  },
+  {
     id: 'titan-right-rear',
     position: [34, 0, -218],
     rotationY: -2.4,

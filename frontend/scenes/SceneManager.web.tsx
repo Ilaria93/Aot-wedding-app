@@ -1,5 +1,5 @@
 import { ContactShadows, Environment } from '@react-three/drei';
-import { Suspense, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { CameraPathEditorHelpers } from '@/components/cinematic/CameraPathEditorHelpers';
 import { CameraRig } from '@/components/cinematic/CameraRig';
@@ -14,7 +14,6 @@ import { HeroSceneAtmosphere } from '@/scenes/models/HeroSceneAtmosphere';
 import { OperationRavennaScenes } from '@/scenes/models/OperationRavennaScenes';
 import { CoupleStrikeSequence } from '@/scenes/sequences/CoupleStrikeSequence';
 import { SquadTraversalSequence } from '@/scenes/sequences/SquadTraversalSequence';
-import { BullTerrierTitan } from '@/scenes/titanCorridor/BullTerrierTitan';
 import type { SceneManagerProps } from '@/types/scene';
 import { isCoupleStrikeSceneActive } from '@/utils/coupleStrikeSequence';
 import { HERO_CAMERA_TIMELINE } from '@/utils/heroCameraTimeline';
@@ -38,7 +37,6 @@ export function SceneManager({
   const sceneModelEntry = getCinematicSceneModelEntry(modelSceneId);
   const showCoupleStrike = useMemo(() => isCoupleStrikeSceneActive(progress), [progress]);
   const grayboxEnabled = isOperationRavennaGrayboxEnabled();
-  const titanCorridorActive = sceneState.sceneId === 'titanCorridor';
 
   return (
     <>
@@ -93,10 +91,6 @@ export function SceneManager({
       )}
 
       <SquadTraversalSequence globalProgress={progress} />
-
-      <Suspense fallback={null}>
-        <BullTerrierTitan active={titanCorridorActive} />
-      </Suspense>
     </>
   );
 }
