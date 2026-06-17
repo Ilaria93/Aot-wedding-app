@@ -1,0 +1,172 @@
+.page-shell {
+  width: min(100%, var(--page-max-width));
+  margin: 0 auto;
+  padding: 24px 20px 120px;
+}
+
+.page-centered {
+  min-height: calc(100vh - var(--nav-height));
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--aot-surface);
+  border: 1px solid var(--aot-border);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 18px 40px rgba(36, 48, 36, 0.08);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--aot-bronze);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  line-height: 1.1;
+}
+
+.subtitle {
+  margin: 0 0 24px;
+  color: var(--aot-text-muted);
+  line-height: 1.6;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--aot-border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: var(--aot-surface-muted);
+  color: var(--aot-text-primary);
+}
+
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.button-primary {
+  background: var(--aot-military-green-dark);
+  color: var(--aot-surface);
+}
+
+.button-secondary {
+  background: transparent;
+  color: var(--aot-military-green-dark);
+  border: 1px solid var(--aot-border);
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.error-text {
+  color: var(--aot-danger);
+  margin: 8px 0 0;
+}
+
+.helper-text {
+  color: var(--aot-text-muted);
+  margin: 8px 0 0;
+  font-size: 14px;
+}
+
+.link-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.text-link {
+  color: var(--aot-military-green-dark);
+  font-weight: 700;
+}
+
+.loading-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: var(--aot-background);
+  color: var(--aot-bronze);
+}
+
+.app-nav {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  padding: 8px 10px;
+  border-radius: 22px;
+  background: rgba(249, 248, 243, 0.94);
+  border: 1px solid var(--aot-border);
+  box-shadow: 0 8px 24px rgba(36, 48, 36, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.app-nav a {
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+  padding: 8px 4px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--aot-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.app-nav a.active {
+  color: var(--aot-bronze);
+  background: rgba(184, 138, 82, 0.12);
+}
+
+@media (min-width: 900px) {
+  .app-nav {
+    top: 16px;
+    bottom: auto;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: min(calc(100% - 32px), 720px);
+  }
+}
