@@ -1,0 +1,62 @@
+.contact-card {
+  padding-top: 14px;
+  margin-top: 14px;
+  border-top: 1px solid var(--aot-border);
+}
+
+.contact-card:first-child {
+  padding-top: 0;
+  margin-top: 0;
+  border-top: none;
+}
+
+.contact-card__label {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.contact-card__meta {
+  margin: 0 0 4px;
+  color: var(--aot-text-muted);
+  font-size: 14px;
+}
+
+.contact-card__notes {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid var(--aot-border);
+  border-radius: 12px;
+  background: var(--aot-surface-muted);
+  color: var(--aot-text-primary);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.action-button__badge {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--action-accent, currentColor);
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--action-accent, currentColor) 9%, transparent);
+  color: var(--action-accent, currentColor);
+}
