@@ -18,6 +18,7 @@ import {
   resolveIdleAnimationName,
   resolveTitanGroundY,
 } from '@/utils/titanCorridorTitan';
+import { normalizeOpaqueCharacterMaterials } from '@/utils/gltfMaterial';
 
 type BullTerrierTitanProps = {
   /** When false, skips per-frame motion while keeping the mesh culled by distance. */
@@ -27,6 +28,7 @@ type BullTerrierTitanProps = {
 
 function cloneTitanScene(source: Object3D): Object3D {
   const clone = SkeletonUtils.clone(source);
+  normalizeOpaqueCharacterMaterials(clone);
   clone.traverse((child) => {
     if (child instanceof Mesh) {
       child.castShadow = true;
