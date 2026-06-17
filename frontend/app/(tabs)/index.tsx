@@ -13,6 +13,7 @@ import {
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import { CinematicHeroSection } from '@/components/cinematic/CinematicHeroSection';
+import { LandingNavbar } from '@/components/LandingNavbar';
 import { HoneymoonGiftSection } from '@/components/HoneymoonGiftSection';
 import { aotTheme } from '@/constants/aotTheme';
 import { apiBaseUrl } from '@/constants/apiConfig';
@@ -21,15 +22,21 @@ import {
   formatWeddingTimeDisplay,
 } from '@/constants/weddingEvent';
 import { useAuth } from '@/contexts/AuthContext';
+import { useHeroScroll } from '@/contexts/HeroScrollContext';
 import { useI18n } from '@/contexts/I18nContext';
+import { resolveHeroNavbarIntroOpacity } from '@/constants/heroScroll';
 import { createGuestInvitation } from '@/services/guestApi';
 import { getApiErrorMessage } from '@/utils/apiErrors';
+import { notifyHeroScroll } from '@/utils/heroScrollBridge';
 
 // Home screen styled like an editorial wedding landing page.
 export default function LandingScreen() {
   const router = useRouter();
   const { canManageWedding, isAuthenticated } = useAuth();
   const { t, locale } = useI18n();
+  const { progress: heroScrollProgress } = useHeroScroll();
+  const heroNavbarIntroOpacity =
+    Platform.OS === 'web' ? resolveHeroNavbarIntroOpacity(heroScrollProgress) : 0;
   const scrollViewRef = useRef<ScrollView | null>(null);
   const sectionOffsets = useRef<Record<string, number>>({});
   const floralFloat = useRef(new Animated.Value(0)).current;
@@ -103,46 +110,45 @@ export default function LandingScreen() {
     }
   }
 
+  const landingNavbar = (variant: 'overlay' | 'page') => (
+    <LandingNavbar
+      variant={variant}
+      isAuthenticated={isAuthenticated}
+      canManageWedding={canManageWedding}
+      onNavigateSection={scrollToSection}
+      onNavigateProfile={() => router.push('/profile')}
+      onNavigateAdmin={() => router.push('/admin')}
+    />
+  );
+
+  const heroIntroNavbar =
+    heroNavbarIntroOpacity > 0.04 ? (
+      <View
+        pointerEvents={heroNavbarIntroOpacity > 0.2 ? 'auto' : 'none'}
+        style={{ opacity: heroNavbarIntroOpacity }}>
+        <View style={styles.page}>{landingNavbar('overlay')}</View>
+      </View>
+    ) : null;
+
   return (
-    <ScrollView ref={scrollViewRef} contentContainerStyle={styles.container}>
+    <ScrollView
+      ref={scrollViewRef}
+      style={Platform.OS === 'web' ? styles.landingScrollView : undefined}
+      contentContainerStyle={Platform.OS === 'web' ? styles.containerWeb : styles.container}
+      scrollEventThrottle={Platform.OS === 'web' ? 16 : undefined}
+      onScroll={
+        Platform.OS === 'web'
+          ? () => {
+              notifyHeroScroll();
+            }
+          : undefined
+      }>
       {Platform.OS === 'web' ? (
-        <View style={styles.cinematicBreakout}>
-          <CinematicHeroSection scrollerRef={scrollViewRef} />
-        </View>
+        <CinematicHeroSection scrollerRef={scrollViewRef} navbarOverlay={heroIntroNavbar} />
       ) : null}
 
-      <View style={styles.page}>
-        <View style={styles.navbar}>
-          <View>
-            <Text style={styles.navBrand}>Ilaria & Davide</Text>
-            <Text style={styles.navSubBrand}>Operation Ravenna</Text>
-          </View>
-          <View style={styles.navLinks}>
-            <Pressable onPress={() => scrollToSection('story')}>
-              <Text style={styles.navLink}>{t('landing.nav.story')}</Text>
-            </Pressable>
-            <Pressable onPress={() => scrollToSection('ceremony')}>
-              <Text style={styles.navLink}>{t('landing.nav.ceremony')}</Text>
-            </Pressable>
-            <Pressable onPress={() => scrollToSection('rsvp')}>
-              <Text style={styles.navLink}>{t('landing.nav.rsvp')}</Text>
-            </Pressable>
-            <Pressable onPress={() => scrollToSection('gift')}>
-              <Text style={styles.navLink}>{t('landing.nav.gift')}</Text>
-            </Pressable>
-            <Pressable onPress={() => router.push('/profile')}>
-              <Text style={styles.navLink}>
-                {isAuthenticated ? t('landing.nav.profile') : t('landing.nav.login')}
-              </Text>
-            </Pressable>
-            {canManageWedding ? (
-              <Pressable onPress={() => router.push('/admin')}>
-                <Text style={styles.navLink}>{t('landing.nav.admin')}</Text>
-              </Pressable>
-            ) : null}
-          </View>
-        </View>
-
+      <View style={[styles.page, Platform.OS === 'web' ? styles.pageAfterHero : null]}>
+        {Platform.OS !== 'web' ? (
         <View
           style={styles.heroSection}
           onLayout={(event) => {
@@ -176,8 +182,15 @@ export default function LandingScreen() {
             </Pressable>
           </View>
         </View>
+        ) : null}
 
-        <View style={styles.storySection}>
+        <View
+          style={styles.storySection}
+          onLayout={(event) => {
+            if (Platform.OS === 'web') {
+              sectionOffsets.current.story = event.nativeEvent.layout.y;
+            }
+          }}>
           <View style={styles.photoColumn}>
             <View style={styles.photoFrame}>
               <Text style={styles.photoPlaceholderText}>{t('landing.story.photoOne')}</Text>
@@ -386,50 +399,23 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
     alignItems: 'center',
   },
-  cinematicBreakout: {
-    width: '100vw' as unknown as number,
-    alignSelf: 'center',
-    marginHorizontal: -20,
-    marginTop: -28,
-    backgroundColor: aotTheme.cinematicBackground,
+  containerWeb: {
+    backgroundColor: aotTheme.background,
+    paddingHorizontal: 20,
+    paddingBottom: 120,
+    alignItems: 'center',
+  },
+  landingScrollView: {
+    flex: 1,
+    width: '100%',
+    height: '100%' as unknown as number,
   },
   page: {
     width: '100%',
     maxWidth: 1180,
   },
-  navbar: {
-    backgroundColor: 'rgba(249, 248, 243, 0.88)',
-    borderWidth: 1,
-    borderColor: aotTheme.border,
-    borderRadius: 22,
-    paddingVertical: 14,
-    paddingHorizontal: 18,
-    marginBottom: 18,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  navBrand: {
-    color: aotTheme.textPrimary,
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  navSubBrand: {
-    color: aotTheme.textMuted,
-    fontSize: 12,
-    marginTop: 2,
-  },
-  navLinks: {
-    flexDirection: 'row',
-    gap: 18,
-    flexWrap: 'wrap',
-  },
-  navLink: {
-    color: aotTheme.textPrimary,
-    fontSize: 14,
-    fontWeight: '600',
+  pageAfterHero: {
+    paddingTop: 24,
   },
   heroSection: {
     backgroundColor: aotTheme.surface,

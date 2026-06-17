@@ -4,10 +4,11 @@ import { useFonts } from 'expo-font';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Platform, View } from 'react-native';
 import 'react-native-reanimated';
 
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { DEV_UNLOCK_ALL_ROUTES } from '@/constants/devAccess';
 import { useAuth } from '@/contexts/AuthContext';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { I18nProvider, useI18n } from '@/contexts/I18nContext';
@@ -80,10 +81,13 @@ function AuthNavigation() {
   const { t } = useI18n();
 
   const isAuthRoute = segments[0] === 'auth';
+  const isDevRoute = segments[0] === 'dev';
   const isHomeTab = segments[0] === '(tabs)' && segments.length === 1;
-  const isPublicRoute = isAuthRoute || isHomeTab;
-  const shouldRedirectToLogin = !isBootstrapping && !isAuthenticated && !isPublicRoute;
-  const shouldRedirectToApp = !isBootstrapping && isAuthenticated && isAuthRoute;
+  const isPublicRoute = DEV_UNLOCK_ALL_ROUTES || isAuthRoute || isDevRoute || isHomeTab;
+  const shouldRedirectToLogin =
+    !DEV_UNLOCK_ALL_ROUTES && !isBootstrapping && !isAuthenticated && !isPublicRoute;
+  const shouldRedirectToApp =
+    !DEV_UNLOCK_ALL_ROUTES && !isBootstrapping && isAuthenticated && isAuthRoute;
 
   useEffect(() => {
     if (shouldRedirectToLogin) {
@@ -135,6 +139,13 @@ function AuthNavigation() {
         name="auth/register"
         options={{
           title: t('navigation.stack.register'),
+        }}
+      />
+      <Stack.Screen
+        name="dev/titan-preview"
+        options={{
+          title: 'Titan Preview',
+          headerShown: Platform.OS === 'web',
         }}
       />
     </Stack>

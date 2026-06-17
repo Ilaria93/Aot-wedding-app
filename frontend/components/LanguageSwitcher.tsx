@@ -1,25 +1,32 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { aotTheme } from '@/constants/aotTheme';
-import { getLocaleLabel, useI18n } from '@/contexts/I18nContext';
-import { supportedLocales } from '@/i18n/translations';
+import { useI18n } from '@/contexts/I18nContext';
+import { supportedLocales, type AppLocale } from '@/i18n/translations';
 
 type LanguageSwitcherProps = {
+  /** Hides the LINGUA eyebrow when space is tight (tab header, navbar). */
   compact?: boolean;
+  /** Light = editorial navbar; dark = cinematic overlay / military header. */
+  tone?: 'light' | 'dark';
 };
 
-// Small reusable language switcher for stack headers and screens.
-export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
+const LOCALE_CODES: Record<AppLocale, string> = {
+  it: 'IT',
+  en: 'EN',
+  fr: 'FR',
+  de: 'DE',
+};
+
+/**
+ * Tactical locale picker — segmented pills in Survey Corps palette (no dropdown).
+ */
+export function LanguageSwitcher({ compact = false, tone = 'light' }: LanguageSwitcherProps) {
   const { locale, setLocale, t } = useI18n();
-  const [isOpen, setIsOpen] = useState(false);
+  const isDark = tone === 'dark';
 
-  const currentLabel = compact ? locale.toUpperCase() : getLocaleLabel(locale);
-
-  async function handleSelect(nextLocale: (typeof supportedLocales)[number]) {
-    setIsOpen(false);
-
+  async function handleSelect(nextLocale: AppLocale) {
     if (nextLocale === locale) {
       return;
     }
@@ -28,141 +35,107 @@ export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
   }
 
   return (
-    <View style={[styles.container, compact && styles.containerCompact]}>
-      {!compact ? <Text style={styles.label}>{t('language.label')}</Text> : null}
-
-      <View style={styles.dropdownWrapper}>
-        <Pressable
-          style={[styles.trigger, isOpen && styles.triggerOpen, compact && styles.triggerCompact]}
-          onPress={() => setIsOpen((current) => !current)}>
-          <View style={styles.triggerContent}>
-            <FontAwesome
-              name="globe"
-              size={14}
-              color={isOpen ? aotTheme.militaryGreenDark : aotTheme.textMuted}
-            />
-            <Text style={[styles.triggerText, isOpen && styles.triggerTextOpen]}>{currentLabel}</Text>
-          </View>
+    <View style={styles.root}>
+      {!compact ? (
+        <View style={styles.labelRow}>
           <FontAwesome
-            name={isOpen ? 'chevron-up' : 'chevron-down'}
-            size={12}
-            color={aotTheme.textMuted}
+            name="shield"
+            size={11}
+            color={isDark ? aotTheme.bronze : aotTheme.militaryGreenDark}
           />
-        </Pressable>
+          <Text style={[styles.label, isDark && styles.labelDark]}>{t('language.label')}</Text>
+        </View>
+      ) : null}
 
-        {isOpen ? (
-          <View style={styles.menu}>
-            {supportedLocales.map((item) => {
-              const isActive = item === locale;
+      <View style={[styles.track, isDark && styles.trackDark]}>
+        {supportedLocales.map((item) => {
+          const isActive = item === locale;
 
-              return (
-                <Pressable
-                  key={item}
-                  style={[styles.option, isActive && styles.optionActive]}
-                  onPress={() => void handleSelect(item)}>
-                  <Text style={[styles.optionText, isActive && styles.optionTextActive]}>
-                    {getLocaleLabel(item)}
-                  </Text>
-                  {isActive ? (
-                    <FontAwesome name="check" size={12} color={aotTheme.militaryGreenDark} />
-                  ) : null}
-                </Pressable>
-              );
-            })}
-          </View>
-        ) : null}
+          return (
+            <Pressable
+              key={item}
+              accessibilityRole="button"
+              accessibilityState={{ selected: isActive }}
+              style={[styles.pill, isActive && styles.pillActive, isActive && isDark && styles.pillActiveDark]}
+              onPress={() => void handleSelect(item)}>
+              <Text
+                style={[
+                  styles.pillText,
+                  isDark && styles.pillTextDark,
+                  isActive && styles.pillTextActive,
+                  isActive && isDark && styles.pillTextActiveDark,
+                ]}>
+                {LOCALE_CODES[item]}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    gap: 8,
-  },
-  containerCompact: {
+  root: {
     alignItems: 'flex-end',
+    gap: 6,
+  },
+  labelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   label: {
-    color: aotTheme.textMuted,
-    fontSize: 12,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  dropdownWrapper: {
-    position: 'relative',
-    minWidth: 124,
-  },
-  trigger: {
-    minHeight: 38,
-    borderWidth: 1,
-    borderColor: aotTheme.border,
-    borderRadius: 999,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    backgroundColor: aotTheme.surfaceMuted,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 10,
-  },
-  triggerCompact: {
-    minWidth: 96,
-  },
-  triggerOpen: {
-    borderColor: aotTheme.bronze,
-    backgroundColor: '#f3e4d3',
-  },
-  triggerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  triggerText: {
-    color: aotTheme.textPrimary,
-    fontSize: 12,
+    color: aotTheme.militaryGreenDark,
+    fontSize: 10,
     fontWeight: '700',
+    letterSpacing: 2.4,
+    textTransform: 'uppercase',
   },
-  triggerTextOpen: {
-    color: aotTheme.militaryGreenDark,
+  labelDark: {
+    color: 'rgba(244, 241, 232, 0.62)',
   },
-  menu: {
-    position: 'absolute',
-    top: 44,
-    right: 0,
-    minWidth: 164,
-    borderWidth: 1,
-    borderColor: aotTheme.border,
-    borderRadius: 16,
-    backgroundColor: aotTheme.surface,
-    padding: 6,
-    zIndex: 20,
-    shadowColor: '#243024',
-    shadowOpacity: 0.1,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 8,
-  },
-  option: {
-    minHeight: 40,
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+  track: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 12,
+    gap: 2,
+    padding: 3,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: aotTheme.border,
+    backgroundColor: aotTheme.surfaceMuted,
   },
-  optionActive: {
-    backgroundColor: '#f3e4d3',
+  trackDark: {
+    borderColor: 'rgba(184, 138, 82, 0.35)',
+    backgroundColor: 'rgba(12, 16, 14, 0.55)',
   },
-  optionText: {
-    color: aotTheme.textPrimary,
-    fontSize: 13,
-    fontWeight: '600',
+  pill: {
+    minWidth: 34,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  optionTextActive: {
-    color: aotTheme.militaryGreenDark,
+  pillActive: {
+    backgroundColor: aotTheme.militaryGreenDark,
+  },
+  pillActiveDark: {
+    backgroundColor: aotTheme.bronze,
+  },
+  pillText: {
+    color: aotTheme.textMuted,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 1.4,
+  },
+  pillTextDark: {
+    color: 'rgba(244, 241, 232, 0.55)',
+  },
+  pillTextActive: {
+    color: aotTheme.surface,
+  },
+  pillTextActiveDark: {
+    color: '#1a211d',
   },
 });

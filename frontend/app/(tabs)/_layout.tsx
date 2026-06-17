@@ -5,7 +5,9 @@ import { Tabs } from 'expo-router';
 
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { aotTheme } from '@/constants/aotTheme';
+import { DEV_UNLOCK_ALL_ROUTES } from '@/constants/devAccess';
 import { useAuth } from '@/contexts/AuthContext';
+import { HeroScrollProvider, useHeroScroll } from '@/contexts/HeroScrollContext';
 import { useI18n } from '@/contexts/I18nContext';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 
@@ -18,8 +20,18 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
+  return (
+    <HeroScrollProvider>
+      <TabLayoutContent />
+    </HeroScrollProvider>
+  );
+}
+
+function TabLayoutContent() {
   const { canManageWedding, isBootstrapping } = useAuth();
   const { t } = useI18n();
+  const { isHeroScrollActive } = useHeroScroll();
+  const hideTabBar = Platform.OS === 'web' && isHeroScrollActive;
 
   if (isBootstrapping) {
     return (
@@ -52,21 +64,38 @@ export default function TabLayout() {
           paddingBottom: 8,
           paddingTop: 8,
           paddingHorizontal: 10,
-          ...(Platform.OS === 'web'
-            ? { boxShadow: '0 8px 18px rgba(36, 48, 36, 0.08)' }
-            : {
-                shadowColor: '#243024',
-                shadowOpacity: 0.08,
-                shadowRadius: 18,
-                shadowOffset: { width: 0, height: 8 },
-                elevation: 6,
-              }),
+          ...(hideTabBar
+            ? {
+                display: 'none',
+                opacity: 0,
+                pointerEvents: 'none',
+              }
+            : Platform.OS === 'web'
+              ? { boxShadow: '0 8px 18px rgba(36, 48, 36, 0.08)' }
+              : {
+                  shadowColor: '#243024',
+                  shadowOpacity: 0.08,
+                  shadowRadius: 18,
+                  shadowOffset: { width: 0, height: 8 },
+                  elevation: 6,
+                }),
         },
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: '600',
         },
-        headerRight: () => <LanguageSwitcher compact />,
+        headerStyle: {
+          backgroundColor: aotTheme.militaryGreenDark,
+          borderBottomWidth: 2,
+          borderBottomColor: aotTheme.bronze,
+        },
+        headerTintColor: aotTheme.surface,
+        headerTitleStyle: {
+          fontWeight: '700',
+          fontSize: 16,
+          letterSpacing: 1.1,
+        },
+        headerRight: () => <LanguageSwitcher compact tone="dark" />,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
@@ -76,12 +105,13 @@ export default function TabLayout() {
         options={{
           title: t('navigation.tabs.invitation'),
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          headerShown: Platform.OS !== 'web',
         }}
       />
       <Tabs.Screen
         name="admin"
         options={{
-          href: canManageWedding ? undefined : null,
+          href: canManageWedding || DEV_UNLOCK_ALL_ROUTES ? undefined : null,
           title: t('navigation.tabs.admin'),
           tabBarIcon: ({ color }) => <TabBarIcon name="shield" color={color} />,
         }}

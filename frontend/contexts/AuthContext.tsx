@@ -13,12 +13,14 @@ import {
 } from '@/services/authApi';
 import {
   clearCurrentSession,
+  getAccessToken,
   logoutCurrentSession,
   restoreRememberedSession,
   setCurrentSession,
   subscribeToSessionChanges,
 } from '@/services/authSession';
 import { translate } from '@/contexts/I18nContext';
+import { DEV_MOCK_AUTH_USER, DEV_UNLOCK_ALL_ROUTES } from '@/constants/devAccess';
 import { getApiErrorMessage } from '@/utils/apiErrors';
 
 type AuthContextValue = {
@@ -56,8 +58,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     async function bootstrapAuth() {
+      if (DEV_UNLOCK_ALL_ROUTES) {
+        setUser(DEV_MOCK_AUTH_USER);
+        setIsBootstrapping(false);
+        return;
+      }
+
       await restoreRememberedSession();
-      const restoredUser = await loadCurrentUserOrClearSession();
+      const restoredUser = getAccessToken()
+        ? await loadCurrentUserOrClearSession()
+        : null;
       setUser(restoredUser);
       setIsBootstrapping(false);
     }
