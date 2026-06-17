@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Contesto progetto
 
-AOT Wedding App: Expo + FastAPI + PostgreSQL.
+AOT Wedding App: React (Vite) + FastAPI + PostgreSQL.
 
 Per setup, API, architettura e convenzioni leggi **`README.md`** nella root. Non duplicare quel contenuto nelle risposte o nel codice.
 

@@ -19,11 +19,15 @@ cd backend && ./venv/bin/pytest -q
 
 Usa fixture `conftest.py` e DB `aot_wedding_app_test`.
 
-## Frontend (Jest + RTL)
+## Frontend (Vitest)
 
-- `utils/` e hook custom → test unitario obbligatorio
-- componenti con stato/validazione → almeno un test RTL
+- `services/`, moduli co-locati in `components/` o `pages/`, e hook custom → test unitario obbligatorio
+- componenti con stato/validazione → almeno un test con Vitest + Testing Library quando serve
 - mock `services/*` e context; mai API reali nei test
+
+```bash
+cd frontend && npm test
+```
 
 ## Regola
 

@@ -1,15 +1,44 @@
 ---
-description: Convenzioni Expo/React Native — regola sempre attiva
+description: Convenzioni frontend web — regola sempre attiva
 alwaysApply: true
 ---
 
-# Frontend Expo
+# Frontend web (Vite + React)
+
+## Struttura cartelle
+
+Ogni **componente**, **pagina** e **layout** vive in una cartella dedicata:
+
+```
+src/
+  components/AppTopBar/
+    AppTopBar.tsx          # componente
+    index.ts               # barrel export
+    styles/AppTopBar.scss  # stili del componente
+    types/                 # tipi locali (se servono)
+  pages/HomePage/
+    HomePage.tsx
+    index.ts
+    styles/HomePage.scss
+    types/
+  layouts/AppLayout/
+    ...
+  hooks/                   # hook condivisi (barrel index.ts)
+  types/                   # tipi condivisi (barrel index.ts)
+  styles/shared/           # stili globali riusati (es. aot-components.scss)
+```
+
+- Import del componente: `@/components/AppTopBar` (via `index.ts`)
+- Stili: `import './styles/NomeComponente.scss'` nel file del componente
+- Tipi locali in `types/`; tipi di dominio condivisi in `src/types/`
+- Hook custom in `src/hooks/`; context restano in `contexts/`
+- **Niente cartella `utils/`**: logica HTTP in `services/`, formattazione locale in `i18n/`, helper co-locati nel componente o nella pagina che li usa
 
 ## Componenti piccoli
 
-- Target **< 150 righe** per file; se cresce → sotto-componenti + `use*.ts`
+- Target **< 150 righe** per file; se cresce → sotto-componenti + hook in `hooks/`
 - **Presentazionali**: props in, callback out — niente `fetch` nel render
-- Screen in `app/` orchestrano; il markup vive in `components/`
+- Pagine in `pages/` orchestrano; il markup vive in `components/`
 
 ```tsx
 /** Card ospite admin con badge stato RSVP. */
@@ -24,10 +53,10 @@ export function GuestListCard({ guest, onPress }: Props) { ... }
 
 ## Stile
 
-- Colori da `@/constants/aotTheme`
-- `StyleSheet.create` in fondo al file
+- Colori da `@/constants/aotTheme` e variabili CSS in `index.css`
+- SCSS per componente in `styles/` della rispettiva cartella; token globali in `index.css`
 - Testi utente solo `t('chiave')` in tutte e 4 le lingue se nuove chiavi
 
 ## Evitare
 
-Componenti monolitici (500+ righe), `any`, hex sparsi, logica business nei componenti.
+Componenti monolitici (500+ righe), `any`, hex sparsi, logica business nei componenti, CSS globale monolitico fuori da `styles/shared/`.
