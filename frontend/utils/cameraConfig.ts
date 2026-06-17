@@ -5,4 +5,5 @@ export const HERO_CAMERA_POSITION: [number, number, number] = [0, 2.2, 6];
 
 export const HERO_CAMERA_NEAR = 0.1;
 
-export const HERO_CAMERA_FAR = 100;
+/** Covers the full Operation Ravenna camera path (z ≈ -305) with headroom. */
+export const HERO_CAMERA_FAR = 600;
