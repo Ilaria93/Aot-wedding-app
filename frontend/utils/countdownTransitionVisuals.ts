@@ -1,13 +1,18 @@
 import {
+  COUNTDOWN_BLACKOUT_HOLD_END_AT,
   COUNTDOWN_FLASH_END_AT,
   COUNTDOWN_FLASH_PEAK_AT,
-  COUNTDOWN_OVERLAY_FADE_END_AT,
-  COUNTDOWN_OVERLAY_FADE_START_AT,
+  COUNTDOWN_META_FADE_END_AT,
+  COUNTDOWN_META_FADE_START_AT,
+  COUNTDOWN_TIMER_FADE_END_AT,
+  COUNTDOWN_TIMER_FADE_START_AT,
 } from '@/constants/countdownTransition';
 
 export type CountdownTransitionVisuals = {
   flashOpacity: number;
-  overlayOpacity: number;
+  blackoutOpacity: number;
+  metaOpacity: number;
+  countdownOpacity: number;
   showOverlay: boolean;
 };
 
@@ -20,8 +25,29 @@ function easeOutCubic(value: number): number {
   return 1 - (1 - t) ** 3;
 }
 
+function resolveFadeIn(
+  progress: number,
+  fadeStart: number,
+  fadeEnd: number,
+): number {
+  if (progress < fadeStart) {
+    return 0;
+  }
+
+  if (progress >= fadeEnd) {
+    return 1;
+  }
+
+  const span = fadeEnd - fadeStart;
+  if (span <= 0) {
+    return 1;
+  }
+
+  return easeOutCubic((progress - fadeStart) / span);
+}
+
 /**
- * Maps countdown-transition local progress to white-flash and overlay opacities.
+ * Maps countdown-transition local progress to blackout, meta and timer opacities.
  */
 export function resolveCountdownTransitionVisuals(
   localProgress: number,
@@ -30,11 +56,19 @@ export function resolveCountdownTransitionVisuals(
   const progress = clamp01(localProgress);
 
   if (options.reduceMotion) {
-    const showOverlay = progress >= COUNTDOWN_OVERLAY_FADE_START_AT;
+    const metaOpacity = resolveFadeIn(progress, COUNTDOWN_META_FADE_START_AT, COUNTDOWN_META_FADE_END_AT);
+    const countdownOpacity = resolveFadeIn(
+      progress,
+      COUNTDOWN_TIMER_FADE_START_AT,
+      COUNTDOWN_TIMER_FADE_END_AT,
+    );
+
     return {
       flashOpacity: 0,
-      overlayOpacity: showOverlay ? 1 : 0,
-      showOverlay,
+      blackoutOpacity: progress >= COUNTDOWN_FLASH_END_AT ? 1 : 0,
+      metaOpacity,
+      countdownOpacity,
+      showOverlay: progress >= COUNTDOWN_META_FADE_START_AT,
     };
   }
 
@@ -48,19 +82,33 @@ export function resolveCountdownTransitionVisuals(
     flashOpacity = 1 - easeOutCubic(fadeAmount);
   }
 
-  let overlayOpacity = 0;
-  if (progress >= COUNTDOWN_OVERLAY_FADE_START_AT) {
-    const fadeSpan = COUNTDOWN_OVERLAY_FADE_END_AT - COUNTDOWN_OVERLAY_FADE_START_AT;
-    const fadeAmount =
-      fadeSpan <= 0
-        ? 1
-        : (progress - COUNTDOWN_OVERLAY_FADE_START_AT) / fadeSpan;
-    overlayOpacity = easeOutCubic(fadeAmount);
-  }
+  const blackoutOpacity =
+    progress >= COUNTDOWN_FLASH_END_AT
+      ? easeOutCubic(
+          Math.min(
+            1,
+            (progress - COUNTDOWN_FLASH_END_AT) /
+              Math.max(COUNTDOWN_BLACKOUT_HOLD_END_AT - COUNTDOWN_FLASH_END_AT, 0.001),
+          ),
+        )
+      : 0;
+
+  const metaOpacity = resolveFadeIn(
+    progress,
+    COUNTDOWN_META_FADE_START_AT,
+    COUNTDOWN_META_FADE_END_AT,
+  );
+  const countdownOpacity = resolveFadeIn(
+    progress,
+    COUNTDOWN_TIMER_FADE_START_AT,
+    COUNTDOWN_TIMER_FADE_END_AT,
+  );
 
   return {
     flashOpacity: clamp01(flashOpacity),
-    overlayOpacity: clamp01(overlayOpacity),
-    showOverlay: overlayOpacity > 0,
+    blackoutOpacity: clamp01(Math.max(blackoutOpacity, metaOpacity > 0 ? 1 : 0, countdownOpacity > 0 ? 1 : 0)),
+    metaOpacity: clamp01(metaOpacity),
+    countdownOpacity: clamp01(countdownOpacity),
+    showOverlay: metaOpacity > 0 || countdownOpacity > 0,
   };
 }

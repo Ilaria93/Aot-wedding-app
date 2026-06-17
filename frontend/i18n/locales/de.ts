@@ -91,6 +91,7 @@ export const de = {
     },
     hero: {
       eyebrow: 'Von Attack on Titan inspirierte Hochzeit',
+      operationTag: 'Operation Ravenna',
       button: 'Hier RSVP',
     },
     cinematic: {
@@ -106,6 +107,39 @@ export const de = {
       dateLabel: 'Einsatzdatum',
       locationLabel: 'Einsatzort',
       documentStamp: 'Vertrauliches Dokument — nur für autorisierte Gäste',
+      scenes: {
+        rooftops: {
+          leftEyebrow: 'Akt I · Distrikt',
+          leftTitle: 'Über Ravenna',
+          rightEyebrow: 'ODM aktiv',
+          rightTitle: 'Fliegen vorwärts',
+        },
+        wallsApproach: {
+          leftEyebrow: 'Akt II · Die Mauern',
+          leftTitle: 'Sie erheben sich',
+          rightEyebrow: 'Gewaltige Höhe',
+          rightTitle: 'Jenseits jeder Grenze',
+        },
+        wallLaunch: {
+          leftEyebrow: 'Akt III · Start',
+          leftTitle: 'Über der Stadt',
+          rightEyebrow: 'Mut',
+          rightTitle: 'Ins Unbekannte',
+        },
+        titanCorridor: {
+          leftEyebrow: 'Akt IV · Korridor',
+          leftTitle: 'Durch die Schatten',
+          rightEyebrow: 'Der Titan',
+          rightTitle: 'Beobachtet uns',
+        },
+        coupleStrike: {
+          leftEyebrow: 'Akt V',
+          leftTitle: 'Ilaria',
+          rightEyebrow: 'Akt V',
+          rightTitle: 'Davide',
+          impactTagline: 'Zwei Klingen, ein Schicksal',
+        },
+      },
     },
     story: {
       photoOne: 'Paarfoto 01',

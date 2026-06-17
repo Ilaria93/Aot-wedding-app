@@ -4,12 +4,12 @@ import { assertValidSceneTimeline } from '@/utils/sceneTimeline';
 /** Default Operation Ravenna scene windows mapped to normalized scroll progress. */
 export const OPERATION_RAVENNA_TIMELINE: SceneTimeline = {
   scenes: [
-    { id: 'rooftops', start: 0, end: 0.25 },
-    { id: 'wallsApproach', start: 0.25, end: 0.4 },
-    { id: 'wallLaunch', start: 0.4, end: 0.5 },
-    { id: 'titanCorridor', start: 0.5, end: 0.8 },
-    { id: 'coupleStrike', start: 0.8, end: 0.95 },
-    { id: 'countdownTransition', start: 0.95, end: 1 },
+    { id: 'rooftops', start: 0, end: 0.28 },
+    { id: 'wallsApproach', start: 0.28, end: 0.42 },
+    { id: 'wallLaunch', start: 0.42, end: 0.52 },
+    { id: 'titanCorridor', start: 0.52, end: 0.72 },
+    { id: 'coupleStrike', start: 0.72, end: 0.84 },
+    { id: 'countdownTransition', start: 0.84, end: 1 },
   ],
 };
 
