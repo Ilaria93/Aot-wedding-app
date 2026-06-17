@@ -1,0 +1,93 @@
+.cinematic-hero {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: #1a211d;
+}
+
+.cinematic-hero__scrim-top {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-color: rgba(26, 33, 29, 0.28);
+}
+
+.cinematic-hero__scrim-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 42%;
+  pointer-events: none;
+  background-color: rgba(26, 33, 29, 0.58);
+}
+
+.cinematic-hero__navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  padding: 16px 20px 0;
+  pointer-events: none;
+}
+
+.cinematic-hero__navbar > * {
+  pointer-events: auto;
+}
+
+.cinematic-hero__overlay {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 24px 52px;
+  text-align: center;
+}
+
+.cinematic-hero__eyebrow {
+  margin: 0 0 14px;
+  color: var(--aot-bronze);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.cinematic-hero__couple-names {
+  margin: 0 0 8px;
+  color: var(--aot-surface);
+  font-size: clamp(1.8rem, 5vw, 2.1rem);
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+.cinematic-hero__trailer-date {
+  margin: 0;
+  color: rgba(249, 248, 243, 0.88);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cinematic-hero__scroll-hint {
+  position: absolute;
+  bottom: 24px;
+  z-index: 2;
+  margin: 0;
+  color: rgba(249, 248, 243, 0.55);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}

@@ -4,6 +4,7 @@ import { CAMERA_PATHS } from '@/data/cameraPaths';
 import { OPERATION_RAVENNA_TIMELINE } from '@/constants/operationRavennaTimeline';
 import { getSquadMemberKeyframes } from '@/constants/squadTraversalManeuvers';
 import { ODM_CAMERA_LEGS } from '@/data/odmCameraAnchors';
+import type { OdmGrapplePhase } from '@/types/odmCamera';
 import type {
   SquadMemberId,
   SquadMemberOffset,
@@ -26,6 +27,38 @@ const scratchForward = new Vector3();
 const scratchLateral = new Vector3();
 const scratchPrev = new Vector3();
 const scratchNext = new Vector3();
+
+type ScratchOdmPose = {
+  position: Vector3;
+  target: Vector3;
+  roll: number;
+  fov: number;
+  phase: OdmGrapplePhase;
+};
+
+const scratchPose: ScratchOdmPose = {
+  position: scratchPosition,
+  target: scratchTarget,
+  roll: 0,
+  fov: 50,
+  phase: 'pull',
+};
+
+const scratchNextPose: ScratchOdmPose = {
+  position: scratchNext,
+  target: scratchTarget,
+  roll: 0,
+  fov: 50,
+  phase: 'pull',
+};
+
+const scratchPrevPose: ScratchOdmPose = {
+  position: scratchPrev,
+  target: scratchTarget,
+  roll: 0,
+  fov: 50,
+  phase: 'pull',
+};
 
 type PathFrame = {
   position: Vector3;
@@ -186,19 +219,19 @@ function samplePathFrame(cameraProgress: number, out: MutablePathFrame): PathFra
   resolveOdmCameraPose(
     ODM_CAMERA_LEGS,
     cameraProgress,
-    { position: scratchPosition, target: scratchTarget },
+    scratchPose,
     DEFAULT_ODM_CAMERA_TUNING,
   );
   resolveOdmCameraPose(
     ODM_CAMERA_LEGS,
     nextProgress,
-    { position: scratchNext, target: scratchTarget },
+    scratchNextPose,
     DEFAULT_ODM_CAMERA_TUNING,
   );
   resolveOdmCameraPose(
     ODM_CAMERA_LEGS,
     prevProgress,
-    { position: scratchPrev, target: scratchTarget },
+    scratchPrevPose,
     DEFAULT_ODM_CAMERA_TUNING,
   );
 

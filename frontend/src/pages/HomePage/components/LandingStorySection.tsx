@@ -5,7 +5,7 @@ export function LandingStorySection() {
   const { t } = useI18n();
 
   return (
-    <section className="landing-story">
+    <section className="landing-story" id="story">
       <div className="landing-story__photos">
         <div className="landing-photo-frame">{t('landing.story.photoOne')}</div>
         <div className="landing-photo-frame landing-photo-frame--tall">{t('landing.story.photoTwo')}</div>

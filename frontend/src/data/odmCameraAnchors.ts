@@ -1,5 +1,6 @@
 import { Vector3 } from 'three';
 
+import type { CameraPathSegmentId } from '@/constants/cameraPathEditorColors';
 import { CAMERA_PATHS } from '@/data/cameraPaths';
 import type { OdmAnchor, OdmAnchorSide, OdmCameraLeg } from '@/types/odmCamera';
 import { buildOdmCameraLegs } from '@/utils/odmCameraMotion';
@@ -33,7 +34,7 @@ export function buildOdmAnchorsFromCameraPaths(): OdmAnchor[] {
         id: `${segment.id}-${anchors.length}`,
         position: point.clone(),
         side: resolveAnchorSide(anchors.length),
-        segmentId: segment.id,
+        segmentId: segment.id as CameraPathSegmentId,
       });
     }
   }

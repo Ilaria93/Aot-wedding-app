@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { AuthGuard } from '@/components/AuthGuard/index';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { HeroScrollProvider } from '@/contexts/HeroScrollContext';
 import { I18nProvider } from '@/contexts/I18nContext';
 import { AppLayout } from '@/layouts/AppLayout/index';
 import { AuthStackLayout } from '@/layouts/AuthStackLayout/index';
@@ -20,6 +21,7 @@ export function App() {
   return (
     <I18nProvider>
       <AuthProvider>
+        <HeroScrollProvider>
         <BrowserRouter>
           <Routes>
             <Route element={<AuthGuard />}>
@@ -42,6 +44,7 @@ export function App() {
             </Route>
           </Routes>
         </BrowserRouter>
+        </HeroScrollProvider>
       </AuthProvider>
     </I18nProvider>
   );

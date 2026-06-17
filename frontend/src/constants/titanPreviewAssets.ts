@@ -1,7 +1,7 @@
 /** Ironwolf colossus GLB assets for the TitanPreview dev scene. */
 export const TITAN_PREVIEW_MODELS = {
-  mergedAnimations: require('@/assets/titan-preview/ironwolf-merged-animations.glb'),
-  character: require('@/assets/titan-preview/ironwolf-character.glb'),
+  mergedAnimations: '/assets/titan-preview/ironwolf-merged-animations.glb',
+  character: '/assets/titan-preview/ironwolf-character.glb',
 } as const;
 
 export type TitanPreviewModelId = keyof typeof TITAN_PREVIEW_MODELS;

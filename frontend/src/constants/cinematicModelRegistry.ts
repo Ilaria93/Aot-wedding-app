@@ -1,7 +1,7 @@
 import type { OperationRavennaSceneId } from '@/types/scene';
 
-/** Metro asset id or remote URL accepted by `useGLTF`. */
-export type CinematicGltfSource = string | number;
+/** Public URL or remote URL accepted by `useGLTF`. */
+export type CinematicGltfSource = string;
 
 /** Transform applied to every Blender export before it enters the scene graph. */
 export type GltfTransform = {
@@ -13,20 +13,16 @@ export type GltfTransform = {
 /** GLTF bundle for a single Operation Ravenna scroll scene. */
 export type CinematicSceneModelEntry = {
   sceneId: OperationRavennaSceneId;
-  /** Folder under `assets/cinematic/` — drop in a new `scene.glb` to replace the placeholder. */
+  /** Folder under `public/assets/cinematic/` — drop in a new `scene.glb` to replace the placeholder. */
   assetDirectory: string;
-  /** Metro asset id returned by `require()` for `scene.glb`. */
+  /** Public path to `scene.glb` served from `frontend/public`. */
   source: CinematicGltfSource;
   /** Enable Draco decoding for compressed Blender exports. */
   useDraco: boolean;
   transform: GltfTransform;
 };
 
-const rooftopsSceneGlb = require('@/assets/cinematic/scenes/rooftops/scene.glb') as number;
-const wallsApproachSceneGlb = require('@/assets/cinematic/scenes/walls-approach/scene.glb') as number;
-const wallLaunchSceneGlb = require('@/assets/cinematic/scenes/wall-launch/scene.glb') as number;
-const titanCorridorSceneGlb = require('@/assets/cinematic/scenes/titan-corridor/scene.glb') as number;
-const coupleStrikeSceneGlb = require('@/assets/cinematic/scenes/couple-strike/scene.glb') as number;
+const CINEMATIC_ASSET_BASE = '/assets/cinematic';
 
 /**
  * Operation Ravenna GLTF registry.
@@ -36,35 +32,35 @@ export const CINEMATIC_SCENE_MODEL_ENTRIES: readonly CinematicSceneModelEntry[] 
   {
     sceneId: 'rooftops',
     assetDirectory: 'scenes/rooftops',
-    source: rooftopsSceneGlb,
+    source: `${CINEMATIC_ASSET_BASE}/scenes/rooftops/scene.glb`,
     useDraco: true,
     transform: {},
   },
   {
     sceneId: 'wallsApproach',
     assetDirectory: 'scenes/walls-approach',
-    source: wallsApproachSceneGlb,
+    source: `${CINEMATIC_ASSET_BASE}/scenes/walls-approach/scene.glb`,
     useDraco: true,
     transform: {},
   },
   {
     sceneId: 'wallLaunch',
     assetDirectory: 'scenes/wall-launch',
-    source: wallLaunchSceneGlb,
+    source: `${CINEMATIC_ASSET_BASE}/scenes/wall-launch/scene.glb`,
     useDraco: true,
     transform: {},
   },
   {
     sceneId: 'titanCorridor',
     assetDirectory: 'scenes/titan-corridor',
-    source: titanCorridorSceneGlb,
+    source: `${CINEMATIC_ASSET_BASE}/scenes/titan-corridor/scene.glb`,
     useDraco: true,
     transform: {},
   },
   {
     sceneId: 'coupleStrike',
     assetDirectory: 'scenes/couple-strike',
-    source: coupleStrikeSceneGlb,
+    source: `${CINEMATIC_ASSET_BASE}/scenes/couple-strike/scene.glb`,
     useDraco: true,
     transform: {},
   },

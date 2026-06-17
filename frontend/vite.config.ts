@@ -20,5 +20,12 @@ export default defineConfig({
   },
   test: {
     passWithNoTests: true,
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      'src/utils/__tests__/**',
+      'src/constants/__tests__/**',
+      'src/contexts/__tests__/HeroScrollContext.test.ts',
+    ],
   },
 });

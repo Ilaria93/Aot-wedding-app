@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
+import { CinematicHeroSection } from '@/components/cinematic/CinematicHeroSection';
 import { HoneymoonGiftSection } from '@/components/HoneymoonGiftSection';
 import { apiBaseUrl } from '@/constants/apiConfig';
 import { useI18n } from '@/contexts/I18nContext';
@@ -8,7 +9,6 @@ import { LandingCeremonySection } from '@/pages/HomePage/components/LandingCerem
 import { LandingContactsSection } from '@/pages/HomePage/components/LandingContactsSection';
 import { LandingDevToolsSection } from '@/pages/HomePage/components/LandingDevToolsSection';
 import { LandingFaqSection } from '@/pages/HomePage/components/LandingFaqSection';
-import { LandingHeroSection } from '@/pages/HomePage/components/LandingHeroSection';
 import { LandingRsvpSection } from '@/pages/HomePage/components/LandingRsvpSection';
 import { LandingStorySection } from '@/pages/HomePage/components/LandingStorySection';
 import { createGuestInvitation } from '@/services/guestApi';
@@ -58,8 +58,9 @@ export function HomePage() {
   }
 
   return (
-    <div className="landing-page">
-      <LandingHeroSection onScrollToRsvp={() => scrollToSection('rsvp')} />
+    <>
+      <CinematicHeroSection />
+      <div className="landing-page">
       <LandingStorySection />
       <LandingCeremonySection />
       <LandingRsvpSection onScrollToDevTools={() => scrollToSection('devTools')} />
@@ -77,6 +78,7 @@ export function HomePage() {
       <LandingFaqSection />
       <LandingContactsSection />
       <p className="landing-api">{t('landing.apiConnected', { apiBaseUrl })}</p>
-    </div>
+      </div>
+    </>
   );
 }

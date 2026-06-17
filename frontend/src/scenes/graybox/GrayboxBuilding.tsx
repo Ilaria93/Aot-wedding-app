@@ -1,4 +1,3 @@
-import { GRAYBOX_PALETTE } from '@/constants/grayboxPalette';
 import { getGrayboxToneColor } from '@/scenes/graybox/GrayboxMeshMaterials';
 import type { GrayboxBuildingSpec } from '@/scenes/graybox/types';
 
