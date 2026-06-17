@@ -1,8 +1,8 @@
 # AOT Wedding App
 
-Piattaforma matrimonio cross-platform con estetica Attack on Titan.
+Piattaforma matrimonio web responsive con estetica Attack on Titan.
 
-**Stack:** Expo (React Native + Web) · FastAPI + SQLAlchemy · PostgreSQL (Docker)
+**Stack:** React + Vite · FastAPI + SQLAlchemy · PostgreSQL (Docker)
 
 **Feature:** account con ruoli, inviti RSVP, album foto con moderazione, travel hub contatti logistica, i18n (`it`, `en`, `fr`, `de`).
 
@@ -10,12 +10,12 @@ Piattaforma matrimonio cross-platform con estetica Attack on Titan.
 
 ```
 backend/     routes, services, models, schemas, tests
-frontend/    app (screen), components, services, i18n
+frontend/    pages, components, services, i18n (Vite + React Router)
 .cursor/     regole Cursor per sviluppo assistito da AI
-scripts/     run-backend.sh · run-frontend.sh · run-dev.sh
+scripts/     run-backend.sh · run-frontend.sh · run-dev.sh · run-tests.sh
 ```
 
-**Architettura:** BE `routes → services → models` · FE `app → components → services` (API). Ruoli: `guest`, `admin`, `bride`, `groom`.
+**Architettura:** BE `routes → services → models` · FE `pages → components → services` (API). Ruoli: `guest`, `admin`, `bride`, `groom`.
 
 ## Avvio rapido
 
@@ -25,11 +25,12 @@ scripts/     run-backend.sh · run-frontend.sh · run-dev.sh
 
 | Script | Cosa fa |
 |--------|---------|
-| `run-dev.sh` | Backend + frontend insieme (`Ctrl+C` ferma entrambi) |
+| `run-dev.sh` | Backend + frontend Vite (`Ctrl+C` ferma entrambi) |
 | `run-backend.sh` | `.env`, `venv`, PostgreSQL, migrazioni, `uvicorn` |
-| `run-frontend.sh` | `.env`, dipendenze, Expo Web |
+| `run-frontend.sh` | `.env`, dipendenze, dev server Vite (porta 5173) |
+| `run-tests.sh` | `pytest` backend + `vitest` frontend |
 
-API: [localhost:8000/docs](http://127.0.0.1:8000/docs) · RSVP test: `/rsvp/{token}`
+API: [localhost:8000/docs](http://127.0.0.1:8000/docs) · App: [localhost:5173](http://localhost:5173) · RSVP test: `/rsvp/{token}`
 
 ---
 
@@ -52,7 +53,14 @@ In Swagger: **Authorize** → incolla `access_token` da login/register.
 **Test:**
 
 ```bash
+./scripts/run-tests.sh
+```
+
+Oppure separatamente:
+
+```bash
 cd backend && ./venv/bin/pytest -q
+cd frontend && npm test
 ```
 
 ---
@@ -65,12 +73,10 @@ Backend su porta `8000`, poi:
 cd frontend
 cp env.example .env
 npm install
-npm run web
+npm run dev
 ```
 
-Test RSVP: `POST /guest/create-invite` (admin su Swagger) → `http://localhost:8081/rsvp/YOUR_TOKEN`
-
-Su telefono: `EXPO_PUBLIC_API_URL` = IP LAN del computer.
+Test RSVP: `POST /guest/create-invite` (admin su Swagger) → `http://localhost:5173/rsvp/YOUR_TOKEN`
 
 ---
 
@@ -101,7 +107,7 @@ Route **admin** richiedono bearer token con ruolo `admin`, `bride` o `groom`.
 - **Diff minimi** — modifica solo ciò che serve alla richiesta
 - **FE:** componenti &lt; 150 righe, JSDoc su export, testi da `i18n`, colori da `aotTheme`, API solo in `services/`
 - **BE:** route sottili, logica in `services/`, commento su ogni handler, Pydantic per I/O
-- **Test:** nuova route → `backend/tests/`; logica FE → Jest/RTL quando configurato
+- **Test:** nuova route → `backend/tests/`; logica FE → `cd frontend && npm test`
 - **UI:** semplice, spaziature generose, stati loading/errore/vuoto sempre gestiti
 
 Regole dettagliate per Cursor: `.cursor/rules/` (sempre attive).

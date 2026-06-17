@@ -1,6 +1,6 @@
 import { Vector3 } from 'three';
 
-import { CAMERA_PATHS } from '@/src/data/cameraPaths';
+import { CAMERA_PATHS } from '@/data/cameraPaths';
 import type { OdmAnchor, OdmAnchorSide, OdmCameraLeg } from '@/types/odmCamera';
 import { buildOdmCameraLegs } from '@/utils/odmCameraMotion';
 

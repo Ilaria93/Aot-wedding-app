@@ -1,0 +1,22 @@
+.stack-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--aot-border);
+  background: var(--aot-surface);
+}
+
+.stack-header__start {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.stack-header__title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+}
