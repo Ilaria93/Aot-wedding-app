@@ -23,4 +23,6 @@ export type UseScrollProgressResult = {
   heroRef: RefObject<View | null>;
   /** Active ScrollTrigger instance (web only). */
   scrollTriggerRef: RefObject<ScrollTrigger | null>;
+  /** Re-measures scroll bounds after layout changes (web only). */
+  refreshScrollTrigger?: () => void;
 };
