@@ -19,10 +19,8 @@ export const fr = {
   },
   common: {
     roles: {
-      bride: 'Mariée',
-      groom: 'Marié',
+      user: 'Invité',
       admin: 'Admin',
-      invited: 'Invité',
     },
     yes: 'Oui',
     no: 'Non',
@@ -160,9 +158,8 @@ export const fr = {
     },
     rsvp: {
       heading: 'Ils ont hâte de fêter ce moment avec vous',
-      body:
-        'Depuis ici, vous pouvez confirmer votre présence, ouvrir une invitation existante ou générer un token de développement pour tester le flux complet.',
-      button: 'Aller au RSVP',
+      body: 'Connectez-vous ou inscrivez-vous, puis confirmez votre présence depuis la page RSVP.',
+      button: 'Confirmer votre présence',
     },
     gift: {
       eyebrow: 'Notre rêve',
@@ -277,8 +274,10 @@ export const fr = {
   register: {
     eyebrow: 'Inscription',
     title: 'Créez votre compte personnel.',
-    subtitle: 'Remplissez les champs ci-dessous et sélectionnez votre rôle.',
+    subtitle: 'Remplissez les champs ci-dessous pour créer votre compte.',
     roleLabel: 'Rôle',
+    roleSecretLabel: 'Code admin (optionnel)',
+    roleSecretHint: 'Laissez vide pour un compte invité. Les mariés peuvent saisir le code admin ici.',
     rememberMe: 'Rester connecté',
     submitLabel: "S'inscrire",
     submitLoading: 'Inscription en cours...',
@@ -303,6 +302,7 @@ export const fr = {
     signOut: 'Se déconnecter',
   },
   rsvp: {
+    loadError: 'Impossible de charger votre statut RSVP.',
     invalidLink: "Lien d'invitation invalide.",
     notFound: 'Invitation introuvable ou expirée.',
     alreadyConfirmedError: 'Le RSVP avait déjà été confirmé auparavant.',
@@ -405,7 +405,8 @@ export const fr = {
       refreshing: 'Actualisation...',
     },
     stats: {
-      invited: 'Invités',
+      invited: 'Utilisateurs inscrits',
+      users: 'Utilisateurs inscrits',
       confirmed: 'Confirmés',
       attending: 'Présents',
       notAttending: 'Absents',
@@ -467,6 +468,10 @@ export const fr = {
       hide: 'Masquer',
       activate: 'Activer',
       delete: 'Supprimer',
+    },
+    users: {
+      title: 'Utilisateurs inscrits',
+      empty: 'Aucun utilisateur inscrit.',
     },
     guests: {
       title: 'Invités',

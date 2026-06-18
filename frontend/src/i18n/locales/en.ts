@@ -19,10 +19,8 @@ export const en = {
   },
   common: {
     roles: {
-      bride: 'Bride',
-      groom: 'Groom',
+      user: 'Guest',
       admin: 'Admin',
-      invited: 'Guest',
     },
     yes: 'Yes',
     no: 'No',
@@ -160,9 +158,8 @@ export const en = {
     },
     rsvp: {
       heading: "They can't wait to celebrate with you",
-      body:
-        'From here you can confirm your attendance, open an existing invitation, or generate a development token to test the full flow.',
-      button: 'Go to RSVP',
+      body: 'Sign in or create an account, then confirm your attendance from the RSVP page.',
+      button: 'Confirm your RSVP',
     },
     gift: {
       eyebrow: 'Our dream',
@@ -275,8 +272,10 @@ export const en = {
   register: {
     eyebrow: 'Sign up',
     title: 'Create your personal account.',
-    subtitle: 'Fill in the fields below and select your role.',
+    subtitle: 'Fill in the fields below to create your account.',
     roleLabel: 'Role',
+    roleSecretLabel: 'Admin code (optional)',
+    roleSecretHint: 'Leave empty for a guest account. Spouses can enter the admin code here.',
     rememberMe: 'Keep me signed in',
     submitLabel: 'Sign up',
     submitLoading: 'Signing up...',
@@ -301,6 +300,7 @@ export const en = {
     signOut: 'Log out',
   },
   rsvp: {
+    loadError: 'Unable to load your RSVP status.',
     invalidLink: 'Invalid invitation link.',
     notFound: 'Invitation not found or expired.',
     alreadyConfirmedError: 'RSVP was already confirmed earlier.',
@@ -399,7 +399,8 @@ export const en = {
       refreshing: 'Refreshing...',
     },
     stats: {
-      invited: 'Invited',
+      invited: 'Registered guests',
+      users: 'Registered guests',
       confirmed: 'Confirmed',
       attending: 'Attending',
       notAttending: 'Not attending',
@@ -461,6 +462,10 @@ export const en = {
       hide: 'Hide',
       activate: 'Activate',
       delete: 'Delete',
+    },
+    users: {
+      title: 'Registered users',
+      empty: 'No users registered yet.',
     },
     guests: {
       title: 'Guests',

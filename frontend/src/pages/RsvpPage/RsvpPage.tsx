@@ -1,4 +1,3 @@
-import { useNavigate, useParams } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 
 import { PageAlert, PageHero, PageShell } from '@/components/PageShell';
@@ -7,27 +6,18 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
 import { RsvpConfirmedSummary } from '@/pages/RsvpPage/components/RsvpConfirmedSummary';
 import { RsvpForm } from '@/pages/RsvpPage/components/RsvpForm';
-import {
-  type FactionId,
-  fetchGuestByToken,
-  fetchRsvpByToken,
-  submitRsvpConfirmation,
-} from '@/services/guestApi';
+import { fetchMyRsvp, submitRsvpConfirmation, type FactionId } from '@/services/rsvpApi';
 import { getApiStatusCode } from '@/services/apiErrors';
 import type { ConfirmedRsvpState } from '@/pages/RsvpPage/components/RsvpConfirmedSummary';
 import './styles/RsvpPage.scss';
 
-/** RSVP screen opened via /rsvp/:token. */
+/** RSVP screen for the authenticated user. */
 export function RsvpPage() {
-  const navigate = useNavigate();
-  const { token = '' } = useParams();
-  const { isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const { t } = useI18n();
-  const invitationToken = decodeURIComponent(token);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [guestName, setGuestName] = useState('');
   const [alreadyConfirmed, setAlreadyConfirmed] = useState(false);
   const [attending, setAttending] = useState(true);
   const [faction, setFaction] = useState<FactionId>('scout_regiment');
@@ -35,22 +25,11 @@ export function RsvpPage() {
   const [submitting, setSubmitting] = useState(false);
   const [confirmedRsvp, setConfirmedRsvp] = useState<ConfirmedRsvpState | null>(null);
 
-  const loadGuest = useCallback(async () => {
-    if (!invitationToken) {
-      setError(t('rsvp.invalidLink'));
-      setLoading(false);
-      return;
-    }
-
+  const loadRsvp = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      const [guest, rsvp] = await Promise.all([
-        fetchGuestByToken(invitationToken),
-        fetchRsvpByToken(invitationToken),
-      ]);
-
-      setGuestName(guest.full_name);
+      const rsvp = await fetchMyRsvp();
       setAlreadyConfirmed(rsvp.has_rsvp);
 
       if (rsvp.has_rsvp) {
@@ -69,29 +48,23 @@ export function RsvpPage() {
         setConfirmedRsvp(null);
       }
     } catch {
-      setError(t('rsvp.notFound'));
+      setError(t('rsvp.loadError'));
     } finally {
       setLoading(false);
     }
-  }, [invitationToken, t]);
+  }, [t]);
 
   useEffect(() => {
-    void loadGuest();
-  }, [loadGuest]);
+    void loadRsvp();
+  }, [loadRsvp]);
 
   async function handleSubmit() {
-    if (!isAuthenticated) {
-      navigate('/auth/login');
-      return;
-    }
-
     try {
       setSubmitting(true);
       setError(null);
       const normalizedDietaryNotes = attending ? dietaryNotes.trim() || undefined : undefined;
 
       await submitRsvpConfirmation({
-        invitation_token: invitationToken,
         attending,
         faction: attending ? faction : undefined,
         dietary_notes: normalizedDietaryNotes,
@@ -105,13 +78,9 @@ export function RsvpPage() {
       setAlreadyConfirmed(true);
     } catch (caughtError) {
       const statusCode = getApiStatusCode(caughtError);
-      if (statusCode === 404) {
-        setError(t('rsvp.notFound'));
-      } else if (statusCode === 409) {
-        await loadGuest();
+      if (statusCode === 409) {
+        await loadRsvp();
         setError(t('rsvp.alreadyConfirmedError'));
-      } else if (statusCode === 401) {
-        navigate('/auth/login');
       } else {
         setError(t('rsvp.submitError'));
       }
@@ -119,6 +88,8 @@ export function RsvpPage() {
       setSubmitting(false);
     }
   }
+
+  const guestName = user ? `${user.first_name} ${user.last_name}`.trim() : '';
 
   return (
     <PageShell loading={loading}>
@@ -135,7 +106,6 @@ export function RsvpPage() {
         <RsvpConfirmedSummary confirmedRsvp={confirmedRsvp} />
       ) : (
         <RsvpForm
-          isAuthenticated={isAuthenticated}
           attending={attending}
           faction={faction}
           dietaryNotes={dietaryNotes}

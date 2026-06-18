@@ -8,7 +8,7 @@ class PhotoAlbumItem(Base):
     __tablename__ = "photo_album_items"
 
     id = Column(Integer, primary_key=True, index=True)
-    guest_id = Column(Integer, ForeignKey("guests.id"), nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     storage_key = Column(String(255), unique=True, nullable=False, index=True)
     original_filename = Column(String(255), nullable=False)
     mime_type = Column(String(80), nullable=False)

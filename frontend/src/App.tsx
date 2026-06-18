@@ -29,12 +29,12 @@ export function App() {
               <Route element={<AuthStackLayout />}>
                 <Route path="/auth/login" element={<LoginPage />} />
                 <Route path="/auth/register" element={<RegisterPage />} />
-                <Route path="/rsvp/:token" element={<RsvpPage />} />
               </Route>
 
               <Route element={<AppLayout />}>
                 <Route index element={<HomePage />} />
                 <Route path="/album" element={<AlbumPage />} />
+                <Route path="/rsvp" element={<RsvpPage />} />
                 <Route path="/travel" element={<TravelPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/admin" element={<AdminPage />} />

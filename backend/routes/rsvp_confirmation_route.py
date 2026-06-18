@@ -3,69 +3,31 @@ from sqlalchemy.orm import Session
 
 from database.base import get_db
 from dependencies.auth_user_dependency import require_current_user
-from models.rsvp_model import RSVP
+from models.user_model import User
 from schemas.rsvp_confirmation_schema import RSVPConfirmRequest
-from schemas.rsvp_lookup_schema import RsvpLookupResponse
-from services.guest_lookup_service import get_guest_by_token, get_rsvp_by_invitation_token
+from schemas.rsvp_lookup_schema import RsvpMeResponse
+from services.rsvp_service import RsvpConflictError, confirm_rsvp_for_user, get_rsvp_for_user
 
 router = APIRouter(prefix="/rsvp")
 
 
-def build_stored_faction_value(payload: RSVPConfirmRequest) -> str:
-    # Ignores faction when the guest is not attending.
-    if not payload.attending or payload.faction is None:
-        return ""
-    return payload.faction.value
+# Returns RSVP status for the currently authenticated user.
+@router.get("/me", response_model=RsvpMeResponse)
+def get_current_user_rsvp(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_current_user),
+):
+    return get_rsvp_for_user(db, current_user)
 
 
-# Saves one RSVP confirmation for the invited guest.
+# Saves one RSVP confirmation for the logged-in user.
 @router.post("/confirm")
 def confirm_rsvp_submission(
     payload: RSVPConfirmRequest,
     db: Session = Depends(get_db),
-    _current_user=Depends(require_current_user),
+    current_user: User = Depends(require_current_user),
 ):
-    guest = get_guest_by_token(db, payload.invitation_token)
-    if not guest:
-        raise HTTPException(status_code=404, detail="Invitation token not found")
-
-    existing = db.query(RSVP).filter(RSVP.guest_id == guest.id).first()
-    if existing:
-        raise HTTPException(status_code=409, detail="RSVP already submitted")
-
-    rsvp = RSVP(
-        guest_id=guest.id,
-        attending=payload.attending,
-        faction=build_stored_faction_value(payload),
-        dietary_notes=payload.dietary_notes,
-    )
-    db.add(rsvp)
-    db.commit()
-
-    return {
-        "ok": True,
-        "guest": guest.full_name,
-        "faction": payload.faction if payload.attending else None,
-    }
-
-# Returns RSVP status for a guest token.
-@router.get("/by-token/{token}", response_model=RsvpLookupResponse)
-def get_rsvp_status_by_token(token: str, db: Session = Depends(get_db)):
-    guest, rsvp_record = get_rsvp_by_invitation_token(db, token)
-
-    if not guest:
-        raise HTTPException(status_code=404, detail="Invitation token not found")
-
-    if not rsvp_record:
-        return RsvpLookupResponse(
-            has_rsvp=False,
-            guest_full_name=guest.full_name,
-        )
-
-    return RsvpLookupResponse(
-        has_rsvp=True,
-        guest_full_name=guest.full_name,
-        attending=rsvp_record.attending,
-        faction=rsvp_record.faction or None,
-        dietary_notes=rsvp_record.dietary_notes,
-    )
+    try:
+        return confirm_rsvp_for_user(db, current_user, payload)
+    except RsvpConflictError as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error

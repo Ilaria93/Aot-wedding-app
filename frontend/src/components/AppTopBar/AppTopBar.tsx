@@ -11,7 +11,6 @@ const APP_ROUTES = [
   { to: '/', labelKey: 'home' as const, end: true },
   { to: '/album', labelKey: 'album' as const },
   { to: '/travel', labelKey: 'travel' as const },
-  { to: '/profile', labelKey: 'profile' as const },
 ] as const;
 
 const LANDING_SECTIONS = ['story', 'ceremony', 'rsvp', 'gift'] as const;
@@ -19,7 +18,7 @@ const LANDING_SECTIONS = ['story', 'ceremony', 'rsvp', 'gift'] as const;
 /** Global sticky header — sole navigation (no bottom tab bar). */
 export function AppTopBar() {
   const location = useLocation();
-  const { canManageWedding } = useAuth();
+  const { isAuthenticated, canManageWedding } = useAuth();
   const { t } = useI18n();
   const isHome = location.pathname === '/';
 
@@ -63,7 +62,15 @@ export function AppTopBar() {
             </NavLink>
           ))}
 
-          {canManageWedding ? (
+          <NavLink
+            to={isAuthenticated ? '/profile' : '/auth/login'}
+            className={({ isActive }) =>
+              `site-header__route${isActive ? ' active' : ''}`
+            }>
+            {t(isAuthenticated ? 'navigation.tabs.profile' : 'navigation.stack.login')}
+          </NavLink>
+
+          {isAuthenticated && canManageWedding ? (
             <NavLink
               to="/admin"
               className={({ isActive }) =>

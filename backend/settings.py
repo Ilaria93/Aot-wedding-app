@@ -109,3 +109,8 @@ def read_photo_max_upload_bytes() -> int:
         return max(1024, int(raw_value))
     except ValueError:
         return 10 * 1024 * 1024
+
+
+def read_wedding_role_secret() -> str:
+    """Secret required to register as bride or groom. Empty string disables those roles."""
+    return os.getenv("WEDDING_ROLE_SECRET", "").strip()

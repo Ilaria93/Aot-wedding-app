@@ -19,10 +19,8 @@ export const de = {
   },
   common: {
     roles: {
-      bride: 'Braut',
-      groom: 'Bräutigam',
+      user: 'Gast',
       admin: 'Admin',
-      invited: 'Gast',
     },
     yes: 'Ja',
     no: 'Nein',
@@ -160,9 +158,8 @@ export const de = {
     },
     rsvp: {
       heading: 'Sie freuen sich darauf, mit dir zu feiern',
-      body:
-        'Von hier aus kannst du deine Teilnahme bestätigen, eine bestehende Einladung öffnen oder ein Entwicklungs-Token erzeugen, um den gesamten Ablauf zu testen.',
-      button: 'Zum RSVP',
+      body: 'Melde dich an oder registriere dich, dann bestätige deine Teilnahme auf der RSVP-Seite.',
+      button: 'Teilnahme bestätigen',
     },
     gift: {
       eyebrow: 'Unser Traum',
@@ -277,8 +274,10 @@ export const de = {
   register: {
     eyebrow: 'Registrierung',
     title: 'Erstelle dein persönliches Konto.',
-    subtitle: 'Fülle die folgenden Felder aus und wähle deine Rolle.',
+    subtitle: 'Fülle die folgenden Felder aus, um dein Konto zu erstellen.',
     roleLabel: 'Rolle',
+    roleSecretLabel: 'Admin-Code (optional)',
+    roleSecretHint: 'Leer lassen für ein Gastkonto. Die Brautleute können hier den Admin-Code eingeben.',
     rememberMe: 'Angemeldet bleiben',
     submitLabel: 'Registrieren',
     submitLoading: 'Registrierung läuft...',
@@ -303,6 +302,7 @@ export const de = {
     signOut: 'Abmelden',
   },
   rsvp: {
+    loadError: 'Dein RSVP-Status konnte nicht geladen werden.',
     invalidLink: 'Ungültiger Einladungslink.',
     notFound: 'Einladung nicht gefunden oder abgelaufen.',
     alreadyConfirmedError: 'RSVP wurde bereits zuvor bestätigt.',
@@ -405,7 +405,8 @@ export const de = {
       refreshing: 'Wird aktualisiert...',
     },
     stats: {
-      invited: 'Eingeladen',
+      invited: 'Registrierte Nutzer',
+      users: 'Registrierte Nutzer',
       confirmed: 'Bestätigt',
       attending: 'Anwesend',
       notAttending: 'Abwesend',
@@ -467,6 +468,10 @@ export const de = {
       hide: 'Verbergen',
       activate: 'Aktivieren',
       delete: 'Löschen',
+    },
+    users: {
+      title: 'Registrierte Nutzer',
+      empty: 'Noch keine Nutzer registriert.',
     },
     guests: {
       title: 'Gäste',

@@ -1,4 +1,4 @@
-import type { FactionId } from '@/services/guestApi';
+import type { FactionId } from '@/services/rsvpApi';
 import type { TranslateFn } from '@/i18n/translations';
 
 export const FACTION_IDS: FactionId[] = [

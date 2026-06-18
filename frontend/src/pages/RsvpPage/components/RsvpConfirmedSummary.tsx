@@ -1,5 +1,5 @@
 import { getFactionLabel } from '@/constants/factions';
-import type { FactionId } from '@/services/guestApi';
+import type { FactionId } from '@/services/rsvpApi';
 import { useI18n } from '@/contexts/I18nContext';
 
 export type ConfirmedRsvpState = {

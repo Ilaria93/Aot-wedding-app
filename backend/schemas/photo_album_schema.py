@@ -11,9 +11,7 @@ class PhotoAlbumStatusEnum(str, Enum):
     rejected = "rejected"
 
 
-# Payload used before the client uploads the image to storage.
 class PhotoUploadIntentRequest(BaseModel):
-    invitation_token: str
     original_filename: str
     mime_type: str
     file_size_bytes: int
@@ -43,16 +41,14 @@ class PhotoUploadIntentResponse(BaseModel):
     expires_in_seconds: int
 
 
-# Sent after the direct S3 upload succeeds so metadata can be persisted.
 class PhotoUploadCompleteRequest(BaseModel):
-    invitation_token: str
     storage_key: str
     original_filename: str
     mime_type: str
     file_size_bytes: int
     caption: Optional[str] = None
 
-    @field_validator("invitation_token", "storage_key", "original_filename", "mime_type")
+    @field_validator("storage_key", "original_filename", "mime_type")
     @classmethod
     def validate_required_strings(cls, value: str) -> str:
         normalized = value.strip()
@@ -84,7 +80,7 @@ class PhotoUploadCompleteResponse(BaseModel):
 
 class PublicPhotoAlbumItem(BaseModel):
     id: int
-    guest_full_name: str
+    uploader_name: str
     caption: Optional[str] = None
     image_url: str
     uploaded_at: datetime
@@ -92,8 +88,8 @@ class PublicPhotoAlbumItem(BaseModel):
 
 class AdminPhotoAlbumItem(BaseModel):
     id: int
-    guest_id: int
-    guest_full_name: str
+    user_id: int
+    uploader_name: str
     storage_key: str
     original_filename: str
     mime_type: str
@@ -113,7 +109,7 @@ class PhotoAlbumItemRecord(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    guest_id: int
+    user_id: int
     storage_key: str
     original_filename: str
     mime_type: str

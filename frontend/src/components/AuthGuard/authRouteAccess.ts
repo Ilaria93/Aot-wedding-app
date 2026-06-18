@@ -3,20 +3,14 @@ const DEV_PUBLIC_PATHS = import.meta.env.DEV ? ['/dev/titan-preview'] : [];
 const PUBLIC_PATHS = new Set([
   '/',
   '/album',
-  '/travel',
   '/auth/login',
   '/auth/register',
   ...DEV_PUBLIC_PATHS,
 ]);
-const PUBLIC_PREFIXES = ['/rsvp/'];
-const ALWAYS_PROTECTED_PATHS = new Set(['/profile', '/admin']);
+const ALWAYS_PROTECTED_PATHS = new Set(['/profile', '/admin', '/rsvp', '/travel']);
 
 export function isPublicPath(pathname: string) {
-  if (PUBLIC_PATHS.has(pathname)) {
-    return true;
-  }
-
-  return PUBLIC_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+  return PUBLIC_PATHS.has(pathname);
 }
 
 /** Whether an unauthenticated user must be sent to login for this path. */

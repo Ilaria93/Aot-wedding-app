@@ -3,9 +3,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
 import {
-  type AdminGuestListItem,
+  type AdminUserListItem,
   type AdminRsvpStats,
-  fetchAdminGuestList,
+  fetchAdminUserList,
   fetchAdminRsvpStats,
 } from '@/services/adminDashboardApi';
 import {
@@ -17,12 +17,16 @@ import {
 import { getApiErrorMessage } from '@/services/apiErrors';
 import './styles/AdminPage.scss';
 
-/** Admin dashboard — RSVP stats, guest list and photo moderation (phase 1 web port). */
+function formatUserName(user: AdminUserListItem): string {
+  return `${user.first_name} ${user.last_name}`.trim();
+}
+
+/** Admin dashboard — RSVP stats, user list and photo moderation. */
 export function AdminPage() {
   const { canManageWedding, isAuthenticated, isBootstrapping } = useAuth();
   const { t } = useI18n();
   const [stats, setStats] = useState<AdminRsvpStats | null>(null);
-  const [guests, setGuests] = useState<AdminGuestListItem[]>([]);
+  const [users, setUsers] = useState<AdminUserListItem[]>([]);
   const [photos, setPhotos] = useState<AdminPhotoAlbumItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,13 +46,13 @@ export function AdminPage() {
 
     try {
       setError(null);
-      const [statsResponse, guestListResponse, photoListResponse] = await Promise.all([
+      const [statsResponse, userListResponse, photoListResponse] = await Promise.all([
         fetchAdminRsvpStats(),
-        fetchAdminGuestList(),
+        fetchAdminUserList(),
         fetchAdminPhotoAlbum(),
       ]);
       setStats(statsResponse);
-      setGuests(guestListResponse);
+      setUsers(userListResponse);
       setPhotos(photoListResponse);
     } catch (caughtError) {
       setError(getApiErrorMessage(caughtError, t('admin.errors.loadFailed')));
@@ -66,9 +70,9 @@ export function AdminPage() {
   async function handlePhotoStatusChange(photoId: number, status: AdminPhotoStatus) {
     try {
       setPhotoActionId(photoId);
-      await updateAdminPhotoStatus(photoId, status);
+      const updatedPhoto = await updateAdminPhotoStatus(photoId, status);
       setPhotos((current) =>
-        current.map((photo) => (photo.id === photoId ? { ...photo, status } : photo)),
+        current.map((photo) => (photo.id === photoId ? updatedPhoto : photo)),
       );
     } catch (caughtError) {
       setError(getApiErrorMessage(caughtError, t('admin.errors.photoUpdateFailed')));
@@ -100,8 +104,8 @@ export function AdminPage() {
       {stats ? (
         <div className="dev-grid dev-grid--spaced">
           <div className="dev-card">
-            <p className="eyebrow">{t('admin.stats.invited')}</p>
-            <p className="title">{stats.total_invited}</p>
+            <p className="eyebrow">{t('admin.stats.users')}</p>
+            <p className="title">{stats.total_users}</p>
           </div>
           <div className="dev-card">
             <p className="eyebrow">{t('admin.stats.confirmed')}</p>
@@ -115,13 +119,14 @@ export function AdminPage() {
       ) : null}
 
       <section className="landing-section">
-        <h2 className="section-heading">{t('admin.guests.title')}</h2>
+        <h2 className="section-heading">{t('admin.users.title')}</h2>
         <div className="admin-guest-list">
-          {guests.map((guest) => (
-            <article key={guest.id} className="dev-card">
-              <strong>{guest.full_name}</strong>
+          {users.map((user) => (
+            <article key={user.id} className="dev-card">
+              <strong>{formatUserName(user)}</strong>
+              <p className="helper-text">{user.email}</p>
               <p className="helper-text">
-                {guest.has_rsvp
+                {user.has_rsvp
                   ? t('admin.rsvpStatuses.attending')
                   : t('admin.rsvpStatuses.pending')}
               </p>
@@ -138,7 +143,7 @@ export function AdminPage() {
               <img
                 className="admin-photo-thumb"
                 src={photo.image_url}
-                alt={photo.caption || photo.guest_full_name}
+                alt={photo.caption || photo.uploader_name}
               />
               <p className="helper-text">{photo.status}</p>
               <div className="admin-photo-actions">

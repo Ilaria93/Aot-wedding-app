@@ -8,12 +8,13 @@ from settings import DEFAULT_TEST_DATABASE_URL
 
 TEST_DATABASE_URL = os.environ.setdefault("TEST_DATABASE_URL", DEFAULT_TEST_DATABASE_URL)
 os.environ["DATABASE_URL"] = TEST_DATABASE_URL
-os.environ.setdefault("JWT_SECRET_KEY", "test-jwt-secret-key-for-local-tests")
-os.environ.setdefault("S3_BUCKET_NAME", "test-wedding-album")
-os.environ.setdefault("S3_REGION", "eu-central-1")
-os.environ.setdefault("S3_ACCESS_KEY_ID", "test-access-key")
-os.environ.setdefault("S3_SECRET_ACCESS_KEY", "test-secret-key")
-os.environ.setdefault("S3_PUBLIC_BASE_URL", "https://cdn.test-wedding.app")
+os.environ["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "test-jwt-secret-key-for-local-tests")
+os.environ["WEDDING_ROLE_SECRET"] = os.environ.get("WEDDING_ROLE_SECRET", "test-wedding-role-secret")
+os.environ["S3_BUCKET_NAME"] = "test-wedding-album"
+os.environ["S3_REGION"] = "eu-central-1"
+os.environ["S3_ACCESS_KEY_ID"] = "test-access-key"
+os.environ["S3_SECRET_ACCESS_KEY"] = "test-secret-key"
+os.environ["S3_PUBLIC_BASE_URL"] = "https://cdn.test-wedding.app"
 
 import pytest
 from fastapi.testclient import TestClient
@@ -22,83 +23,88 @@ from database.postgres_admin import ensure_database_exists
 
 ensure_database_exists(TEST_DATABASE_URL)
 
-from database.base import Base, engine
+from database.base import engine
 from main import app
+from sqlalchemy import text
 
 ALEMBIC_INI_PATH = Path(__file__).resolve().parents[1] / "alembic.ini"
 
 
-def upgrade_test_database():
-    """Builds the test schema using the same Alembic migrations as the app."""
+def rebuild_test_database():
+    """Creates a fresh test schema from Alembic migrations."""
+    with engine.begin() as connection:
+        connection.execute(text("DROP SCHEMA IF EXISTS public CASCADE"))
+        connection.execute(text("CREATE SCHEMA public"))
     alembic_config = Config(str(ALEMBIC_INI_PATH))
     alembic_config.set_main_option("sqlalchemy.url", TEST_DATABASE_URL)
     command.upgrade(alembic_config, "head")
 
 
-# Recreates the schema before each test to keep tests isolated.
+def truncate_test_tables():
+    """Clears application data while keeping the migrated schema intact."""
+    with engine.begin() as connection:
+        connection.execute(
+            text(
+                """
+                TRUNCATE TABLE
+                    refresh_token_sessions,
+                    photo_album_items,
+                    rsvps,
+                    logistics_contacts,
+                    users
+                RESTART IDENTITY CASCADE
+                """
+            )
+        )
+
+
+@pytest.fixture(scope="session", autouse=True)
+def prepare_test_database():
+    rebuild_test_database()
+
+
 @pytest.fixture(autouse=True)
 def reset_database():
-    Base.metadata.drop_all(bind=engine)
-    upgrade_test_database()
+    truncate_test_tables()
     yield
 
 
-# Shared API client for integration-style endpoint tests.
 @pytest.fixture
 def api_client():
     with TestClient(app) as client:
         yield client
 
 
-# Creates a reusable privileged bearer token for secured routes during tests.
 @pytest.fixture
 def admin_headers(api_client):
     response = api_client.post(
         "/auth/register",
         json={
             "first_name": "Ilaria",
-            "last_name": "Bride",
-            "email": "bride@test.app",
+            "last_name": "Admin",
+            "email": "admin@test.app",
             "password": "super-secure-password",
-            "role": "bride",
+            "role_secret": "test-wedding-role-secret",
             "remember_me": True,
         },
     )
+    assert response.status_code == 200, response.text
     access_token = response.json()["access_token"]
     return {"Authorization": f"Bearer {access_token}"}
 
 
-# Creates a groom bearer token to verify both spouse roles can manage the wedding area.
 @pytest.fixture
-def groom_headers(api_client):
-    response = api_client.post(
-        "/auth/register",
-        json={
-            "first_name": "Davide",
-            "last_name": "Groom",
-            "email": "groom@test.app",
-            "password": "super-secure-password",
-            "role": "groom",
-            "remember_me": True,
-        },
-    )
-    access_token = response.json()["access_token"]
-    return {"Authorization": f"Bearer {access_token}"}
-
-
-# Creates a normal invited user token to verify admin protections.
-@pytest.fixture
-def invited_headers(api_client):
+def user_headers(api_client):
     response = api_client.post(
         "/auth/register",
         json={
             "first_name": "Guest",
             "last_name": "Tester",
-            "email": "guest@test.app",
+            "email": "user@test.app",
             "password": "super-secure-password",
-            "role": "invited",
             "remember_me": False,
         },
     )
+    assert response.status_code == 200, response.text
     access_token = response.json()["access_token"]
     return {"Authorization": f"Bearer {access_token}"}

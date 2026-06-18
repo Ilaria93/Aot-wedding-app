@@ -3,10 +3,9 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-# Response returned when checking RSVP by invitation token.
-class RsvpLookupResponse(BaseModel):
+# Response returned when the logged-in user checks their RSVP status.
+class RsvpMeResponse(BaseModel):
     has_rsvp: bool
-    guest_full_name: str
     attending: Optional[bool] = None
     faction: Optional[str] = None
     dietary_notes: Optional[str] = None

@@ -8,13 +8,14 @@ from uuid import uuid4
 import boto3
 from sqlalchemy.orm import Session
 
-from models.guest_model import Guest
 from models.photo_album_item_model import PhotoAlbumItem
+from models.user_model import User
 from schemas.photo_album_schema import (
     PhotoAlbumStatusEnum,
     PhotoUploadCompleteRequest,
     PhotoUploadIntentRequest,
 )
+from services.rsvp_service import format_user_full_name
 from settings import (
     read_photo_max_upload_bytes,
     read_photo_upload_expiration_seconds,
@@ -44,7 +45,7 @@ FALLBACK_EXTENSION_BY_MIME_TYPE = {
 
 
 class PhotoAlbumNotFoundError(Exception):
-    """Raised when a guest or photo does not exist."""
+    """Raised when a photo does not exist."""
 
 
 class PhotoAlbumValidationError(Exception):
@@ -64,13 +65,6 @@ def _validate_photo_metadata(mime_type: str, file_size_bytes: int):
         raise PhotoAlbumValidationError(
             f"Image is too large. Maximum allowed size is {max_upload_bytes} bytes."
         )
-
-
-def _get_guest_by_token(db: Session, invitation_token: str) -> Guest:
-    guest = db.query(Guest).filter(Guest.invitation_token == invitation_token).first()
-    if not guest:
-        raise PhotoAlbumNotFoundError("Invitation token not found")
-    return guest
 
 
 def _ensure_storage_configuration():
@@ -110,9 +104,9 @@ def _sanitize_filename_for_key(original_filename: str, mime_type: str) -> str:
     return f"{safe_stem[:40]}{extension}"
 
 
-def build_photo_storage_key(guest_id: int, original_filename: str, mime_type: str) -> str:
+def build_photo_storage_key(user_id: int, original_filename: str, mime_type: str) -> str:
     sanitized_filename = _sanitize_filename_for_key(original_filename, mime_type)
-    return f"wedding-album/{guest_id}/{uuid4().hex}-{sanitized_filename}"
+    return f"wedding-album/{user_id}/{uuid4().hex}-{sanitized_filename}"
 
 
 def build_photo_public_url(storage_key: str) -> str:
@@ -129,12 +123,37 @@ def build_photo_public_url(storage_key: str) -> str:
     return f"https://{bucket_name}.s3.{read_s3_region()}.amazonaws.com/{quoted_key}"
 
 
-def create_photo_upload_intent(db: Session, payload: PhotoUploadIntentRequest) -> dict[str, Any]:
+def _serialize_admin_photo_item(photo: PhotoAlbumItem, user: User) -> dict[str, Any]:
+    return {
+        "id": photo.id,
+        "user_id": user.id,
+        "uploader_name": format_user_full_name(user),
+        "storage_key": photo.storage_key,
+        "original_filename": photo.original_filename,
+        "mime_type": photo.mime_type,
+        "caption": photo.caption,
+        "status": photo.status,
+        "image_url": build_photo_public_url(photo.storage_key),
+        "file_size_bytes": photo.file_size_bytes,
+        "uploaded_at": photo.uploaded_at,
+        "approved_at": photo.approved_at,
+    }
+
+
+def create_photo_upload_intent(
+    db: Session,
+    current_user: User,
+    payload: PhotoUploadIntentRequest,
+) -> dict[str, Any]:
+    _ = db
     _ensure_storage_configuration()
     _validate_photo_metadata(payload.mime_type, payload.file_size_bytes)
-    guest = _get_guest_by_token(db, payload.invitation_token)
 
-    storage_key = build_photo_storage_key(guest.id, payload.original_filename, payload.mime_type)
+    storage_key = build_photo_storage_key(
+        current_user.id,
+        payload.original_filename,
+        payload.mime_type,
+    )
     expires_in_seconds = read_photo_upload_expiration_seconds()
     upload_url = _build_s3_client().generate_presigned_url(
         "put_object",
@@ -157,19 +176,22 @@ def create_photo_upload_intent(db: Session, payload: PhotoUploadIntentRequest) -
     }
 
 
-def register_completed_photo_upload(db: Session, payload: PhotoUploadCompleteRequest) -> PhotoAlbumItem:
+def register_completed_photo_upload(
+    db: Session,
+    current_user: User,
+    payload: PhotoUploadCompleteRequest,
+) -> PhotoAlbumItem:
     _validate_photo_metadata(payload.mime_type, payload.file_size_bytes)
-    guest = _get_guest_by_token(db, payload.invitation_token)
-    expected_prefix = f"wedding-album/{guest.id}/"
+    expected_prefix = f"wedding-album/{current_user.id}/"
     if not payload.storage_key.startswith(expected_prefix):
-        raise PhotoAlbumValidationError("Storage key does not belong to this guest.")
+        raise PhotoAlbumValidationError("Storage key does not belong to this user.")
 
     existing = db.query(PhotoAlbumItem).filter(PhotoAlbumItem.storage_key == payload.storage_key).first()
     if existing:
         raise PhotoAlbumValidationError("This upload was already registered.")
 
     photo_item = PhotoAlbumItem(
-        guest_id=guest.id,
+        user_id=current_user.id,
         storage_key=payload.storage_key,
         original_filename=payload.original_filename,
         mime_type=payload.mime_type,
@@ -187,8 +209,8 @@ def register_completed_photo_upload(db: Session, payload: PhotoUploadCompleteReq
 
 def list_public_photo_album_items(db: Session) -> list[dict[str, Any]]:
     photo_rows = (
-        db.query(PhotoAlbumItem, Guest)
-        .join(Guest, Guest.id == PhotoAlbumItem.guest_id)
+        db.query(PhotoAlbumItem, User)
+        .join(User, User.id == PhotoAlbumItem.user_id)
         .filter(PhotoAlbumItem.status == PhotoAlbumStatusEnum.approved.value)
         .order_by(PhotoAlbumItem.uploaded_at.desc())
         .all()
@@ -196,50 +218,42 @@ def list_public_photo_album_items(db: Session) -> list[dict[str, Any]]:
     return [
         {
             "id": photo.id,
-            "guest_full_name": guest.full_name,
+            "uploader_name": format_user_full_name(user),
             "caption": photo.caption,
             "image_url": build_photo_public_url(photo.storage_key),
             "uploaded_at": photo.uploaded_at,
         }
-        for photo, guest in photo_rows
+        for photo, user in photo_rows
     ]
 
 
 def list_admin_photo_album_items(db: Session) -> list[dict[str, Any]]:
     photo_rows = (
-        db.query(PhotoAlbumItem, Guest)
-        .join(Guest, Guest.id == PhotoAlbumItem.guest_id)
+        db.query(PhotoAlbumItem, User)
+        .join(User, User.id == PhotoAlbumItem.user_id)
         .order_by(PhotoAlbumItem.uploaded_at.desc())
         .all()
     )
-    return [
-        {
-            "id": photo.id,
-            "guest_id": guest.id,
-            "guest_full_name": guest.full_name,
-            "storage_key": photo.storage_key,
-            "original_filename": photo.original_filename,
-            "mime_type": photo.mime_type,
-            "caption": photo.caption,
-            "status": photo.status,
-            "image_url": build_photo_public_url(photo.storage_key),
-            "file_size_bytes": photo.file_size_bytes,
-            "uploaded_at": photo.uploaded_at,
-            "approved_at": photo.approved_at,
-        }
-        for photo, guest in photo_rows
-    ]
+    return [_serialize_admin_photo_item(photo, user) for photo, user in photo_rows]
 
 
 def update_photo_status(
-    db: Session, photo_id: int, status: PhotoAlbumStatusEnum
-) -> PhotoAlbumItem:
-    photo_item = db.query(PhotoAlbumItem).filter(PhotoAlbumItem.id == photo_id).first()
-    if not photo_item:
+    db: Session,
+    photo_id: int,
+    status: PhotoAlbumStatusEnum,
+) -> dict[str, Any]:
+    photo_row = (
+        db.query(PhotoAlbumItem, User)
+        .join(User, User.id == PhotoAlbumItem.user_id)
+        .filter(PhotoAlbumItem.id == photo_id)
+        .first()
+    )
+    if not photo_row:
         raise PhotoAlbumNotFoundError("Photo not found")
 
+    photo_item, user = photo_row
     photo_item.status = status.value
     photo_item.approved_at = datetime.utcnow() if status == PhotoAlbumStatusEnum.approved else None
     db.commit()
     db.refresh(photo_item)
-    return photo_item
+    return _serialize_admin_photo_item(photo_item, user)

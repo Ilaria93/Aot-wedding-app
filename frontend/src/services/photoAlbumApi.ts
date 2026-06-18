@@ -2,14 +2,13 @@ import { apiClient } from '@/services/apiClient';
 
 export type PublicPhotoAlbumItem = {
   id: number;
-  guest_full_name: string;
+  uploader_name: string;
   caption?: string | null;
   image_url: string;
   uploaded_at: string;
 };
 
 export type PhotoUploadIntentPayload = {
-  invitation_token: string;
   original_filename: string;
   mime_type: string;
   file_size_bytes: number;
@@ -25,7 +24,6 @@ export type PhotoUploadIntentResponse = {
 };
 
 export type PhotoUploadCompletePayload = {
-  invitation_token: string;
   storage_key: string;
   original_filename: string;
   mime_type: string;
@@ -44,8 +42,8 @@ export type PhotoAlbumStatus = 'pending' | 'approved' | 'rejected';
 
 export type AdminPhotoAlbumItem = {
   id: number;
-  guest_id: number;
-  guest_full_name: string;
+  user_id: number;
+  uploader_name: string;
   storage_key: string;
   original_filename: string;
   mime_type: string;
@@ -59,7 +57,7 @@ export type AdminPhotoAlbumItem = {
 
 export type AdminPhotoStatus = AdminPhotoAlbumItem['status'];
 
-// Loads only approved photos for the guest-facing album.
+// Loads only approved photos for the public wedding album.
 export async function fetchPublicPhotoAlbum(): Promise<PublicPhotoAlbumItem[]> {
   const { data } = await apiClient.get<PublicPhotoAlbumItem[]>('/photos');
   return data;

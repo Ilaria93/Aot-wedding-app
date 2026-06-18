@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
 import { formatUserRoleLabel } from '@/services/authApi';
@@ -7,30 +5,8 @@ import './styles/ProfilePage.scss';
 
 /** Profile screen for account info, role and session actions. */
 export function ProfilePage() {
-  const { user, isBootstrapping, signOut, saveProfile } = useAuth();
+  const { user, isBootstrapping, signOut } = useAuth();
   const { t } = useI18n();
-  const [firstName, setFirstName] = useState(user?.first_name || '');
-  const [lastName, setLastName] = useState(user?.last_name || '');
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-
-  useEffect(() => {
-    setFirstName(user?.first_name || '');
-    setLastName(user?.last_name || '');
-  }, [user]);
-
-  async function handleSaveProfile() {
-    try {
-      setSaving(true);
-      setMessage(null);
-      await saveProfile({ first_name: firstName.trim(), last_name: lastName.trim() });
-      setMessage(t('profile.updatedMessage'));
-    } catch (caughtError) {
-      setMessage(caughtError instanceof Error ? caughtError.message : t('profile.updateError'));
-    } finally {
-      setSaving(false);
-    }
-  }
 
   if (isBootstrapping) {
     return (
@@ -60,33 +36,9 @@ export function ProfilePage() {
           <p className="summary-value">{formatUserRoleLabel(user.role, t)}</p>
         </div>
 
-        <input
-          className="input"
-          placeholder={t('common.fields.firstName')}
-          value={firstName}
-          onChange={(event) => setFirstName(event.target.value)}
-        />
-        <input
-          className="input"
-          placeholder={t('common.fields.lastName')}
-          value={lastName}
-          onChange={(event) => setLastName(event.target.value)}
-        />
-
-        {message ? <p className="helper-text">{message}</p> : null}
-
-        <button
-          type="button"
-          className="button button-primary"
-          disabled={saving}
-          onClick={() => void handleSaveProfile()}>
-          {saving ? t('profile.updateLoading') : t('profile.updateButton')}
-        </button>
-
         <button
           type="button"
           className="button button-secondary button-secondary--block"
-          style={{ marginTop: 12 }}
           onClick={() => void signOut()}>
           {t('profile.signOut')}
         </button>

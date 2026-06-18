@@ -31,12 +31,6 @@ def update_admin_photo_status(
     _admin_ok=Depends(require_admin_user),
 ):
     try:
-        update_photo_status(db, photo_id, payload.status)
+        return update_photo_status(db, photo_id, payload.status)
     except PhotoAlbumNotFoundError as error:
         raise HTTPException(status_code=404, detail=str(error)) from error
-
-    for photo_item in list_admin_photo_album_items(db):
-        if photo_item["id"] == photo_id:
-            return photo_item
-
-    raise HTTPException(status_code=404, detail="Photo not found")

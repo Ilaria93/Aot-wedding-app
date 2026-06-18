@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from database.base import get_db
 from dependencies.auth_user_dependency import require_current_user
+from models.user_model import User
 from schemas.photo_album_schema import (
     PhotoUploadCompleteRequest,
     PhotoUploadCompleteResponse,
@@ -28,17 +29,15 @@ def list_public_photos(db: Session = Depends(get_db)):
     return list_public_photo_album_items(db)
 
 
-# Builds a signed upload target for a guest-selected image.
+# Builds a signed upload target for a user-selected image.
 @router.post("/upload-intent", response_model=PhotoUploadIntentResponse)
-def create_guest_photo_upload_intent(
+def create_user_photo_upload_intent(
     payload: PhotoUploadIntentRequest,
     db: Session = Depends(get_db),
-    _current_user=Depends(require_current_user),
+    current_user: User = Depends(require_current_user),
 ):
     try:
-        return create_photo_upload_intent(db, payload)
-    except PhotoAlbumNotFoundError as error:
-        raise HTTPException(status_code=404, detail=str(error)) from error
+        return create_photo_upload_intent(db, current_user, payload)
     except PhotoAlbumValidationError as error:
         raise HTTPException(status_code=400, detail=str(error)) from error
     except PhotoAlbumConfigError as error:
@@ -47,13 +46,13 @@ def create_guest_photo_upload_intent(
 
 # Persists metadata after a direct client-to-storage upload succeeds.
 @router.post("/complete-upload", response_model=PhotoUploadCompleteResponse)
-def complete_guest_photo_upload(
+def complete_user_photo_upload(
     payload: PhotoUploadCompleteRequest,
     db: Session = Depends(get_db),
-    _current_user=Depends(require_current_user),
+    current_user: User = Depends(require_current_user),
 ):
     try:
-        created_photo = register_completed_photo_upload(db, payload)
+        created_photo = register_completed_photo_upload(db, current_user, payload)
     except PhotoAlbumNotFoundError as error:
         raise HTTPException(status_code=404, detail=str(error)) from error
     except PhotoAlbumValidationError as error:

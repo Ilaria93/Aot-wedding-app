@@ -19,10 +19,8 @@ export const it = {
   },
   common: {
     roles: {
-      bride: 'Sposa',
-      groom: 'Sposo',
+      user: 'Invitato',
       admin: 'Admin',
-      invited: 'Invitato',
     },
     yes: 'Sì',
     no: 'No',
@@ -160,9 +158,8 @@ export const it = {
     },
     rsvp: {
       heading: "Non vedono l'ora di festeggiare con te",
-      body:
-        'Da qui puoi confermare la tua presenza, aprire un invito esistente o generare un token di sviluppo per testare il flusso completo.',
-      button: 'Vai a RSVP',
+      body: 'Accedi o registrati, poi conferma la tua presenza dalla pagina RSVP.',
+      button: 'Conferma la tua presenza',
     },
     gift: {
       eyebrow: 'Il nostro sogno',
@@ -277,8 +274,9 @@ export const it = {
   register: {
     eyebrow: 'Registrazione',
     title: 'Crea il tuo account personale.',
-    subtitle: 'Compila i campi qui sotto e seleziona il tuo ruolo.',
-    roleLabel: 'Ruolo',
+    subtitle: 'Compila i campi qui sotto per creare il tuo account.',
+    roleSecretLabel: 'Codice admin (opzionale)',
+    roleSecretHint: 'Lascia vuoto per un account invitato. Gli sposi possono inserire qui il codice admin.',
     rememberMe: 'Resta connesso',
     submitLabel: 'Registrati',
     submitLoading: 'Registrazione in corso...',
@@ -303,6 +301,7 @@ export const it = {
     signOut: 'Esci',
   },
   rsvp: {
+    loadError: 'Impossibile caricare il tuo stato RSVP.',
     invalidLink: 'Link invito non valido.',
     notFound: 'Invito non trovato o scaduto.',
     alreadyConfirmedError: 'RSVP già confermato in precedenza.',
@@ -402,7 +401,8 @@ export const it = {
       refreshing: 'Aggiornamento...',
     },
     stats: {
-      invited: 'Invitati',
+      invited: 'Utenti registrati',
+      users: 'Utenti registrati',
       confirmed: 'Confermati',
       attending: 'Presenti',
       notAttending: 'Assenti',
@@ -464,6 +464,10 @@ export const it = {
       hide: 'Nascondi',
       activate: 'Attiva',
       delete: 'Elimina',
+    },
+    users: {
+      title: 'Utenti registrati',
+      empty: 'Nessun utente registrato.',
     },
     guests: {
       title: 'Invitati',

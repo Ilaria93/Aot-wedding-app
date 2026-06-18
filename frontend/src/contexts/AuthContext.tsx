@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 
 import {
-  canManageWedding,
+  isAdmin,
   fetchCurrentUserProfile,
   loginAccount,
   registerAccount,
@@ -20,7 +20,6 @@ import {
   subscribeToSessionChanges,
 } from '@/services/authSession';
 import { translate } from '@/contexts/I18nContext';
-import { DEV_MOCK_AUTH_USER, DEV_UNLOCK_ALL_ROUTES } from '@/constants/devAccess';
 import { getApiErrorMessage } from '@/services/apiErrors';
 
 type AuthContextValue = {
@@ -58,12 +57,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     async function bootstrapAuth() {
-      if (DEV_UNLOCK_ALL_ROUTES) {
-        setUser(DEV_MOCK_AUTH_USER);
-        setIsBootstrapping(false);
-        return;
-      }
-
       await restoreRememberedSession();
       const restoredUser = getAccessToken()
         ? await loadCurrentUserOrClearSession()
@@ -130,7 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       user,
       isAuthenticated: Boolean(user),
-      canManageWedding: canManageWedding(user?.role),
+      canManageWedding: isAdmin(user?.role),
       isBootstrapping,
       signIn,
       signUp,

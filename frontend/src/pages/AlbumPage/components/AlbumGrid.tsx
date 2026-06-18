@@ -21,9 +21,9 @@ export function AlbumGrid({ photos }: AlbumGridProps) {
             <img
               className="photo-card__image"
               src={photo.image_url}
-              alt={photo.caption || photo.guest_full_name}
+              alt={photo.caption || photo.uploader_name}
             />
-            <p className="photo-card__guest">{photo.guest_full_name}</p>
+            <p className="photo-card__guest">{photo.uploader_name}</p>
             <p className="photo-card__meta">{formatDateByLocale(photo.uploaded_at, locale)}</p>
             {photo.caption ? <p className="photo-card__caption">{photo.caption}</p> : null}
           </article>

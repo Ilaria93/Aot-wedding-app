@@ -1,32 +1,21 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { RememberMeToggle } from '@/components/RememberMeToggle';
-import { RoleSelect } from '@/components/RoleSelect';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
-import type { SelectableUserRole } from '@/services/authApi';
 import './styles/RegisterPage.scss';
 
-function getRoleOptions(t: ReturnType<typeof useI18n>['t']) {
-  return [
-    { value: 'bride' as const, label: t('common.roles.bride') },
-    { value: 'groom' as const, label: t('common.roles.groom') },
-    { value: 'invited' as const, label: t('common.roles.invited') },
-  ];
-}
-
-/** Registration screen shared by bride, groom and guests. */
+/** Registration screen for guests; optional admin code for spouse accounts. */
 export function RegisterPage() {
   const navigate = useNavigate();
   const { signUp } = useAuth();
   const { t } = useI18n();
-  const roleOptions = useMemo(() => getRoleOptions(t), [t]);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<SelectableUserRole>('invited');
+  const [roleSecret, setRoleSecret] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +30,7 @@ export function RegisterPage() {
         last_name: lastName.trim(),
         email: email.trim(),
         password,
-        role,
+        ...(roleSecret.trim() ? { role_secret: roleSecret.trim() } : {}),
         remember_me: rememberMe,
       });
       navigate('/');
@@ -85,13 +74,14 @@ export function RegisterPage() {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
         />
-
-        <RoleSelect
-          label={t('register.roleLabel')}
-          value={role}
-          options={roleOptions}
-          onChange={setRole}
+        <input
+          className="input"
+          type="password"
+          placeholder={t('register.roleSecretLabel')}
+          value={roleSecret}
+          onChange={(event) => setRoleSecret(event.target.value)}
         />
+        <p className="helper-text">{t('register.roleSecretHint')}</p>
 
         <RememberMeToggle
           checked={rememberMe}

@@ -14,14 +14,13 @@ type AlbumUploadPanelProps = {
   onUploadSuccess: () => Promise<void>;
 };
 
-/** Guest photo upload form with token, caption and file picker. */
+/** Authenticated photo upload form with caption and file picker. */
 export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [uploadMessage, setUploadMessage] = useState<string | null>(null);
-  const [invitationToken, setInvitationToken] = useState('');
   const [caption, setCaption] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -36,7 +35,7 @@ export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
 
   function handlePickImage() {
     if (!isAuthenticated) {
-      navigate('/auth/login');
+      navigate('/auth/login', { state: { from: '/album' } });
       return;
     }
     fileInputRef.current?.click();
@@ -44,13 +43,7 @@ export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
 
   async function handleUpload() {
     if (!isAuthenticated) {
-      navigate('/auth/login');
-      return;
-    }
-
-    const normalizedToken = invitationToken.trim();
-    if (!normalizedToken) {
-      setUploadMessage(t('album.missingTokenError'));
+      navigate('/auth/login', { state: { from: '/album' } });
       return;
     }
     if (!selectedFile) {
@@ -65,7 +58,6 @@ export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
       const mimeType = selectedFile.type || 'image/jpeg';
       const fileSizeBytes = selectedFile.size || 1;
       const uploadIntent = await createPhotoUploadIntent({
-        invitation_token: normalizedToken,
         original_filename: selectedFile.name,
         mime_type: mimeType,
         file_size_bytes: fileSizeBytes,
@@ -83,7 +75,6 @@ export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
       }
 
       await completePhotoUpload({
-        invitation_token: normalizedToken,
         storage_key: uploadIntent.storage_key,
         original_filename: selectedFile.name,
         mime_type: mimeType,
@@ -100,7 +91,7 @@ export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
       await onUploadSuccess();
     } catch (caughtError) {
       if (getApiStatusCode(caughtError) === 401) {
-        navigate('/auth/login');
+        navigate('/auth/login', { state: { from: '/album' } });
         return;
       }
       setUploadMessage(getApiErrorMessage(caughtError, t('album.uploadError')));
@@ -114,17 +105,12 @@ export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
       <h2 className="section-title">{t('album.uploadTitle')}</h2>
       <p className="section-description">{t('album.uploadDescription')}</p>
       {!isAuthenticated ? <p className="helper-text">{t('album.loginHint')}</p> : null}
-      <input
-        className="input"
-        placeholder={t('common.fields.invitationToken')}
-        value={invitationToken}
-        onChange={(event) => setInvitationToken(event.target.value)}
-      />
       <textarea
         className="textarea input--multiline"
         placeholder={t('album.captionPlaceholder')}
         value={caption}
         onChange={(event) => setCaption(event.target.value)}
+        disabled={!isAuthenticated}
       />
       <input
         ref={fileInputRef}

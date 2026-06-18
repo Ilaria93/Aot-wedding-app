@@ -12,6 +12,6 @@ class User(Base):
     last_name = Column(String(80), nullable=False)
     email = Column(String(160), unique=True, index=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
-    role = Column(String(20), nullable=False, default="invited", index=True)
+    role = Column(String(20), nullable=False, default="user", index=True)
     created_at = Column(DateTime, nullable=False)
     last_login_at = Column(DateTime, nullable=True)

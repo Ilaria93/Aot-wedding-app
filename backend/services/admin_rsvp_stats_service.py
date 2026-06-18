@@ -1,17 +1,16 @@
 from sqlalchemy.orm import Session
 
-from models.guest_model import Guest
 from models.rsvp_model import RSVP
+from models.user_model import User
+from schemas.auth_schema import UserRoleEnum
 
 
-# Computes aggregated RSVP statistics from DB.
 def compute_rsvp_stats(db: Session) -> dict:
-    total_invited = db.query(Guest).count()
-
+    total_users = db.query(User).filter(User.role == UserRoleEnum.user.value).count()
     all_rsvps = db.query(RSVP).all()
     total_confirmed = len(all_rsvps)
-    total_attending = sum(1 for r in all_rsvps if r.attending)
-    total_not_attending = sum(1 for r in all_rsvps if not r.attending)
+    total_attending = sum(1 for rsvp in all_rsvps if rsvp.attending)
+    total_not_attending = sum(1 for rsvp in all_rsvps if not rsvp.attending)
 
     by_faction: dict[str, int] = {}
     for rsvp in all_rsvps:
@@ -19,7 +18,7 @@ def compute_rsvp_stats(db: Session) -> dict:
             by_faction[rsvp.faction] = by_faction.get(rsvp.faction, 0) + 1
 
     return {
-        "total_invited": total_invited,
+        "total_users": total_users,
         "total_confirmed": total_confirmed,
         "total_attending": total_attending,
         "total_not_attending": total_not_attending,

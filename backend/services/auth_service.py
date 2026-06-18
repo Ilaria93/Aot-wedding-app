@@ -23,15 +23,23 @@ from settings import (
     read_jwt_secret_key,
     read_refresh_token_expiration_days,
     read_short_refresh_token_expiration_hours,
+    read_wedding_role_secret,
 )
 
 PASSWORD_HASH_ITERATIONS = 390000
 JWT_ALGORITHM = "HS256"
-PRIVILEGED_USER_ROLES = {
-    UserRoleEnum.admin.value,
-    UserRoleEnum.bride.value,
-    UserRoleEnum.groom.value,
-}
+PRIVILEGED_USER_ROLES = {UserRoleEnum.admin.value}
+
+
+def _resolve_registration_role(payload: AuthRegisterRequest) -> str:
+    provided_secret = (payload.role_secret or "").strip()
+    if not provided_secret:
+        return UserRoleEnum.user.value
+
+    expected_secret = read_wedding_role_secret()
+    if not expected_secret or not hmac.compare_digest(provided_secret, expected_secret):
+        raise AuthValidationError("Invalid role secret.")
+    return UserRoleEnum.admin.value
 
 
 class AuthConfigError(Exception):
@@ -177,7 +185,7 @@ def register_user(db: Session, payload: AuthRegisterRequest) -> AuthSessionRespo
         last_name=payload.last_name.strip(),
         email=normalized_email,
         password_hash=hash_password(payload.password),
-        role=payload.role.value,
+        role=_resolve_registration_role(payload),
         created_at=datetime.utcnow(),
         last_login_at=datetime.utcnow(),
     )
@@ -293,4 +301,4 @@ def update_user_profile(db: Session, user: User, payload: ProfileUpdateRequest) 
 
 def require_admin_role(user: User):
     if user.role not in PRIVILEGED_USER_ROLES:
-        raise AuthPermissionError("Bride, groom or admin role required.")
+        raise AuthPermissionError("Admin role required.")

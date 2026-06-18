@@ -1,11 +1,8 @@
-import { Link } from 'react-router-dom';
-
 import { getFactionOptions } from '@/constants/factions';
-import type { FactionId } from '@/services/guestApi';
+import type { FactionId } from '@/services/rsvpApi';
 import { useI18n } from '@/contexts/I18nContext';
 
 type RsvpFormProps = {
-  isAuthenticated: boolean;
   attending: boolean;
   faction: FactionId;
   dietaryNotes: string;
@@ -18,7 +15,6 @@ type RsvpFormProps = {
 
 /** RSVP form with attendance toggle, faction picker and dietary notes. */
 export function RsvpForm({
-  isAuthenticated,
   attending,
   faction,
   dietaryNotes,
@@ -33,14 +29,6 @@ export function RsvpForm({
   return (
     <div className="section-card">
       <h2 className="section-title">{t('rsvp.formTitle')}</h2>
-      {!isAuthenticated ? (
-        <div className="login-prompt-card">
-          <p className="helper-text helper-text--flush">{t('rsvp.loginHint')}</p>
-          <Link className="text-link" to="/auth/login">
-            {t('rsvp.loginLink')}
-          </Link>
-        </div>
-      ) : null}
 
       <div className="segment-row">
         <button
@@ -87,11 +75,7 @@ export function RsvpForm({
         className="button button-primary button--spaced-top"
         disabled={submitting}
         onClick={onSubmit}>
-        {isAuthenticated
-          ? submitting
-            ? t('rsvp.submitLoading')
-            : t('rsvp.submitLabel')
-          : t('rsvp.loginSubmitLabel')}
+        {submitting ? t('rsvp.submitLoading') : t('rsvp.submitLabel')}
       </button>
     </div>
   );
