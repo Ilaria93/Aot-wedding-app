@@ -2,13 +2,11 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, field_validator
 
 
 class PhotoAlbumStatusEnum(str, Enum):
-    pending = "pending"
     approved = "approved"
-    rejected = "rejected"
 
 
 class PhotoUploadIntentRequest(BaseModel):
@@ -84,37 +82,3 @@ class PublicPhotoAlbumItem(BaseModel):
     caption: Optional[str] = None
     image_url: str
     uploaded_at: datetime
-
-
-class AdminPhotoAlbumItem(BaseModel):
-    id: int
-    user_id: int
-    uploader_name: str
-    storage_key: str
-    original_filename: str
-    mime_type: str
-    caption: Optional[str] = None
-    status: PhotoAlbumStatusEnum
-    image_url: str
-    file_size_bytes: int
-    uploaded_at: datetime
-    approved_at: Optional[datetime] = None
-
-
-class AdminPhotoStatusUpdateRequest(BaseModel):
-    status: PhotoAlbumStatusEnum
-
-
-class PhotoAlbumItemRecord(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    id: int
-    user_id: int
-    storage_key: str
-    original_filename: str
-    mime_type: str
-    caption: Optional[str] = None
-    status: PhotoAlbumStatusEnum
-    file_size_bytes: int
-    uploaded_at: datetime
-    approved_at: Optional[datetime] = None

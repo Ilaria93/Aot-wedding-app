@@ -333,17 +333,17 @@ export const it = {
     galleryPermissionError: 'Permesso galleria negato. Abilitalo dalle impostazioni del dispositivo.',
     missingTokenError: 'Inserisci il token invito prima di caricare una foto.',
     missingPhotoError: 'Seleziona prima una foto dalla galleria.',
-    uploadSuccess: 'Foto inviata. Sarà visibile nell’album dopo l’approvazione admin.',
+    uploadSuccess: 'Foto inviata e pubblicata nell’album.',
     uploadError: 'Caricamento non riuscito. Controlla token e rete.',
     eyebrow: 'Album',
     title: 'Raccogliamo i ricordi del matrimonio in un solo posto.',
     subtitle:
-      'Gli invitati possono inviare nuove foto con il token dell’invito. Le immagini restano in attesa finché l’admin non le approva.',
+      'Accedi e condividi le tue foto: compariranno subito nell’album condiviso.',
     refreshButton: 'Aggiorna album',
     refreshLoading: 'Aggiornamento...',
     uploadTitle: 'Invia una foto',
     uploadDescription:
-      'Inserisci il token invito, scegli una foto e aggiungi una breve didascalia se vuoi.',
+      'Scegli una foto dal dispositivo e aggiungi una breve didascalia se vuoi.',
     loginHint: 'Per caricare una foto devi prima accedere con il tuo account.',
     captionPlaceholder: 'Didascalia opzionale',
     choosePhoto: 'Scegli foto dalla galleria',
@@ -352,8 +352,8 @@ export const it = {
     uploadButton: 'Invia foto all’album',
     uploadLoading: 'Caricamento in corso...',
     loginUploadButton: 'Accedi per inviare una foto',
-    approvedTitle: 'Foto approvate',
-    approvedEmpty: 'Nessuna foto approvata ancora. Le prime appariranno qui appena moderate.',
+    galleryTitle: 'Foto dell’album',
+    galleryEmpty: 'Nessuna foto ancora. Sii il primo a condividere un ricordo.',
   },
   travel: {
     loadError: 'Impossibile caricare i contatti logistici.',
@@ -394,9 +394,9 @@ export const it = {
     },
     hero: {
       eyebrow: 'Admin',
-      title: 'Dashboard RSVP, album foto e contatti logistici.',
+      title: 'Dashboard RSVP e contatti logistici.',
       subtitle:
-        'Qui monitori invitati e fazioni, approvi le foto caricate dagli ospiti e aggiorni la rubrica utile per il matrimonio.',
+        'Qui monitori invitati, fazioni e aggiorni la rubrica utile per il matrimonio.',
       refresh: 'Aggiorna dashboard',
       refreshing: 'Aggiornamento...',
     },

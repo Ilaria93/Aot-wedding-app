@@ -23,7 +23,7 @@ from services.photo_album_service import (
 router = APIRouter(prefix="/photos")
 
 
-# Returns only approved photos for the public wedding album.
+# Returns all uploaded photos for the public wedding album.
 @router.get("", response_model=list[PublicPhotoAlbumItem])
 def list_public_photos(db: Session = Depends(get_db)):
     return list_public_photo_album_items(db)

@@ -8,12 +8,6 @@ import {
   fetchAdminUserList,
   fetchAdminRsvpStats,
 } from '@/services/adminDashboardApi';
-import {
-  type AdminPhotoAlbumItem,
-  fetchAdminPhotoAlbum,
-  updateAdminPhotoStatus,
-  type AdminPhotoStatus,
-} from '@/services/photoAlbumApi';
 import { getApiErrorMessage } from '@/services/apiErrors';
 import './styles/AdminPage.scss';
 
@@ -21,16 +15,14 @@ function formatUserName(user: AdminUserListItem): string {
   return `${user.first_name} ${user.last_name}`.trim();
 }
 
-/** Admin dashboard — RSVP stats, user list and photo moderation. */
+/** Admin dashboard — RSVP stats and user list. */
 export function AdminPage() {
   const { canManageWedding, isAuthenticated, isBootstrapping } = useAuth();
   const { t } = useI18n();
   const [stats, setStats] = useState<AdminRsvpStats | null>(null);
   const [users, setUsers] = useState<AdminUserListItem[]>([]);
-  const [photos, setPhotos] = useState<AdminPhotoAlbumItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [photoActionId, setPhotoActionId] = useState<number | null>(null);
 
   const loadAdminDashboard = useCallback(async () => {
     if (!isAuthenticated) {
@@ -46,14 +38,12 @@ export function AdminPage() {
 
     try {
       setError(null);
-      const [statsResponse, userListResponse, photoListResponse] = await Promise.all([
+      const [statsResponse, userListResponse] = await Promise.all([
         fetchAdminRsvpStats(),
         fetchAdminUserList(),
-        fetchAdminPhotoAlbum(),
       ]);
       setStats(statsResponse);
       setUsers(userListResponse);
-      setPhotos(photoListResponse);
     } catch (caughtError) {
       setError(getApiErrorMessage(caughtError, t('admin.errors.loadFailed')));
     } finally {
@@ -66,20 +56,6 @@ export function AdminPage() {
       void loadAdminDashboard();
     }
   }, [isBootstrapping, loadAdminDashboard]);
-
-  async function handlePhotoStatusChange(photoId: number, status: AdminPhotoStatus) {
-    try {
-      setPhotoActionId(photoId);
-      const updatedPhoto = await updateAdminPhotoStatus(photoId, status);
-      setPhotos((current) =>
-        current.map((photo) => (photo.id === photoId ? updatedPhoto : photo)),
-      );
-    } catch (caughtError) {
-      setError(getApiErrorMessage(caughtError, t('admin.errors.photoUpdateFailed')));
-    } finally {
-      setPhotoActionId(null);
-    }
-  }
 
   if (isBootstrapping || loading) {
     return <div className="loading-screen">…</div>;
@@ -130,34 +106,6 @@ export function AdminPage() {
                   ? t('admin.rsvpStatuses.attending')
                   : t('admin.rsvpStatuses.pending')}
               </p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="landing-section">
-        <h2 className="section-heading">{t('admin.photos.title')}</h2>
-        <div className="admin-photo-grid">
-          {photos.map((photo) => (
-            <article key={photo.id} className="dev-card">
-              <img
-                className="admin-photo-thumb"
-                src={photo.image_url}
-                alt={photo.caption || photo.uploader_name}
-              />
-              <p className="helper-text">{photo.status}</p>
-              <div className="admin-photo-actions">
-                {(['approved', 'rejected', 'pending'] as AdminPhotoStatus[]).map((status) => (
-                  <button
-                    key={status}
-                    type="button"
-                    className={`button ${photo.status === status ? 'button-primary' : 'button-secondary'}`}
-                    disabled={photoActionId === photo.id}
-                    onClick={() => void handlePhotoStatusChange(photo.id, status)}>
-                    {t(`admin.photoStatuses.${status}`)}
-                  </button>
-                ))}
-              </div>
             </article>
           ))}
         </div>

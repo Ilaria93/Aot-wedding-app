@@ -41,9 +41,7 @@ def test_photo_upload_intent_returns_signed_upload_data(api_client, user_headers
     assert payload["upload_url"]
 
 
-def test_photo_stays_hidden_until_admin_approves_it(api_client, admin_headers, user_headers):
-    user_id = _current_user_id(api_client, user_headers)
-
+def test_photo_is_visible_immediately_after_upload(api_client, user_headers):
     upload_intent_response = api_client.post(
         "/photos/upload-intent",
         headers=user_headers,
@@ -67,30 +65,13 @@ def test_photo_stays_hidden_until_admin_approves_it(api_client, admin_headers, u
         },
     )
     assert complete_response.status_code == 200
-    assert complete_response.json()["status"] == "pending"
+    assert complete_response.json()["status"] == "approved"
 
-    public_before_approval = api_client.get("/photos")
-    assert public_before_approval.json() == []
-
-    admin_list_response = api_client.get("/admin/photos", headers=admin_headers)
-    admin_photos = admin_list_response.json()
-    assert len(admin_photos) == 1
-    assert admin_photos[0]["user_id"] == user_id
-    assert admin_photos[0]["status"] == "pending"
-
-    approve_response = api_client.patch(
-        f"/admin/photos/{admin_photos[0]['id']}",
-        headers=admin_headers,
-        json={"status": "approved"},
-    )
-    assert approve_response.status_code == 200
-    assert approve_response.json()["status"] == "approved"
-
-    public_after_approval = api_client.get("/photos")
-    approved_photos = public_after_approval.json()
-    assert len(approved_photos) == 1
-    assert approved_photos[0]["uploader_name"] == "Guest Tester"
-    assert approved_photos[0]["caption"] == "Ingresso degli invitati"
+    public_album = api_client.get("/photos")
+    photos = public_album.json()
+    assert len(photos) == 1
+    assert photos[0]["uploader_name"] == "Guest Tester"
+    assert photos[0]["caption"] == "Ingresso degli invitati"
 
 
 def test_photo_complete_upload_rejects_reused_storage_key(api_client, user_headers):

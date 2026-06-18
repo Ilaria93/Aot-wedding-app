@@ -4,7 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes.auth_route import router as auth_router
 from routes.admin_logistics_contact_route import router as admin_logistics_contact_router
 from routes.logistics_contact_route import router as logistics_contact_router
-from routes.admin_photo_album_route import router as admin_photo_album_router
 from routes.photo_album_route import router as photo_album_router
 from routes.rsvp_confirmation_route import router as rsvp_router
 from routes.admin_user_list_route import router as admin_user_router
@@ -34,6 +33,5 @@ app.include_router(rsvp_router)
 app.include_router(admin_user_router)
 app.include_router(auth_router)
 app.include_router(photo_album_router)
-app.include_router(admin_photo_album_router)
 app.include_router(logistics_contact_router)
 app.include_router(admin_logistics_contact_router)

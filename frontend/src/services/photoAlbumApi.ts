@@ -34,30 +34,12 @@ export type PhotoUploadCompletePayload = {
 export type PhotoUploadCompleteResponse = {
   ok: boolean;
   photo_id: number;
-  status: PhotoAlbumStatus;
+  status: 'approved';
 };
 
 export type PhotoUploadMethod = 'PUT';
-export type PhotoAlbumStatus = 'pending' | 'approved' | 'rejected';
 
-export type AdminPhotoAlbumItem = {
-  id: number;
-  user_id: number;
-  uploader_name: string;
-  storage_key: string;
-  original_filename: string;
-  mime_type: string;
-  caption?: string | null;
-  status: PhotoAlbumStatus;
-  image_url: string;
-  file_size_bytes: number;
-  uploaded_at: string;
-  approved_at?: string | null;
-};
-
-export type AdminPhotoStatus = AdminPhotoAlbumItem['status'];
-
-// Loads only approved photos for the public wedding album.
+// Loads public wedding album photos.
 export async function fetchPublicPhotoAlbum(): Promise<PublicPhotoAlbumItem[]> {
   const { data } = await apiClient.get<PublicPhotoAlbumItem[]>('/photos');
   return data;
@@ -76,20 +58,5 @@ export async function completePhotoUpload(
   payload: PhotoUploadCompletePayload,
 ): Promise<PhotoUploadCompleteResponse> {
   const { data } = await apiClient.post<PhotoUploadCompleteResponse>('/photos/complete-upload', payload);
-  return data;
-}
-
-// Loads all uploaded photos for admin moderation.
-export async function fetchAdminPhotoAlbum(): Promise<AdminPhotoAlbumItem[]> {
-  const { data } = await apiClient.get<AdminPhotoAlbumItem[]>('/admin/photos');
-  return data;
-}
-
-// Updates admin moderation status for one uploaded photo.
-export async function updateAdminPhotoStatus(
-  photoId: number,
-  status: AdminPhotoStatus,
-): Promise<AdminPhotoAlbumItem> {
-  const { data } = await apiClient.patch<AdminPhotoAlbumItem>(`/admin/photos/${photoId}`, { status });
   return data;
 }

@@ -335,17 +335,17 @@ export const de = {
       'Galeriezugriff verweigert. Aktiviere ihn in den Geräteeinstellungen.',
     missingTokenError: 'Gib das Einladungs-Token ein, bevor du ein Foto hochlädst.',
     missingPhotoError: 'Wähle zuerst ein Foto aus der Galerie aus.',
-    uploadSuccess: 'Foto gesendet. Es wird nach Admin-Freigabe im Album sichtbar sein.',
-    uploadError: 'Upload fehlgeschlagen. Prüfe Token und Verbindung.',
+    uploadSuccess: 'Foto gesendet und im Album veröffentlicht.',
+    uploadError: 'Upload fehlgeschlagen. Prüfe die Verbindung.',
     eyebrow: 'Album',
     title: 'Wir sammeln die Hochzeitserinnerungen an einem Ort.',
     subtitle:
-      'Gäste können mit dem Einladungs-Token neue Fotos senden. Bilder bleiben ausstehend, bis der Admin sie freigibt.',
+      'Melde dich an und teile deine Fotos — sie erscheinen sofort im Album.',
     refreshButton: 'Album aktualisieren',
     refreshLoading: 'Wird aktualisiert...',
     uploadTitle: 'Foto senden',
     uploadDescription:
-      'Gib das Einladungs-Token ein, wähle ein Foto und füge bei Wunsch eine kurze Bildunterschrift hinzu.',
+      'Wähle ein Foto auf deinem Gerät und füge bei Wunsch eine kurze Bildunterschrift hinzu.',
     loginHint: 'Um ein Foto hochzuladen, musst du dich zuerst mit deinem Konto anmelden.',
     captionPlaceholder: 'Optionale Bildunterschrift',
     choosePhoto: 'Foto aus Galerie wählen',
@@ -354,9 +354,8 @@ export const de = {
     uploadButton: 'Foto an das Album senden',
     uploadLoading: 'Upload läuft...',
     loginUploadButton: 'Anmelden, um ein Foto zu senden',
-    approvedTitle: 'Freigegebene Fotos',
-    approvedEmpty:
-      'Noch keine freigegebenen Fotos. Die ersten erscheinen hier nach der Moderation.',
+    galleryTitle: 'Albumfotos',
+    galleryEmpty: 'Noch keine Fotos. Sei der Erste, der eine Erinnerung teilt.',
   },
   travel: {
     loadError: 'Logistik-Kontakte konnten nicht geladen werden.',
@@ -398,9 +397,9 @@ export const de = {
     },
     hero: {
       eyebrow: 'Admin',
-      title: 'RSVP-Dashboard, Fotoalbum und Logistik-Kontakte.',
+      title: 'RSVP-Dashboard und Logistik-Kontakte.',
       subtitle:
-        'Hier überwachst du Gäste und Fraktionen, genehmigst hochgeladene Fotos und aktualisierst das nützliche Kontaktverzeichnis für die Hochzeit.',
+        'Hier überwachst du Gäste, Fraktionen und aktualisierst das nützliche Kontaktverzeichnis für die Hochzeit.',
       refresh: 'Dashboard aktualisieren',
       refreshing: 'Wird aktualisiert...',
     },

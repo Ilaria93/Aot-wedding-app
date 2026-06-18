@@ -123,23 +123,6 @@ def build_photo_public_url(storage_key: str) -> str:
     return f"https://{bucket_name}.s3.{read_s3_region()}.amazonaws.com/{quoted_key}"
 
 
-def _serialize_admin_photo_item(photo: PhotoAlbumItem, user: User) -> dict[str, Any]:
-    return {
-        "id": photo.id,
-        "user_id": user.id,
-        "uploader_name": format_user_full_name(user),
-        "storage_key": photo.storage_key,
-        "original_filename": photo.original_filename,
-        "mime_type": photo.mime_type,
-        "caption": photo.caption,
-        "status": photo.status,
-        "image_url": build_photo_public_url(photo.storage_key),
-        "file_size_bytes": photo.file_size_bytes,
-        "uploaded_at": photo.uploaded_at,
-        "approved_at": photo.approved_at,
-    }
-
-
 def create_photo_upload_intent(
     db: Session,
     current_user: User,
@@ -190,16 +173,17 @@ def register_completed_photo_upload(
     if existing:
         raise PhotoAlbumValidationError("This upload was already registered.")
 
+    uploaded_at = datetime.utcnow()
     photo_item = PhotoAlbumItem(
         user_id=current_user.id,
         storage_key=payload.storage_key,
         original_filename=payload.original_filename,
         mime_type=payload.mime_type,
         caption=payload.caption,
-        status=PhotoAlbumStatusEnum.pending.value,
+        status=PhotoAlbumStatusEnum.approved.value,
         file_size_bytes=payload.file_size_bytes,
-        uploaded_at=datetime.utcnow(),
-        approved_at=None,
+        uploaded_at=uploaded_at,
+        approved_at=uploaded_at,
     )
     db.add(photo_item)
     db.commit()
@@ -211,7 +195,6 @@ def list_public_photo_album_items(db: Session) -> list[dict[str, Any]]:
     photo_rows = (
         db.query(PhotoAlbumItem, User)
         .join(User, User.id == PhotoAlbumItem.user_id)
-        .filter(PhotoAlbumItem.status == PhotoAlbumStatusEnum.approved.value)
         .order_by(PhotoAlbumItem.uploaded_at.desc())
         .all()
     )
@@ -225,35 +208,3 @@ def list_public_photo_album_items(db: Session) -> list[dict[str, Any]]:
         }
         for photo, user in photo_rows
     ]
-
-
-def list_admin_photo_album_items(db: Session) -> list[dict[str, Any]]:
-    photo_rows = (
-        db.query(PhotoAlbumItem, User)
-        .join(User, User.id == PhotoAlbumItem.user_id)
-        .order_by(PhotoAlbumItem.uploaded_at.desc())
-        .all()
-    )
-    return [_serialize_admin_photo_item(photo, user) for photo, user in photo_rows]
-
-
-def update_photo_status(
-    db: Session,
-    photo_id: int,
-    status: PhotoAlbumStatusEnum,
-) -> dict[str, Any]:
-    photo_row = (
-        db.query(PhotoAlbumItem, User)
-        .join(User, User.id == PhotoAlbumItem.user_id)
-        .filter(PhotoAlbumItem.id == photo_id)
-        .first()
-    )
-    if not photo_row:
-        raise PhotoAlbumNotFoundError("Photo not found")
-
-    photo_item, user = photo_row
-    photo_item.status = status.value
-    photo_item.approved_at = datetime.utcnow() if status == PhotoAlbumStatusEnum.approved else None
-    db.commit()
-    db.refresh(photo_item)
-    return _serialize_admin_photo_item(photo_item, user)

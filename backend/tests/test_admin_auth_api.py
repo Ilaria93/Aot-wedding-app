@@ -18,11 +18,6 @@ def test_admin_rsvp_stats_rejects_without_header(api_client):
     assert response.status_code == 401
 
 
-def test_admin_photo_list_rejects_without_header(api_client):
-    response = api_client.get("/admin/photos")
-    assert response.status_code == 401
-
-
 def test_admin_contacts_reject_without_header(api_client):
     list_response = api_client.get("/admin/contacts")
     create_response = api_client.post(

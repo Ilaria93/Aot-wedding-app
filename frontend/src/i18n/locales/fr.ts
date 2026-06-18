@@ -335,17 +335,17 @@ export const fr = {
       'Autorisation galerie refusée. Activez-la dans les réglages de votre appareil.',
     missingTokenError: "Saisissez le token d'invitation avant d'envoyer une photo.",
     missingPhotoError: "Sélectionnez d'abord une photo dans la galerie.",
-    uploadSuccess: 'Photo envoyée. Elle sera visible dans l’album après validation par l’admin.',
-    uploadError: 'Envoi impossible. Vérifiez le token et la connexion.',
+    uploadSuccess: 'Photo envoyée et publiée dans l’album.',
+    uploadError: 'Envoi impossible. Vérifiez la connexion.',
     eyebrow: 'Album',
     title: 'Nous rassemblons les souvenirs du mariage au même endroit.',
     subtitle:
-      'Les invités peuvent envoyer de nouvelles photos avec le token de l’invitation. Les images restent en attente tant que l’admin ne les approuve pas.',
+      'Connectez-vous et partagez vos photos : elles apparaissent tout de suite dans l’album.',
     refreshButton: "Actualiser l'album",
     refreshLoading: 'Actualisation...',
     uploadTitle: 'Envoyer une photo',
     uploadDescription:
-      "Saisissez le token d'invitation, choisissez une photo et ajoutez une courte légende si vous le souhaitez.",
+      'Choisissez une photo sur votre appareil et ajoutez une courte légende si vous le souhaitez.',
     loginHint: 'Pour envoyer une photo, vous devez d’abord vous connecter avec votre compte.',
     captionPlaceholder: 'Légende facultative',
     choosePhoto: 'Choisir une photo depuis la galerie',
@@ -354,9 +354,8 @@ export const fr = {
     uploadButton: "Envoyer la photo dans l'album",
     uploadLoading: 'Envoi en cours...',
     loginUploadButton: 'Connectez-vous pour envoyer une photo',
-    approvedTitle: 'Photos approuvées',
-    approvedEmpty:
-      'Aucune photo approuvée pour le moment. Les premières apparaîtront ici après modération.',
+    galleryTitle: 'Photos de l’album',
+    galleryEmpty: 'Aucune photo pour le moment. Soyez le premier à partager un souvenir.',
   },
   travel: {
     loadError: 'Impossible de charger les contacts logistiques.',
@@ -398,9 +397,9 @@ export const fr = {
     },
     hero: {
       eyebrow: 'Admin',
-      title: 'Tableau RSVP, album photo et contacts logistiques.',
+      title: 'Tableau RSVP et contacts logistiques.',
       subtitle:
-        'Ici, vous suivez les invités et les factions, approuvez les photos envoyées par les invités et mettez à jour le carnet de contacts utile pour le mariage.',
+        'Ici, vous suivez les invités, les factions et mettez à jour le carnet de contacts utile pour le mariage.',
       refresh: 'Actualiser le tableau de bord',
       refreshing: 'Actualisation...',
     },
