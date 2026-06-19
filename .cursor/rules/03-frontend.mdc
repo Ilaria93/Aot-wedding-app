@@ -7,43 +7,79 @@ alwaysApply: true
 
 ## Struttura cartelle
 
-Ogni **componente**, **pagina** e **layout** vive in una cartella dedicata:
+### UI generica (`components/`, `pages/`, `layouts/`)
+
+Ogni componente riusabile dell'app vive in una cartella dedicata:
 
 ```
 src/
   components/AppTopBar/
-    AppTopBar.tsx          # componente
-    index.ts               # barrel export
-    styles/AppTopBar.scss  # stili del componente
-    types/                 # tipi locali (se servono)
-  pages/HomePage/
-    HomePage.tsx
+    AppTopBar.tsx
     index.ts
-    styles/HomePage.scss
+    styles/AppTopBar.scss
     types/
+    __tests__/
+  pages/HomePage/
+    ...
   layouts/AppLayout/
     ...
-  hooks/                   # hook condivisi (barrel index.ts)
-  types/                   # tipi condivisi (barrel index.ts)
-  styles/shared/           # stili globali riusati (es. aot-components.scss)
 ```
 
-- Import del componente: `@/components/AppTopBar` (via `index.ts`)
+### Domini feature (`cinematic/`, `scenes/`)
+
+Esperienze complesse (scroll cinematico, mondi 3D) sono **un solo dominio** in `src/`, non duplicate sotto `components/`:
+
+```
+src/
+  cinematic/                    # hero scroll, camera, timeline, overlay
+    index.ts                    # export pubblici (es. CinematicHeroSection)
+    camera/                     # logica pura camera / ODM
+      __tests__/
+    timeline/                   # scene timeline, caption, countdown
+      __tests__/
+    debug/                      # dev overlay, hotkey, hook debug
+      __tests__/
+    hero/                       # sezione hero (componenti + stili)
+    rig/                        # CameraRig, path editor helpers
+    overlays/                   # blackout, flash
+    captions/
+    characters/
+    odm/                        # componenti 3D ODM
+  scenes/                       # stesso pattern: models/, sequences/, graybox/, ...
+    models/__tests__/
+    sequences/
+    graybox/__tests__/
+```
+
+- **Un dominio = una cartella top-level**: mai `components/cinematic/` + `cinematic/` insieme
+- Sottocartelle per **responsabilità** (camera, timeline, hero), non per tipo file (`utils/`, `lib/`, `helpers/`)
+- Import pubblico del dominio: `@/cinematic` (via `index.ts`); interni: `@/cinematic/camera/cameraMotion`
+
+### Altri moduli
+
+```
+  contexts/          # React context (+ helper co-locati, es. contexts/heroScroll/)
+  hooks/             # hook condivisi tra più domini
+  types/             # solo tipi/interfacce condivisi
+  services/          # HTTP
+  constants/         # costanti e funzioni pure associate
+    __tests__/
+  styles/shared/
+```
+
+- Import componente UI: `@/components/AppTopBar` (via `index.ts`)
 - Stili: `import './styles/NomeComponente.scss'` nel file del componente
-- Tipi locali in `types/`; tipi di dominio condivisi in `src/types/`
-- Hook custom in `src/hooks/`; context restano in `contexts/`
-- **Niente cartella `utils/`**: logica HTTP in `services/`, formattazione locale in `i18n/`, helper co-locati nel componente o nella pagina che li usa
+- Tipi locali in `types/` del componente; tipi di dominio in `src/types/` (solo definizioni, niente logica)
+- Hook usati da un solo dominio → co-loca nel dominio (es. `cinematic/debug/useCameraPathEditorHelpers.ts`)
+- Hook condivisi → `src/hooks/`
+- **Mai `utils/`** o cartelle generiche `lib/`, `helpers/`
+- **Test co-locati**: `__tests__/` nella cartella del modulo; niente `src/__tests__/` per codice nuovo
 
 ## Componenti piccoli
 
-- Target **< 150 righe** per file; se cresce → sotto-componenti + hook in `hooks/`
+- Target **< 150 righe** per file; se cresce → sotto-componenti + hook nel dominio
 - **Presentazionali**: props in, callback out — niente `fetch` nel render
-- Pagine in `pages/` orchestrano; il markup vive in `components/`
-
-```tsx
-/** Card ospite admin con badge stato RSVP. */
-export function GuestListCard({ guest, onPress }: Props) { ... }
-```
+- Pagine in `pages/` orchestrano; il markup vive in `components/` o importano da domini (`@/cinematic`)
 
 ## API e stato
 
@@ -59,4 +95,4 @@ export function GuestListCard({ guest, onPress }: Props) { ... }
 
 ## Evitare
 
-Componenti monolitici (500+ righe), `any`, hex sparsi, logica business nei componenti, CSS globale monolitico fuori da `styles/shared/`.
+Componenti monolitici (500+ righe), `any`, hex sparsi, logica business nei componenti, CSS globale monolitico fuori da `styles/shared/`, cartelle generiche (`utils/`, `lib/`, `helpers/`), duplicare un dominio sotto `components/` e in `src/`.

@@ -24,3 +24,4 @@ alwaysApply: true
 - catch vuoti
 - logica business sparsa in route o componenti UI
 - stringhe utente hardcoded (usare i18n)
+- cartelle generiche `utils/` o `helpers/` (preferire cartelle di dominio: `cinematic/`, `scenes/`, `services/`, ecc.)
