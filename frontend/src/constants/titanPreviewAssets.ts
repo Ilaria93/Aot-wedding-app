@@ -1,7 +1,9 @@
+import { TITAN_MODELS } from '@/constants/modelRegistry';
+
 /** Ironwolf colossus GLB assets for the TitanPreview dev scene. */
 export const TITAN_PREVIEW_MODELS = {
-  mergedAnimations: '/assets/titan-preview/ironwolf-merged-animations.glb',
-  character: '/assets/titan-preview/ironwolf-character.glb',
+  mergedAnimations: TITAN_MODELS.bullTerrierTitan,
+  character: TITAN_MODELS.bullTerrierCharacter,
 } as const;
 
 export type TitanPreviewModelId = keyof typeof TITAN_PREVIEW_MODELS;
