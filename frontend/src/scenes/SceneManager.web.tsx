@@ -8,15 +8,16 @@ import {
   getCinematicSceneModelEntry,
 } from '@/constants/cinematicModelRegistry';
 import { isOperationRavennaGrayboxEnabled } from '@/constants/operationRavennaGraybox';
+import { OPENING_ODM_GEAR_REVEAL_START } from '@/constants/operationRavennaOpening';
 import { OPERATION_RAVENNA_TIMELINE } from '@/constants/operationRavennaTimeline';
 import { GrayboxHeroAtmosphere } from '@/scenes/graybox/GrayboxHeroAtmosphere';
 import { OperationRavennaGrayboxWorld } from '@/scenes/graybox/OperationRavennaGrayboxWorld';
 import { HeroSceneAtmosphere } from '@/scenes/models/HeroSceneAtmosphere';
 import { OperationRavennaScenes } from '@/scenes/models/OperationRavennaScenes';
-import { CoupleStrikeSequence } from '@/scenes/sequences/CoupleStrikeSequence';
+import { CoupleStrikeSequence } from '@/scenes/sequences/CoupleStrikeSequence.tsx';
 import { SquadTraversalSequence } from '@/scenes/sequences/SquadTraversalSequence';
 import type { SceneManagerProps } from '@/types/scene';
-import { isCoupleStrikeSceneActive } from '@/scenes/sequences/coupleStrikeSequence';
+import { isCoupleStrikeSceneActive } from '@/scenes/sequences/coupleStrikeLogic';
 import { HERO_CAMERA_TIMELINE } from '@/cinematic/camera/heroCameraTimeline';
 import { resolveCinematicModelSceneId } from '@/scenes/models/sceneModelVisibility';
 import { resolveSceneTimelineState } from '@/cinematic/timeline/sceneTimeline';
@@ -38,7 +39,6 @@ export function SceneManager({
   const sceneModelEntry = getCinematicSceneModelEntry(modelSceneId);
   const showCoupleStrike = useMemo(() => isCoupleStrikeSceneActive(progress), [progress]);
   const grayboxEnabled = isOperationRavennaGrayboxEnabled();
-  const isEstablishingFrame = progress <= 0;
 
   return (
     <>
@@ -59,8 +59,8 @@ export function SceneManager({
       )}
 
       <directionalLight
-        castShadow={!grayboxEnabled || !isEstablishingFrame}
-        intensity={grayboxEnabled ? (isEstablishingFrame ? 0 : 0.85) : 1.1}
+        castShadow={grayboxEnabled}
+        intensity={grayboxEnabled ? 0.85 : 1.1}
         position={grayboxEnabled ? [40, 60, 30] : [5, 12, 2]}
         color={grayboxEnabled ? '#ffffff' : '#9aaea0'}
         shadow-mapSize={[1024, 1024]}
@@ -72,7 +72,9 @@ export function SceneManager({
       />
 
       {grayboxEnabled ? (
-        <OperationRavennaGrayboxWorld showTraversalWorld={!isEstablishingFrame} />
+        <OperationRavennaGrayboxWorld
+          showTraversalWorld={progress >= OPENING_ODM_GEAR_REVEAL_START}
+        />
       ) : (
         <>
           <Environment preset="sunset" />

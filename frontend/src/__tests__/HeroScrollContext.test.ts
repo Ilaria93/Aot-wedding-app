@@ -12,4 +12,9 @@ describe('isHeroScrollActiveProgress', () => {
   it('is inactive once the scroll-scrub sequence completes', () => {
     expect(isHeroScrollActiveProgress(1)).toBe(false);
   });
+
+  it('stays inactive after the intro was skipped even near the top of the page', () => {
+    expect(isHeroScrollActiveProgress(0, true)).toBe(false);
+    expect(isHeroScrollActiveProgress(0.5, true)).toBe(false);
+  });
 });

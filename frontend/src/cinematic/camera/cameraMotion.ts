@@ -11,17 +11,39 @@ let trackingInitialized = false;
 export type CameraMotionSnapshot = {
   readonly velocity: Vector3;
   readonly acceleration: Vector3;
+  readonly grappleAnchor: Vector3;
   speed: number;
   accelMagnitude: number;
+  grappleActive: boolean;
+  grappleSide: 'left' | 'right';
 };
+
+const grappleAnchor = new Vector3();
 
 /** Mutable snapshot updated by {@link updateCameraMotion}. */
 export const cameraMotionState: CameraMotionSnapshot = {
   velocity,
   acceleration,
+  grappleAnchor,
   speed: 0,
   accelMagnitude: 0,
+  grappleActive: false,
+  grappleSide: 'right',
 };
+
+/** Updates the world-space grapple anchor shown by first-person ODM cables. */
+export function setGrappleCableTarget(
+  active: boolean,
+  anchor?: Vector3,
+  side: 'left' | 'right' = 'right',
+): void {
+  cameraMotionState.grappleActive = active;
+  cameraMotionState.grappleSide = side;
+
+  if (anchor) {
+    grappleAnchor.copy(anchor);
+  }
+}
 
 /**
  * Derives camera velocity and acceleration from positional deltas.

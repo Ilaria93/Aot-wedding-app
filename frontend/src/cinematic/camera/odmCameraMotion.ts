@@ -9,22 +9,40 @@ import type {
 import type { CameraPose, NormalizedProgress } from '@/types/cameraRig';
 import { HERO_CAMERA_FOV } from '@/cinematic/camera/cameraConfig';
 
-/** Cinematic first hook — strongest beat before the existing rooftop traversal. */
+/** Cinematic first hook — slow vertical pull so rooftops read clearly below. */
 export const FIRST_ODM_LAUNCH_TUNING: OdmCameraTuning = {
-  gravitySag: 2.1,
-  overshootRatio: 0.24,
-  pullExponent: 5.4,
-  lateralSwing: 3.6,
-  cableWobble: 0.16,
-  releasePhaseEnd: 0.04,
+  gravitySag: 1.9,
+  overshootRatio: 0.1,
+  pullExponent: 1.45,
+  lateralSwing: 1.35,
+  cableWobble: 0.035,
+  releasePhaseEnd: 0.14,
+  pullPhaseEnd: 0.92,
+  releaseGravityBoost: 1.05,
+  rollIntensity: 0.42,
+  swingRoll: 0.06,
+  redirectOvershoot: 1.04,
+  baseFov: 63,
+  maxFov: 76,
+  fovSpeedAtMax: 18,
+};
+
+/** Rooftop swing traversal — soft pendulum between rooftops at readable height. */
+export const ROOFTOP_ODM_SWING_TUNING: OdmCameraTuning = {
+  gravitySag: 2.2,
+  overshootRatio: 0.08,
+  pullExponent: 1.65,
+  lateralSwing: 1.45,
+  cableWobble: 0.03,
+  releasePhaseEnd: 0.22,
   pullPhaseEnd: 0.86,
-  releaseGravityBoost: 1,
-  rollIntensity: 1.15,
-  swingRoll: 0.2,
-  redirectOvershoot: 1.32,
-  baseFov: HERO_CAMERA_FOV,
-  maxFov: 82,
-  fovSpeedAtMax: 38,
+  releaseGravityBoost: 1.05,
+  rollIntensity: 0.38,
+  swingRoll: 0.06,
+  redirectOvershoot: 1.03,
+  baseFov: 61,
+  maxFov: 72,
+  fovSpeedAtMax: 20,
 };
 
 /** Default ODM tuning — snappy pulls, gravity drops, banking and speed FOV. */

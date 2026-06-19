@@ -18,7 +18,7 @@ export function OperationRavennaGrayboxWorld({
 }) {
   return (
     <group name="operation-ravenna-graybox">
-      <GrayboxOpeningEstablishingShot />
+      <GrayboxOpeningEstablishingShot hideStreetFacades={isRavennaSandboxEnabled()} />
       {isRavennaSandboxEnabled() ? <RavennaSandbox /> : null}
       {showTraversalWorld ? (
         <>

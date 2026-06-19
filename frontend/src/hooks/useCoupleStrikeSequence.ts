@@ -4,7 +4,7 @@ import type { CoupleStrikeSequenceState } from '@/types/coupleStrike';
 import {
   getCoupleStrikeProgress,
   resolveCoupleStrikeSequence,
-} from '@/scenes/sequences/coupleStrikeSequence';
+} from '@/scenes/sequences/coupleStrikeLogic';
 
 type UseCoupleStrikeSequenceResult = CoupleStrikeSequenceState;
 

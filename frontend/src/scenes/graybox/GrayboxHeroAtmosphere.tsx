@@ -11,11 +11,7 @@ type GrayboxHeroAtmosphereProps = {
 
 /** Anime establishing-shot lighting — warm morning key, cool sky, depth fog. */
 export function GrayboxHeroAtmosphere({ progress = 0 }: GrayboxHeroAtmosphereProps) {
-  const isEstablishing = progress <= 0;
-  const streetT =
-    progress <= 0
-      ? 0
-      : Math.min(1, progress / OPERATION_RAVENNA_GROUND_SPRINT_END);
+  const streetT = Math.min(1, Math.max(0, progress) / OPERATION_RAVENNA_GROUND_SPRINT_END);
   const aerialT =
     progress <= OPERATION_RAVENNA_GROUND_SPRINT_END
       ? 0
@@ -25,32 +21,30 @@ export function GrayboxHeroAtmosphere({ progress = 0 }: GrayboxHeroAtmospherePro
             (OPERATION_RAVENNA_ROOFTOPS_END - OPERATION_RAVENNA_GROUND_SPRINT_END),
         );
 
-  const fogNear = isEstablishing ? 18 : 28 + streetT * 8 + aerialT * 18;
-  const fogFar = isEstablishing ? 72 : 95 + streetT * 22 + aerialT * 55;
+  const fogNear = 38 + streetT * 8 + aerialT * 18;
+  const fogFar = 130 + streetT * 24 + aerialT * 55;
 
   return (
     <>
       <color attach="background" args={[GRAYBOX_PALETTE.morningSky]} />
       <fog attach="fog" args={[GRAYBOX_PALETTE.morningFog, fogNear, fogFar]} />
-      <ambientLight intensity={isEstablishing ? 0.42 : 0.48} color="#e0e4de" />
+      <ambientLight intensity={0.44 + streetT * 0.04} color="#e0e4de" />
       <hemisphereLight
-        args={[GRAYBOX_PALETTE.morningSkyLow, '#6e7868', isEstablishing ? 0.5 : 0.42]}
+        args={[GRAYBOX_PALETTE.morningSkyLow, '#6e7868', 0.48 - streetT * 0.06]}
       />
       <directionalLight
-        castShadow={isEstablishing}
-        position={isEstablishing ? [22, 34, 18] : [14, 38, 22]}
-        intensity={isEstablishing ? 0.72 : 0.35 + streetT * 0.12}
-        color={isEstablishing ? '#ffd9a8' : '#ffe8cc'}
-        shadow-mapSize={isEstablishing ? [2048, 2048] : [1024, 1024]}
-        shadow-camera-far={isEstablishing ? 120 : 80}
-        shadow-camera-left={isEstablishing ? -30 : -20}
-        shadow-camera-right={isEstablishing ? 30 : 20}
-        shadow-camera-top={isEstablishing ? 40 : 20}
-        shadow-camera-bottom={isEstablishing ? -4 : -2}
+        castShadow
+        position={[22, 34, 18]}
+        intensity={0.68 + streetT * 0.1}
+        color="#ffd9a8"
+        shadow-mapSize={[2048, 2048]}
+        shadow-camera-far={200}
+        shadow-camera-left={-45}
+        shadow-camera-right={45}
+        shadow-camera-top={40}
+        shadow-camera-bottom={-4}
       />
-      {isEstablishing ? (
-        <directionalLight position={[-16, 20, -8]} intensity={0.18} color="#b8c8e0" />
-      ) : null}
+      <directionalLight position={[-16, 20, -8]} intensity={0.16} color="#b8c8e0" />
     </>
   );
 }

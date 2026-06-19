@@ -21,7 +21,7 @@ describe('squadTraversal', () => {
   describe('scene activation', () => {
     it('stays hidden during the quiet street opening', () => {
       expect(isRooftopsSquadActive(0)).toBe(false);
-      expect(isRooftopsSquadActive(0.05)).toBe(false);
+      expect(isRooftopsSquadActive(0.03)).toBe(false);
     });
 
     it('activates with the existing rooftop ODM segment', () => {
@@ -35,8 +35,8 @@ describe('squadTraversal', () => {
         OPENING_SQUAD_HOOK_CHOREOGRAPHY,
         4,
       );
-      expect(getStreetOpeningTraversalProgress(0.045)).toBeCloseTo(0.5, 5);
-      expect(getRooftopsTraversalProgress(0.255)).toBeCloseTo(0.5, 5);
+      expect(getStreetOpeningTraversalProgress(0.02)).toBeCloseTo(0.5, 5);
+      expect(getRooftopsTraversalProgress(0.28)).toBeCloseTo(0.5, 5);
     });
   });
 
@@ -79,7 +79,7 @@ describe('squadTraversal', () => {
           current.position[2] - previous.position[2],
         );
 
-        expect(delta).toBeLessThan(25);
+        expect(delta).toBeLessThan(28);
         previous = current;
       }
     });

@@ -17,13 +17,10 @@ import type {
   SquadTraversalProgress,
   SquadTraversalState,
 } from '@/types/squadTraversal';
-import {
-  DEFAULT_ODM_CAMERA_TUNING,
-  FIRST_ODM_LAUNCH_TUNING,
-  resolveOdmCameraPose,
-} from '@/cinematic/camera/odmCameraMotion';
+import { resolveOdmCameraPose } from '@/cinematic/camera/odmCameraMotion';
 import {
   mapGlobalProgressToAerialOdm,
+  resolveRooftopOdmTuning,
 } from '@/cinematic/camera/openingCameraMotion';
 import { clampTimelineProgress } from '@/cinematic/timeline/sceneTimeline';
 
@@ -274,8 +271,7 @@ function sampleAerialPathFrame(globalProgress: number, out: MutablePathFrame): v
   const epsilon = 0.004;
   const nextAerial = Math.min(1, aerialProgress + epsilon);
   const prevAerial = Math.max(0, aerialProgress - epsilon);
-  const tuning =
-    aerialProgress < 0.14 ? FIRST_ODM_LAUNCH_TUNING : DEFAULT_ODM_CAMERA_TUNING;
+  const tuning = resolveRooftopOdmTuning(aerialProgress);
 
   resolveOdmCameraPose(AERIAL_ODM_CAMERA_LEGS, aerialProgress, scratchPose, tuning);
   resolveOdmCameraPose(AERIAL_ODM_CAMERA_LEGS, nextAerial, scratchNextPose, tuning);

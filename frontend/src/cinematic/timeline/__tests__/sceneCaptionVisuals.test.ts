@@ -15,7 +15,7 @@ describe('resolveSceneCaptionVisuals', () => {
   });
 
   it('hides captions during countdown transition', () => {
-    const state = resolveSceneTimelineState(OPERATION_RAVENNA_TIMELINE, 0.9);
+    const state = resolveSceneTimelineState(OPERATION_RAVENNA_TIMELINE, 0.95);
     const visuals = resolveSceneCaptionVisuals(state);
 
     expect(visuals.opacity).toBe(0);
@@ -24,7 +24,7 @@ describe('resolveSceneCaptionVisuals', () => {
   });
 
   it('shows impact tagline near couple strike cross', () => {
-    const state = resolveSceneTimelineState(OPERATION_RAVENNA_TIMELINE, 0.82);
+    const state = resolveSceneTimelineState(OPERATION_RAVENNA_TIMELINE, 0.91);
     const visuals = resolveSceneCaptionVisuals(state);
 
     expect(visuals.impactTaglineKey).toBe('landing.cinematic.scenes.coupleStrike.impactTagline');

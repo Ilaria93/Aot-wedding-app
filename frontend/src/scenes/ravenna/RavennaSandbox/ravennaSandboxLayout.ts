@@ -1,14 +1,53 @@
+import {
+  OPENING_FACADE_OFFSET_X,
+  OPENING_STREET_FACADE_BLOCKS,
+} from '@/scenes/graybox/openingEstablishingLayout';
 import type { RavennaBuildingPlacement } from '@/scenes/ravenna/RavennaBuilding';
+import {
+  resolveRavennaHouseSmallGroundY,
+  resolveRavennaHouseSmallScale,
+} from '@/scenes/ravenna/ravennaHouseSmallMetrics';
+
+type FacadeSide = 'left' | 'right';
+
+const SIDE_ROTATION: Record<FacadeSide, number> = {
+  left: Math.PI / 2,
+  right: -Math.PI / 2,
+};
+
+const SIDE_YAW_VARIATION: Record<FacadeSide, number> = {
+  left: 0.08,
+  right: -0.06,
+};
+
+function resolveHeightMultiplier(blockHeight: number): number {
+  return blockHeight / 11;
+}
+
+function buildPlacement(
+  side: FacadeSide,
+  blockIndex: number,
+): RavennaBuildingPlacement {
+  const block = OPENING_STREET_FACADE_BLOCKS[blockIndex];
+  const sign = side === 'left' ? -1 : 1;
+  const scale = resolveRavennaHouseSmallScale(resolveHeightMultiplier(block.h));
+  const yawJitter =
+    (blockIndex % 2 === 0 ? 1 : -1) *
+    SIDE_YAW_VARIATION[side] *
+    (1 + (blockIndex % 3) * 0.15);
+
+  return {
+    position: [sign * OPENING_FACADE_OFFSET_X, resolveRavennaHouseSmallGroundY(scale), block.z],
+    rotation: [0, SIDE_ROTATION[side] + yawJitter, 0],
+    scale,
+  };
+}
 
 /**
- * Six hand-placed houses flanking the opening street trajectory for scale and style validation.
- * Positions follow the static camera vista and early scroll path (x ≈ ±8–10, z ≈ 8 → -16).
+ * Modular `house_small` row along the full opening street — both sides, deep into the city.
  */
-export const RAVENNA_SANDBOX_PLACEMENTS: readonly RavennaBuildingPlacement[] = [
-  { position: [-8.6, 0, 8], rotation: [0, 0.14, 0], scale: 1 },
-  { position: [8.4, 0, 4.5], rotation: [0, -0.1, 0], scale: 0.92 },
-  { position: [-9.2, 0, -0.5], rotation: [0, 0.06, 0], scale: 1.06 },
-  { position: [9.1, 0, -3.8], rotation: [0, -0.18, 0], scale: 0.88 },
-  { position: [-7.9, 0, -9.5], rotation: [0, 0.22, 0], scale: 1.02 },
-  { position: [8.7, 0, -13.5], rotation: [0, -0.12, 0], scale: 0.95 },
-] as const;
+export const RAVENNA_SANDBOX_PLACEMENTS: readonly RavennaBuildingPlacement[] =
+  OPENING_STREET_FACADE_BLOCKS.flatMap((_block, blockIndex) => [
+    buildPlacement('left', blockIndex),
+    buildPlacement('right', blockIndex),
+  ]);

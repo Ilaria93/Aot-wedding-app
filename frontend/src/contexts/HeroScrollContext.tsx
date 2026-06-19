@@ -3,16 +3,23 @@ import { createContext, ReactNode, useCallback, useContext, useMemo, useState } 
 type HeroScrollContextValue = {
   /** Normalized hero scroll progress in [0, 1]. */
   progress: number;
+  /** True when the visitor skipped the pinned cinematic intro. */
+  isIntroSkipped: boolean;
   /** True while the pinned cinematic hero is actively scrubbing (web landing). */
   isHeroScrollActive: boolean;
   setHeroScrollProgress: (progress: number) => void;
+  setHeroIntroSkipped: (skipped: boolean) => void;
   resetHeroScroll: () => void;
 };
 
 const HeroScrollContext = createContext<HeroScrollContextValue | undefined>(undefined);
 
 /** Whether the bottom tab bar should hide during the cinematic hero scrub. */
-export function isHeroScrollActiveProgress(progress: number): boolean {
+export function isHeroScrollActiveProgress(progress: number, isIntroSkipped = false): boolean {
+  if (isIntroSkipped) {
+    return false;
+  }
+
   return progress < 1;
 }
 
@@ -21,24 +28,32 @@ export function isHeroScrollActiveProgress(progress: number): boolean {
  */
 export function HeroScrollProvider({ children }: { children: ReactNode }) {
   const [progress, setProgress] = useState(0);
+  const [isIntroSkipped, setIsIntroSkipped] = useState(false);
 
   const setHeroScrollProgress = useCallback((nextProgress: number) => {
     const clamped = Math.min(1, Math.max(0, nextProgress));
     setProgress(clamped);
   }, []);
 
+  const setHeroIntroSkipped = useCallback((skipped: boolean) => {
+    setIsIntroSkipped(skipped);
+  }, []);
+
   const resetHeroScroll = useCallback(() => {
     setProgress(0);
+    setIsIntroSkipped(false);
   }, []);
 
   const value = useMemo<HeroScrollContextValue>(
     () => ({
       progress,
-      isHeroScrollActive: isHeroScrollActiveProgress(progress),
+      isIntroSkipped,
+      isHeroScrollActive: isHeroScrollActiveProgress(progress, isIntroSkipped),
       setHeroScrollProgress,
+      setHeroIntroSkipped,
       resetHeroScroll,
     }),
-    [progress, resetHeroScroll, setHeroScrollProgress],
+    [isIntroSkipped, progress, resetHeroScroll, setHeroIntroSkipped, setHeroScrollProgress],
   );
 
   return <HeroScrollContext.Provider value={value}>{children}</HeroScrollContext.Provider>;

@@ -27,4 +27,8 @@ export type UseScrollProgressResult = {
   scrollTriggerRef: RefObject<ScrollTrigger | null>;
   /** Re-measures scroll bounds after layout changes. */
   refreshScrollTrigger?: () => void;
+  /** Skips the intro, releases the pin and scrolls to editorial content. */
+  skipHeroIntro: () => void;
+  /** Re-enables the pinned intro scrub from the beginning. */
+  resumeHeroIntro: () => void;
 };

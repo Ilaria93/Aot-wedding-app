@@ -16,17 +16,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-color: rgba(26, 33, 29, 0.28);
-}
-
-.cinematic-hero__scrim-bottom {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 42%;
-  pointer-events: none;
-  background-color: rgba(26, 33, 29, 0.58);
+  background-color: rgba(26, 33, 29, 0.18);
 }
 
 .cinematic-hero__navbar {
@@ -90,4 +80,38 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+.cinematic-hero__skip {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 6;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  max-width: min(100% - 40px, 360px);
+}
+
+.cinematic-hero__skip-button {
+  padding: 8px 14px;
+  border: 1px solid rgba(249, 248, 243, 0.22);
+  border-radius: 999px;
+  background: rgba(26, 33, 29, 0.72);
+  color: var(--aot-surface);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+
+.cinematic-hero--intro-skipped {
+  min-height: min(100vh, 720px);
+}
+
+.cinematic-hero__skip-button:hover {
+  border-color: rgba(201, 165, 106, 0.65);
+  background: rgba(47, 70, 48, 0.88);
 }

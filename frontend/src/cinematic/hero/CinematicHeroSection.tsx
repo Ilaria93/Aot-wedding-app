@@ -43,9 +43,12 @@ export function CinematicHeroSection({
   navbarOverlay,
 }: CinematicHeroSectionProps) {
   const { locale, t } = useI18n();
-  const { setHeroScrollProgress, resetHeroScroll } = useHeroScroll();
+  const { setHeroScrollProgress, resetHeroScroll, isIntroSkipped } = useHeroScroll();
   const prefersReducedMotion = usePrefersReducedMotion();
-  const { progress, progressRef, heroRef, refreshScrollTrigger } = useScrollProgress({ scrollerRef });
+  const { progress, progressRef, heroRef, refreshScrollTrigger, skipHeroIntro, resumeHeroIntro } =
+    useScrollProgress({
+      scrollerRef,
+    });
   const debugOverlayVisible = useOperationRavennaDebugOverlay();
   const cameraPathHelpersVisible = useCameraPathEditorHelpers();
   const cameraDebugRef = useRef(createEmptyCameraDebugSnapshot());
@@ -83,7 +86,8 @@ export function CinematicHeroSection({
 
   const showIntroHud =
     !isCountdownTransition && !openingUiHidden && progress < 0.12 && captionVisuals.opacity <= 0;
-  const showScrollHint = !openingUiHidden && progress < 0.04 && !isCountdownTransition;
+  const showScrollHint = !openingUiHidden && progress < 0.04 && !isCountdownTransition && !isIntroSkipped;
+  const showSkipIntro = !isIntroSkipped && !isCountdownTransition && progress < 1;
 
   function translateCaption(key: string): string {
     return t(key as TranslationKey);
@@ -95,7 +99,9 @@ export function CinematicHeroSection({
   }, [onLayout, refreshScrollTrigger]);
 
   return (
-    <div ref={heroRef} className="cinematic-hero">
+    <div
+      ref={heroRef}
+      className={`cinematic-hero${isIntroSkipped ? ' cinematic-hero--intro-skipped' : ''}`}>
       <HeroCanvas
         progress={progress}
         progressRef={progressRef}
@@ -120,7 +126,6 @@ export function CinematicHeroSection({
       ) : null}
 
       <div className="cinematic-hero__scrim-top" aria-hidden />
-      <div className="cinematic-hero__scrim-bottom" aria-hidden />
 
       {navbarOverlay && !openingUiHidden ? (
         <div className="cinematic-hero__navbar">{navbarOverlay}</div>
@@ -146,6 +151,22 @@ export function CinematicHeroSection({
 
       {showScrollHint ? (
         <p className="cinematic-hero__scroll-hint">{t('landing.cinematic.scrollHint')}</p>
+      ) : null}
+
+      {showSkipIntro ? (
+        <div className="cinematic-hero__skip">
+          <button type="button" className="cinematic-hero__skip-button" onClick={skipHeroIntro}>
+            {t('landing.cinematic.skipIntro')}
+          </button>
+        </div>
+      ) : null}
+
+      {isIntroSkipped ? (
+        <div className="cinematic-hero__skip">
+          <button type="button" className="cinematic-hero__skip-button" onClick={resumeHeroIntro}>
+            {t('landing.cinematic.replayIntro')}
+          </button>
+        </div>
       ) : null}
     </div>
   );

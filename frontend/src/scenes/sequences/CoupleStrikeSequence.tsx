@@ -8,7 +8,7 @@ import {
   getCoupleStrikeProgress,
   isCoupleStrikeSceneActive,
   resolveCoupleStrikeSequence,
-} from '@/scenes/sequences/coupleStrikeSequence';
+} from '@/scenes/sequences/coupleStrikeLogic';
 
 type CoupleStrikeSequenceProps = {
   /** Global scroll progress in the range [0, 1]. */

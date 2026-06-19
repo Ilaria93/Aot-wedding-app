@@ -95,6 +95,8 @@ export const de = {
     },
     cinematic: {
       scrollHint: 'Scrollen, um fortzufahren',
+      skipIntro: 'Intro überspringen',
+      replayIntro: 'Intro erneut ansehen',
       countdownSeparator: '·',
       days: 'T',
       hours: 'Std',

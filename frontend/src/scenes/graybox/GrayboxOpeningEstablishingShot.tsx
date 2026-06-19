@@ -1,11 +1,13 @@
 import { GRAYBOX_PALETTE } from '@/constants/grayboxPalette';
 import {
   OPENING_BELL_TOWER_POSITION,
+  OPENING_FACADE_OFFSET_X,
   OPENING_HORIZON_WALL_POSITION,
   OPENING_HORIZON_WALL_SIZE,
   OPENING_PORTICO_COLUMN_SPACING,
   OPENING_PORTICO_OFFSET_X,
   OPENING_STREET_CENTER_X,
+  OPENING_STREET_FACADE_BLOCKS,
   OPENING_STREET_HALF_WIDTH,
   OPENING_STREET_Z_FAR,
   OPENING_STREET_Z_NEAR,
@@ -52,17 +54,11 @@ function PorticoColonnade({ side }: PorticoSideProps) {
 /** Mediterranean facades rising behind each portico. */
 function StreetFacades({ side }: PorticoSideProps) {
   const sign = side === 'left' ? -1 : 1;
-  const baseX = sign * (OPENING_PORTICO_OFFSET_X + 3.8);
-  const blocks = [
-    { z: 7, w: 5.5, h: 11, d: 8 },
-    { z: -1, w: 6, h: 14, d: 9 },
-    { z: -10, w: 5.8, h: 12.5, d: 8.5 },
-    { z: -19, w: 6.2, h: 13.5, d: 9 },
-  ];
+  const baseX = sign * OPENING_FACADE_OFFSET_X;
 
   return (
     <group name={`facades-${side}`}>
-      {blocks.map((block, index) => (
+      {OPENING_STREET_FACADE_BLOCKS.map((block, index) => (
         <group key={`block-${side}-${index}`} position={[baseX, block.h / 2, block.z]}>
           <mesh castShadow receiveShadow>
             <boxGeometry args={[block.w, block.h, block.d]} />
@@ -189,14 +185,23 @@ function StreetSurface() {
  * Static anime establishing shot — Ravenna portico street, campanile, walled horizon.
  * Composed for the fixed opening camera; no characters or ODM.
  */
-export function GrayboxOpeningEstablishingShot() {
+export function GrayboxOpeningEstablishingShot({
+  hideStreetFacades = false,
+}: {
+  /** When true, facade boxes are omitted so modular GLB buildings can replace them. */
+  hideStreetFacades?: boolean;
+}) {
   return (
     <group name="graybox-opening-establishing">
       <StreetSurface />
       <PorticoColonnade side="left" />
       <PorticoColonnade side="right" />
-      <StreetFacades side="left" />
-      <StreetFacades side="right" />
+      {hideStreetFacades ? null : (
+        <>
+          <StreetFacades side="left" />
+          <StreetFacades side="right" />
+        </>
+      )}
       <LandmarkBellTower />
       <HorizonWallSilhouette />
     </group>

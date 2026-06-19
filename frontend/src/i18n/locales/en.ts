@@ -95,6 +95,8 @@ export const en = {
     },
     cinematic: {
       scrollHint: 'Scroll to continue',
+      skipIntro: 'Skip intro',
+      replayIntro: 'Replay intro',
       countdownSeparator: '·',
       days: 'd',
       hours: 'h',

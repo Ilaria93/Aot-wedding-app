@@ -5,6 +5,11 @@
   font-family: var(--font-sans);
 }
 
+.landing-page--hero-active {
+  opacity: 0;
+  pointer-events: none;
+}
+
 .landing-hero {
   position: relative;
   overflow: hidden;

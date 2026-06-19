@@ -16,7 +16,7 @@ import {
   assertValidOdmCameraLegs,
   resolveOdmVelocityFov,
 } from '@/cinematic/camera/odmCameraMotion';
-import { resolveHeroCameraPose } from '@/cinematic/camera/openingCameraMotion';
+import { resolveHeroCameraPose, isStaticOpeningFrame } from '@/cinematic/camera/openingCameraMotion';
 
 export type CameraRigProps = {
   /** Global scroll progress in the range [0, 1]. */
@@ -55,7 +55,7 @@ export function CameraRig({ progress, progressRef, cameraDebugRef, timeline }: C
 
   useFrame((_, delta) => {
     const activeProgress = progressRef?.current ?? progress;
-    const isStatic = activeProgress <= 0;
+    const isStatic = isStaticOpeningFrame(activeProgress);
 
     if (isStatic && !wasStaticRef.current) {
       resetCameraMotionTracking();

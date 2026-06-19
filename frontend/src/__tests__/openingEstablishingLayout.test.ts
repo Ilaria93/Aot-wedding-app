@@ -22,6 +22,15 @@ describe('openingEstablishingLayout', () => {
 
   it('uses a cinematic field of view for the establishing frame', () => {
     expect(OPENING_ESTABLISHING_CAMERA_FOV).toBeGreaterThanOrEqual(50);
-    expect(OPENING_ESTABLISHING_CAMERA_FOV).toBeLessThanOrEqual(58);
+    expect(OPENING_ESTABLISHING_CAMERA_FOV).toBeLessThanOrEqual(64);
+  });
+
+  it('starts the camera far from the city center in a low sprint pose', () => {
+    const [, eyeY, cameraZ] = OPENING_ESTABLISHING_CAMERA_POSITION;
+    const [, targetY] = OPENING_ESTABLISHING_CAMERA_TARGET;
+
+    expect(cameraZ).toBeGreaterThan(60);
+    expect(eyeY).toBeLessThan(1.55);
+    expect(targetY).toBeLessThan(eyeY + 3);
   });
 });

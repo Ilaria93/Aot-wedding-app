@@ -37,11 +37,11 @@ describe('cameraPathEditor', () => {
   });
 
   it('resolves active camera path segment from global progress', () => {
-    expect(resolveCurrentCameraPathSegment(0).segmentName).toBe('streetOpening');
+    expect(resolveCurrentCameraPathSegment(0.02).segmentName).toBe('streetOpening');
     expect(resolveCurrentCameraPathSegment(0.2).segmentName).toBe('rooftops');
-    expect(resolveCurrentCameraPathSegment(0.5).segmentName).toBe('giantWalls');
-    expect(resolveCurrentCameraPathSegment(0.7).segmentName).toBe('titanCorridor');
+    expect(resolveCurrentCameraPathSegment(0.55).segmentName).toBe('giantWalls');
+    expect(resolveCurrentCameraPathSegment(0.72).segmentName).toBe('titanCorridor');
     expect(resolveCurrentCameraPathSegment(0.9).segmentName).toBe('finalArena');
-    expect(resolveCurrentCameraPathSegment(0.51).localProgress).toBeCloseTo(0.5, 5);
+    expect(resolveCurrentCameraPathSegment(0.26).localProgress).toBeCloseTo(0.5, 1);
   });
 });

@@ -70,7 +70,7 @@ describe('odmCameraMotion', () => {
     expect(late).toBeGreaterThan(early);
   });
 
-  it('resolves pose at progress zero to the static street opening', () => {
+  it('resolves pose at progress zero to the sprint opening', () => {
     const position = new Vector3();
     const target = new Vector3();
     resolveHeroCameraPose(0, {
@@ -78,11 +78,11 @@ describe('odmCameraMotion', () => {
       target,
       roll: 0,
       fov: DEFAULT_ODM_CAMERA_TUNING.baseFov,
-      phase: 'static',
+      phase: 'run',
     });
 
-    expect(position.y).toBeCloseTo(1.68, 2);
-    expect(position.z).toBeCloseTo(6, 1);
+    expect(position.y).toBeCloseTo(1.46, 1);
+    expect(position.z).toBeCloseTo(68, 0);
   });
 
   it('maps scroll progress to the expected leg', () => {

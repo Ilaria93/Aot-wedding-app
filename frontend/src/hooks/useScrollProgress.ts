@@ -4,7 +4,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { aotTheme } from '@/constants/aotTheme';
+import { resolveHeroSkipScrollTop } from '@/constants/heroSkip';
 import { resolveHeroScrollDistance } from '@/constants/heroScroll';
+import { useHeroScroll } from '@/contexts/HeroScrollContext';
 import type { UseScrollProgressOptions, UseScrollProgressResult } from '@/hooks/useScrollProgress.types';
 import { getScrollableElement } from '@/contexts/heroScroll/getScrollableElement';
 import { setHeroScrollNotifyListener } from '@/contexts/heroScroll/heroScrollBridge';
@@ -39,6 +41,7 @@ export function useScrollProgress({
   scrollerRef,
   timelineRef,
 }: UseScrollProgressOptions = {}): UseScrollProgressResult {
+  const { isIntroSkipped, setHeroIntroSkipped } = useHeroScroll();
   const heroRef = useRef<HTMLDivElement | null>(null);
   const progressRef = useRef(0);
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
@@ -74,6 +77,29 @@ export function useScrollProgress({
   const requestScrollSetup = useCallback(() => {
     setSetupToken((current) => current + 1);
   }, []);
+
+  const skipHeroIntro = useCallback(() => {
+    const scrollTrigger = scrollTriggerRef.current;
+
+    if (scrollTrigger) {
+      const scrollTop = resolveHeroSkipScrollTop(scrollTrigger.start, scrollTrigger.end);
+      scrollTrigger.scroll(scrollTop);
+    }
+
+    applyProgress(1);
+    setHeroIntroSkipped(true);
+    ScrollTrigger.update();
+  }, [applyProgress, setHeroIntroSkipped]);
+
+  const resumeHeroIntro = useCallback(() => {
+    setHeroIntroSkipped(false);
+    applyProgress(0);
+    requestScrollSetup();
+
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [applyProgress, requestScrollSetup, setHeroIntroSkipped]);
 
   useEffect(() => {
     if (!enabled || typeof window === 'undefined') {
@@ -158,6 +184,13 @@ export function useScrollProgress({
     () => {
       const heroElement = heroRef.current;
       if (!enabled || !heroElement) {
+        return undefined;
+      }
+
+      if (isIntroSkipped) {
+        scrollTriggerRef.current?.kill();
+        scrollTriggerRef.current = null;
+        applyProgress(1);
         return undefined;
       }
 
@@ -250,9 +283,17 @@ export function useScrollProgress({
     },
     {
       scope: heroRef,
-      dependencies: [enabled, scrollDistance, scrollerRef, applyProgress, setupToken],
+      dependencies: [enabled, scrollDistance, scrollerRef, applyProgress, setupToken, isIntroSkipped],
     },
   );
 
-  return { progress, progressRef, heroRef, scrollTriggerRef, refreshScrollTrigger };
+  return {
+    progress,
+    progressRef,
+    heroRef,
+    scrollTriggerRef,
+    refreshScrollTrigger,
+    skipHeroIntro,
+    resumeHeroIntro,
+  };
 }

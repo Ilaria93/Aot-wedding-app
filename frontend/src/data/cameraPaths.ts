@@ -2,53 +2,81 @@ import { CatmullRomCurve3, Vector3 } from 'three';
 
 import type { CameraPathSegmentDefinition } from '@/types/cameraPathEditor';
 import {
+  OPERATION_RAVENNA_GROUND_SPRINT_END,
+  OPERATION_RAVENNA_ROOFTOPS_END,
+  OPERATION_RAVENNA_TITAN_CORRIDOR_END,
+  OPERATION_RAVENNA_WALL_LAUNCH_END,
+} from '@/constants/operationRavennaOpening';
+import {
   OPENING_ESTABLISHING_CAMERA_POSITION,
   OPENING_ESTABLISHING_CAMERA_TARGET,
 } from '@/scenes/graybox/openingEstablishingLayout';
 
-/** Static opening + ground sprint — street-level run toward the first hook point. */
+/** Short sprint from the outskirts to the first hook — two scroll beats max. */
 export const streetOpeningPath = [
   new Vector3(...OPENING_ESTABLISHING_CAMERA_POSITION),
-  new Vector3(-0.4, 1.64, 2),
-  new Vector3(-0.8, 1.66, -8),
-  new Vector3(-9.5, 1.72, -4),
+  new Vector3(0.04, 1.48, 46),
+  new Vector3(-0.15, 1.5, 22),
+  new Vector3(-9.5, 1.58, -4),
 ];
 
 export const streetOpeningTargetPath = [
   new Vector3(...OPENING_ESTABLISHING_CAMERA_TARGET),
-  new Vector3(0.4, 15, -48),
-  new Vector3(0.8, 12, -58),
-  new Vector3(14, 18, -90),
+  new Vector3(0.1, 4, 30),
+  new Vector3(0.25, 5.5, 8),
+  new Vector3(-8, 9, -6),
 ];
 
 export const streetOpeningCurve = new CatmullRomCurve3(streetOpeningPath);
 export const streetOpeningTargetCurve = new CatmullRomCurve3(streetOpeningTargetPath);
 
-/** Aerial rooftops — first ODM hook and swings toward the wall (after ground sprint). */
+/** Aerial rooftops — lift above roofs, then soft left/right swings between rows. */
 export const aerialRooftopsPath = [
-  new Vector3(-9.5, 1.72, -4),
-  new Vector3(-5, 7.5, -5),
-  new Vector3(2, 13, -16),
-  new Vector3(12, 7.4, -28),
-  new Vector3(23, 15.5, -42),
-  new Vector3(36, 8.2, -56),
-  new Vector3(48, 17.5, -70),
-  new Vector3(56, 11.5, -84),
-  new Vector3(52, 18, -96),
+  new Vector3(-9.5, 1.58, -4),
+  new Vector3(-11.5, 6.8, -7),
+  new Vector3(-5.5, 10.2, -12),
+  new Vector3(2, 10.8, -17),
+  new Vector3(9, 10, -22),
+  new Vector3(14, 10.5, -27),
+  new Vector3(6, 10.2, -32),
+  new Vector3(15, 9.8, -37),
+  new Vector3(8, 10.4, -42),
+  new Vector3(17, 10, -47),
+  new Vector3(11, 10.3, -52),
+  new Vector3(20, 9.9, -57),
+  new Vector3(14, 10.2, -62),
+  new Vector3(23, 10, -67),
+  new Vector3(17, 10.4, -72),
+  new Vector3(26, 10.1, -77),
+  new Vector3(20, 10.6, -82),
+  new Vector3(29, 10.3, -87),
+  new Vector3(24, 11, -92),
+  new Vector3(32, 11.5, -97),
   new Vector3(38, 14, -104),
 ];
 
 export const aerialRooftopsTargetPath = [
-  new Vector3(-3, 3, -12),
-  new Vector3(4, 5.5, -20),
-  new Vector3(14, 7, -32),
-  new Vector3(26, 5.8, -46),
-  new Vector3(38, 7.8, -60),
-  new Vector3(50, 6.4, -74),
-  new Vector3(58, 9, -88),
-  new Vector3(54, 8, -100),
-  new Vector3(42, 10, -110),
-  new Vector3(30, 12, -116),
+  new Vector3(-8, 3.5, -6),
+  new Vector3(-9, 5.5, -9),
+  new Vector3(-4, 7.2, -13),
+  new Vector3(1, 7.5, -18),
+  new Vector3(8, 7, -23),
+  new Vector3(12, 7.4, -28),
+  new Vector3(5, 7.2, -33),
+  new Vector3(13, 6.8, -38),
+  new Vector3(7, 7.1, -43),
+  new Vector3(15, 6.9, -48),
+  new Vector3(9, 7.2, -53),
+  new Vector3(17, 6.8, -58),
+  new Vector3(11, 7, -63),
+  new Vector3(19, 6.8, -68),
+  new Vector3(13, 7.1, -73),
+  new Vector3(21, 6.9, -78),
+  new Vector3(16, 7.2, -83),
+  new Vector3(24, 6.9, -88),
+  new Vector3(19, 7.2, -93),
+  new Vector3(27, 7, -98),
+  new Vector3(32, 8, -108),
 ];
 
 export const aerialRooftopsCurve = new CatmullRomCurve3(aerialRooftopsPath);
@@ -149,7 +177,7 @@ export const CAMERA_PATHS: readonly CameraPathSegmentDefinition[] = [
   {
     id: 'streetOpening',
     start: 0,
-    end: 0.09,
+    end: OPERATION_RAVENNA_GROUND_SPRINT_END,
     positionPoints: streetOpeningPath,
     targetPoints: streetOpeningTargetPath,
     path: streetOpeningCurve,
@@ -157,8 +185,8 @@ export const CAMERA_PATHS: readonly CameraPathSegmentDefinition[] = [
   },
   {
     id: 'rooftops',
-    start: 0.09,
-    end: 0.42,
+    start: OPERATION_RAVENNA_GROUND_SPRINT_END,
+    end: OPERATION_RAVENNA_ROOFTOPS_END,
     positionPoints: aerialRooftopsPath,
     targetPoints: aerialRooftopsTargetPath,
     path: aerialRooftopsCurve,
@@ -166,8 +194,8 @@ export const CAMERA_PATHS: readonly CameraPathSegmentDefinition[] = [
   },
   {
     id: 'giantWalls',
-    start: 0.42,
-    end: 0.6,
+    start: OPERATION_RAVENNA_ROOFTOPS_END,
+    end: OPERATION_RAVENNA_WALL_LAUNCH_END,
     positionPoints: giantWallsPath,
     targetPoints: giantWallsTargetPath,
     path: giantWallsCurve,
@@ -175,8 +203,8 @@ export const CAMERA_PATHS: readonly CameraPathSegmentDefinition[] = [
   },
   {
     id: 'titanCorridor',
-    start: 0.6,
-    end: 0.84,
+    start: OPERATION_RAVENNA_WALL_LAUNCH_END,
+    end: OPERATION_RAVENNA_TITAN_CORRIDOR_END,
     positionPoints: titanCorridorPath,
     targetPoints: titanCorridorTargetPath,
     path: titanCorridorCurve,
@@ -184,7 +212,7 @@ export const CAMERA_PATHS: readonly CameraPathSegmentDefinition[] = [
   },
   {
     id: 'finalArena',
-    start: 0.84,
+    start: OPERATION_RAVENNA_TITAN_CORRIDOR_END,
     end: 1,
     positionPoints: finalArenaPath,
     targetPoints: finalArenaTargetPath,
