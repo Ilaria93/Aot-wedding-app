@@ -4,11 +4,11 @@ import { PageAlert, PageHero, PageShell } from '@/components/PageShell';
 import { isFactionId } from '@/constants/factions';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
-import { RsvpConfirmedSummary } from '@/pages/RsvpPage/components/RsvpConfirmedSummary';
-import { RsvpForm } from '@/pages/RsvpPage/components/RsvpForm';
+import { RsvpConfirmedSummary } from '@/components/Rsvp/RsvpConfirmedSummary';
+import { RsvpForm } from '@/components/Rsvp/RsvpForm';
 import { fetchMyRsvp, submitRsvpConfirmation, type FactionId } from '@/services/rsvpApi';
 import { getApiStatusCode } from '@/services/apiErrors';
-import type { ConfirmedRsvpState } from '@/pages/RsvpPage/components/RsvpConfirmedSummary';
+import type { ConfirmedRsvpState } from '@/components/Rsvp/RsvpConfirmedSummary';
 import './styles/RsvpPage.scss';
 
 /** RSVP screen for the authenticated user. */

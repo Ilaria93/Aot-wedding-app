@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { PageAlert, PageHero, PageShell } from '@/components/PageShell';
 import { useI18n } from '@/contexts/I18nContext';
-import { AlbumGrid } from '@/pages/AlbumPage/components/AlbumGrid';
-import { AlbumUploadPanel } from '@/pages/AlbumPage/components/AlbumUploadPanel';
+import { AlbumGrid } from '@/components/Album/AlbumGrid';
+import { AlbumUploadPanel } from '@/components/Album/AlbumUploadPanel';
 import {
   fetchPublicPhotoAlbum,
   type PublicPhotoAlbumItem,
