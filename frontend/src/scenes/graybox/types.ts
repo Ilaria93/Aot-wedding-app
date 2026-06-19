@@ -10,7 +10,19 @@ export type GrayboxBoxSpec = {
 export type GrayboxRooftopShape = 'box' | 'stepped' | 'lShape' | 'tower';
 
 export type GrayboxBuildingSpec = GrayboxBoxSpec & {
+  id: string;
   shape: GrayboxRooftopShape;
+  roofTone: 'clay' | 'darkClay';
+};
+
+export type GrayboxRooftopFeatureKind = 'chimney' | 'roofWindow' | 'bellTower' | 'courtyard';
+
+export type GrayboxRooftopFeatureSpec = {
+  id: string;
+  kind: GrayboxRooftopFeatureKind;
+  position: [number, number, number];
+  size: [number, number, number];
+  rotationY?: number;
 };
 
 export type GrayboxStreetSpec = {

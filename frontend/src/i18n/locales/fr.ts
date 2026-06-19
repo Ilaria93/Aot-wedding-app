@@ -107,11 +107,17 @@ export const fr = {
       locationLabel: 'Lieu de l’opération',
       documentStamp: 'Document réservé — invités autorisés uniquement',
       scenes: {
+        streetOpening: {
+          leftEyebrow: 'Prologue · Ravenne',
+          leftTitle: "L'humanité nous appelle",
+          rightEyebrow: 'Dépêche du matin',
+          rightTitle: 'Nous répondons',
+        },
         rooftops: {
           leftEyebrow: 'Acte I · District',
-          leftTitle: 'Sur les toits de Ravenne',
+          leftTitle: 'Au-dessus de Ravenne',
           rightEyebrow: 'ODM actifs',
-          rightTitle: 'Volent en avant',
+          rightTitle: 'La mission commence',
         },
         wallsApproach: {
           leftEyebrow: 'Acte II · Les murailles',

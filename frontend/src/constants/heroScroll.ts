@@ -2,10 +2,10 @@
 export const HERO_VISIBLE_VIEWPORT_RATIO = 1;
 
 /** Viewport heights scrolled while the cinematic hero stays pinned (scroll-scrub zone). */
-export const HERO_SCROLL_VIEWPORT_RATIO = 2.75;
+export const HERO_SCROLL_VIEWPORT_RATIO = 7.5;
 
 /** Fallback scroll distance when `window` is unavailable (SSR/tests). */
-export const HERO_SCROLL_DISTANCE_FALLBACK = 2600;
+export const HERO_SCROLL_DISTANCE_FALLBACK = 7200;
 
 /** Fallback visible hero height when `window` is unavailable (SSR/tests). */
 export const HERO_VISIBLE_HEIGHT_FALLBACK = 900;

@@ -1,4 +1,4 @@
-import { ROOFTOP_DISTRICT_LAYOUT } from '@/utils/grayboxRooftopDistrict';
+import { ROOFTOP_DISTRICT_LAYOUT } from '@/scenes/graybox/grayboxRooftopDistrict';
 
 import type {
   GrayboxBoxSpec,
@@ -11,6 +11,7 @@ export type {
   GrayboxBuildingSpec,
   GrayboxCapsuleSpec,
   GrayboxCorridorStripSpec,
+  GrayboxRooftopFeatureSpec,
   GrayboxStreetSpec,
   GrayboxTitanSilhouetteSpec,
   GrayboxWallSpec,
@@ -22,6 +23,8 @@ export const GRAYBOX_ROOFTOP_BUILDINGS = ROOFTOP_DISTRICT_LAYOUT.buildings;
 export const GRAYBOX_ROOFTOP_STREETS = ROOFTOP_DISTRICT_LAYOUT.streets;
 
 export const GRAYBOX_ROOFTOP_CORRIDOR = ROOFTOP_DISTRICT_LAYOUT.corridorStrips;
+
+export const GRAYBOX_ROOFTOP_FEATURES = ROOFTOP_DISTRICT_LAYOUT.features;
 
 export const GRAYBOX_ROOFTOP_GROUND = ROOFTOP_DISTRICT_LAYOUT.ground;
 

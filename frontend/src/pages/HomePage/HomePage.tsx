@@ -1,12 +1,12 @@
-import { CinematicHeroSection } from '@/components/cinematic/CinematicHeroSection';
+import { CinematicHeroSection } from '@/cinematic';
 import { HoneymoonGiftSection } from '@/components/HoneymoonGiftSection';
 import { apiBaseUrl } from '@/constants/apiConfig';
 import { useI18n } from '@/contexts/I18nContext';
-import { LandingCeremonySection } from '@/pages/HomePage/components/LandingCeremonySection';
-import { LandingContactsSection } from '@/pages/HomePage/components/LandingContactsSection';
-import { LandingFaqSection } from '@/pages/HomePage/components/LandingFaqSection';
-import { LandingRsvpSection } from '@/pages/HomePage/components/LandingRsvpSection';
-import { LandingStorySection } from '@/pages/HomePage/components/LandingStorySection';
+import { LandingCeremonySection } from '@/components/Landing/LandingCeremonySection';
+import { LandingContactsSection } from '@/components/Landing/LandingContactsSection';
+import { LandingFaqSection } from '@/components/Landing/LandingFaqSection';
+import { LandingRsvpSection } from '@/components/Landing/LandingRsvpSection';
+import { LandingStorySection } from '@/components/Landing/LandingStorySection';
 import './styles/HomePage.scss';
 
 /** Editorial wedding landing page. */

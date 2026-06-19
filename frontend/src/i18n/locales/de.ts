@@ -107,11 +107,17 @@ export const de = {
       locationLabel: 'Einsatzort',
       documentStamp: 'Vertrauliches Dokument — nur für autorisierte Gäste',
       scenes: {
+        streetOpening: {
+          leftEyebrow: 'Prolog · Ravenna',
+          leftTitle: 'Die Menschheit ruft',
+          rightEyebrow: 'Morgendlicher Befehl',
+          rightTitle: 'Wir antworten',
+        },
         rooftops: {
           leftEyebrow: 'Akt I · Distrikt',
           leftTitle: 'Über Ravenna',
           rightEyebrow: 'ODM aktiv',
-          rightTitle: 'Fliegen vorwärts',
+          rightTitle: 'Die Mission beginnt',
         },
         wallsApproach: {
           leftEyebrow: 'Akt II · Die Mauern',

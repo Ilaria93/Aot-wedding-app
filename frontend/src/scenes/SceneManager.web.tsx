@@ -1,8 +1,9 @@
 import { ContactShadows, Environment } from '@react-three/drei';
 import { useMemo } from 'react';
 
-import { CameraPathEditorHelpers } from '@/components/cinematic/CameraPathEditorHelpers';
-import { CameraRig } from '@/components/cinematic/CameraRig';
+import { CameraPathEditorHelpers } from '@/cinematic/rig/CameraPathEditorHelpers';
+import { CameraRig } from '@/cinematic/rig/CameraRig';
+import { OdmFirstPersonRig } from '@/cinematic/odm/OdmFirstPersonRig';
 import {
   getCinematicSceneModelEntry,
 } from '@/constants/cinematicModelRegistry';
@@ -15,10 +16,10 @@ import { OperationRavennaScenes } from '@/scenes/models/OperationRavennaScenes';
 import { CoupleStrikeSequence } from '@/scenes/sequences/CoupleStrikeSequence';
 import { SquadTraversalSequence } from '@/scenes/sequences/SquadTraversalSequence';
 import type { SceneManagerProps } from '@/types/scene';
-import { isCoupleStrikeSceneActive } from '@/utils/coupleStrikeSequence';
-import { HERO_CAMERA_TIMELINE } from '@/utils/heroCameraTimeline';
-import { resolveCinematicModelSceneId } from '@/utils/sceneModelVisibility';
-import { resolveSceneTimelineState } from '@/utils/sceneTimeline';
+import { isCoupleStrikeSceneActive } from '@/scenes/sequences/coupleStrikeLogic';
+import { HERO_CAMERA_TIMELINE } from '@/cinematic/camera/heroCameraTimeline';
+import { resolveCinematicModelSceneId } from '@/scenes/models/sceneModelVisibility';
+import { resolveSceneTimelineState } from '@/cinematic/timeline/sceneTimeline';
 
 /**
  * Root 3D scene for the cinematic hero — GLTF environments, fallbacks and scroll-driven content.
@@ -37,6 +38,7 @@ export function SceneManager({
   const sceneModelEntry = getCinematicSceneModelEntry(modelSceneId);
   const showCoupleStrike = useMemo(() => isCoupleStrikeSceneActive(progress), [progress]);
   const grayboxEnabled = isOperationRavennaGrayboxEnabled();
+  const isEstablishingFrame = progress <= 0;
 
   return (
     <>
@@ -48,16 +50,17 @@ export function SceneManager({
       />
 
       <CameraPathEditorHelpers visible={showCameraPathHelpers} />
+      <OdmFirstPersonRig progress={progress} progressRef={progressRef} />
 
       {grayboxEnabled ? (
-        <GrayboxHeroAtmosphere />
+        <GrayboxHeroAtmosphere progress={progress} />
       ) : (
         <HeroSceneAtmosphere progress={progress} />
       )}
 
       <directionalLight
-        castShadow
-        intensity={grayboxEnabled ? 0.85 : 1.1}
+        castShadow={!grayboxEnabled || !isEstablishingFrame}
+        intensity={grayboxEnabled ? (isEstablishingFrame ? 0 : 0.85) : 1.1}
         position={grayboxEnabled ? [40, 60, 30] : [5, 12, 2]}
         color={grayboxEnabled ? '#ffffff' : '#9aaea0'}
         shadow-mapSize={[1024, 1024]}
@@ -69,7 +72,7 @@ export function SceneManager({
       />
 
       {grayboxEnabled ? (
-        <OperationRavennaGrayboxWorld />
+        <OperationRavennaGrayboxWorld showTraversalWorld={!isEstablishingFrame} />
       ) : (
         <>
           <Environment preset="sunset" />
@@ -77,8 +80,6 @@ export function SceneManager({
           {sceneModelEntry ? (
             <OperationRavennaScenes activeSceneId={sceneState.sceneId} entry={sceneModelEntry} />
           ) : null}
-
-          {showCoupleStrike ? <CoupleStrikeSequence globalProgress={progress} /> : null}
 
           <ContactShadows
             position={[0, 0.01, 7]}
@@ -90,6 +91,7 @@ export function SceneManager({
         </>
       )}
 
+      {showCoupleStrike ? <CoupleStrikeSequence globalProgress={progress} /> : null}
       <SquadTraversalSequence globalProgress={progress} />
     </>
   );

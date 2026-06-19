@@ -4,6 +4,7 @@ import type { CinematicCameraDebugSnapshot } from '@/types/cinematicDebug';
 
 /** Scene identifiers for the Operation Ravenna cinematic sequence. */
 export type OperationRavennaSceneId =
+  | 'streetOpening'
   | 'rooftops'
   | 'wallsApproach'
   | 'wallLaunch'

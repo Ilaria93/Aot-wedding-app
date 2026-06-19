@@ -107,11 +107,17 @@ export const en = {
       locationLabel: 'Operation site',
       documentStamp: 'Restricted document — authorized guests only',
       scenes: {
+        streetOpening: {
+          leftEyebrow: 'Prologue · Ravenna',
+          leftTitle: 'Humanity is calling',
+          rightEyebrow: 'Morning dispatch',
+          rightTitle: 'We answer',
+        },
         rooftops: {
           leftEyebrow: 'Act I · District',
-          leftTitle: 'Over Ravenna rooftops',
+          leftTitle: 'Above Ravenna',
           rightEyebrow: 'ODM online',
-          rightTitle: 'Flying forward',
+          rightTitle: 'The mission begins',
         },
         wallsApproach: {
           leftEyebrow: 'Act II · The walls',

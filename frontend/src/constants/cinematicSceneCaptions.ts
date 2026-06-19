@@ -18,6 +18,21 @@ export type SceneCaptionConfig = {
 /** Scroll-driven left/right caption windows per Operation Ravenna scene (local progress). */
 export const CINEMATIC_SCENE_CAPTIONS: readonly SceneCaptionConfig[] = [
   {
+    sceneId: 'streetOpening',
+    fadeInStart: 0.12,
+    fadeInEnd: 0.28,
+    fadeOutStart: 0.78,
+    fadeOutEnd: 0.94,
+    left: {
+      eyebrowKey: 'landing.cinematic.scenes.streetOpening.leftEyebrow',
+      titleKey: 'landing.cinematic.scenes.streetOpening.leftTitle',
+    },
+    right: {
+      eyebrowKey: 'landing.cinematic.scenes.streetOpening.rightEyebrow',
+      titleKey: 'landing.cinematic.scenes.streetOpening.rightTitle',
+    },
+  },
+  {
     sceneId: 'rooftops',
     fadeInStart: 0.1,
     fadeInEnd: 0.22,

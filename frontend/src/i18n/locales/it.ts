@@ -107,11 +107,17 @@ export const it = {
       locationLabel: 'Luogo operazione',
       documentStamp: 'Documento riservato — per gli invitati autorizzati',
       scenes: {
+        streetOpening: {
+          leftEyebrow: 'Prologo · Ravenna',
+          leftTitle: "L'umanità ci chiama",
+          rightEyebrow: 'Dispaccio del mattino',
+          rightTitle: 'Rispondiamo',
+        },
         rooftops: {
           leftEyebrow: 'Atto I · Distretto',
-          leftTitle: 'Sui tetti di Ravenna',
+          leftTitle: 'Sopra Ravenna',
           rightEyebrow: 'ODM attivi',
-          rightTitle: 'Volano in avanti',
+          rightTitle: 'La missione inizia',
         },
         wallsApproach: {
           leftEyebrow: 'Atto II · Le mura',

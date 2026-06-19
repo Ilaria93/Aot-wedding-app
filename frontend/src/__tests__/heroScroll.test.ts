@@ -1,3 +1,5 @@
+import { afterEach, describe, expect, it } from 'vitest';
+
 import {
   HERO_NAVBAR_FADE_END_PROGRESS,
   HERO_NAVBAR_REAPPEAR_START_PROGRESS,
