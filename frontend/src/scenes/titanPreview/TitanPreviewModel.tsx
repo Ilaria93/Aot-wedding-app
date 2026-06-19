@@ -7,7 +7,7 @@ import { TITAN_MODELS } from '@/constants/modelRegistry';
 import type { TitanPreviewModelId } from '@/constants/titanPreviewAssets';
 import { TITAN_PREVIEW_MODELS } from '@/constants/titanPreviewAssets';
 import { preloadReadyModel } from '@/scenes/models/modelPreload';
-import { normalizeOpaqueCharacterMaterials } from '@/utils/gltfMaterial';
+import { normalizeOpaqueCharacterMaterials } from '@/scenes/models/gltfMaterial';
 
 type TitanPreviewModelProps = {
   modelId: TitanPreviewModelId;

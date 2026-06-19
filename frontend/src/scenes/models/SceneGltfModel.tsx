@@ -5,7 +5,7 @@ import { SkeletonUtils } from 'three-stdlib';
 
 import type { CinematicSceneModelEntry, GltfTransform } from '@/constants/cinematicModelRegistry';
 import type { LoadedSceneGltf } from '@/scenes/models/preloadCinematicModels';
-import { sceneHasRenderableMeshes } from '@/utils/sceneGeometry';
+import { sceneHasRenderableMeshes } from '@/scenes/models/sceneGeometry';
 
 import '@/scenes/models/dracoLoader';
 

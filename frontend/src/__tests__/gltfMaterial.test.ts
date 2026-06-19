@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { DoubleSide, FrontSide, Group, Mesh, MeshStandardMaterial } from 'three';
 
-import { normalizeOpaqueCharacterMaterials } from '@/utils/gltfMaterial';
+import { normalizeOpaqueCharacterMaterials } from '@/scenes/models/gltfMaterial';
 
 describe('normalizeOpaqueCharacterMaterials', () => {
   it('forces opaque front-facing materials on mesh children', () => {

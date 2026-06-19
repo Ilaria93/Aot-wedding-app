@@ -1,7 +1,9 @@
+import { describe, expect, it } from 'vitest';
+
 import {
   isCinematicSceneModelVisible,
   resolveCinematicModelSceneId,
-} from '@/utils/sceneModelVisibility';
+} from '@/scenes/models/sceneModelVisibility';
 
 describe('sceneModelVisibility', () => {
   it('maps countdownTransition to the coupleStrike GLTF slot', () => {
@@ -12,8 +14,13 @@ describe('sceneModelVisibility', () => {
     expect(resolveCinematicModelSceneId('titanCorridor')).toBe('titanCorridor');
   });
 
+  it('maps streetOpening to the rooftops GLTF slot', () => {
+    expect(resolveCinematicModelSceneId('streetOpening')).toBe('rooftops');
+  });
+
   it('shows only the active scene model entry', () => {
     expect(isCinematicSceneModelVisible('rooftops', 'rooftops')).toBe(true);
+    expect(isCinematicSceneModelVisible('rooftops', 'streetOpening')).toBe(true);
     expect(isCinematicSceneModelVisible('titanCorridor', 'rooftops')).toBe(false);
   });
 

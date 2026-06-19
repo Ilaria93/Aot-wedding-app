@@ -17,8 +17,8 @@ import {
   findHeadNode,
   resolveIdleAnimationName,
   resolveTitanGroundY,
-} from '@/utils/titanCorridorTitan';
-import { normalizeOpaqueCharacterMaterials } from '@/utils/gltfMaterial';
+} from '@/scenes/titanCorridor/titanCorridorTitan';
+import { normalizeOpaqueCharacterMaterials } from '@/scenes/models/gltfMaterial';
 
 type BullTerrierTitanProps = {
   /** When false, skips per-frame motion while keeping the mesh culled by distance. */

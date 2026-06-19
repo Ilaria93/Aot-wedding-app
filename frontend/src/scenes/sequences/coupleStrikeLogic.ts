@@ -5,7 +5,7 @@ import type {
   CoupleStrikeSequenceState,
   StrikeCharacterPose,
 } from '@/types/coupleStrike';
-import { clampTimelineProgress, resolveSceneTimelineState } from '@/utils/sceneTimeline';
+import { clampTimelineProgress, resolveSceneTimelineState } from '@/cinematic/timeline/sceneTimeline';
 
 /** Progress value at which the blade cross impact occurs. */
 export const COUPLE_STRIKE_IMPACT_PROGRESS = 0.82;

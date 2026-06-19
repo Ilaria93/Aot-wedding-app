@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { BULL_TERRIER_TITAN_PLACEMENT } from '@/constants/titanCorridorTitanConfig';
 import {
   clampHeadTrackingAngles,
@@ -5,7 +7,7 @@ import {
   computeUniformScaleForHeight,
   resolveIdleAnimationName,
   resolveTitanGroundY,
-} from '@/utils/titanCorridorTitan';
+} from '@/scenes/titanCorridor/titanCorridorTitan';
 
 describe('titanCorridorTitan utils', () => {
   it('resolves idle animation by name', () => {

@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
-import { SquadTraversalMember } from '@/components/cinematic/SquadTraversalMember';
+import { SquadTraversalMember } from '@/cinematic/characters/SquadTraversalMember';
 import {
   isRooftopsSquadActive,
   resolveSquadTraversalFromGlobal,
-} from '@/utils/squadTraversal';
+} from '@/scenes/sequences/squadTraversal';
 
 type SquadTraversalSequenceProps = {
   /** Global hero scroll progress in the range [0, 1]. */

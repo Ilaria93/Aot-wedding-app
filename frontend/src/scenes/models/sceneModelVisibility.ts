@@ -10,6 +10,10 @@ export function resolveCinematicModelSceneId(
     return 'coupleStrike';
   }
 
+  if (activeSceneId === 'streetOpening') {
+    return 'rooftops';
+  }
+
   return activeSceneId;
 }
 

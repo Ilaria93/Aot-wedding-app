@@ -2,6 +2,7 @@ import { rooftopsPath } from '@/data/cameraPaths';
 import type {
   GrayboxBuildingSpec,
   GrayboxCorridorStripSpec,
+  GrayboxRooftopFeatureSpec,
   GrayboxRooftopShape,
   GrayboxStreetSpec,
   GrayboxTone,
@@ -9,6 +10,7 @@ import type {
 
 export type RooftopDistrictLayout = {
   buildings: readonly GrayboxBuildingSpec[];
+  features: readonly GrayboxRooftopFeatureSpec[];
   streets: readonly GrayboxStreetSpec[];
   corridorStrips: readonly GrayboxCorridorStripSpec[];
   ground: {
@@ -132,10 +134,72 @@ function lotToBuilding(
   const centerZ = minZ - LOT_DEPTH / 2;
 
   return {
+    id: `roof-block-${row}-${col}`,
     position: [centerX, height / 2, centerZ],
     size: [LOT_WIDTH, height, LOT_DEPTH],
     tone: rooftopLotTone(row, col),
     shape: rooftopLotShape(row, col),
+    roofTone: rooftopGridHash(row + 11, col + 5) < 0.68 ? 'clay' : 'darkClay',
+  };
+}
+
+function rooftopFeatureForBuilding(
+  building: GrayboxBuildingSpec,
+  row: number,
+  col: number,
+): GrayboxRooftopFeatureSpec[] {
+  const [x, y, z] = building.position;
+  const [width, height, depth] = building.size;
+  const roofY = y + height / 2;
+  const features: GrayboxRooftopFeatureSpec[] = [];
+  const roll = rooftopGridHash(row + 19, col + 23);
+
+  if (height > 7 && roll < 0.72) {
+    features.push({
+      id: `${building.id}-chimney`,
+      kind: 'chimney',
+      position: [x - width * 0.28, roofY + 1.1, z + depth * 0.22],
+      size: [0.9, 2.2, 0.9],
+    });
+  }
+
+  if (height > 8 && rooftopGridHash(row + 41, col + 17) < 0.55) {
+    features.push({
+      id: `${building.id}-roof-window`,
+      kind: 'roofWindow',
+      position: [x + width * 0.18, roofY + 0.72, z - depth * 0.2],
+      size: [2.2, 1.15, 1.35],
+      rotationY: rooftopGridHash(row + 7, col + 31) < 0.5 ? 0 : Math.PI / 2,
+    });
+  }
+
+  if (building.shape === 'tower' && height > 18) {
+    features.push({
+      id: `${building.id}-bell-tower`,
+      kind: 'bellTower',
+      position: [x, roofY + 3.7, z],
+      size: [width * 0.52, 7.4, depth * 0.52],
+    });
+  }
+
+  return features;
+}
+
+function courtyardFeature(
+  row: number,
+  col: number,
+  x: number,
+  z: number,
+): GrayboxRooftopFeatureSpec | null {
+  if ((row + col) % 4 !== 1) {
+    return null;
+  }
+
+  return {
+    id: `courtyard-${row}-${col}`,
+    kind: 'courtyard',
+    position: [x, 0.075, z],
+    size: [LOT_WIDTH * 0.9, 0.15, LOT_DEPTH * 0.8],
   };
 }
 
@@ -188,6 +252,7 @@ export function buildFlightCorridorStrips(): GrayboxCorridorStripSpec[] {
  */
 export function buildRooftopDistrictLayout(): RooftopDistrictLayout {
   const buildings: GrayboxBuildingSpec[] = [];
+  const features: GrayboxRooftopFeatureSpec[] = [];
   let row = 0;
 
   for (let z = DISTRICT_MAX_Z; z >= DISTRICT_MIN_Z; z -= LOT_DEPTH + STREET_WIDTH_Z) {
@@ -199,8 +264,15 @@ export function buildRooftopDistrictLayout(): RooftopDistrictLayout {
       const centerX = lotMinX + LOT_WIDTH / 2;
       const centerZ = lotMinZ - LOT_DEPTH / 2;
 
-      if (!isFlightCorridor(centerX, centerZ)) {
-        buildings.push(lotToBuilding(row, col, lotMinX, lotMinZ));
+      const isCorridorLot = isFlightCorridor(centerX, centerZ);
+      const courtyard = isCorridorLot ? null : courtyardFeature(row, col, centerX, centerZ);
+
+      if (courtyard) {
+        features.push(courtyard);
+      } else if (!isCorridorLot) {
+        const building = lotToBuilding(row, col, lotMinX, lotMinZ);
+        buildings.push(building);
+        features.push(...rooftopFeatureForBuilding(building, row, col));
       }
 
       col += 1;
@@ -211,6 +283,7 @@ export function buildRooftopDistrictLayout(): RooftopDistrictLayout {
 
   return {
     buildings,
+    features,
     streets: buildStreetGrid(),
     corridorStrips: buildFlightCorridorStrips(),
     ground: {

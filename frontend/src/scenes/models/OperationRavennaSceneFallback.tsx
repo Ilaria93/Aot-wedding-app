@@ -22,6 +22,7 @@ export function OperationRavennaSceneFallback({
   }
 
   switch (sceneId) {
+    case 'streetOpening':
     case 'rooftops':
       return <RooftopsDistrictEnvironment visible />;
     case 'wallsApproach':

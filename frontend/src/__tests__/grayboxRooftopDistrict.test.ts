@@ -1,16 +1,22 @@
-import { GRAYBOX_ROOFTOP_BUILDINGS } from '@/scenes/graybox/grayboxLayout';
+import { describe, expect, it } from 'vitest';
+
+import {
+  GRAYBOX_ROOFTOP_BUILDINGS,
+  GRAYBOX_ROOFTOP_FEATURES,
+} from '@/scenes/graybox/grayboxLayout';
 import {
   buildFlightCorridorStrips,
   buildRooftopDistrictLayout,
   distanceToRooftopsFlightPath,
   rooftopLotHeight,
-} from '@/utils/grayboxRooftopDistrict';
+} from '@/scenes/graybox/grayboxRooftopDistrict';
 
 describe('grayboxRooftopDistrict', () => {
   it('generates a substantial city block grid', () => {
     const layout = buildRooftopDistrictLayout();
 
     expect(layout.buildings.length).toBeGreaterThan(20);
+    expect(layout.features.length).toBeGreaterThan(20);
     expect(layout.streets.length).toBeGreaterThan(10);
     expect(layout.corridorStrips.length).toBeGreaterThan(8);
   });
@@ -30,6 +36,18 @@ describe('grayboxRooftopDistrict', () => {
 
     expect(shapes.has('box')).toBe(true);
     expect(shapes.size).toBeGreaterThanOrEqual(3);
+  });
+
+  it('adds cinematic Ravenna-inspired rooftop details', () => {
+    const featureKinds = new Set(GRAYBOX_ROOFTOP_FEATURES.map((feature) => feature.kind));
+    const roofTones = new Set(GRAYBOX_ROOFTOP_BUILDINGS.map((building) => building.roofTone));
+
+    expect(featureKinds.has('chimney')).toBe(true);
+    expect(featureKinds.has('roofWindow')).toBe(true);
+    expect(featureKinds.has('bellTower')).toBe(true);
+    expect(featureKinds.has('courtyard')).toBe(true);
+    expect(roofTones.has('clay')).toBe(true);
+    expect(roofTones.has('darkClay')).toBe(true);
   });
 
   it('aligns buildings into rows with street gaps', () => {
