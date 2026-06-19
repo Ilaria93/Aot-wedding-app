@@ -137,5 +137,3 @@ export function BullTerrierTitan({
 }
 
 const _headWorld = new Vector3();
-
-useGLTF.preload(BULL_TERRIER_TITAN_GLB);

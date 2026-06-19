@@ -8,13 +8,11 @@ import {
   type CinematicGltfSource,
 } from '@/constants/cinematicModelRegistry';
 
-import '@/scenes/models/dracoLoader';
-
 function asGltfPath(source: CinematicGltfSource): string {
   return source as unknown as string;
 }
 
-/** Preloads every Operation Ravenna GLTF so scene switches do not pop in. */
+/** Preloads every Operation Ravenna GLTF — prefer `preloadModelsForScrollProgress` for production. */
 export function preloadCinematicModels(): void {
   const dracoBySource = new Map(
     CINEMATIC_SCENE_MODEL_ENTRIES.map((entry) => [entry.source, entry.useDraco]),

@@ -3,8 +3,10 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Mesh, type Group, type Object3D } from 'three';
 import { SkeletonUtils } from 'three-stdlib';
 
+import { TITAN_MODELS } from '@/constants/modelRegistry';
 import type { TitanPreviewModelId } from '@/constants/titanPreviewAssets';
 import { TITAN_PREVIEW_MODELS } from '@/constants/titanPreviewAssets';
+import { preloadReadyModel } from '@/scenes/models/modelPreload';
 import { normalizeOpaqueCharacterMaterials } from '@/utils/gltfMaterial';
 
 type TitanPreviewModelProps = {
@@ -68,5 +70,5 @@ export function TitanPreviewModel({
   );
 }
 
-useGLTF.preload(TITAN_PREVIEW_MODELS.mergedAnimations);
-useGLTF.preload(TITAN_PREVIEW_MODELS.character);
+preloadReadyModel(TITAN_MODELS.bullTerrierTitan);
+preloadReadyModel(TITAN_MODELS.bullTerrierCharacter);
