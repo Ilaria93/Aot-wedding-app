@@ -16,7 +16,7 @@ import { OperationRavennaScenes } from '@/scenes/models/OperationRavennaScenes';
 import { CoupleStrikeSequence } from '@/scenes/sequences/CoupleStrikeSequence';
 import { SquadTraversalSequence } from '@/scenes/sequences/SquadTraversalSequence';
 import type { SceneManagerProps } from '@/types/scene';
-import { isCoupleStrikeSceneActive } from '@/scenes/sequences/coupleStrikeLogic';
+import { isCoupleStrikeSceneActive } from '@/scenes/sequences/coupleStrikeSequence';
 import { HERO_CAMERA_TIMELINE } from '@/cinematic/camera/heroCameraTimeline';
 import { resolveCinematicModelSceneId } from '@/scenes/models/sceneModelVisibility';
 import { resolveSceneTimelineState } from '@/cinematic/timeline/sceneTimeline';
