@@ -6,8 +6,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { aotTheme } from '@/constants/aotTheme';
 import { resolveHeroScrollDistance } from '@/constants/heroScroll';
 import type { UseScrollProgressOptions, UseScrollProgressResult } from '@/hooks/useScrollProgress.types';
-import { getScrollableElement } from '@/utils/getScrollableElement';
-import { setHeroScrollNotifyListener } from '@/utils/heroScrollBridge';
+import { getScrollableElement } from '@/contexts/heroScroll/getScrollableElement';
+import { setHeroScrollNotifyListener } from '@/contexts/heroScroll/heroScrollBridge';
 
 export type { UseScrollProgressOptions, UseScrollProgressResult } from '@/hooks/useScrollProgress.types';
 

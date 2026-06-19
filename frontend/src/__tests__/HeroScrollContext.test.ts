@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { isHeroScrollActiveProgress } from '@/contexts/HeroScrollContext';
 
 describe('isHeroScrollActiveProgress', () => {
