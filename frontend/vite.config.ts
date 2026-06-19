@@ -10,7 +10,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      'react-native': 'react-native-web',
     },
   },
   assetsInclude: ['**/*.glb'],
@@ -20,12 +19,6 @@ export default defineConfig({
   },
   test: {
     passWithNoTests: true,
-    exclude: [
-      '**/node_modules/**',
-      '**/dist/**',
-      'src/utils/__tests__/**',
-      'src/constants/__tests__/**',
-      'src/contexts/__tests__/HeroScrollContext.test.ts',
-    ],
+    exclude: ['**/node_modules/**', '**/dist/**'],
   },
 });
