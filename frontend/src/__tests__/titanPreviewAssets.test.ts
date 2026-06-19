@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import {
   DEFAULT_TITAN_SCALE,
   TITAN_PREVIEW_CAMERA_PRESETS,
