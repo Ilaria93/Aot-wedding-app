@@ -14,7 +14,7 @@ export const COUNTDOWN_META_FADE_START_AT = 0.3;
 export const COUNTDOWN_META_FADE_END_AT = 0.5;
 
 /** Normalized local progress where the live countdown begins fading in. */
-export const COUNTDOWN_TIMER_FADE_START_AT = 0.5;
+export const COUNTDOWN_TIMER_FADE_START_AT = 0.3;
 
 /** Normalized local progress where the live countdown reaches full opacity. */
-export const COUNTDOWN_TIMER_FADE_END_AT = 0.75;
+export const COUNTDOWN_TIMER_FADE_END_AT = 0.55;

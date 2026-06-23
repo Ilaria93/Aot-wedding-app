@@ -7,11 +7,6 @@ import { HeroCanvas } from '@/cinematic/hero/HeroCanvas';
 import { OperationRavennaDebugOverlay } from '@/cinematic/debug/OperationRavennaDebugOverlay';
 import { WhiteFlashOverlay } from '@/cinematic/overlays/WhiteFlashOverlay';
 import { OPERATION_RAVENNA_TIMELINE } from '@/constants/operationRavennaTimeline';
-import {
-  WEDDING_COUPLE_NAMES,
-  WEDDING_OPERATION_NAME,
-  formatWeddingTrailerDate,
-} from '@/constants/weddingEvent';
 import { useHeroScroll } from '@/contexts/HeroScrollContext';
 import { useI18n } from '@/contexts/I18nContext';
 import type { TranslationKey } from '@/i18n/translations';
@@ -42,7 +37,7 @@ export function CinematicHeroSection({
   scrollerRef,
   navbarOverlay,
 }: CinematicHeroSectionProps) {
-  const { locale, t } = useI18n();
+  const { t } = useI18n();
   const { setHeroScrollProgress, resetHeroScroll, isIntroSkipped } = useHeroScroll();
   const prefersReducedMotion = usePrefersReducedMotion();
   const { progress, progressRef, heroRef, refreshScrollTrigger, skipHeroIntro, resumeHeroIntro } =
@@ -84,8 +79,6 @@ export function CinematicHeroSection({
     prefersReducedMotion ? 0 : strikeSequence.flashIntensity * 0.92,
   );
 
-  const showIntroHud =
-    !isCountdownTransition && !openingUiHidden && progress < 0.12 && captionVisuals.opacity <= 0;
   const showScrollHint = !openingUiHidden && progress < 0.04 && !isCountdownTransition && !isIntroSkipped;
   const showSkipIntro = !isIntroSkipped && !isCountdownTransition && progress < 1;
 
@@ -132,14 +125,6 @@ export function CinematicHeroSection({
       ) : null}
 
       <CinematicSceneCaptions visuals={captionsHidden} translate={translateCaption} />
-
-      {showIntroHud ? (
-        <div className="cinematic-hero__overlay">
-          <p className="cinematic-hero__eyebrow">{WEDDING_OPERATION_NAME}</p>
-          <h1 className="cinematic-hero__couple-names">{WEDDING_COUPLE_NAMES}</h1>
-          <p className="cinematic-hero__trailer-date">{formatWeddingTrailerDate(locale)}</p>
-        </div>
-      ) : null}
 
       <WhiteFlashOverlay opacity={flashOpacity} />
       <BlackoutCountdownOverlay

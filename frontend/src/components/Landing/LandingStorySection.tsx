@@ -5,16 +5,21 @@ export function LandingStorySection() {
   const { t } = useI18n();
 
   return (
-    <section className="landing-story" id="story">
-      <div className="landing-story__photos">
-        <div className="landing-photo-frame">{t('landing.story.photoOne')}</div>
-        <div className="landing-photo-frame landing-photo-frame--tall">{t('landing.story.photoTwo')}</div>
-        <div className="landing-initial-badge">I & D</div>
-      </div>
-      <div className="landing-story__card">
-        <h2 className="landing-section-heading">{t('landing.story.heading')}</h2>
-        <p className="landing-body">{t('landing.story.paragraphOne')}</p>
-        <p className="landing-body">{t('landing.story.paragraphTwo')}</p>
+    <section className="obw-section obw-fade-up" id="story">
+      <div className="obw-container obw-split">
+        <div className="obw-photo-mosaic" aria-hidden>
+          <div className="obw-photo-mosaic__frame">{t('landing.story.photoOne')}</div>
+          <div className="obw-photo-mosaic__frame obw-photo-mosaic__frame--tall">
+            {t('landing.story.photoTwo')}
+          </div>
+          <div className="obw-photo-mosaic__monogram">I & D</div>
+        </div>
+        <div className="obw-card obw-card--interactive">
+          <h2 className="obw-display obw-display--sm">{t('landing.story.heading')}</h2>
+          <div className="obw-rule" aria-hidden="true" />
+          <p className="obw-body">{t('landing.story.paragraphOne')}</p>
+          <p className="obw-body">{t('landing.story.paragraphTwo')}</p>
+        </div>
       </div>
     </section>
   );

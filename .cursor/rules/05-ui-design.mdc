@@ -1,31 +1,51 @@
 ---
-description: UI semplice e bella — regola sempre attiva
+description: UI premium OBW — regola sempre attiva
 alwaysApply: true
 ---
 
-# UI design
+# UI design — Operation Beyond the Walls
+
+## Skill obbligatoria
+
+Prima di modificare UI, leggi **`.cursor/skills/aot-premium-design/SKILL.md`**  
+e aggiorna **`.cursor/skills/aot-premium-design/ui-migration-checklist.md`**.
+
+Reference visivo: `Premium Wedding Experience` (palette paper/charcoal/gold).
 
 ## Principi
 
-- **Semplice**: pochi controlli per schermata, gerarchia chiara (titolo → contenuto → azione)
-- **Bella**: palette AoT da `aotTheme`, spaziature generose, contrasto leggibile
-- **Coerente**: stessi pattern di card, bottoni e input in tutta l'app
+- **Premium editoriale**: molto whitespace, alto contrasto, pochi bordi, radius 2px
+- **NON** anime, titani, UI da gioco, pill arrotondate, colori “plastici”
+- **Coerente**: classi `obw-*` da `frontend/src/styles/shared/aot-design-system.scss`
+- Token solo `--obw-*` in `frontend/src/index.css`
 
-## Palette (da `aotTheme`)
+## Palette
 
-- Sfondo: verde chiaro / pergamena
-- Accenti: `militaryGreen`, `bronze`
-- Testo: `textPrimary` / `textMuted`
-- Errori: `danger`
+| Token | Uso |
+|-------|-----|
+| `--obw-paper` | Sfondo principale |
+| `--obw-charcoal` | Testo, sezioni dark, CTA filled |
+| `--obw-gold` | Kicker, accenti |
+| `--obw-green` | Accento militare |
+| `--obw-stone` | Body secondario |
+| `--obw-burgundy` | Errori |
 
-## Layout
+## Tipografia
 
-- Padding consistente (16–24px)
-- Bottoni primari evidenti; azioni secondarie più discrete
-- Stati loading/errore/vuoto sempre gestiti in UI
+- Titoli: Cinzel → `.obw-display`
+- Body: Inter 300 → `.obw-body`
+- Label/numeri: Bebas Neue → `.obw-kicker` / `.obw-meta`
+
+## Componenti
+
+- CTA: `.obw-btn.obw-btn--primary`
+- Card: `.obw-card` (+ `--dark`, `--interactive`)
+- Sezioni: `.obw-section` (+ `--dark`, `--center`, `--deep`)
+- Form: `.obw-input`, `.obw-choice`, `.obw-textarea`
 
 ## Mai
 
-- Stringhe utente hardcoded (sempre i18n)
-- Colori hex inventati fuori dal tema
-- UI affollata o con troppi passaggi per azioni comuni (RSVP, upload foto)
+- Stringhe utente hardcoded (sempre i18n in it/en/de/fr)
+- `border-radius: 30px` / pill `999px`
+- Hex inventati fuori dai token OBW
+- Logica fetch nei componenti presentazionali

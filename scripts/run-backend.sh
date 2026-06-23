@@ -27,7 +27,16 @@ if [ "$VENV_PREFIX" != "$EXPECTED_PREFIX" ]; then
   python3 -m venv venv
 fi
 
-if [ ! -x "./venv/bin/uvicorn" ] || [ ! -x "./venv/bin/alembic" ] || ! ./venv/bin/python -c "import alembic, psycopg" >/dev/null 2>&1; then
+venv_entrypoints_work() {
+  ./venv/bin/alembic --version >/dev/null 2>&1 && ./venv/bin/uvicorn --version >/dev/null 2>&1
+}
+
+if ! venv_entrypoints_work || ! ./venv/bin/python -c "import alembic, psycopg" >/dev/null 2>&1; then
+  if [ -d "venv" ] && ! venv_entrypoints_work; then
+    echo "Gli script del virtualenv puntano a un percorso vecchio, lo ricreo..."
+    rm -rf venv
+    python3 -m venv venv
+  fi
   echo "Installo le dipendenze backend..."
   ./venv/bin/pip install -r requirements.txt
 fi

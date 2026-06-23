@@ -1,4 +1,5 @@
 import { CinematicHeroSection } from '@/cinematic';
+import { MissionDocumentHero } from '@/components/MissionDocumentHero';
 import { HoneymoonGiftSection } from '@/components/HoneymoonGiftSection';
 import { apiBaseUrl } from '@/constants/apiConfig';
 import { useHeroScroll } from '@/contexts/HeroScrollContext';
@@ -19,6 +20,7 @@ export function HomePage() {
     <>
       <CinematicHeroSection />
       <div className={`landing-page${isHeroScrollActive ? ' landing-page--hero-active' : ''}`}>
+        <MissionDocumentHero />
         <LandingStorySection />
         <LandingCeremonySection />
         <LandingRsvpSection />

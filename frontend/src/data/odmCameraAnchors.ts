@@ -1,7 +1,8 @@
 import { Vector3 } from 'three';
 
 import type { CameraPathSegmentId } from '@/constants/cameraPathEditorColors';
-import { aerialRooftopsPath, CAMERA_PATHS } from '@/data/cameraPaths';
+import { CAMERA_PATHS } from '@/data/cameraPaths';
+import { buildRooftopHookAnchors } from '@/data/rooftopTraversalBeats';
 import type { OdmAnchor, OdmAnchorSide, OdmCameraLeg } from '@/types/odmCamera';
 import { buildOdmCameraLegs } from '@/cinematic/camera/odmCameraMotion';
 
@@ -43,24 +44,10 @@ export function buildOdmAnchorsFromCameraPaths(): OdmAnchor[] {
 }
 
 function buildAerialOdmAnchors(): OdmAnchor[] {
-  const anchors: OdmAnchor[] = [];
-
-  for (const point of aerialRooftopsPath) {
-    const last = anchors[anchors.length - 1];
-
-    if (last && pointsNear(last.position, point)) {
-      continue;
-    }
-
-    anchors.push({
-      id: `rooftops-${anchors.length}`,
-      position: point.clone(),
-      side: resolveAnchorSide(anchors.length),
-      segmentId: 'rooftops' as CameraPathSegmentId,
-    });
-  }
-
-  return anchors;
+  return buildRooftopHookAnchors().map((anchor) => ({
+    ...anchor,
+    position: anchor.position.clone(),
+  }));
 }
 
 /** Full hero anchor chain (street + aerial) — used by dev path editor helpers. */

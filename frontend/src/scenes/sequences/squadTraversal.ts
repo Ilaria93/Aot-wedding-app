@@ -7,7 +7,6 @@ import {
   OPERATION_RAVENNA_ROOFTOPS_END,
 } from '@/constants/operationRavennaOpening';
 import { getSquadMemberKeyframes } from '@/constants/squadTraversalManeuvers';
-import { AERIAL_ODM_CAMERA_LEGS } from '@/data/odmCameraAnchors';
 import type { OdmGrapplePhase } from '@/types/odmCamera';
 import type {
   SquadMemberId,
@@ -17,11 +16,13 @@ import type {
   SquadTraversalProgress,
   SquadTraversalState,
 } from '@/types/squadTraversal';
-import { resolveOdmCameraPose } from '@/cinematic/camera/odmCameraMotion';
 import {
   mapGlobalProgressToAerialOdm,
-  resolveRooftopOdmTuning,
 } from '@/cinematic/camera/openingCameraMotion';
+import {
+  getRooftopBeatPathLengthMeters,
+  resolveRooftopTraversalPose,
+} from '@/cinematic/camera/rooftopBeatMotion';
 import { clampTimelineProgress } from '@/cinematic/timeline/sceneTimeline';
 
 const WORLD_UP = new Vector3(0, 1, 0);
@@ -38,6 +39,7 @@ type ScratchOdmPose = {
   roll: number;
   fov: number;
   phase: OdmGrapplePhase;
+  beatKind: 'run';
 };
 
 const scratchPose: ScratchOdmPose = {
@@ -46,6 +48,7 @@ const scratchPose: ScratchOdmPose = {
   roll: 0,
   fov: 50,
   phase: 'pull',
+  beatKind: 'run',
 };
 
 const scratchNextPose: ScratchOdmPose = {
@@ -54,6 +57,7 @@ const scratchNextPose: ScratchOdmPose = {
   roll: 0,
   fov: 50,
   phase: 'pull',
+  beatKind: 'run',
 };
 
 const scratchPrevPose: ScratchOdmPose = {
@@ -62,6 +66,7 @@ const scratchPrevPose: ScratchOdmPose = {
   roll: 0,
   fov: 50,
   phase: 'pull',
+  beatKind: 'run',
 };
 
 type MutablePathFrame = {
@@ -70,9 +75,9 @@ type MutablePathFrame = {
   lateral: Vector3;
 };
 
-/** Approximate rooftops chord length in world units for forward-offset conversion. */
+/** Approximate rooftops beat path length in world units for forward-offset conversion. */
 export function getRooftopsPathLengthMeters(): number {
-  return AERIAL_ODM_CAMERA_LEGS.reduce((total, leg) => total + leg.chordLength, 0);
+  return getRooftopBeatPathLengthMeters();
 }
 
 const ROOFTOPS_PATH_LENGTH_METERS = getRooftopsPathLengthMeters();
@@ -271,11 +276,10 @@ function sampleAerialPathFrame(globalProgress: number, out: MutablePathFrame): v
   const epsilon = 0.004;
   const nextAerial = Math.min(1, aerialProgress + epsilon);
   const prevAerial = Math.max(0, aerialProgress - epsilon);
-  const tuning = resolveRooftopOdmTuning(aerialProgress);
 
-  resolveOdmCameraPose(AERIAL_ODM_CAMERA_LEGS, aerialProgress, scratchPose, tuning);
-  resolveOdmCameraPose(AERIAL_ODM_CAMERA_LEGS, nextAerial, scratchNextPose, tuning);
-  resolveOdmCameraPose(AERIAL_ODM_CAMERA_LEGS, prevAerial, scratchPrevPose, tuning);
+  resolveRooftopTraversalPose(aerialProgress, scratchPose);
+  resolveRooftopTraversalPose(nextAerial, scratchNextPose);
+  resolveRooftopTraversalPose(prevAerial, scratchPrevPose);
 
   out.position.copy(scratchPosition);
   out.forward.subVectors(scratchNext, scratchPrev);

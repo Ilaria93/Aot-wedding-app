@@ -1,5 +1,7 @@
 import { Vector3 } from 'three';
 
+import type { OdmGrapplePhase } from '@/types/odmCamera';
+
 const prevPosition = new Vector3();
 const prevVelocity = new Vector3();
 const velocity = new Vector3();
@@ -16,6 +18,7 @@ export type CameraMotionSnapshot = {
   accelMagnitude: number;
   grappleActive: boolean;
   grappleSide: 'left' | 'right';
+  grapplePhase: OdmGrapplePhase | 'static' | 'street' | null;
 };
 
 const grappleAnchor = new Vector3();
@@ -29,7 +32,15 @@ export const cameraMotionState: CameraMotionSnapshot = {
   accelMagnitude: 0,
   grappleActive: false,
   grappleSide: 'right',
+  grapplePhase: null,
 };
+
+/** Publishes the active grapple phase for VFX (gas burst on redirect). */
+export function setGrappleMotionPhase(
+  phase: CameraMotionSnapshot['grapplePhase'],
+): void {
+  cameraMotionState.grapplePhase = phase;
+}
 
 /** Updates the world-space grapple anchor shown by first-person ODM cables. */
 export function setGrappleCableTarget(
@@ -76,4 +87,5 @@ export function resetCameraMotionTracking(): void {
   prevVelocity.set(0, 0, 0);
   cameraMotionState.speed = 0;
   cameraMotionState.accelMagnitude = 0;
+  cameraMotionState.grapplePhase = null;
 }

@@ -1,60 +1,55 @@
-.segment-row {
-  display: flex;
-  gap: 12px;
-  margin: 16px 0;
+.rsvp-page {
+  padding-block: var(--obw-space-lg) var(--obw-space-xl);
 }
 
-.segment-button {
-  flex: 1;
-  padding: 14px 20px;
-  border: 1px solid var(--aot-border);
-  border-radius: 14px;
-  background: var(--aot-surface-muted);
-  color: var(--aot-text-primary);
-  font-weight: 600;
-  cursor: pointer;
+.rsvp-page__inner {
+  display: grid;
+  gap: var(--obw-space-md);
+  max-width: 720px;
 }
 
-.segment-button.is-active {
-  border-color: var(--aot-military-green);
-  background: var(--aot-military-green);
-  color: var(--aot-surface);
+.rsvp-hero {
+  margin-bottom: 0;
 }
 
-.faction-card {
-  display: block;
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 16px;
-  border: 1px solid var(--aot-border);
-  border-radius: 18px;
-  background: var(--aot-surface-muted);
-  text-align: left;
-  cursor: pointer;
+.rsvp-alert-wrap {
+  margin-bottom: 0;
 }
 
-.faction-card.is-active {
-  border-color: var(--aot-bronze);
-  background: var(--aot-faction-active);
+.rsvp-panel__header {
+  margin-bottom: var(--obw-space-md);
 }
 
-.faction-card__title {
-  margin: 0 0 4px;
-  font-size: 16px;
-  font-weight: 700;
+.rsvp-panel__section {
+  margin-top: var(--obw-space-md);
 }
 
-.faction-card__description {
-  margin: 0;
-  color: var(--aot-text-muted);
-  font-size: 13px;
-  line-height: 1.5;
+.rsvp-panel__submit {
+  margin-top: var(--obw-space-lg);
 }
 
-.login-prompt-card {
-  margin-bottom: 16px;
-  padding: 14px;
-  border: 1px solid var(--aot-border);
-  border-radius: 16px;
-  background: var(--aot-surface-muted);
+.rsvp-panel--confirmed {
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+}
+
+.rsvp-confirmed-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.rsvp-confirmed-card__body {
+  position: relative;
+  z-index: 1;
+}
+
+.rsvp-skeleton--hero {
+  height: 180px;
+  margin-bottom: var(--obw-space-md);
+}
+
+.rsvp-skeleton--panel {
+  height: 420px;
 }

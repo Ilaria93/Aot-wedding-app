@@ -21,5 +21,7 @@ export const ODM_CABLE_SPEED_STRETCH = 0.55;
 export const ODM_CABLE_ACCEL_SWAY = 0.035;
 
 export const ODM_PARTICLE_POOL_SIZE = 96;
-export const ODM_PARTICLE_BURST_THRESHOLD = 1.8;
+export const ODM_PARTICLE_BURST_THRESHOLD = 1.45;
 export const ODM_PARTICLE_SPAWN_PER_BURST = 6;
+/** Extra micro-bursts when entering the ODM overshoot / redirect phase. */
+export const ODM_PARTICLE_REDIRECT_BURST_COUNT = 2;

@@ -93,6 +93,20 @@ export const fr = {
       operationTag: 'Opération Ravenna',
       button: 'RSVP ici',
     },
+    mission: {
+      subtitle: 'La plus belle bataille est celle que l’on mène ensemble',
+      ordersLabel: '— ORDRES DE MISSION —',
+      cards: {
+        rsvpTitle: 'RSVP',
+        rsvpDesc: 'Confirmez votre présence',
+        albumTitle: 'Album',
+        albumDesc: 'Photographies de bataille',
+        travelTitle: 'Comment venir',
+        travelDesc: 'Cartes et transports',
+        storyTitle: 'Notre histoire',
+        storyDesc: 'Du début à la fin',
+      },
+    },
     cinematic: {
       scrollHint: 'Faites défiler pour continuer',
       skipIntro: "Passer l'intro",
@@ -102,7 +116,11 @@ export const fr = {
       hours: 'h',
       minutes: 'm',
       seconds: 's',
-      countdownOverlayLabel: 'Détails de la cérémonie et compte à rebours',
+      countdownOverlayLabel: 'Compte à rebours de la cérémonie',
+      countdownUnitDays: 'JOURS',
+      countdownUnitHours: 'HEURES',
+      countdownUnitMinutes: 'MINUTES',
+      countdownUnitSeconds: 'SECONDES',
       countdownLiveSummary:
         '{{days}} jours, {{hours}} heures, {{minutes}} minutes et {{seconds}} secondes avant la cérémonie',
       dateLabel: 'Date de l’opération',
@@ -165,6 +183,7 @@ export const fr = {
       artworkPlaceholder: 'Photo principale / illustration du couple',
     },
     rsvp: {
+      eyebrow: 'Réponse mission',
       heading: 'Ils ont hâte de fêter ce moment avec vous',
       body: 'Connectez-vous ou inscrivez-vous, puis confirmez votre présence depuis la page RSVP.',
       button: 'Confirmer votre présence',

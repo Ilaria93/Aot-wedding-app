@@ -95,4 +95,14 @@ describe('openingCameraMotion', () => {
     expect(isStaticOpeningFrame(0)).toBe(false);
     expect(mapGlobalProgressToAerialOdm(OPERATION_RAVENNA_ROOFTOPS_END)).toBe(1);
   });
+
+  it('continues ODM motion on giant walls after rooftops end', () => {
+    resolveHeroCameraPose(OPERATION_RAVENNA_ROOFTOPS_END + 0.02, pose);
+    const wallPose = pose.position.clone();
+
+    resolveHeroCameraPose(0.62, pose);
+
+    expect(wallPose.distanceTo(pose.position)).toBeGreaterThan(0.5);
+    expect(['release', 'pull', 'overshoot']).toContain(pose.phase);
+  });
 });

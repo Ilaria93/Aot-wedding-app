@@ -9,6 +9,7 @@ import { assertValidCameraTimeline } from '@/cinematic/camera/cameraRig';
 import {
   cameraMotionState,
   resetCameraMotionTracking,
+  setGrappleMotionPhase,
   updateCameraMotion,
 } from '@/cinematic/camera/cameraMotion';
 import {
@@ -16,7 +17,13 @@ import {
   assertValidOdmCameraLegs,
   resolveOdmVelocityFov,
 } from '@/cinematic/camera/odmCameraMotion';
-import { resolveHeroCameraPose, isStaticOpeningFrame } from '@/cinematic/camera/openingCameraMotion';
+import { TITAN_CORRIDOR_ODM_TUNING } from '@/cinematic/camera/heroSegmentOdmMotion';
+import { isTitanCorridorOdmPhase } from '@/cinematic/camera/heroSegmentOdmMotion';
+import {
+  isAerialTraversalPhase,
+  resolveHeroCameraPose,
+  isStaticOpeningFrame,
+} from '@/cinematic/camera/openingCameraMotion';
 
 export type CameraRigProps = {
   /** Global scroll progress in the range [0, 1]. */
@@ -64,6 +71,13 @@ export function CameraRig({ progress, progressRef, cameraDebugRef, timeline }: C
     wasStaticRef.current = isStatic;
 
     resolveHeroCameraPose(activeProgress, pose);
+    setGrappleMotionPhase(
+      typeof pose.phase === 'string' && pose.phase !== 'walk' && pose.phase !== 'run' && pose.phase !== 'accel'
+        ? pose.phase
+        : pose.phase === 'walk' || pose.phase === 'run' || pose.phase === 'accel'
+          ? 'street'
+          : null,
+    );
     camera.position.copy(pose.position);
     camera.lookAt(pose.target);
     camera.rotation.z = 0;
@@ -76,12 +90,17 @@ export function CameraRig({ progress, progressRef, cameraDebugRef, timeline }: C
     }
 
     if (camera instanceof PerspectiveCamera) {
-      const speedFov = resolveOdmVelocityFov(
-        cameraMotionState.speed,
-        DEFAULT_ODM_CAMERA_TUNING,
-      );
-      const targetFov = Math.max(pose.fov, speedFov);
       const blend = 1 - Math.exp(-delta * 14);
+      const usePoseFovOnly = isAerialTraversalPhase(activeProgress);
+      const speedTuning = isTitanCorridorOdmPhase(activeProgress)
+        ? TITAN_CORRIDOR_ODM_TUNING
+        : DEFAULT_ODM_CAMERA_TUNING;
+      const targetFov = usePoseFovOnly
+        ? pose.fov
+        : Math.max(
+            pose.fov,
+            resolveOdmVelocityFov(cameraMotionState.speed, speedTuning),
+          );
 
       camera.fov = MathUtils.lerp(camera.fov, targetFov, blend);
       camera.updateProjectionMatrix();

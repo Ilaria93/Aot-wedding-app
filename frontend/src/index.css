@@ -1,23 +1,65 @@
 :root {
-  --aot-background: #dfe8da;
-  --aot-surface: #f9f8f3;
-  --aot-surface-muted: #edf1e7;
-  --aot-military-green: #5f7556;
-  --aot-military-green-dark: #2f4630;
-  --aot-parchment: #7b6f60;
-  --aot-bronze: #b88a52;
-  --aot-border: #c7d2c0;
-  --aot-text-primary: #243024;
-  --aot-text-muted: #596554;
-  --aot-danger: #b45454;
-  --aot-peach: #efd4c4;
-  --aot-sky: #cfe3ee;
-  --aot-sky-border: #b3ccd9;
-  --aot-alert-bg: #f7e3e3;
-  --aot-alert-border: #e8c2c2;
-  --aot-faction-active: #f3e4d3;
-  --page-max-width: 1180px;
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  /* OBW canonical palette — Premium Wedding Experience */
+  --obw-charcoal: #1a1917;
+  --obw-paper: #f0e9d8;
+  --obw-paper-deep: #e8e1d0;
+  --obw-paper-muted: #d4cdc0;
+  --obw-stone: #6a6862;
+  --obw-green: #3a4a3b;
+  --obw-gold: #b89438;
+  --obw-burgundy: #6b1f2a;
+  --obw-border: rgba(26, 25, 23, 0.1);
+
+  --obw-radius: 2px;
+  --obw-max: 1280px;
+  --obw-space-xs: 8px;
+  --obw-space-sm: 12px;
+  --obw-space-md: 20px;
+  --obw-space-lg: 32px;
+  --obw-space-xl: 72px;
+  --obw-space-2xl: 112px;
+  --obw-shadow-soft: 0 12px 40px rgba(26, 25, 23, 0.06);
+  --obw-shadow-lift: 0 20px 48px rgba(26, 25, 23, 0.1);
+  --obw-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --obw-duration-fast: 180ms;
+  --obw-duration-normal: 220ms;
+
+  /* Legacy aliases — map to OBW */
+  --aot-background: var(--obw-paper);
+  --aot-surface: var(--obw-paper);
+  --aot-surface-muted: var(--obw-paper-muted);
+  --aot-military-green: var(--obw-green);
+  --aot-military-green-dark: var(--obw-charcoal);
+  --aot-parchment: var(--obw-stone);
+  --aot-bronze: var(--obw-gold);
+  --aot-border: var(--obw-border);
+  --aot-text-primary: var(--obw-charcoal);
+  --aot-text-muted: var(--obw-stone);
+  --aot-danger: var(--obw-burgundy);
+  --aot-peach: var(--obw-paper-deep);
+  --aot-sky: var(--obw-paper-deep);
+  --aot-sky-border: var(--obw-border);
+  --aot-alert-bg: color-mix(in srgb, var(--obw-burgundy) 8%, var(--obw-paper));
+  --aot-alert-border: color-mix(in srgb, var(--obw-burgundy) 25%, transparent);
+  --aot-faction-active: var(--obw-paper-deep);
+  --page-max-width: var(--obw-max);
+
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  --font-display: 'Cinzel', Georgia, 'Times New Roman', serif;
+  --font-editorial: 'Crimson Text', Georgia, 'Times New Roman', serif;
+  --font-kicker: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+
+  --mission-parchment: var(--obw-paper);
+  --mission-parchment-deep: var(--obw-paper-deep);
+  --mission-ink: var(--obw-charcoal);
+  --mission-ink-soft: var(--obw-stone);
+  --mission-gold: var(--obw-gold);
+  --mission-gold-muted: color-mix(in srgb, var(--obw-gold) 65%, var(--obw-stone));
+  --mission-stone: var(--obw-stone);
+  --mission-stone-deep: var(--obw-charcoal);
+  --mission-red: var(--obw-burgundy);
+  --mission-border: var(--obw-border);
 }
 
 *,
@@ -34,8 +76,9 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: var(--font-sans);
-  color: var(--aot-text-primary);
-  background: var(--aot-background);
+  font-weight: 300;
+  color: var(--obw-charcoal);
+  background: var(--obw-paper);
   -webkit-font-smoothing: antialiased;
 }
 

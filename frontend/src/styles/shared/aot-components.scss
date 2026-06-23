@@ -1,25 +1,30 @@
-/* Shared UI — ported from the original Expo StyleSheets (main branch). */
+/* Shared UI — wedding editorial document style. */
 
 .eyebrow {
   margin: 0 0 8px;
-  color: var(--aot-bronze);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.125em;
+  color: var(--mission-red);
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
 }
 
 .title {
   margin: 0 0 10px;
-  font-size: 30px;
-  font-weight: 700;
-  line-height: 1.25;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
 }
 
 .subtitle {
   margin: 0 0 16px;
-  color: var(--aot-text-muted);
+  color: var(--mission-gold-muted);
+  font-family: var(--font-editorial);
   font-size: 15px;
+  font-style: italic;
   line-height: 1.6;
 }
 
@@ -30,15 +35,18 @@
 .section-heading,
 .section-title {
   margin: 0 0 14px;
-  font-size: 22px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
 }
 
 .section-description {
   margin: 0 0 16px;
   color: var(--aot-text-muted);
+  font-family: var(--font-editorial);
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .card,
@@ -46,8 +54,8 @@
   width: 100%;
   max-width: 520px;
   padding: 24px;
-  border: 1px solid var(--aot-border);
-  border-radius: 24px;
+  border: 1px solid var(--mission-border);
+  border-radius: 16px;
   background: var(--aot-surface);
 }
 
@@ -72,43 +80,75 @@
   flex-grow: 1;
   justify-content: center;
   width: 100%;
-  padding: 32px 24px 48px;
+  padding: 24px 20px 48px;
   background: var(--aot-background);
 }
 
 .aot-content {
   width: 100%;
-  max-width: 960px;
+  max-width: 720px;
+  overflow: hidden;
+  border: 1px solid var(--mission-border);
+  border-radius: 20px;
+  background: var(--mission-parchment);
+  box-shadow: 0 18px 48px rgba(42, 35, 28, 0.08);
 }
 
 .hero-card,
 .aot-hero-card {
-  margin-bottom: 16px;
-  padding: 28px;
-  border: 1px solid var(--aot-border);
-  border-radius: 24px;
-  background: var(--aot-surface);
+  margin-bottom: 0;
+  padding: 2rem 1.75rem 1.5rem;
+  border: none;
+  border-bottom: 1px solid var(--mission-border);
+  border-radius: 0;
+  background: linear-gradient(165deg, #4a4038 0%, #2f2822 55%, #3a322c 100%);
+}
+
+.hero-card .eyebrow,
+.aot-hero-card .eyebrow {
+  color: var(--mission-red);
 }
 
 .hero-card .title,
 .aot-hero-card .title {
-  font-size: 32px;
+  color: var(--mission-gold);
+}
+
+.hero-card .subtitle,
+.aot-hero-card .subtitle {
+  color: var(--mission-gold-muted);
+}
+
+.hero-card .button-secondary,
+.aot-hero-card .button-secondary {
+  margin-top: 12px;
+  border-color: rgba(201, 168, 76, 0.35);
+  background: rgba(250, 246, 238, 0.08);
+  color: var(--mission-parchment-deep);
 }
 
 .section-card,
 .aot-section-card {
-  margin-bottom: 16px;
-  padding: 24px;
-  border: 1px solid var(--aot-border);
-  border-radius: 24px;
-  background: var(--aot-surface);
+  margin-bottom: 0;
+  padding: 1.5rem 1.75rem;
+  border: none;
+  border-bottom: 1px solid var(--mission-border);
+  border-radius: 0;
+  background: var(--mission-parchment);
+}
+
+.section-card:last-child,
+.aot-section-card:last-child {
+  border-bottom: none;
 }
 
 .field-label {
   display: block;
   margin: 0 0 10px;
-  font-size: 14px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
 }
 
 .field {
@@ -121,10 +161,11 @@
 .textarea {
   width: 100%;
   padding: 14px;
-  border: 1px solid var(--aot-border);
-  border-radius: 14px;
-  background: var(--aot-surface-muted);
+  border: 1px solid var(--mission-border);
+  border-radius: 12px;
+  background: var(--aot-surface);
   color: var(--aot-text-primary);
+  font-family: var(--font-editorial);
 }
 
 .textarea,
@@ -142,24 +183,26 @@
   width: 100%;
   padding: 14px 18px;
   border: none;
-  border-radius: 14px;
-  font-size: 15px;
-  font-weight: 700;
+  border-radius: 12px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-decoration: none;
   cursor: pointer;
 }
 
 .button-primary,
 .aot-btn-primary {
-  background: var(--aot-bronze);
-  color: var(--aot-surface);
+  background: var(--mission-stone-deep);
+  color: var(--mission-parchment-deep);
 }
 
 .button-secondary,
 .aot-btn-secondary {
   width: auto;
   align-self: flex-start;
-  border: 1px solid var(--aot-border);
+  border: 1px solid var(--mission-border);
   background: var(--aot-surface-muted);
   color: var(--aot-text-primary);
 }
@@ -191,6 +234,7 @@
 .aot-helper {
   margin: 12px 0 0;
   color: var(--aot-text-muted);
+  font-family: var(--font-editorial);
   font-size: 14px;
   line-height: 1.55;
 }
@@ -213,7 +257,7 @@
 
 .text-link,
 .aot-link {
-  color: var(--aot-bronze);
+  color: var(--mission-gold);
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
@@ -237,10 +281,11 @@
 
 .alert-card,
 .aot-alert {
-  margin-bottom: 16px;
-  padding: 16px;
-  border: 1px solid var(--aot-alert-border);
-  border-radius: 18px;
+  margin-bottom: 0;
+  padding: 16px 1.75rem;
+  border: none;
+  border-bottom: 1px solid var(--mission-border);
+  border-radius: 0;
   background: var(--aot-alert-bg);
 }
 
@@ -248,10 +293,11 @@
 .aot-summary-card,
 .preference-card,
 .aot-preference-card {
-  margin-bottom: 16px;
-  padding: 16px;
-  border: 1px solid var(--aot-border);
-  border-radius: 18px;
+  margin-bottom: 0;
+  padding: 1.5rem 1.75rem;
+  border: none;
+  border-bottom: 1px solid var(--mission-border);
+  border-radius: 0;
   background: var(--aot-surface-muted);
 }
 
@@ -259,15 +305,18 @@
 .aot-summary-label {
   margin: 0 0 4px;
   color: var(--aot-text-muted);
-  font-size: 12px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .summary-value,
 .aot-summary-value {
   margin: 0 0 10px;
+  font-family: var(--font-editorial);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .summary-value--flush {
@@ -277,7 +326,7 @@
 .summary-row,
 .aot-summary-row {
   padding: 12px 0;
-  border-top: 1px solid var(--aot-border);
+  border-top: 1px solid var(--mission-border);
 }
 
 .summary-row:first-child,
@@ -289,6 +338,7 @@
 .empty-text {
   margin: 0;
   color: var(--aot-text-muted);
+  font-family: var(--font-editorial);
   font-size: 14px;
   line-height: 1.55;
 }
@@ -298,7 +348,8 @@
   place-items: center;
   min-height: 100vh;
   background: var(--aot-background);
-  color: var(--aot-bronze);
+  color: var(--mission-gold);
+  font-family: var(--font-display);
 }
 
 .loading-text {

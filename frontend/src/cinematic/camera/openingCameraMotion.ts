@@ -1,9 +1,6 @@
 import { CatmullRomCurve3, MathUtils, Vector3 } from 'three';
 
 import {
-  OPENING_AERIAL_LAUNCH_PATH_SHARE,
-  OPENING_AERIAL_LAUNCH_SCROLL_SHARE,
-  OPENING_FIRST_ODM_LAUNCH_AERIAL_END,
   OPENING_GROUND_ROLL_AMPLITUDE,
   OPENING_GROUND_SWAY_AMPLITUDE,
   OPENING_ODM_GEAR_REVEAL_END,
@@ -23,21 +20,24 @@ import {
   OPENING_ESTABLISHING_CAMERA_TARGET,
 } from '@/scenes/graybox/openingEstablishingLayout';
 import {
-  aerialRooftopsPath,
-  aerialRooftopsTargetPath,
   streetOpeningPath,
   streetOpeningTargetPath,
 } from '@/data/cameraPaths';
-import { AERIAL_ODM_CAMERA_LEGS } from '@/data/odmCameraAnchors';
 import type { OdmGrapplePhase } from '@/types/odmCamera';
+import type { RooftopBeatKind } from '@/types/rooftopTraversal';
 import type { CameraPose, NormalizedProgress } from '@/types/cameraRig';
 import {
-  FIRST_ODM_LAUNCH_TUNING,
-  ROOFTOP_ODM_SWING_TUNING,
   clampOdmProgress,
-  findActiveOdmLeg,
-  resolveOdmCameraPose,
 } from '@/cinematic/camera/odmCameraMotion';
+import {
+  isPostRooftopOdmPhase,
+  resolveHeroSegmentOdmPose,
+} from '@/cinematic/camera/heroSegmentOdmMotion';
+import {
+  findActiveRooftopBeat,
+  getFirstRooftopHookAnchor,
+  resolveRooftopTraversalPose,
+} from '@/cinematic/camera/rooftopBeatMotion';
 import { setGrappleCableTarget } from '@/cinematic/camera/cameraMotion';
 
 const streetOpeningCurve = new CatmullRomCurve3(streetOpeningPath);
@@ -56,6 +56,7 @@ type MutableOpeningPose = {
   roll: number;
   fov: number;
   phase: OdmGrapplePhase | 'static' | StreetOpeningPhase;
+  beatKind?: RooftopBeatKind;
 };
 
 function smoothstep(value: number): number {
@@ -259,7 +260,7 @@ export function sampleStreetOpeningPose(
   out.phase = streetPhase;
 }
 
-/** Maps global hero progress to aerial ODM progress within the rooftops window. */
+/** Maps global hero progress to aerial rooftop beat progress — linear for readable rhythm. */
 export function mapGlobalProgressToAerialOdm(globalProgress: number): NormalizedProgress {
   const aerialSpan = OPERATION_RAVENNA_ROOFTOPS_END - OPERATION_RAVENNA_GROUND_SPRINT_END;
 
@@ -267,36 +268,33 @@ export function mapGlobalProgressToAerialOdm(globalProgress: number): Normalized
     return 0;
   }
 
-  const linear = clampOdmProgress(
+  return clampOdmProgress(
     (clampOdmProgress(globalProgress) - OPERATION_RAVENNA_GROUND_SPRINT_END) / aerialSpan,
-  );
-
-  if (linear <= OPENING_AERIAL_LAUNCH_SCROLL_SHARE) {
-    const launchT = linear / Math.max(OPENING_AERIAL_LAUNCH_SCROLL_SHARE, 1e-6);
-    return smoothstep(launchT) * OPENING_AERIAL_LAUNCH_PATH_SHARE;
-  }
-
-  const swingT =
-    (linear - OPENING_AERIAL_LAUNCH_SCROLL_SHARE) /
-    Math.max(1 - OPENING_AERIAL_LAUNCH_SCROLL_SHARE, 1e-6);
-
-  return (
-    OPENING_AERIAL_LAUNCH_PATH_SHARE +
-    smoothstep(swingT) * (1 - OPENING_AERIAL_LAUNCH_PATH_SHARE)
   );
 }
 
-/** Tilts the camera to keep rooftops in frame during aerial traversal. */
+/** Stabilizes camera during ODM beats — no forced look-down into facades. */
 function applyRooftopReadableCameraBias(
-  aerialProgress: number,
+  beatKind: RooftopBeatKind | undefined,
   out: MutableOpeningPose,
 ): void {
-  const launchBias = 1 - smoothstep(aerialProgress / OPENING_AERIAL_LAUNCH_PATH_SHARE);
-  const lookDown = 3.2 + launchBias * 2.8;
+  if (!beatKind) {
+    return;
+  }
 
-  out.target.y = Math.min(out.target.y, out.position.y - lookDown);
-  out.roll *= 0.72;
-  out.fov = MathUtils.lerp(out.fov, Math.max(out.fov, 62), 0.35);
+  if (beatKind === 'hook' || beatKind === 'pull') {
+    out.roll *= 0.3;
+    out.fov = MathUtils.clamp(out.fov, 56, 62);
+    return;
+  }
+
+  if (beatKind === 'swing') {
+    out.roll *= 0.45;
+    return;
+  }
+
+  out.roll *= 0.5;
+  out.fov = MathUtils.clamp(out.fov, 57, 63);
 }
 
 /** Whether the hero camera is in the static opening frame (no scroll yet). */
@@ -314,7 +312,7 @@ export function isGroundSprintPhase(globalProgress: number): boolean {
   return isStreetOpeningPhase(globalProgress);
 }
 
-/** Whether aerial ODM traversal is active (existing rooftop segment — unchanged). */
+/** Whether aerial ODM traversal is active (beat-based rooftop segment). */
 export function isAerialTraversalPhase(globalProgress: number): boolean {
   return (
     globalProgress >= OPERATION_RAVENNA_GROUND_SPRINT_END &&
@@ -322,22 +320,14 @@ export function isAerialTraversalPhase(globalProgress: number): boolean {
   );
 }
 
-/** Resolves which ODM tuning applies across the aerial rooftops segment. */
-export function resolveRooftopOdmTuning(aerialProgress: number) {
-  if (aerialProgress < OPENING_FIRST_ODM_LAUNCH_AERIAL_END) {
-    return FIRST_ODM_LAUNCH_TUNING;
-  }
-
-  return ROOFTOP_ODM_SWING_TUNING;
-}
-
 /** Whether the first ODM hook / rooftop launch window is active. */
 export function isFirstOdmLaunchPhase(globalProgress: number): boolean {
-  const aerialProgress = mapGlobalProgressToAerialOdm(globalProgress);
-  return (
-    globalProgress >= OPERATION_RAVENNA_GROUND_SPRINT_END &&
-    aerialProgress < OPENING_FIRST_ODM_LAUNCH_AERIAL_END
-  );
+  if (globalProgress < OPERATION_RAVENNA_GROUND_SPRINT_END) {
+    return false;
+  }
+
+  const active = findActiveRooftopBeat(mapGlobalProgressToAerialOdm(globalProgress));
+  return active.beat.kind === 'jump' || active.beat.kind === 'hook' || active.beat.kind === 'pull';
 }
 
 /**
@@ -351,7 +341,7 @@ export function resolveHeroCameraPose(
     sampleStreetOpeningPose(Math.max(globalProgress, 0), out);
 
     if (isOdmGearVisible(globalProgress)) {
-      const hookAnchor = aerialRooftopsPath[1] ?? aerialRooftopsPath[0];
+      const hookAnchor = getFirstRooftopHookAnchor(scratchPosition);
       setGrappleCableTarget(true, hookAnchor, 'left');
     } else {
       setGrappleCableTarget(false);
@@ -360,13 +350,31 @@ export function resolveHeroCameraPose(
     return out;
   }
 
-  const aerialProgress = mapGlobalProgressToAerialOdm(globalProgress);
-  const tuning = resolveRooftopOdmTuning(aerialProgress);
-  const activeLeg = findActiveOdmLeg(AERIAL_ODM_CAMERA_LEGS, aerialProgress);
+  if (isAerialTraversalPhase(globalProgress)) {
+    const aerialProgress = mapGlobalProgressToAerialOdm(globalProgress);
+    const activeBeat = findActiveRooftopBeat(aerialProgress);
 
-  resolveOdmCameraPose(AERIAL_ODM_CAMERA_LEGS, aerialProgress, out, tuning);
-  applyRooftopReadableCameraBias(aerialProgress, out);
-  setGrappleCableTarget(true, activeLeg.leg.to.position, activeLeg.leg.to.side);
+    resolveRooftopTraversalPose(aerialProgress, out);
+    applyRooftopReadableCameraBias(out.beatKind, out);
+
+    if (activeBeat.beat.hookAnchor) {
+      setGrappleCableTarget(
+        true,
+        activeBeat.beat.hookAnchor,
+        activeBeat.beat.hookSide ?? 'left',
+      );
+    } else {
+      setGrappleCableTarget(false);
+    }
+
+    return out;
+  }
+
+  if (isPostRooftopOdmPhase(globalProgress)) {
+    resolveHeroSegmentOdmPose(globalProgress, out);
+    return out;
+  }
+
   return out;
 }
 
@@ -386,5 +394,5 @@ export function sampleGroundSprintFrame(
 
 /** First rooftop hook anchor — mission launch point. */
 export function getFirstRooftopLaunchPoint(out: Vector3 = scratchPosition): Vector3 {
-  return out.copy(aerialRooftopsPath[0]);
+  return getFirstRooftopHookAnchor(out);
 }

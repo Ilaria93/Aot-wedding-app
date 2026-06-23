@@ -11,6 +11,7 @@ import {
   ODM_HANDLE_OFFSET,
   ODM_PARTICLE_BURST_THRESHOLD,
   ODM_PARTICLE_POOL_SIZE,
+  ODM_PARTICLE_REDIRECT_BURST_COUNT,
   ODM_PARTICLE_SPAWN_PER_BURST,
   odmGearTheme,
 } from '@/constants/odmGear';
@@ -22,7 +23,7 @@ type GasSlot = {
 };
 
 /**
- * Lightweight pooled gas burst particles triggered by camera acceleration spikes.
+ * Lightweight pooled gas burst particles — spikes on acceleration and ODM redirects.
  */
 export function GasBurstParticles() {
   const geometryRef = useRef<BufferGeometry>(null);
@@ -31,6 +32,7 @@ export function GasBurstParticles() {
   );
   const velocitiesRef = useRef<Float32Array>(new Float32Array(ODM_PARTICLE_POOL_SIZE * 3));
   const prevAccelRef = useRef(0);
+  const prevPhaseRef = useRef(cameraMotionState.grapplePhase);
   const freeSlotCursor = useRef(0);
 
   const positions = useMemo(() => new Float32Array(ODM_PARTICLE_POOL_SIZE * 3), []);
@@ -64,6 +66,20 @@ export function GasBurstParticles() {
     }
   };
 
+  const spawnRedirectBurst = (intensity: number) => {
+    spawnBurst(-ODM_HANDLE_OFFSET.x, ODM_HANDLE_OFFSET.y, ODM_HANDLE_OFFSET.z, intensity);
+    spawnBurst(ODM_HANDLE_OFFSET.x, ODM_HANDLE_OFFSET.y, ODM_HANDLE_OFFSET.z, intensity);
+
+    for (let extra = 0; extra < ODM_PARTICLE_REDIRECT_BURST_COUNT; extra += 1) {
+      spawnBurst(
+        (Math.random() - 0.5) * 0.12,
+        ODM_HANDLE_OFFSET.y - 0.08,
+        ODM_HANDLE_OFFSET.z - 0.06,
+        intensity * 0.85,
+      );
+    }
+  };
+
   useFrame((_, delta) => {
     const geometry = geometryRef.current;
     if (!geometry) {
@@ -74,7 +90,13 @@ export function GasBurstParticles() {
     const accelDelta = accel - prevAccelRef.current;
     prevAccelRef.current = accel;
 
-    if (accel > ODM_PARTICLE_BURST_THRESHOLD || accelDelta > 0.9) {
+    const phase = cameraMotionState.grapplePhase;
+    const enteredOvershoot = phase === 'overshoot' && prevPhaseRef.current !== 'overshoot';
+    prevPhaseRef.current = phase;
+
+    if (enteredOvershoot) {
+      spawnRedirectBurst(2.8);
+    } else if (accel > ODM_PARTICLE_BURST_THRESHOLD || accelDelta > 0.9) {
       const burstStrength = Math.min(accel * 0.35, 2.5);
       spawnBurst(-ODM_HANDLE_OFFSET.x, ODM_HANDLE_OFFSET.y, ODM_HANDLE_OFFSET.z, burstStrength);
       spawnBurst(ODM_HANDLE_OFFSET.x, ODM_HANDLE_OFFSET.y, ODM_HANDLE_OFFSET.z, burstStrength);
@@ -119,13 +141,13 @@ export function GasBurstParticles() {
       </bufferGeometry>
       <pointsMaterial
         color={odmGearTheme.gasCore}
-        size={0.045}
+        size={0.052}
         transparent
-        opacity={0.72}
+        opacity={0.78}
         depthWrite={false}
         blending={AdditiveBlending}
         sizeAttenuation
       />
     </points>
   );
-}
+};

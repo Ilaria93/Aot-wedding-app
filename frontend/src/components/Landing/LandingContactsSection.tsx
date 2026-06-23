@@ -7,30 +7,36 @@ export function LandingContactsSection() {
   const { t } = useI18n();
 
   return (
-    <section className="landing-contacts">
-      <div className="landing-contacts__header">
-        <h2 className="landing-contacts__title">{t('landing.contacts.title')}</h2>
-        <div className="landing-contacts__emblem" aria-hidden>
-          <Leaf size={24} color="var(--aot-military-green-dark)" />
-          <Star size={18} color="var(--aot-bronze)" />
+    <section className="obw-section obw-fade-up">
+      <div className="obw-container">
+        <div className="obw-section-header">
+          <h2 className="obw-display obw-display--sm">{t('landing.contacts.title')}</h2>
+          <div className="obw-tag-row obw-tag-row--end" aria-hidden>
+            <span className="obw-tag obw-tag--on-paper">
+              <Leaf size={14} />
+            </span>
+            <span className="obw-tag obw-tag--on-paper">
+              <Star size={14} />
+            </span>
+          </div>
         </div>
-      </div>
-      <div className="landing-contacts__grid">
-        <article className="landing-contacts__card">
-          <h3>{t('landing.contacts.teamTitle')}</h3>
-          <p className="landing-contacts__line">{t('landing.contacts.teamLine')}</p>
-          <p className="landing-contacts__muted">{t('landing.contacts.teamBody')}</p>
-        </article>
-        <article className="landing-contacts__card">
-          <h3>{t('landing.contacts.travelTitle')}</h3>
-          <p className="landing-contacts__line">{t('landing.contacts.travelLine')}</p>
-          <p className="landing-contacts__muted">{t('landing.contacts.travelBody')}</p>
-        </article>
-        <article className="landing-contacts__card">
-          <h3>{t('landing.contacts.ceremonyTitle')}</h3>
-          <p className="landing-contacts__line">{t('landing.contacts.ceremonyLine')}</p>
-          <p className="landing-contacts__muted">{t('landing.contacts.ceremonyBody')}</p>
-        </article>
+        <div className="obw-grid-3">
+          <article className="obw-card obw-card--interactive">
+            <p className="obw-kicker">{t('landing.contacts.teamTitle')}</p>
+            <p className="obw-meta">{t('landing.contacts.teamLine')}</p>
+            <p className="obw-body">{t('landing.contacts.teamBody')}</p>
+          </article>
+          <article className="obw-card obw-card--interactive">
+            <p className="obw-kicker">{t('landing.contacts.travelTitle')}</p>
+            <p className="obw-meta">{t('landing.contacts.travelLine')}</p>
+            <p className="obw-body">{t('landing.contacts.travelBody')}</p>
+          </article>
+          <article className="obw-card obw-card--interactive">
+            <p className="obw-kicker">{t('landing.contacts.ceremonyTitle')}</p>
+            <p className="obw-meta">{t('landing.contacts.ceremonyLine')}</p>
+            <p className="obw-body">{t('landing.contacts.ceremonyBody')}</p>
+          </article>
+        </div>
       </div>
     </section>
   );

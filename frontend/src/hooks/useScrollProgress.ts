@@ -15,8 +15,8 @@ export type { UseScrollProgressOptions, UseScrollProgressResult } from '@/hooks/
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-/** GSAP scrub smoothing in seconds — reduces jitter between scroll steps. */
-const SCROLL_SCRUB_SMOOTHING = 0.45;
+/** GSAP scrub smoothing in seconds — low value keeps discrete ODM beats readable. */
+const SCROLL_SCRUB_SMOOTHING = 0.1;
 
 function clampProgress(value: number): number {
   return Math.min(1, Math.max(0, value));

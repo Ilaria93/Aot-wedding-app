@@ -1,17 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { PageAlert, PageHero, PageShell } from '@/components/PageShell';
+import { PageAlert } from '@/components/PageShell';
 import { isFactionId } from '@/constants/factions';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
 import { RsvpConfirmedSummary } from '@/components/Rsvp/RsvpConfirmedSummary';
 import { RsvpForm } from '@/components/Rsvp/RsvpForm';
+import { RsvpPageSkeleton } from '@/pages/RsvpPage/components/RsvpPageSkeleton';
 import { fetchMyRsvp, submitRsvpConfirmation, type FactionId } from '@/services/rsvpApi';
 import { getApiStatusCode } from '@/services/apiErrors';
 import type { ConfirmedRsvpState } from '@/components/Rsvp/RsvpConfirmedSummary';
 import './styles/RsvpPage.scss';
 
-/** RSVP screen for the authenticated user. */
+/** RSVP screen for the authenticated user at `/rsvp`. */
 export function RsvpPage() {
   const { user } = useAuth();
   const { t } = useI18n();
@@ -91,31 +92,43 @@ export function RsvpPage() {
 
   const guestName = user ? `${user.first_name} ${user.last_name}`.trim() : '';
 
+  if (loading) {
+    return <RsvpPageSkeleton />;
+  }
+
   return (
-    <PageShell loading={loading}>
-      <PageHero
-        eyebrow={t('rsvp.eyebrow')}
-        title={guestName || t('rsvp.guestFallbackName')}
-        subtitle={t('rsvp.subtitle')}
-        subtitleFlush
-      />
+    <div className="obw-page rsvp-page">
+      <div className="obw-page__grain" aria-hidden="true" />
 
-      {error ? <PageAlert message={error} /> : null}
+      <div className="obw-container rsvp-page__inner">
+        <header className="obw-card obw-card--interactive rsvp-hero obw-fade-up">
+          <p className="obw-kicker">{t('rsvp.eyebrow')}</p>
+          <h1 className="obw-display obw-display--lg">{guestName || t('rsvp.guestFallbackName')}</h1>
+          <p className="obw-body obw-body--narrow">{t('rsvp.subtitle')}</p>
+          <div className="obw-rule" aria-hidden="true" />
+        </header>
 
-      {alreadyConfirmed ? (
-        <RsvpConfirmedSummary confirmedRsvp={confirmedRsvp} />
-      ) : (
-        <RsvpForm
-          attending={attending}
-          faction={faction}
-          dietaryNotes={dietaryNotes}
-          submitting={submitting}
-          onAttendingChange={setAttending}
-          onFactionChange={setFaction}
-          onDietaryNotesChange={setDietaryNotes}
-          onSubmit={() => void handleSubmit()}
-        />
-      )}
-    </PageShell>
+        {error ? (
+          <div className="rsvp-alert-wrap">
+            <PageAlert message={error} />
+          </div>
+        ) : null}
+
+        {alreadyConfirmed ? (
+          <RsvpConfirmedSummary confirmedRsvp={confirmedRsvp} />
+        ) : (
+          <RsvpForm
+            attending={attending}
+            faction={faction}
+            dietaryNotes={dietaryNotes}
+            submitting={submitting}
+            onAttendingChange={setAttending}
+            onFactionChange={setFaction}
+            onDietaryNotesChange={setDietaryNotes}
+            onSubmit={() => void handleSubmit()}
+          />
+        )}
+      </div>
+    </div>
   );
 }

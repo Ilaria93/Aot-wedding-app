@@ -8,12 +8,9 @@ import { useI18n } from '@/contexts/I18nContext';
 import './styles/AppTopBar.scss';
 
 const APP_ROUTES = [
-  { to: '/', labelKey: 'home' as const, end: true },
   { to: '/album', labelKey: 'album' as const },
   { to: '/travel', labelKey: 'travel' as const },
 ] as const;
-
-const LANDING_SECTIONS = ['story', 'ceremony', 'rsvp', 'gift'] as const;
 
 /** Global sticky header — sole navigation (no bottom tab bar). */
 export function AppTopBar() {
@@ -22,50 +19,41 @@ export function AppTopBar() {
   const { t } = useI18n();
   const isHome = location.pathname === '/';
 
-  function scrollToSection(sectionId: string) {
-    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
   return (
-    <header className="site-header">
-      <div className="site-header__inner">
+    <header className="obw-nav site-header">
+      <div className="obw-nav__inner site-header__inner">
         <div className="site-header__start">
           {!isHome ? <ScreenBackButton fallback="/" /> : null}
-          <Link className="site-header__brand" to="/">
-            <span className="site-header__title">{WEDDING_COUPLE_NAMES}</span>
-            <span className="site-header__subtitle">{WEDDING_OPERATION_NAME}</span>
+          <Link className="obw-nav__brand site-header__brand" to="/">
+            <span className="obw-nav__brand-title">{WEDDING_OPERATION_NAME}</span>
+            <span className="obw-nav__brand-sub">{WEDDING_COUPLE_NAMES}</span>
           </Link>
         </div>
 
-        <nav className="site-header__nav" aria-label={t('navigation.tabs.home')}>
-          {isHome
-            ? LANDING_SECTIONS.map((sectionId) => (
-                <button
-                  key={sectionId}
-                  type="button"
-                  className="site-header__link"
-                  onClick={() => scrollToSection(sectionId)}>
-                  {t(`landing.nav.${sectionId}`)}
-                </button>
-              ))
-            : null}
-
+        <nav className="obw-nav__links site-header__nav" aria-label={t('navigation.tabs.home')}>
           {APP_ROUTES.map((route) => (
             <NavLink
               key={route.to}
               to={route.to}
-              end={'end' in route ? route.end : false}
               className={({ isActive }) =>
-                `site-header__route${isActive ? ' active' : ''}`
+                `obw-nav__link site-header__route${isActive ? ' is-active' : ''}`
               }>
               {t(`navigation.tabs.${route.labelKey}`)}
             </NavLink>
           ))}
 
           <NavLink
+            to={isAuthenticated ? '/rsvp' : '/auth/login'}
+            className={({ isActive }) =>
+              `obw-btn obw-btn--primary obw-nav__cta site-header__route${isActive ? ' is-active' : ''}`
+            }>
+            {t('navigation.stack.rsvp')}
+          </NavLink>
+
+          <NavLink
             to={isAuthenticated ? '/profile' : '/auth/login'}
             className={({ isActive }) =>
-              `site-header__route${isActive ? ' active' : ''}`
+              `obw-nav__link site-header__route${isActive ? ' is-active' : ''}`
             }>
             {t(isAuthenticated ? 'navigation.tabs.profile' : 'navigation.stack.login')}
           </NavLink>
@@ -74,7 +62,7 @@ export function AppTopBar() {
             <NavLink
               to="/admin"
               className={({ isActive }) =>
-                `site-header__route${isActive ? ' active' : ''}`
+                `obw-nav__link site-header__route${isActive ? ' is-active' : ''}`
               }>
               {t('navigation.tabs.admin')}
             </NavLink>

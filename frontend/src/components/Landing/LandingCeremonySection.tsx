@@ -11,20 +11,23 @@ export function LandingCeremonySection() {
   const { t, locale } = useI18n();
 
   return (
-    <section className="landing-ceremony" id="ceremony">
-      <div className="landing-ceremony__card">
-        <h2 className="landing-section-heading">{t('landing.ceremony.heading')}</h2>
-        <p className="landing-ceremony__line">{formatWeddingDateDisplay(locale)}</p>
-        <p className="landing-ceremony__line">{formatWeddingTimeDisplay(locale)}</p>
-        <p className="landing-ceremony__line">{t('landing.ceremony.venue')}</p>
-        <p className="landing-ceremony__line">{t('landing.ceremony.city')}</p>
-        <p className="landing-ceremony__muted">{t('landing.ceremony.body')}</p>
-      </div>
-      <div className="landing-ceremony__artwork">
-        <p>{t('landing.ceremony.artworkPlaceholder')}</p>
-        <div className="landing-ceremony__flowers" aria-hidden>
-          <Flower2 size={24} color="var(--aot-bronze)" />
-          <Leaf size={22} color="var(--aot-military-green)" />
+    <section className="obw-section obw-section--deep obw-fade-up" id="ceremony">
+      <div className="obw-container obw-split obw-split--reverse">
+        <div className="obw-card obw-card--interactive">
+          <h2 className="obw-display obw-display--sm">{t('landing.ceremony.heading')}</h2>
+          <div className="obw-rule" aria-hidden="true" />
+          <p className="obw-meta">{formatWeddingDateDisplay(locale)}</p>
+          <p className="obw-meta">{formatWeddingTimeDisplay(locale)}</p>
+          <p className="obw-meta">{t('landing.ceremony.venue')}</p>
+          <p className="obw-meta">{t('landing.ceremony.city')}</p>
+          <p className="obw-body">{t('landing.ceremony.body')}</p>
+        </div>
+        <div className="obw-artwork">
+          <p>{t('landing.ceremony.artworkPlaceholder')}</p>
+          <div className="obw-artwork__accent" aria-hidden>
+            <Flower2 size={22} />
+            <Leaf size={20} />
+          </div>
         </div>
       </div>
     </section>

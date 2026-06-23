@@ -13,7 +13,7 @@ describe('resolveCountdownTransitionVisuals', () => {
 
     expect(early.flashOpacity).toBeGreaterThan(0);
     expect(mid.blackoutOpacity).toBeGreaterThan(0);
-    expect(mid.metaOpacity).toBeGreaterThan(0);
+    expect(mid.countdownOpacity).toBeGreaterThan(0);
     expect(late.countdownOpacity).toBeGreaterThan(0);
     expect(late.showOverlay).toBe(true);
   });

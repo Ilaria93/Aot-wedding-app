@@ -1,4 +1,4 @@
-import { rooftopsPath } from '@/data/cameraPaths';
+import { FLIGHT_CORRIDOR_PATH } from '@/data/flightCorridorPath';
 import type {
   GrayboxBuildingSpec,
   GrayboxCorridorStripSpec,
@@ -109,9 +109,9 @@ function distancePointToSegmentXZ(
 export function distanceToRooftopsFlightPath(x: number, z: number): number {
   let minDistance = Number.POSITIVE_INFINITY;
 
-  for (let index = 0; index < rooftopsPath.length - 1; index += 1) {
-    const from = rooftopsPath[index];
-    const to = rooftopsPath[index + 1];
+  for (let index = 0; index < FLIGHT_CORRIDOR_PATH.length - 1; index += 1) {
+    const from = FLIGHT_CORRIDOR_PATH[index];
+    const to = FLIGHT_CORRIDOR_PATH[index + 1];
     const distance = distancePointToSegmentXZ(x, z, from.x, from.z, to.x, to.z);
     minDistance = Math.min(minDistance, distance);
   }
@@ -229,9 +229,9 @@ function buildStreetGrid(): GrayboxStreetSpec[] {
 export function buildFlightCorridorStrips(): GrayboxCorridorStripSpec[] {
   const strips: GrayboxCorridorStripSpec[] = [];
 
-  for (let index = 0; index < rooftopsPath.length - 1; index += 1) {
-    const from = rooftopsPath[index];
-    const to = rooftopsPath[index + 1];
+  for (let index = 0; index < FLIGHT_CORRIDOR_PATH.length - 1; index += 1) {
+    const from = FLIGHT_CORRIDOR_PATH[index];
+    const to = FLIGHT_CORRIDOR_PATH[index + 1];
     const midX = (from.x + to.x) / 2;
     const midZ = (from.z + to.z) / 2;
     const span = Math.hypot(to.x - from.x, to.z - from.z);

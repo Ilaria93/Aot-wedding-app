@@ -1,15 +1,15 @@
-// AoT-inspired palette for wedding app screens.
+// Wedding editorial palette (warm parchment, gold accents).
 export const aotTheme = {
-  background: '#dfe8da',
-  surface: '#f9f8f3',
-  surfaceMuted: '#edf1e7',
-  militaryGreen: '#5f7556',
-  militaryGreenDark: '#2f4630',
-  parchment: '#7b6f60',
-  bronze: '#b88a52',
-  border: '#c7d2c0',
-  textPrimary: '#243024',
-  textMuted: '#596554',
-  danger: '#b45454',
-  cinematicBackground: '#1a211d',
+  background: '#f2ead6',
+  surface: '#faf6ee',
+  surfaceMuted: '#e8dfc8',
+  militaryGreen: '#5c5048',
+  militaryGreenDark: '#3d3530',
+  parchment: '#a09070',
+  bronze: '#c9a84c',
+  border: 'rgba(61, 53, 48, 0.2)',
+  textPrimary: '#2a231c',
+  textMuted: '#5c5048',
+  danger: '#8b1a1a',
+  cinematicBackground: '#2f2822',
 } as const;

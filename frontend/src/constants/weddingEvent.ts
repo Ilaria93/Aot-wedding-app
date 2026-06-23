@@ -95,6 +95,11 @@ export function getCountdownParts(nowMs = Date.now()): CountdownParts {
   return { days, hours, minutes, seconds, totalMs };
 }
 
+/** Short venue line for the cinematic countdown finale (e.g. Ravenna — Lido Adriano). */
+export function formatCountdownVenueLine(): string {
+  return `${WEDDING_CITY} — ${WEDDING_VENUE_NAME}`;
+}
+
 /** Full venue line for cards and cinematic blackout copy. */
 export function formatVenueLine(): string {
   return `${WEDDING_VENUE_NAME} · ${WEDDING_VENUE_AREA} · ${WEDDING_CITY}`;
@@ -124,6 +129,49 @@ export function formatWeddingTrailerDate(locale: AppLocale): string {
   })
     .format(new Date(getWeddingTimestampMs()))
     .toUpperCase();
+}
+
+function toRomanNumeral(value: number): string {
+  const numerals: ReadonlyArray<readonly [number, string]> = [
+    [1000, 'M'],
+    [900, 'CM'],
+    [500, 'D'],
+    [400, 'CD'],
+    [100, 'C'],
+    [90, 'XC'],
+    [50, 'L'],
+    [40, 'XL'],
+    [10, 'X'],
+    [9, 'IX'],
+    [5, 'V'],
+    [4, 'IV'],
+    [1, 'I'],
+  ];
+
+  let remaining = value;
+  let result = '';
+
+  for (const [amount, symbol] of numerals) {
+    while (remaining >= amount) {
+      result += symbol;
+      remaining -= amount;
+    }
+  }
+
+  return result;
+}
+
+/** Mission hero date line with roman numerals (e.g. XXXI · MAGGIO · MMXXVII). */
+export function formatWeddingHeroDateLine(locale: AppLocale): string {
+  const { day, month, year } = WEDDING_LOCAL;
+  const monthLabel = new Intl.DateTimeFormat(localeMap[locale], {
+    month: 'long',
+    timeZone: WEDDING_TIMEZONE,
+  })
+    .format(new Date(Date.UTC(year, month - 1, 1)))
+    .toUpperCase();
+
+  return `${toRomanNumeral(day)} · ${monthLabel} · ${toRomanNumeral(year)}`;
 }
 
 /** Ceremony time only for editorial cards. */
