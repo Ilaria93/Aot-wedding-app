@@ -9,6 +9,18 @@ export const en = {
       register: 'Sign up',
       notFound: 'Page not found',
     },
+    menu: {
+      primary: 'Main navigation',
+      open: 'Open menu',
+      close: 'Close menu',
+    },
+    userMenu: {
+      openLabel: 'Account menu',
+      guestTitle: 'Guest',
+      guestHint: 'Sign in to manage your RSVP and profile',
+      sectionAccount: 'Account',
+      sectionPreferences: 'Preferences',
+    },
     tabs: {
       home: 'Home',
       admin: 'Admin',

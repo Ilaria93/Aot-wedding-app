@@ -5,17 +5,89 @@
   min-width: 0;
 }
 
-.site-header__nav {
+.site-header__end {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.site-header__nav--desktop {
   flex: 1;
 }
 
-@media (max-width: 720px) {
-  .site-header__inner {
-    flex-direction: column;
-    align-items: stretch;
+.site-header__menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius);
+  background: var(--obw-paper-deep);
+  color: var(--obw-charcoal);
+  cursor: pointer;
+  transition:
+    border-color var(--obw-duration-fast) ease,
+    background var(--obw-duration-fast) ease,
+    transform var(--obw-duration-fast) var(--obw-ease-out);
+}
+
+.site-header__menu-btn:hover,
+.site-header__menu-btn.is-open {
+  border-color: color-mix(in srgb, var(--obw-gold) 45%, var(--obw-border));
+  background: var(--obw-paper);
+}
+
+.site-header__menu-btn:active {
+  transform: scale(0.96);
+}
+
+.site-header__mobile-panel {
+  display: none;
+  padding: 0 var(--obw-space-md) var(--obw-space-md);
+  border-top: 1px solid var(--obw-border);
+  background: color-mix(in srgb, var(--obw-paper) 96%, white);
+}
+
+.site-header__mobile-link {
+  display: block;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--obw-border);
+  color: var(--obw-charcoal);
+  font-family: var(--font-kicker);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color var(--obw-duration-fast) ease;
+}
+
+.site-header__mobile-link.is-active {
+  color: var(--obw-gold);
+}
+
+.site-header__mobile-cta {
+  margin-top: var(--obw-space-sm);
+}
+
+@media (max-width: 768px) {
+  .site-header__nav--desktop {
+    display: none;
   }
 
-  .site-header__nav {
-    justify-content: flex-start;
+  .site-header__menu-btn {
+    display: inline-flex;
+  }
+
+  .site-header__mobile-panel {
+    display: grid;
+    gap: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header__menu-btn:active {
+    transform: none;
   }
 }

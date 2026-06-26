@@ -6,8 +6,12 @@ import { supportedLocales } from '@/i18n/translations';
 import type { LanguageSwitcherProps } from '@/components/LanguageSwitcher/types/LanguageSwitcher.types';
 import './styles/LanguageSwitcher.scss';
 
-/** Dropdown language switcher for headers and profile screens. */
-export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
+/** Dropdown or embedded language switcher for headers and account menus. */
+export function LanguageSwitcher({
+  compact = false,
+  embedded = false,
+  onLocaleChange,
+}: LanguageSwitcherProps) {
   const { locale, setLocale, t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const currentLabel = compact ? locale.toUpperCase() : getLocaleLabel(locale);
@@ -17,6 +21,28 @@ export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
     if (nextLocale !== locale) {
       await setLocale(nextLocale);
     }
+    onLocaleChange?.();
+  }
+
+  if (embedded) {
+    return (
+      <div className="language-switcher language-switcher--embedded" role="group" aria-label={t('language.label')}>
+        {supportedLocales.map((item) => {
+          const isActive = item === locale;
+          return (
+            <button
+              key={item}
+              type="button"
+              className={`language-switcher__chip${isActive ? ' is-active' : ''}`}
+              aria-pressed={isActive}
+              onClick={() => void handleSelect(item)}>
+              <span>{getLocaleLabel(item)}</span>
+              {isActive ? <Check size={12} aria-hidden /> : null}
+            </button>
+          );
+        })}
+      </div>
+    );
   }
 
   return (

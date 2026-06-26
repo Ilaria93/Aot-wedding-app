@@ -9,6 +9,18 @@ export const fr = {
       register: 'Inscription',
       notFound: 'Page introuvable',
     },
+    menu: {
+      primary: 'Navigation principale',
+      open: 'Ouvrir le menu',
+      close: 'Fermer le menu',
+    },
+    userMenu: {
+      openLabel: 'Menu compte',
+      guestTitle: 'Invité',
+      guestHint: 'Connectez-vous pour gérer le RSVP et le profil',
+      sectionAccount: 'Compte',
+      sectionPreferences: 'Préférences',
+    },
     tabs: {
       home: 'Accueil',
       admin: 'Admin',
