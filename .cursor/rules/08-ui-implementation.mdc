@@ -1,0 +1,32 @@
+---
+description: Implementazione UI OBW — TSX e SCSS quando modifichi il frontend
+globs: frontend/src/**/*.{tsx,scss}
+alwaysApply: false
+---
+
+# Implementazione UI
+
+Policy: `05-ui-design.mdc` · Dettaglio visivo: skill `aot-premium-design` · Struttura cartelle: `03-frontend.mdc`.
+
+## Gerarchia stili
+
+| File | Ruolo |
+|------|--------|
+| `index.css` | Token `--obw-*` e font |
+| `styles/shared/aot-design-system.scss` | Classi riusabili `.obw-*` |
+| `Component/styles/*.scss` | Layout locale del componente |
+
+Nuova classe globale **solo** se riusata in ≥ 2 componenti. Classi markup → skill (sezione Componenti).
+
+## SCSS locale
+
+```scss
+color: var(--obw-charcoal);
+border-radius: var(--obw-radius);  // 2px, mai pill
+```
+
+Transizioni max 220ms · `prefers-reduced-motion` su transform.
+
+## Vietato in questi file
+
+Classi legacy (`.section-card`, `.eyebrow`, `.button-primary`), hex inline, componenti annidati nel render.

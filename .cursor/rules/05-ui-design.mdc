@@ -1,51 +1,26 @@
 ---
-description: UI premium OBW — regola sempre attiva
+description: UI premium OBW — policy e routing (sempre attivo)
 alwaysApply: true
 ---
 
 # UI design — Operation Beyond the Walls
 
-## Skill obbligatoria
+Prima di modificare UI: leggi **`.cursor/skills/aot-premium-design/SKILL.md`** (token, classi, pattern).
 
-Prima di modificare UI, leggi **`.cursor/skills/aot-premium-design/SKILL.md`**  
-e aggiorna **`.cursor/skills/aot-premium-design/ui-migration-checklist.md`**.
+## Toolkit
 
-Reference visivo: `Premium Wedding Experience` (palette paper/charcoal/gold).
+| Risorsa | Path / invocazione |
+|---------|-------------------|
+| Design system (dettaglio) | `.cursor/skills/aot-premium-design/SKILL.md` |
+| Checklist migrazione | `.cursor/skills/aot-premium-design/ui-migration-checklist.md` |
+| TSX/SCSS (file aperti) | `08-ui-implementation.mdc` |
+| Implementazione | `@obw-ui` |
+| Review UI | `@obw-ui-reviewer` |
 
-## Principi
+## Policy (non negoziabile)
 
-- **Premium editoriale**: molto whitespace, alto contrasto, pochi bordi, radius 2px
-- **NON** anime, titani, UI da gioco, pill arrotondate, colori “plastici”
-- **Coerente**: classi `obw-*` da `frontend/src/styles/shared/aot-design-system.scss`
-- Token solo `--obw-*` in `frontend/src/index.css`
+- Token `--obw-*` e classi `obw-*` — mai hex inventati o UI anime/gaming/pill
+- Testi utente solo `t('chiave')` in it/en/de/fr
+- Presentazionali: props in, callback out — niente `fetch` nel render
 
-## Palette
-
-| Token | Uso |
-|-------|-----|
-| `--obw-paper` | Sfondo principale |
-| `--obw-charcoal` | Testo, sezioni dark, CTA filled |
-| `--obw-gold` | Kicker, accenti |
-| `--obw-green` | Accento militare |
-| `--obw-stone` | Body secondario |
-| `--obw-burgundy` | Errori |
-
-## Tipografia
-
-- Titoli: Cinzel → `.obw-display`
-- Body: Inter 300 → `.obw-body`
-- Label/numeri: Bebas Neue → `.obw-kicker` / `.obw-meta`
-
-## Componenti
-
-- CTA: `.obw-btn.obw-btn--primary`
-- Card: `.obw-card` (+ `--dark`, `--interactive`)
-- Sezioni: `.obw-section` (+ `--dark`, `--center`, `--deep`)
-- Form: `.obw-input`, `.obw-choice`, `.obw-textarea`
-
-## Mai
-
-- Stringhe utente hardcoded (sempre i18n in it/en/de/fr)
-- `border-radius: 30px` / pill `999px`
-- Hex inventati fuori dai token OBW
-- Logica fetch nei componenti presentazionali
+Dettaglio palette, tipografia, componenti e anti-pattern → **skill** (non duplicare qui).

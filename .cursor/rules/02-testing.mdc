@@ -1,36 +1,25 @@
 ---
-description: Test obbligatori su ogni feature — regola sempre attiva
+description: Test obbligatori — policy e routing agenti
 alwaysApply: true
 ---
 
 # Testing obbligatorio
 
-## Backend (pytest)
+Ogni feature è **completa** solo con test scritti ed eseguiti con esito verde.
 
-Ogni nuova o modificata route **deve** avere test in `backend/tests/test_*_api.py`:
+Dettaglio pattern, fixture e esempi → **`.cursor/skills/aot-testing/SKILL.md`**.
 
-- happy path
-- errore validazione (400)
-- 401/403 se route protetta
+## Toolkit
 
-```bash
-cd backend && ./venv/bin/pytest -q
-```
+| Risorsa | Invocazione |
+|---------|-------------|
+| Workflow test | skill `aot-testing` |
+| Backend | `@aot-backend-test` |
+| Frontend | `@aot-frontend-test` |
+| Review copertura | `@aot-test-reviewer` |
 
-Usa fixture `conftest.py` e DB `aot_wedding_app_test`.
+## Policy
 
-## Frontend (Vitest)
+Dopo implementazione codice, delega agli agenti test — non chiudere senza suite verde.
 
-- **Domini feature** (`cinematic/`, `scenes/`): test in `__tests__/` nella sottocartella del modulo (`cinematic/camera/__tests__/`, `scenes/graybox/__tests__/`, ecc.)
-- **Componenti, pagine, layout** (`components/`, `pages/`): test co-locati nella stessa cartella
-- **Hook, context, service** condivisi: `__tests__/` nella rispettiva cartella
-- Componenti con stato/validazione → Vitest + Testing Library quando serve
-- mock `services/*` e context; mai API reali nei test
-
-```bash
-cd frontend && npm test
-```
-
-## Regola
-
-Feature non completata senza i test corrispondenti.
+Co-locazione test: `03-frontend.mdc` (mai nuovi file in `src/__tests__/`).

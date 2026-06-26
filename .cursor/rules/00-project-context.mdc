@@ -9,4 +9,4 @@ AOT Wedding App: React (Vite) + FastAPI + PostgreSQL.
 
 Per setup, API, architettura e convenzioni leggi **`README.md`** nella root. Non duplicare quel contenuto nelle risposte o nel codice.
 
-Applica anche le regole `01`–`05` in questa cartella.
+Applica anche le regole `01`–`05` e `08` in questa cartella. Per i test: skill `aot-testing` e agenti `@aot-backend-test` / `@aot-frontend-test`.
