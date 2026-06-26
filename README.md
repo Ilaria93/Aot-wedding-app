@@ -11,6 +11,7 @@ Piattaforma matrimonio web responsive con estetica Attack on Titan.
 ```
 backend/     routes, services, models, schemas, tests
 frontend/    pages, components, services, i18n (Vite + React Router)
+docs/        decisioni di prodotto e specifiche (vedi PRODUCT_DECISIONS.md)
 .cursor/     regole Cursor per sviluppo assistito da AI
 scripts/     run-backend.sh · run-frontend.sh · run-dev.sh · run-tests.sh
 ```
@@ -29,6 +30,7 @@ scripts/     run-backend.sh · run-frontend.sh · run-dev.sh · run-tests.sh
 | `run-backend.sh` | `.env`, `venv`, PostgreSQL, migrazioni, `uvicorn` |
 | `run-frontend.sh` | `.env`, dipendenze, dev server Vite (porta 5173) |
 | `run-tests.sh` | `pytest` backend + `vitest` frontend |
+| `run-e2e.sh` | Stack locale + Playwright E2E (`frontend/e2e/`) |
 
 API: [localhost:8000/docs](http://127.0.0.1:8000/docs) · App: [localhost:5173](http://localhost:5173) · RSVP test: `/rsvp/{token}`
 
@@ -61,7 +63,10 @@ Oppure separatamente:
 ```bash
 cd backend && ./venv/bin/pytest -q
 cd frontend && npm test
+./scripts/run-e2e.sh          # Playwright — richiede stack su :8000 e :5173
 ```
+
+Prima E2E: `cd frontend && npx playwright install chromium`
 
 ---
 
