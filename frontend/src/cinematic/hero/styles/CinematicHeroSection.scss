@@ -9,7 +9,7 @@
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  background-color: #1a211d;
+  background-color: #1a2328;
 }
 
 .cinematic-hero__scrim-top {
@@ -36,7 +36,7 @@
 .cinematic-hero__scroll-hint {
   position: absolute;
   bottom: 24px;
-  z-index: 2;
+  z-index: 5;
   margin: 0;
   color: rgba(249, 248, 243, 0.55);
   font-size: 12px;

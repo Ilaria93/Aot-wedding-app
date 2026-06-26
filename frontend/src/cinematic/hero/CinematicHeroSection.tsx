@@ -2,11 +2,17 @@ import { useEffect, useLayoutEffect, useRef, type ReactNode, type RefObject } fr
 
 import { BlackoutCountdownOverlay } from '@/cinematic/overlays/BlackoutCountdownOverlay';
 import { CameraPathEditorOverlay } from '@/cinematic/debug/CameraPathEditorOverlay';
+import { CinematicHeroCover } from '@/cinematic/hero/CinematicHeroCover';
 import { CinematicSceneCaptions } from '@/cinematic/captions/CinematicSceneCaptions';
 import { HeroCanvas } from '@/cinematic/hero/HeroCanvas';
 import { OperationRavennaDebugOverlay } from '@/cinematic/debug/OperationRavennaDebugOverlay';
 import { WhiteFlashOverlay } from '@/cinematic/overlays/WhiteFlashOverlay';
 import { OPERATION_RAVENNA_TIMELINE } from '@/constants/operationRavennaTimeline';
+import {
+  HERO_COVER_RELEASE_END_PROGRESS,
+  resolveHeroCanvasRevealOpacity,
+  resolveHeroCoverOpacity,
+} from '@/constants/heroScroll';
 import { useHeroScroll } from '@/contexts/HeroScrollContext';
 import { useI18n } from '@/contexts/I18nContext';
 import type { TranslationKey } from '@/i18n/translations';
@@ -79,8 +85,11 @@ export function CinematicHeroSection({
     prefersReducedMotion ? 0 : strikeSequence.flashIntensity * 0.92,
   );
 
-  const showScrollHint = !openingUiHidden && progress < 0.04 && !isCountdownTransition && !isIntroSkipped;
+  const showScrollHint =
+    progress < HERO_COVER_RELEASE_END_PROGRESS && !isCountdownTransition && !isIntroSkipped;
   const showSkipIntro = !isIntroSkipped && !isCountdownTransition && progress < 1;
+  const coverOpacity = resolveHeroCoverOpacity(progress);
+  const canvasOpacity = resolveHeroCanvasRevealOpacity(progress);
 
   function translateCaption(key: string): string {
     return t(key as TranslationKey);
@@ -95,7 +104,9 @@ export function CinematicHeroSection({
     <div
       ref={heroRef}
       className={`cinematic-hero${isIntroSkipped ? ' cinematic-hero--intro-skipped' : ''}`}>
+      <CinematicHeroCover opacity={coverOpacity} />
       <HeroCanvas
+        canvasOpacity={canvasOpacity}
         progress={progress}
         progressRef={progressRef}
         cameraDebugRef={cameraDebugRef}

@@ -42,6 +42,6 @@ describe('cameraPathEditor', () => {
     expect(resolveCurrentCameraPathSegment(0.55).segmentName).toBe('giantWalls');
     expect(resolveCurrentCameraPathSegment(0.72).segmentName).toBe('titanCorridor');
     expect(resolveCurrentCameraPathSegment(0.9).segmentName).toBe('finalArena');
-    expect(resolveCurrentCameraPathSegment(0.26).localProgress).toBeCloseTo(0.5, 1);
+    expect(resolveCurrentCameraPathSegment(0.26).localProgress).toBeCloseTo(0.435, 2);
   });
 });

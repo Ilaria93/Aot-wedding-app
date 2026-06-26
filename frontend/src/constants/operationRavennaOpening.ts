@@ -1,5 +1,5 @@
 /** Global scroll progress where the street sprint ends and the first ODM rooftop launch begins. */
-export const OPERATION_RAVENNA_GROUND_SPRINT_END = 0.04;
+export const OPERATION_RAVENNA_GROUND_SPRINT_END = 0.06;
 
 /** Global scroll progress where aerial rooftop ODM traversal ends. */
 export const OPERATION_RAVENNA_ROOFTOPS_END = 0.52;
@@ -46,11 +46,11 @@ export const OPENING_WALK_PHASE_END = 0;
 /** End of steady sprint — last beats surge into the hook (local progress 0–1). */
 export const OPENING_RUN_PHASE_END = 0.58;
 
-/** Global progress when ODM handles and cables begin to appear (late sprint). */
-export const OPENING_ODM_GEAR_REVEAL_START = 0.026;
+/** Global progress when ODM handles and cables begin to appear (late sprint, entering city). */
+export const OPENING_ODM_GEAR_REVEAL_START = 0.038;
 
 /** Global progress window where ODM gear reaches full opacity. */
-export const OPENING_ODM_GEAR_REVEAL_END = 0.052;
+export const OPENING_ODM_GEAR_REVEAL_END = 0.055;
 
 /** Squad choreography progress at the first ODM hook (keyframes align from here). */
 export const OPENING_SQUAD_HOOK_CHOREOGRAPHY = 0.22;

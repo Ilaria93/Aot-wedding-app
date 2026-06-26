@@ -2,6 +2,7 @@ import { GRAYBOX_PALETTE } from '@/constants/grayboxPalette';
 import {
   OPENING_BELL_TOWER_POSITION,
   OPENING_FACADE_OFFSET_X,
+  OPENING_FOOTPATH_SURFACE_POINTS,
   OPENING_HORIZON_WALL_POSITION,
   OPENING_HORIZON_WALL_SIZE,
   OPENING_PORTICO_COLUMN_SPACING,
@@ -150,6 +151,53 @@ function HorizonWallSilhouette() {
   );
 }
 
+/** Dirt footpath from the left outskirts — scroll-run entry into Ravenna. */
+function CountryFootpath() {
+  const points = OPENING_FOOTPATH_SURFACE_POINTS;
+
+  return (
+    <group name="country-footpath">
+      {points.slice(0, -1).map((start, index) => {
+        const end = points[index + 1];
+        const centerX = (start[0] + end[0]) / 2;
+        const centerZ = (start[2] + end[2]) / 2;
+        const deltaX = end[0] - start[0];
+        const deltaZ = end[2] - start[2];
+        const length = Math.hypot(deltaX, deltaZ);
+        const heading = Math.atan2(deltaX, deltaZ);
+
+        return (
+          <mesh
+            key={`footpath-${index}`}
+            receiveShadow
+            position={[centerX, start[1], centerZ]}
+            rotation={[-Math.PI / 2, 0, -heading]}>
+            <planeGeometry args={[1.45, length + 0.2]} />
+            <meshStandardMaterial color={GRAYBOX_PALETTE.footpath} {...mat} />
+          </mesh>
+        );
+      })}
+
+      {points.map((point, index) => (
+        <mesh key={`footpath-edge-${index}`} receiveShadow position={[point[0], point[1] - 0.004, point[2]]}>
+          <circleGeometry args={[0.78, 10]} />
+          <meshStandardMaterial color={GRAYBOX_PALETTE.footpathEdge} {...mat} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+/** Grassy verge beside the footpath before the portico begins. */
+function CountrysideVerge() {
+  return (
+    <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[-9.5, 0.008, 58]}>
+      <planeGeometry args={[18, 42]} />
+      <meshStandardMaterial color={GRAYBOX_PALETTE.ground} {...mat} />
+    </mesh>
+  );
+}
+
 /** Cobbled street with a subtle center perspective line. */
 function StreetSurface() {
   const length = OPENING_STREET_Z_NEAR - OPENING_STREET_Z_FAR + 8;
@@ -193,6 +241,8 @@ export function GrayboxOpeningEstablishingShot({
 }) {
   return (
     <group name="graybox-opening-establishing">
+      <CountrysideVerge />
+      <CountryFootpath />
       <StreetSurface />
       <PorticoColonnade side="left" />
       <PorticoColonnade side="right" />

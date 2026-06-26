@@ -22,6 +22,12 @@ function clampProgress(value: number): number {
   return Math.min(1, Math.max(0, value));
 }
 
+/** Snaps near-zero scrub values so the cover hold is stable at page load. */
+function normalizeHeroScrollProgress(rawProgress: number): number {
+  const clamped = clampProgress(rawProgress);
+  return clamped < 0.004 ? 0 : clamped;
+}
+
 function stylePinSpacer(heroElement: HTMLElement): void {
   const pinSpacer = heroElement.parentElement;
   if (!pinSpacer?.classList.contains('pin-spacer')) {
@@ -56,7 +62,7 @@ export function useScrollProgress({
 
   const applyProgress = useCallback(
     (nextProgress: number) => {
-      const clamped = clampProgress(nextProgress);
+      const clamped = normalizeHeroScrollProgress(nextProgress);
       progressRef.current = clamped;
       timelineRef?.current?.progress(clamped);
 
@@ -100,6 +106,25 @@ export function useScrollProgress({
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [applyProgress, requestScrollSetup, setHeroIntroSkipped]);
+
+  useEffect(() => {
+    if (!enabled || typeof window === 'undefined' || isIntroSkipped) {
+      return undefined;
+    }
+
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+
+    window.scrollTo(0, 0);
+    applyProgress(0);
+
+    return () => {
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'auto';
+      }
+    };
+  }, [applyProgress, enabled, isIntroSkipped]);
 
   useEffect(() => {
     if (!enabled || typeof window === 'undefined') {
@@ -242,13 +267,13 @@ export function useScrollProgress({
         scrub: SCROLL_SCRUB_SMOOTHING,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
-          applyProgress(self.progress);
+          applyProgress(normalizeHeroScrollProgress(self.progress));
         },
       });
 
       stylePinSpacer(heroElement);
       ScrollTrigger.refresh();
-      applyProgress(scrollTriggerRef.current.progress);
+      applyProgress(0);
 
       const handleScroll = () => {
         updateScrollTrigger();

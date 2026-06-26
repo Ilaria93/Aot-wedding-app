@@ -19,6 +19,7 @@ import {
 import {
   OPENING_ESTABLISHING_CAMERA_POSITION,
   OPENING_ESTABLISHING_CAMERA_TARGET,
+  OPENING_FOOTPATH_RUN_POINTS,
 } from '@/scenes/graybox/openingEstablishingLayout';
 
 /** Builds look-at targets ahead and slightly below each path control point. */
@@ -37,20 +38,12 @@ function buildPathLookTargets(path: readonly Vector3[], lookAhead = 1.8, lookDow
   });
 }
 
-/** Short sprint from the outskirts to the first hook — two scroll beats max. */
-export const streetOpeningPath = [
-  new Vector3(...OPENING_ESTABLISHING_CAMERA_POSITION),
-  new Vector3(0.04, 1.48, 46),
-  new Vector3(-0.15, 1.5, 22),
-  new Vector3(-1.2, 1.58, -4),
-];
+/** Footpath sprint — countryside trail (lower-left) into the Ravenna street. */
+export const streetOpeningPath = OPENING_FOOTPATH_RUN_POINTS.map(
+  ([x, y, z]) => new Vector3(x, y, z),
+);
 
-export const streetOpeningTargetPath = [
-  new Vector3(...OPENING_ESTABLISHING_CAMERA_TARGET),
-  new Vector3(0.1, 4, 30),
-  new Vector3(0.25, 5.5, 8),
-  new Vector3(-10, 13, -6.5),
-];
+export const streetOpeningTargetPath = buildPathLookTargets(streetOpeningPath, 2.2, 2.4);
 
 export const streetOpeningCurve = new CatmullRomCurve3(streetOpeningPath);
 export const streetOpeningTargetCurve = new CatmullRomCurve3(streetOpeningTargetPath);

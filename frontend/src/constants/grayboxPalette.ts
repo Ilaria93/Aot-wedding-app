@@ -26,5 +26,7 @@ export const GRAYBOX_PALETTE = {
   porticoShadow: '#8a8074',
   cobblestone: '#6e6860',
   cobblestoneLight: '#7a7468',
+  footpath: '#8a8274',
+  footpathEdge: '#6f6a5e',
   titan: '#585858',
 } as const;

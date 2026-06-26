@@ -13,6 +13,35 @@ export const HERO_VISIBLE_HEIGHT_FALLBACK = 900;
 /** Progress at which the hero navbar overlay finishes fading out. */
 export const HERO_NAVBAR_FADE_END_PROGRESS = 0.08;
 
+/** Progress at which the hero cover yields to the WebGL cinematic (scroll-scrub). */
+export const HERO_COVER_RELEASE_END_PROGRESS = 0.12;
+
+/** Opacity for the hero cover artwork — full at rest, fades as the visitor scrolls in. */
+export function resolveHeroCoverOpacity(progress: number): number {
+  const clamped = Math.min(1, Math.max(0, progress));
+  if (clamped <= 0) {
+    return 1;
+  }
+  if (clamped >= HERO_COVER_RELEASE_END_PROGRESS) {
+    return 0;
+  }
+
+  return 1 - clamped / HERO_COVER_RELEASE_END_PROGRESS;
+}
+
+/** WebGL layer stays hidden until the cover begins releasing on scroll. */
+export function resolveHeroCanvasRevealOpacity(progress: number): number {
+  const clamped = Math.min(1, Math.max(0, progress));
+  if (clamped <= 0) {
+    return 0;
+  }
+  if (clamped >= HERO_COVER_RELEASE_END_PROGRESS) {
+    return 1;
+  }
+
+  return clamped / HERO_COVER_RELEASE_END_PROGRESS;
+}
+
 /** Progress at which the hero navbar starts fading back in before editorial content. */
 export const HERO_NAVBAR_REAPPEAR_START_PROGRESS = 0.92;
 

@@ -1,12 +1,15 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
+  HERO_COVER_RELEASE_END_PROGRESS,
   HERO_NAVBAR_FADE_END_PROGRESS,
   HERO_NAVBAR_REAPPEAR_START_PROGRESS,
   HERO_SCROLL_DISTANCE_FALLBACK,
   HERO_SCROLL_VIEWPORT_RATIO,
   HERO_VISIBLE_HEIGHT_FALLBACK,
   HERO_VISIBLE_VIEWPORT_RATIO,
+  resolveHeroCanvasRevealOpacity,
+  resolveHeroCoverOpacity,
   resolveHeroNavbarIntroOpacity,
   resolveHeroNavbarOpacity,
   resolveHeroNavbarOutroOpacity,
@@ -62,5 +65,18 @@ describe('heroScroll', () => {
 
     expect(resolveHeroNavbarOpacity(0.5)).toBe(0);
     expect(resolveHeroNavbarOpacity(1)).toBe(1);
+  });
+
+  it('fades the hero cover out as the visitor scrolls into the cinematic', () => {
+    expect(resolveHeroCoverOpacity(0)).toBe(1);
+    expect(resolveHeroCoverOpacity(HERO_COVER_RELEASE_END_PROGRESS / 2)).toBe(0.5);
+    expect(resolveHeroCoverOpacity(HERO_COVER_RELEASE_END_PROGRESS)).toBe(0);
+    expect(resolveHeroCoverOpacity(0.2)).toBe(0);
+  });
+
+  it('reveals the WebGL canvas only after scroll leaves the cover hold', () => {
+    expect(resolveHeroCanvasRevealOpacity(0)).toBe(0);
+    expect(resolveHeroCanvasRevealOpacity(HERO_COVER_RELEASE_END_PROGRESS / 2)).toBe(0.5);
+    expect(resolveHeroCanvasRevealOpacity(HERO_COVER_RELEASE_END_PROGRESS)).toBe(1);
   });
 });

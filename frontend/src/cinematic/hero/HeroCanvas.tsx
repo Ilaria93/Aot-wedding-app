@@ -20,12 +20,16 @@ const SceneManager = lazy(async () => {
   return { default: module.SceneManager };
 });
 
-type HeroCanvasProps = SceneManagerProps;
+type HeroCanvasProps = SceneManagerProps & {
+  /** Fades the WebGL layer in after the static cover releases on scroll. */
+  canvasOpacity?: number;
+};
 
 /**
  * Full-viewport WebGL canvas hosting the cinematic hero scene.
  */
 export function HeroCanvas({
+  canvasOpacity = 1,
   progress = 0,
   progressRef,
   cameraDebugRef,
@@ -34,7 +38,7 @@ export function HeroCanvas({
   useLazyModelPreload(progress);
 
   return (
-    <div className="cinematic-hero__canvas">
+    <div className="cinematic-hero__canvas" style={{ opacity: canvasOpacity }}>
       <Canvas
         shadows={{ type: PCFShadowMap }}
         dpr={[1, 1.5]}

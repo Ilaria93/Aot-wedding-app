@@ -9,7 +9,6 @@ import {
   OPENING_RUN_PHASE_END,
   OPENING_WALK_PHASE_END,
 } from '@/constants/operationRavennaOpening';
-import { streetOpeningPath } from '@/data/cameraPaths';
 import {
   isAerialTraversalPhase,
   isOdmGearVisible,
@@ -34,12 +33,12 @@ describe('openingCameraMotion', () => {
     phase: 'static' as const,
   };
 
-  it('starts in a sprint pose at progress zero', () => {
+  it('starts in a sprint pose on the left footpath at progress zero', () => {
     resolveHeroCameraPose(0, pose);
 
     expect(pose.phase).toBe('run');
-    expect(pose.position.x).toBeCloseTo(streetOpeningPath[0].x, 3);
-    expect(pose.position.z).toBeCloseTo(68, 0);
+    expect(pose.position.x).toBeLessThan(-8);
+    expect(pose.position.z).toBeGreaterThan(70);
     expect(pose.fov).toBeGreaterThanOrEqual(62);
   });
 
@@ -62,9 +61,9 @@ describe('openingCameraMotion', () => {
 
   it('hides UI until the hook while revealing ODM gear during the late sprint', () => {
     expect(isOpeningUiHidden(0)).toBe(true);
-    expect(isOpeningUiHidden(0.03)).toBe(true);
+    expect(isOpeningUiHidden(0.04)).toBe(true);
     expect(isOpeningUiHidden(OPERATION_RAVENNA_GROUND_SPRINT_END)).toBe(false);
-    expect(isOdmGearVisible(0.02)).toBe(false);
+    expect(isOdmGearVisible(0.03)).toBe(false);
     expect(isOdmGearVisible(OPENING_ODM_GEAR_REVEAL_START)).toBe(true);
     expect(resolveOdmGearRevealOpacity(OPERATION_RAVENNA_GROUND_SPRINT_END)).toBeGreaterThan(0.5);
   });
