@@ -21,24 +21,26 @@ export function ProfilePage() {
   }
 
   return (
-    <div className="auth-screen">
-      <div className="card aot-card--wide">
-        <p className="eyebrow">{t('profile.eyebrow')}</p>
-        <h1 className="title">
-          {user.first_name} {user.last_name}
-        </h1>
-        <p className="subtitle">{t('profile.subtitle')}</p>
+    <div className="obw-page obw-page--app profile-page">
+      <div className="obw-container obw-page__stack">
+        <header className="obw-page-hero profile-page__hero">
+          <p className="obw-kicker obw-kicker--light">{t('profile.eyebrow')}</p>
+          <h1 className="obw-display obw-display--light">
+            {user.first_name} {user.last_name}
+          </h1>
+          <p className="obw-body obw-body--flush">{t('profile.subtitle')}</p>
+        </header>
 
-        <div className="summary-card">
+        <div className="obw-card profile-page__card">
           <p className="summary-label">{t('profile.emailLabel')}</p>
           <p className="summary-value">{user.email}</p>
           <p className="summary-label">{t('profile.roleLabel')}</p>
-          <p className="summary-value">{formatUserRoleLabel(user.role, t)}</p>
+          <p className="summary-value summary-value--flush">{formatUserRoleLabel(user.role, t)}</p>
         </div>
 
         <button
           type="button"
-          className="button button-secondary button-secondary--block"
+          className="obw-btn obw-btn--secondary obw-btn--block"
           onClick={() => void signOut()}>
           {t('profile.signOut')}
         </button>

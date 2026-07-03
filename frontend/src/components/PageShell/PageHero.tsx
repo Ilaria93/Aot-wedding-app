@@ -8,14 +8,14 @@ type PageHeroProps = {
   children?: ReactNode;
 };
 
-/** Hero card with eyebrow, title and optional subtitle/actions. */
+/** Dark hero band for stack pages (album, travel, admin). */
 export function PageHero({ eyebrow, title, subtitle, subtitleFlush = false, children }: PageHeroProps) {
   return (
-    <div className="hero-card">
-      <p className="eyebrow">{eyebrow}</p>
-      <h1 className="title">{title}</h1>
+    <div className="obw-page-hero">
+      <p className="obw-kicker obw-kicker--light">{eyebrow}</p>
+      <h1 className="obw-display obw-display--light">{title}</h1>
       {subtitle ? (
-        <p className={`subtitle${subtitleFlush ? ' subtitle--flush' : ''}`}>{subtitle}</p>
+        <p className={`obw-body${subtitleFlush ? ' obw-body--flush' : ''}`}>{subtitle}</p>
       ) : null}
       {children}
     </div>

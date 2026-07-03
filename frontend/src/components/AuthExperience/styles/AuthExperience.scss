@@ -4,7 +4,7 @@
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
   min-height: calc(100vh - 57px);
   overflow: hidden;
-  background: #0f0e0d;
+  background: var(--obw-void);
 }
 
 .auth-experience__ambient {
@@ -12,11 +12,11 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  opacity: 0.55;
+  opacity: 0.5;
   background:
-    radial-gradient(ellipse 90% 70% at 8% 22%, color-mix(in srgb, var(--obw-green) 28%, transparent), transparent 55%),
-    radial-gradient(ellipse 60% 45% at 92% 78%, color-mix(in srgb, var(--obw-burgundy) 14%, transparent), transparent 60%),
-    radial-gradient(ellipse 50% 40% at 50% 100%, color-mix(in srgb, var(--obw-gold) 10%, transparent), transparent 70%);
+    radial-gradient(ellipse 90% 70% at 8% 22%, color-mix(in srgb, var(--obw-crimson) 18%, transparent), transparent 55%),
+    radial-gradient(ellipse 60% 45% at 92% 78%, color-mix(in srgb, var(--obw-rust) 16%, transparent), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 100%, color-mix(in srgb, var(--obw-gold) 8%, transparent), transparent 70%);
 }
 
 .auth-experience__brand {
@@ -25,14 +25,8 @@
   display: grid;
   align-items: center;
   padding: clamp(2rem, 5vw, 4.5rem);
-  background:
-    linear-gradient(
-      168deg,
-      color-mix(in srgb, var(--obw-charcoal) 88%, black) 0%,
-      var(--obw-charcoal) 42%,
-      #121110 100%
-    );
-  color: var(--obw-paper);
+  background: linear-gradient(168deg, var(--obw-charcoal) 0%, var(--obw-void) 48%, #000 100%);
+  color: var(--obw-bone);
   overflow: hidden;
   clip-path: polygon(0 0, 100% 0, calc(100% - 3.5rem) 100%, 0 100%);
 }
@@ -46,8 +40,8 @@
   background: linear-gradient(
     180deg,
     transparent 0%,
-    color-mix(in srgb, var(--obw-gold) 70%, transparent) 18%,
-    color-mix(in srgb, var(--obw-gold) 70%, transparent) 82%,
+    color-mix(in srgb, var(--obw-crimson) 55%, transparent) 18%,
+    color-mix(in srgb, var(--obw-crimson) 55%, transparent) 82%,
     transparent 100%
   );
   transform: skewX(-7deg);
@@ -60,13 +54,13 @@
   inset: 0;
   opacity: 0.06;
   background-image:
-    radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--obw-paper) 40%, transparent) 0, transparent 45%),
+    radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--obw-bone) 30%, transparent) 0, transparent 45%),
     repeating-linear-gradient(
       0deg,
       transparent,
       transparent 22px,
-      color-mix(in srgb, var(--obw-paper) 55%, transparent) 22px,
-      color-mix(in srgb, var(--obw-paper) 55%, transparent) 23px
+      color-mix(in srgb, var(--obw-bone) 45%, transparent) 22px,
+      color-mix(in srgb, var(--obw-bone) 45%, transparent) 23px
     );
 }
 
@@ -75,18 +69,18 @@
   position: absolute;
   inset: auto -25% -35% -15%;
   height: 60%;
-  background: radial-gradient(ellipse at center, color-mix(in srgb, var(--obw-gold) 24%, transparent), transparent 68%);
+  background: radial-gradient(ellipse at center, color-mix(in srgb, var(--obw-crimson) 16%, transparent), transparent 68%);
   animation: auth-experience-glow 9s ease-in-out infinite alternate;
 }
 
 @keyframes auth-experience-glow {
   from {
-    opacity: 0.4;
+    opacity: 0.35;
     transform: translateY(0);
   }
 
   to {
-    opacity: 0.9;
+    opacity: 0.75;
     transform: translateY(-14px);
   }
 }
@@ -102,29 +96,26 @@
 .auth-experience__headline {
   margin: 0;
   font-size: clamp(2.1rem, 4.5vw, 3.35rem);
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1.02;
+  text-transform: uppercase;
   text-wrap: balance;
 }
 
 .auth-experience__lead {
   margin: 0;
   max-width: 36ch;
-  color: color-mix(in srgb, var(--obw-paper) 76%, white);
+  color: color-mix(in srgb, var(--obw-bone) 76%, var(--obw-stone));
   font-size: 1.05rem;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.75;
 }
 
 .auth-experience__rule {
   width: 4.5rem;
   margin: var(--obw-space-xs) 0;
-  background: linear-gradient(
-    90deg,
-    var(--obw-gold),
-    color-mix(in srgb, var(--obw-gold) 20%, transparent)
-  );
+  background: linear-gradient(90deg, var(--obw-gold), color-mix(in srgb, var(--obw-gold) 20%, transparent));
 }
 
 .auth-experience__features {
@@ -140,9 +131,9 @@
   grid-template-columns: auto 1fr;
   gap: 0.8rem;
   align-items: baseline;
-  color: color-mix(in srgb, var(--obw-paper) 84%, white);
+  color: color-mix(in srgb, var(--obw-bone) 84%, var(--obw-stone));
   font-size: 0.94rem;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.5;
 }
 
@@ -151,17 +142,17 @@
   width: 7px;
   height: 7px;
   margin-top: 0.42rem;
-  border: 1px solid var(--obw-gold);
+  border: 1px solid var(--obw-crimson-hot);
   background: transparent;
   transform: rotate(45deg);
 }
 
 .auth-experience__code {
   margin: var(--obw-space-md) 0 0;
-  color: color-mix(in srgb, var(--obw-gold) 88%, var(--obw-paper));
-  font-family: var(--font-kicker);
+  color: var(--obw-gold);
+  font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
@@ -172,8 +163,7 @@
   align-items: center;
   justify-items: center;
   padding: clamp(1.5rem, 4vw, 3rem);
-  background:
-    linear-gradient(165deg, #f7f3ea 0%, var(--obw-paper) 38%, var(--obw-paper-deep) 100%);
+  background: linear-gradient(165deg, var(--obw-paper-deep) 0%, var(--obw-paper) 38%, var(--obw-paper-muted) 100%);
 }
 
 .auth-experience__main::before {
@@ -181,18 +171,16 @@
   content: '';
   position: absolute;
   inset: 0;
-  opacity: 0.35;
-  background-image: radial-gradient(circle at 1px 1px, var(--obw-charcoal) 0.5px, transparent 0);
+  opacity: 0.28;
+  background-image: radial-gradient(circle at 1px 1px, var(--obw-void) 0.5px, transparent 0);
   background-size: 5px 5px;
 }
 
 .auth-experience__form-panel {
   position: relative;
   width: min(100%, 27rem);
-  background: color-mix(in srgb, var(--obw-paper) 55%, white);
-  box-shadow:
-    0 24px 60px color-mix(in srgb, var(--obw-charcoal) 12%, transparent),
-    inset 0 1px 0 color-mix(in srgb, white 80%, transparent);
+  background: color-mix(in srgb, var(--obw-paper) 88%, var(--obw-bone));
+  box-shadow: var(--obw-shadow-soft);
 }
 
 .auth-experience__form-panel::after {
@@ -207,7 +195,7 @@
     90deg,
     transparent,
     var(--obw-gold) 20%,
-    var(--obw-green) 50%,
+    var(--obw-crimson) 50%,
     var(--obw-gold) 80%,
     transparent
   );

@@ -1,31 +1,32 @@
-/* Shared UI — wedding editorial document style. */
+/* Legacy class aliases — mapped to the modern portal design system. */
 
 .eyebrow {
   margin: 0 0 8px;
-  color: var(--mission-red);
-  font-family: var(--font-display);
-  font-size: 10px;
+  color: var(--obw-gold);
+  font-family: var(--font-mono);
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .title {
   margin: 0 0 10px;
   font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: 0.04em;
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .subtitle {
   margin: 0 0 16px;
-  color: var(--mission-gold-muted);
-  font-family: var(--font-editorial);
-  font-size: 15px;
-  font-style: italic;
-  line-height: 1.6;
+  color: var(--obw-stone);
+  font-family: var(--font-sans);
+  font-size: 0.98rem;
+  font-style: normal;
+  line-height: 1.65;
 }
 
 .subtitle--flush {
@@ -36,16 +37,16 @@
 .section-title {
   margin: 0 0 14px;
   font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .section-description {
   margin: 0 0 16px;
-  color: var(--aot-text-muted);
-  font-family: var(--font-editorial);
-  font-size: 15px;
+  color: var(--obw-stone);
+  font-size: 0.95rem;
   line-height: 1.65;
 }
 
@@ -54,9 +55,10 @@
   width: 100%;
   max-width: 520px;
   padding: 24px;
-  border: 1px solid var(--mission-border);
-  border-radius: 16px;
-  background: var(--aot-surface);
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius);
+  background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
+  box-shadow: var(--obw-shadow-soft);
 }
 
 .aot-card--wide {
@@ -69,9 +71,9 @@
   flex-grow: 1;
   place-items: center;
   width: 100%;
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - 57px);
   padding: 24px;
-  background: var(--aot-background);
+  background: var(--obw-paper);
 }
 
 .page-shell,
@@ -80,75 +82,66 @@
   flex-grow: 1;
   justify-content: center;
   width: 100%;
-  padding: 24px 20px 48px;
-  background: var(--aot-background);
+  padding: var(--obw-space-lg) var(--obw-space-md) var(--obw-space-xl);
+  background: var(--obw-paper);
 }
 
 .aot-content {
+  display: grid;
+  gap: var(--obw-space-md);
   width: 100%;
-  max-width: 720px;
-  overflow: hidden;
-  border: 1px solid var(--mission-border);
-  border-radius: 20px;
-  background: var(--mission-parchment);
-  box-shadow: 0 18px 48px rgba(42, 35, 28, 0.08);
+  max-width: 760px;
 }
 
 .hero-card,
 .aot-hero-card {
   margin-bottom: 0;
-  padding: 2rem 1.75rem 1.5rem;
-  border: none;
-  border-bottom: 1px solid var(--mission-border);
-  border-radius: 0;
-  background: linear-gradient(165deg, #4a4038 0%, #2f2822 55%, #3a322c 100%);
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  border: 1px solid var(--obw-border-dark);
+  border-radius: var(--obw-radius);
+  background: linear-gradient(155deg, var(--obw-charcoal-deep) 0%, var(--obw-void) 100%);
+  box-shadow: var(--obw-shadow-dark);
 }
 
 .hero-card .eyebrow,
 .aot-hero-card .eyebrow {
-  color: var(--mission-red);
+  color: var(--obw-crimson);
 }
 
 .hero-card .title,
 .aot-hero-card .title {
-  color: var(--mission-gold);
+  color: var(--obw-bone);
 }
 
 .hero-card .subtitle,
 .aot-hero-card .subtitle {
-  color: var(--mission-gold-muted);
+  color: color-mix(in srgb, var(--obw-bone) 78%, var(--obw-stone));
 }
 
 .hero-card .button-secondary,
 .aot-hero-card .button-secondary {
   margin-top: 12px;
-  border-color: rgba(201, 168, 76, 0.35);
-  background: rgba(250, 246, 238, 0.08);
-  color: var(--mission-parchment-deep);
+  border-color: var(--obw-border-dark);
+  background: color-mix(in srgb, var(--obw-bone) 8%, transparent);
+  color: var(--obw-bone);
 }
 
 .section-card,
 .aot-section-card {
   margin-bottom: 0;
   padding: 1.5rem 1.75rem;
-  border: none;
-  border-bottom: 1px solid var(--mission-border);
-  border-radius: 0;
-  background: var(--mission-parchment);
-}
-
-.section-card:last-child,
-.aot-section-card:last-child {
-  border-bottom: none;
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius);
+  background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
+  box-shadow: var(--obw-shadow-soft);
 }
 
 .field-label {
   display: block;
-  margin: 0 0 10px;
-  font-family: var(--font-display);
-  font-size: 12px;
+  margin: 0 0 8px;
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.01em;
 }
 
 .field {
@@ -160,12 +153,11 @@
 .select,
 .textarea {
   width: 100%;
-  padding: 14px;
-  border: 1px solid var(--mission-border);
-  border-radius: 12px;
-  background: var(--aot-surface);
-  color: var(--aot-text-primary);
-  font-family: var(--font-editorial);
+  padding: 12px 14px;
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius-sm);
+  background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
+  color: var(--obw-void);
 }
 
 .textarea,
@@ -181,30 +173,31 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
-  padding: 14px 18px;
+  padding: 12px 18px;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--obw-radius);
   font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-decoration: none;
+  text-transform: uppercase;
   cursor: pointer;
 }
 
 .button-primary,
 .aot-btn-primary {
-  background: var(--mission-stone-deep);
-  color: var(--mission-parchment-deep);
+  background: var(--obw-void);
+  color: var(--obw-bone);
 }
 
 .button-secondary,
 .aot-btn-secondary {
   width: auto;
   align-self: flex-start;
-  border: 1px solid var(--mission-border);
-  background: var(--aot-surface-muted);
-  color: var(--aot-text-primary);
+  border: 1px solid var(--obw-border);
+  background: var(--obw-paper-deep);
+  color: var(--obw-void);
 }
 
 .button-secondary--block,
@@ -216,14 +209,14 @@
 .button:disabled,
 .aot-btn:disabled,
 .is-disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
 .error-text,
 .aot-error {
   margin: 0 0 12px;
-  color: var(--aot-danger);
+  color: var(--obw-burgundy);
 }
 
 .error-text--flush {
@@ -233,9 +226,8 @@
 .helper-text,
 .aot-helper {
   margin: 12px 0 0;
-  color: var(--aot-text-muted);
-  font-family: var(--font-editorial);
-  font-size: 14px;
+  color: var(--obw-stone);
+  font-size: 0.875rem;
   line-height: 1.55;
 }
 
@@ -243,22 +235,10 @@
   margin-top: 0;
 }
 
-.field-label--spaced {
-  margin-top: 16px;
-}
-
-.button--spaced-top {
-  margin-top: 24px;
-}
-
-.button--spaced-top-sm {
-  margin-top: 4px;
-}
-
 .text-link,
 .aot-link {
-  color: var(--mission-gold);
-  font-size: 14px;
+  color: var(--obw-void);
+  font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
 }
@@ -266,27 +246,20 @@
 .aot-link--large {
   display: inline-block;
   margin-bottom: 12px;
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 0.95rem;
 }
 
 .aot-link--secondary {
-  color: var(--aot-text-primary);
-  font-weight: 600;
-}
-
-.link-row {
-  margin-top: 0;
+  color: var(--obw-stone);
 }
 
 .alert-card,
 .aot-alert {
   margin-bottom: 0;
-  padding: 16px 1.75rem;
-  border: none;
-  border-bottom: 1px solid var(--mission-border);
-  border-radius: 0;
-  background: var(--aot-alert-bg);
+  padding: 14px 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--obw-burgundy) 28%, transparent);
+  border-radius: var(--obw-radius-sm);
+  background: color-mix(in srgb, var(--obw-burgundy) 8%, var(--obw-paper));
 }
 
 .summary-card,
@@ -294,28 +267,26 @@
 .preference-card,
 .aot-preference-card {
   margin-bottom: 0;
-  padding: 1.5rem 1.75rem;
-  border: none;
-  border-bottom: 1px solid var(--mission-border);
-  border-radius: 0;
-  background: var(--aot-surface-muted);
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius-sm);
+  background: var(--obw-paper-deep);
 }
 
 .summary-label,
 .aot-summary-label {
   margin: 0 0 4px;
-  color: var(--aot-text-muted);
-  font-family: var(--font-display);
+  color: var(--obw-stone);
   font-size: 11px;
-  letter-spacing: 0.1em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .summary-value,
 .aot-summary-value {
   margin: 0 0 10px;
-  font-family: var(--font-editorial);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 600;
 }
 
@@ -323,36 +294,15 @@
   margin-bottom: 0;
 }
 
-.summary-row,
-.aot-summary-row {
-  padding: 12px 0;
-  border-top: 1px solid var(--mission-border);
-}
-
-.summary-row:first-child,
-.aot-summary-row:first-child {
-  border-top: none;
-  padding-top: 0;
-}
-
-.empty-text {
-  margin: 0;
-  color: var(--aot-text-muted);
-  font-family: var(--font-editorial);
-  font-size: 14px;
-  line-height: 1.55;
-}
-
 .loading-screen {
   display: grid;
   place-items: center;
   min-height: 100vh;
-  background: var(--aot-background);
-  color: var(--mission-gold);
-  font-family: var(--font-display);
+  background: var(--obw-void);
+  color: var(--obw-bone);
 }
 
 .loading-text {
-  color: var(--aot-text-muted);
-  font-size: 15px;
+  color: color-mix(in srgb, var(--obw-paper) 65%, var(--obw-stone));
+  font-size: 0.95rem;
 }

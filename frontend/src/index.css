@@ -1,64 +1,74 @@
 :root {
-  /* OBW canonical palette — Premium Wedding Experience */
-  --obw-charcoal: #1a1917;
-  --obw-paper: #f0e9d8;
-  --obw-paper-deep: #e8e1d0;
-  --obw-paper-muted: #d4cdc0;
-  --obw-stone: #6a6862;
-  --obw-green: #3a4a3b;
-  --obw-gold: #b89438;
-  --obw-burgundy: #6b1f2a;
-  --obw-border: rgba(26, 25, 23, 0.1);
+  /* AoT portal — cool smoke, white bone, crimson accent only */
+  --obw-void: #0a0a0a;
+  --obw-charcoal: #141414;
+  --obw-charcoal-deep: #1c1c1c;
+  --obw-bone: #f2f2f2;
+  --obw-paper: #dcdcdc;
+  --obw-paper-deep: #d0d0d0;
+  --obw-paper-muted: #c4c4c4;
+  --obw-stone: #7a7a7a;
+  --obw-rust: #5c4a3d;
+  --obw-fog: #6b7280;
+  --obw-crimson: #8c1d2a;
+  --obw-crimson-hot: #b52d3f;
+  --obw-gold: #9a7f52;
+  --obw-burgundy: #7a1f28;
+  --obw-green: var(--obw-rust);
+  --obw-border: rgba(10, 10, 10, 0.12);
+  --obw-border-dark: rgba(242, 242, 242, 0.14);
 
-  --obw-radius: 2px;
-  --obw-max: 1280px;
+  --obw-radius: 4px;
+  --obw-radius-sm: 2px;
+  --obw-max: 1200px;
   --obw-space-xs: 8px;
   --obw-space-sm: 12px;
   --obw-space-md: 20px;
   --obw-space-lg: 32px;
-  --obw-space-xl: 72px;
-  --obw-space-2xl: 112px;
-  --obw-shadow-soft: 0 12px 40px rgba(26, 25, 23, 0.06);
-  --obw-shadow-lift: 0 20px 48px rgba(26, 25, 23, 0.1);
+  --obw-space-xl: 64px;
+  --obw-space-2xl: 96px;
+  --obw-shadow-soft: 0 16px 48px rgba(10, 10, 10, 0.1);
+  --obw-shadow-lift: 0 24px 56px rgba(10, 10, 10, 0.16);
+  --obw-shadow-dark: 0 28px 72px rgba(0, 0, 0, 0.45);
   --obw-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --obw-duration-fast: 180ms;
+  --obw-duration-fast: 160ms;
   --obw-duration-normal: 220ms;
 
-  /* Legacy aliases — map to OBW */
+  /* Legacy aliases */
   --aot-background: var(--obw-paper);
-  --aot-surface: var(--obw-paper);
-  --aot-surface-muted: var(--obw-paper-muted);
-  --aot-military-green: var(--obw-green);
-  --aot-military-green-dark: var(--obw-charcoal);
+  --aot-surface: color-mix(in srgb, var(--obw-paper) 88%, var(--obw-bone));
+  --aot-surface-muted: var(--obw-paper-deep);
+  --aot-military-green: var(--obw-rust);
+  --aot-military-green-dark: var(--obw-void);
   --aot-parchment: var(--obw-stone);
   --aot-bronze: var(--obw-gold);
   --aot-border: var(--obw-border);
-  --aot-text-primary: var(--obw-charcoal);
+  --aot-text-primary: var(--obw-void);
   --aot-text-muted: var(--obw-stone);
   --aot-danger: var(--obw-burgundy);
   --aot-peach: var(--obw-paper-deep);
   --aot-sky: var(--obw-paper-deep);
   --aot-sky-border: var(--obw-border);
-  --aot-alert-bg: color-mix(in srgb, var(--obw-burgundy) 8%, var(--obw-paper));
-  --aot-alert-border: color-mix(in srgb, var(--obw-burgundy) 25%, transparent);
+  --aot-alert-bg: color-mix(in srgb, var(--obw-crimson) 8%, var(--obw-paper));
+  --aot-alert-border: color-mix(in srgb, var(--obw-crimson) 24%, transparent);
   --aot-faction-active: var(--obw-paper-deep);
   --page-max-width: var(--obw-max);
 
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif;
-  --font-display: 'Cinzel', Georgia, 'Times New Roman', serif;
-  --font-editorial: 'Crimson Text', Georgia, 'Times New Roman', serif;
-  --font-kicker: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;
+  --font-sans: 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Oswald', var(--font-sans);
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-editorial: var(--font-sans);
+  --font-kicker: var(--font-mono);
 
   --mission-parchment: var(--obw-paper);
   --mission-parchment-deep: var(--obw-paper-deep);
-  --mission-ink: var(--obw-charcoal);
+  --mission-ink: var(--obw-void);
   --mission-ink-soft: var(--obw-stone);
   --mission-gold: var(--obw-gold);
-  --mission-gold-muted: color-mix(in srgb, var(--obw-gold) 65%, var(--obw-stone));
+  --mission-gold-muted: color-mix(in srgb, var(--obw-gold) 70%, var(--obw-stone));
   --mission-stone: var(--obw-stone);
-  --mission-stone-deep: var(--obw-charcoal);
-  --mission-red: var(--obw-burgundy);
+  --mission-stone-deep: var(--obw-void);
+  --mission-red: var(--obw-crimson);
   --mission-border: var(--obw-border);
 }
 
@@ -76,10 +86,11 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: var(--font-sans);
-  font-weight: 300;
-  color: var(--obw-charcoal);
+  font-weight: 400;
+  color: var(--obw-void);
   background: var(--obw-paper);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {

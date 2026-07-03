@@ -63,9 +63,9 @@
   width: 100%;
   min-height: 38px;
   padding: 8px 12px;
-  border: 1px solid var(--aot-border);
-  border-radius: 999px;
-  background: var(--aot-surface-muted);
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius-sm);
+  background: var(--obw-paper-deep);
   cursor: pointer;
 }
 
@@ -89,10 +89,10 @@
   z-index: 20;
   min-width: 164px;
   padding: 6px;
-  border: 1px solid var(--aot-border);
-  border-radius: 16px;
-  background: var(--aot-surface);
-  box-shadow: 0 8px 24px rgba(36, 48, 36, 0.1);
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius);
+  background: color-mix(in srgb, var(--obw-paper) 92%, var(--obw-bone));
+  box-shadow: var(--obw-shadow-lift);
 }
 
 .language-switcher__option {

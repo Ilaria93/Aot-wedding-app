@@ -37,11 +37,11 @@
   width: 32px;
   height: 32px;
   border-radius: var(--obw-radius);
-  background: var(--obw-charcoal);
+  background: var(--obw-void);
   color: var(--obw-paper);
-  font-family: var(--font-kicker);
+  font-family: var(--font-sans);
   font-size: 11px;
-  letter-spacing: 0.08em;
+  font-weight: 700;
 }
 
 .app-user-menu__chevron {

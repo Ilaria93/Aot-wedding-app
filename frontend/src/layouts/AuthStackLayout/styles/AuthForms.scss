@@ -30,16 +30,16 @@
 }
 
 .obw-auth-header--portal {
-  border-bottom-color: color-mix(in srgb, var(--obw-gold) 22%, transparent);
-  background: color-mix(in srgb, #0f0e0d 88%, var(--obw-charcoal));
-  backdrop-filter: blur(16px);
+  border-bottom-color: var(--obw-border-dark);
+  background: color-mix(in srgb, var(--obw-void) 90%, transparent);
+  backdrop-filter: blur(18px);
 }
 
 .obw-auth-header--portal .obw-auth-header__title {
-  color: color-mix(in srgb, var(--obw-paper) 72%, var(--obw-gold));
-  font-family: var(--font-kicker);
+  color: color-mix(in srgb, var(--obw-bone) 72%, var(--obw-gold));
+  font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
 }
 
 .auth-form {
@@ -54,8 +54,9 @@
 .auth-form__header .obw-display {
   margin-bottom: var(--obw-space-xs);
   font-size: clamp(1.5rem, 3vw, 1.85rem);
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .auth-form__header .obw-body {
@@ -119,18 +120,18 @@
   position: relative;
   margin-top: var(--obw-space-lg);
   overflow: hidden;
-  border-color: color-mix(in srgb, var(--obw-charcoal) 80%, var(--obw-gold));
-  background: var(--obw-charcoal);
-  font-family: var(--font-kicker);
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0.2em;
+  border-color: var(--obw-void);
+  background: var(--obw-void);
+  color: var(--obw-bone);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   transition:
     transform var(--obw-duration-normal) var(--obw-ease-out),
     box-shadow var(--obw-duration-normal) ease,
     border-color var(--obw-duration-fast) ease,
-    color var(--obw-duration-fast) ease,
     background var(--obw-duration-fast) ease;
 }
 
@@ -144,10 +145,10 @@
 }
 
 .auth-form__submit:hover:not(:disabled) {
-  border-color: var(--obw-gold);
-  background: color-mix(in srgb, var(--obw-charcoal) 82%, var(--obw-gold));
-  color: var(--obw-paper);
-  box-shadow: 0 16px 36px color-mix(in srgb, var(--obw-charcoal) 28%, transparent);
+  border-color: var(--obw-crimson);
+  background: var(--obw-charcoal);
+  color: var(--obw-bone);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
 }
 
 .auth-form__submit:hover:not(:disabled)::after {
@@ -179,7 +180,7 @@
 }
 
 .auth-form__footer-link:hover {
-  color: var(--obw-green);
+  color: var(--obw-crimson);
 }
 
 .auth-form__footer-link:hover::after {
@@ -199,8 +200,8 @@
 }
 
 .auth-form__remember .inline-toggle__box.is-active {
-  border-color: var(--obw-green);
-  background: var(--obw-green);
+  border-color: var(--obw-crimson);
+  background: var(--obw-crimson);
 }
 
 .auth-form .obw-field-label {
@@ -221,16 +222,16 @@
 }
 
 .auth-form .obw-input:hover {
-  border-color: color-mix(in srgb, var(--obw-green) 35%, var(--obw-border));
-  background: color-mix(in srgb, var(--obw-paper) 55%, white);
+  border-color: color-mix(in srgb, var(--obw-crimson) 30%, var(--obw-border));
+  background: color-mix(in srgb, var(--obw-paper) 75%, var(--obw-bone));
 }
 
 .auth-form .obw-input:focus {
-  border-color: color-mix(in srgb, var(--obw-green) 55%, var(--obw-charcoal));
-  background: #fff;
+  border-color: color-mix(in srgb, var(--obw-crimson) 50%, var(--obw-void));
+  background: color-mix(in srgb, var(--obw-paper) 70%, var(--obw-bone));
   box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--obw-green) 12%, transparent),
-    0 10px 24px color-mix(in srgb, var(--obw-charcoal) 6%, transparent);
+    0 0 0 3px color-mix(in srgb, var(--obw-crimson) 12%, transparent),
+    0 10px 24px color-mix(in srgb, var(--obw-void) 6%, transparent);
 }
 
 .auth-form .obw-input:-webkit-autofill,

@@ -17,7 +17,7 @@
 .landing-rsvp__lead {
   margin: 0;
   max-width: 36ch;
-  color: color-mix(in srgb, var(--obw-paper) 82%, white);
+  color: color-mix(in srgb, var(--obw-bone) 82%, var(--obw-stone));
 }
 
 .landing-rsvp__steps {
@@ -56,7 +56,7 @@
 
 .landing-rsvp__step-desc {
   margin: 0;
-  color: color-mix(in srgb, var(--obw-paper) 78%, white);
+  color: color-mix(in srgb, var(--obw-bone) 78%, var(--obw-stone));
   font-size: 0.9375rem;
 }
 
@@ -67,15 +67,15 @@
 
 .landing-rsvp__cta {
   justify-self: start;
-  border-color: var(--obw-paper);
-  background: var(--obw-paper);
-  color: var(--obw-charcoal);
+  border-color: var(--obw-bone);
+  background: var(--obw-bone);
+  color: var(--obw-void);
 }
 
 .landing-rsvp__cta:hover {
-  border-color: var(--obw-gold);
-  background: var(--obw-gold);
-  color: var(--obw-charcoal);
+  border-color: var(--obw-crimson);
+  background: var(--obw-void);
+  color: var(--obw-bone);
 }
 
 .landing-rsvp__visual {
@@ -116,7 +116,7 @@
 .landing-rsvp__visual-icons {
   display: flex;
   gap: var(--obw-space-md);
-  color: var(--obw-green);
+  color: var(--obw-crimson-hot);
 }
 
 .landing-rsvp__visual-caption {

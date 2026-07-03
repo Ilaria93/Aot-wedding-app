@@ -1,0 +1,15 @@
+.not-found-page {
+  display: grid;
+  place-items: center;
+  padding: var(--obw-space-lg) var(--obw-space-md);
+}
+
+.not-found-page__inner {
+  width: min(100%, 26rem);
+  background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
+  box-shadow: var(--obw-shadow-soft);
+}
+
+.not-found-page__inner .obw-body {
+  margin-bottom: var(--obw-space-lg);
+}

@@ -27,25 +27,27 @@
 .obw-kicker {
   margin: 0 0 var(--obw-space-sm);
   color: var(--obw-gold);
-  font-family: var(--font-kicker);
-  font-size: 10px;
-  letter-spacing: 0.2em;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   line-height: 1.4;
   text-transform: uppercase;
 }
 
 .obw-kicker--light {
-  color: color-mix(in srgb, var(--obw-paper) 55%, var(--obw-gold));
+  color: color-mix(in srgb, var(--obw-bone) 72%, var(--obw-gold));
 }
 
 .obw-display {
   margin: 0 0 var(--obw-space-md);
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  line-height: 1.12;
-  color: var(--obw-charcoal);
+  font-size: clamp(1.9rem, 4vw, 2.85rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1.02;
+  text-transform: uppercase;
+  color: var(--obw-void);
 }
 
 .obw-display--lg {
@@ -53,19 +55,19 @@
 }
 
 .obw-display--sm {
-  font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+  font-size: clamp(1.35rem, 2.5vw, 1.65rem);
 }
 
 .obw-display--light {
-  color: var(--obw-paper);
+  color: var(--obw-bone);
 }
 
 .obw-body {
   margin: 0 0 var(--obw-space-md);
   color: var(--obw-stone);
-  font-size: 1.05rem;
-  font-weight: 300;
-  line-height: 1.85;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.7;
 }
 
 .obw-body--center {
@@ -75,6 +77,10 @@
 
 .obw-body--narrow {
   max-width: 42rem;
+}
+
+.obw-body--flush {
+  margin-bottom: 0;
 }
 
 .obw-rule {
@@ -93,8 +99,44 @@
 .obw-page {
   position: relative;
   width: 100%;
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - 57px);
   background: var(--obw-paper);
+}
+
+.obw-page--app {
+  padding: var(--obw-space-lg) var(--obw-space-md) var(--obw-space-xl);
+}
+
+.obw-page__stack {
+  display: grid;
+  gap: var(--obw-space-md);
+  width: min(100%, 760px);
+  margin-inline: auto;
+}
+
+.obw-page-hero {
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  border: 1px solid var(--obw-border-dark);
+  border-radius: var(--obw-radius);
+  background: linear-gradient(155deg, var(--obw-charcoal-deep) 0%, var(--obw-void) 55%, #000 100%);
+  box-shadow: var(--obw-shadow-dark);
+  color: var(--obw-bone);
+}
+
+.obw-page-hero .obw-display,
+.obw-page-hero .title {
+  margin-bottom: var(--obw-space-xs);
+  color: var(--obw-bone);
+}
+
+.obw-page-hero .obw-body,
+.obw-page-hero .subtitle {
+  margin: 0;
+  color: color-mix(in srgb, var(--obw-bone) 78%, var(--obw-stone));
+}
+
+.obw-page-hero .obw-btn--secondary {
+  margin-top: var(--obw-space-sm);
 }
 
 .obw-page__grain {
@@ -122,8 +164,8 @@
 }
 
 .obw-section--dark {
-  color: var(--obw-paper);
-  background: var(--obw-charcoal);
+  color: var(--obw-bone);
+  background: var(--obw-void);
 }
 
 .obw-section--deep {
@@ -181,29 +223,31 @@
 }
 
 .obw-portal-stamp__date {
-  font-family: var(--font-kicker);
-  font-size: 13px;
-  letter-spacing: 0.14em;
-  color: color-mix(in srgb, var(--obw-paper) 88%, white);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--obw-bone);
 }
 
 .obw-portal-stamp__label {
   padding: 0.2rem 0.45rem;
-  border: 1px solid color-mix(in srgb, var(--obw-gold) 55%, transparent);
-  color: var(--obw-gold);
-  font-family: var(--font-kicker);
+  border: 1px solid color-mix(in srgb, var(--obw-crimson) 55%, transparent);
+  color: var(--obw-crimson-hot);
+  font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.14em;
   line-height: 1;
 }
 
 .obw-portal-series {
   margin: 0 0 var(--obw-space-xs);
-  font-family: var(--font-kicker);
-  font-size: clamp(0.72rem, 1.6vw, 0.82rem);
-  letter-spacing: 0.28em;
+  font-family: var(--font-display);
+  font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+  font-weight: 600;
+  letter-spacing: 0.22em;
   line-height: 1.35;
-  color: color-mix(in srgb, var(--obw-paper) 62%, var(--obw-gold));
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--obw-bone) 58%, var(--obw-gold));
 }
 
 .obw-portal-scanlines {
@@ -226,15 +270,15 @@
   padding: var(--obw-space-lg) var(--obw-space-md);
   border: 1px solid var(--obw-border);
   border-radius: var(--obw-radius);
-  background: var(--obw-paper-deep);
+  background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
   box-shadow: var(--obw-shadow-soft);
 }
 
 .obw-card--dark {
-  border-color: color-mix(in srgb, var(--obw-paper) 8%, transparent);
-  background: var(--obw-charcoal);
-  box-shadow: var(--obw-shadow-lift);
-  color: var(--obw-paper);
+  border-color: var(--obw-border-dark);
+  background: linear-gradient(165deg, var(--obw-charcoal) 0%, var(--obw-void) 100%);
+  box-shadow: var(--obw-shadow-dark);
+  color: var(--obw-bone);
 }
 
 .obw-card--interactive {
@@ -270,12 +314,13 @@
   justify-content: center;
   gap: 8px;
   min-height: 44px;
-  padding: 12px 28px;
+  padding: 12px 24px;
   border: 1px solid transparent;
   border-radius: var(--obw-radius);
-  font-family: var(--font-kicker);
-  font-size: 12px;
-  letter-spacing: 0.18em;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   line-height: 1.2;
   text-decoration: none;
   text-transform: uppercase;
@@ -289,15 +334,16 @@
 }
 
 .obw-btn--primary {
-  border-color: var(--obw-charcoal);
-  background: var(--obw-charcoal);
-  color: var(--obw-paper);
+  border-color: var(--obw-void);
+  background: var(--obw-void);
+  color: var(--obw-bone);
 }
 
 .obw-btn--primary:hover {
-  background: var(--obw-gold);
-  border-color: var(--obw-gold);
-  color: var(--obw-charcoal);
+  border-color: var(--obw-crimson);
+  background: var(--obw-charcoal);
+  color: var(--obw-bone);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
 }
 
 .obw-btn--secondary {
@@ -331,7 +377,7 @@
 }
 
 .obw-btn:focus-visible {
-  outline: 2px solid var(--obw-gold);
+  outline: 2px solid var(--obw-crimson-hot);
   outline-offset: 2px;
 }
 
@@ -361,12 +407,12 @@
 .obw-textarea,
 .obw-select {
   width: 100%;
-  padding: 14px 16px;
+  padding: 12px 14px;
   border: 1px solid var(--obw-border);
-  border-radius: var(--obw-radius);
-  background: var(--obw-paper-muted);
-  color: var(--obw-charcoal);
-  font-weight: 300;
+  border-radius: var(--obw-radius-sm);
+  background: color-mix(in srgb, var(--obw-paper) 85%, var(--obw-bone));
+  color: var(--obw-void);
+  font-weight: 400;
   transition:
     border-color var(--obw-duration-fast) ease,
     box-shadow var(--obw-duration-fast) ease,
@@ -388,9 +434,9 @@
 .obw-textarea:focus,
 .obw-select:focus {
   outline: none;
-  border-color: color-mix(in srgb, var(--obw-gold) 65%, var(--obw-charcoal));
-  background: var(--obw-paper);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--obw-gold) 15%, transparent);
+  border-color: color-mix(in srgb, var(--obw-crimson) 55%, var(--obw-void));
+  background: color-mix(in srgb, var(--obw-paper) 70%, var(--obw-bone));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--obw-crimson) 14%, transparent);
 }
 
 .obw-input::placeholder,
@@ -432,8 +478,8 @@
 }
 
 .obw-choice.is-active {
-  border-color: color-mix(in srgb, var(--obw-gold) 55%, var(--obw-charcoal));
-  background: var(--obw-paper-deep);
+  border-color: color-mix(in srgb, var(--obw-crimson) 45%, var(--obw-void));
+  background: color-mix(in srgb, var(--obw-crimson) 6%, var(--obw-paper-deep));
   box-shadow: var(--obw-shadow-soft);
 }
 
@@ -449,7 +495,7 @@
 }
 
 .obw-choice.is-active .obw-choice__radio {
-  border-color: var(--obw-charcoal);
+  border-color: var(--obw-crimson);
 }
 
 .obw-choice.is-active .obw-choice__radio::after {
@@ -457,7 +503,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--obw-charcoal);
+  background: var(--obw-crimson);
 }
 
 .obw-choice__label {
@@ -542,9 +588,10 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  border-bottom: 1px solid var(--obw-border);
-  background: color-mix(in srgb, var(--obw-paper) 94%, transparent);
-  backdrop-filter: blur(12px) saturate(1.05);
+  border-bottom: 1px solid var(--obw-border-dark);
+  background: color-mix(in srgb, var(--obw-void) 92%, transparent);
+  color: var(--obw-bone);
+  backdrop-filter: blur(18px) saturate(1.05);
 }
 
 .obw-nav__inner {
@@ -566,17 +613,18 @@
 
 .obw-nav__brand-title {
   font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .obw-nav__brand-sub {
-  color: var(--obw-stone);
-  font-family: var(--font-kicker);
-  font-size: 9px;
-  letter-spacing: 0.15em;
+  color: color-mix(in srgb, var(--obw-bone) 50%, var(--obw-stone));
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
@@ -593,12 +641,13 @@
   padding: 4px 0;
   border: none;
   background: none;
-  color: var(--obw-stone);
-  font-family: var(--font-kicker);
-  font-size: 11px;
-  letter-spacing: 0.15em;
+  color: color-mix(in srgb, var(--obw-bone) 62%, var(--obw-stone));
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   text-decoration: none;
-  text-transform: uppercase;
+  text-transform: none;
   cursor: pointer;
   transition: color var(--obw-duration-fast) ease;
 }
@@ -610,7 +659,7 @@
   bottom: -3px;
   width: 100%;
   height: 1px;
-  background: var(--obw-gold);
+  background: var(--obw-crimson-hot);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--obw-duration-normal) var(--obw-ease-out);
@@ -618,7 +667,7 @@
 
 .obw-nav__link:hover,
 .obw-nav__link.is-active {
-  color: var(--obw-charcoal);
+  color: var(--obw-bone);
 }
 
 .obw-nav__link--animated:hover::after,
@@ -683,16 +732,17 @@
 
 .obw-meta {
   margin: 0 0 6px;
-  font-family: var(--font-kicker);
-  font-size: 14px;
-  letter-spacing: 0.12em;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   line-height: 1.5;
   text-transform: uppercase;
-  color: var(--obw-charcoal);
+  color: var(--obw-void);
 }
 
 .obw-meta--light {
-  color: color-mix(in srgb, var(--obw-paper) 88%, white);
+  color: color-mix(in srgb, var(--obw-bone) 88%, white);
 }
 
 .obw-photo-mosaic {

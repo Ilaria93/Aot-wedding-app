@@ -1,9 +1,10 @@
 .gift-section {
-  margin-bottom: 20px;
-  padding: 28px;
-  border: 1px solid var(--aot-border);
-  border-radius: 30px;
-  background: var(--aot-surface);
+  margin-bottom: 0;
+  padding: clamp(1.5rem, 4vw, 2rem);
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius);
+  background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
+  box-shadow: var(--obw-shadow-soft);
 }
 
 .gift-section__header {
@@ -22,95 +23,89 @@
 
 .gift-section__eyebrow {
   margin: 0 0 10px;
-  color: var(--aot-bronze);
-  font-size: 12px;
-  font-weight: 700;
+  color: var(--obw-gold);
+  font-size: 11px;
+  font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .gift-section__title {
   margin: 0 0 14px;
-  font-size: clamp(1.8rem, 4vw, 2.4rem);
-  font-weight: 300;
-  line-height: 1.15;
-  letter-spacing: 0.04em;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
 }
 
 .gift-section__intro {
   margin: 0 0 12px;
-  color: var(--aot-text-muted);
-  font-size: 15px;
+  color: var(--obw-stone);
+  font-size: 0.95rem;
   line-height: 1.65;
 }
 
 .gift-section__gratitude {
   margin: 0;
-  font-size: 14px;
-  font-style: italic;
+  font-size: 0.9rem;
   line-height: 1.55;
+  color: var(--obw-stone);
 }
 
 .gift-section__emblem {
   display: flex;
   gap: 10px;
   align-items: center;
-  padding: 12px 16px;
-  border: 1px solid var(--aot-border);
-  border-radius: 999px;
-  background: var(--aot-surface-muted);
+  padding: 10px 14px;
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius);
+  background: var(--obw-paper-deep);
 }
 
 .gift-coordinates {
   display: grid;
   gap: 14px;
-  padding: 20px;
-  border: 1px solid var(--aot-border);
-  border-radius: 22px;
-  background: var(--aot-surface-muted);
+  padding: 18px;
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius-sm);
+  background: var(--obw-paper-deep);
 }
 
 .gift-coordinates__title {
   margin: 0 0 4px;
-  font-size: 18px;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
   font-weight: 700;
 }
 
 .gift-row {
   display: grid;
   gap: 4px;
+  padding: 10px 0;
+  border-top: 1px solid var(--obw-border);
+}
+
+.gift-row:first-of-type {
+  border-top: none;
+  padding-top: 0;
 }
 
 .gift-row span {
-  color: var(--aot-text-muted);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  color: var(--obw-stone);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .gift-row strong {
-  font-size: 16px;
+  font-size: 0.95rem;
   font-weight: 600;
-  line-height: 1.5;
+  word-break: break-word;
 }
 
-.gift-row__mono {
-  letter-spacing: 0.06em;
-}
-
-.gift-copy-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  width: fit-content;
+.gift-copy-btn {
+  justify-self: start;
   margin-top: 4px;
-  padding: 10px 16px;
-  border: 1px solid var(--aot-border);
-  border-radius: 999px;
-  background: var(--aot-surface);
-  color: var(--aot-text-primary);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
 }
