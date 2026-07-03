@@ -20,7 +20,7 @@ import {
   subscribeToSessionChanges,
 } from '@/services/authSession';
 import { translate } from '@/contexts/I18nContext';
-import { getApiErrorMessage } from '@/services/apiErrors';
+import { getAuthApiErrorMessage } from '@/services/authApiErrors';
 
 type AuthContextValue = {
   user: AuthUser | null;
@@ -81,7 +81,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(sessionResponse.user);
       return sessionResponse.user;
     } catch (caughtError) {
-      throw new Error(getApiErrorMessage(caughtError, translate('login.genericError')));
+      throw new Error(
+        getAuthApiErrorMessage(caughtError, translate, 'login', translate('login.genericError')),
+      );
     }
   }
 
@@ -96,7 +98,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(sessionResponse.user);
       return sessionResponse.user;
     } catch (caughtError) {
-      throw new Error(getApiErrorMessage(caughtError, translate('register.genericError')));
+      throw new Error(
+        getAuthApiErrorMessage(caughtError, translate, 'register', translate('register.genericError')),
+      );
     }
   }
 
@@ -115,7 +119,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const updatedUser = await updateCurrentUserProfile(payload);
       setUser(updatedUser);
     } catch (caughtError) {
-      throw new Error(getApiErrorMessage(caughtError, translate('profile.updateError')));
+      throw new Error(
+        getAuthApiErrorMessage(caughtError, translate, 'profile', translate('profile.updateError')),
+      );
     }
   }
 

@@ -1,12 +1,28 @@
 .screen-back {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 8px 4px 0;
+  gap: 2px;
+  padding: 6px 8px 6px 0;
   border: none;
   background: none;
-  color: var(--aot-bronze);
-  font-size: 15px;
-  font-weight: 600;
+  color: var(--obw-stone);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 400;
   cursor: pointer;
+  transition: color var(--obw-duration-fast) ease;
+}
+
+.screen-back:hover {
+  color: var(--obw-charcoal);
+}
+
+.screen-back svg {
+  color: var(--obw-gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen-back {
+    transition: none;
+  }
 }

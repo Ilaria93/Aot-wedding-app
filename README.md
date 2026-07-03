@@ -11,7 +11,7 @@ Piattaforma matrimonio web responsive con estetica Attack on Titan.
 ```
 backend/     routes, services, models, schemas, tests
 frontend/    pages, components, services, i18n (Vite + React Router)
-docs/        decisioni di prodotto e specifiche (vedi PRODUCT_DECISIONS.md)
+docs/        PROJECT_BRIEF.md · PRODUCT_DECISIONS.md · hero-references/HERO_STORYBOARD.md · HERO_RENDER_SPEC.md
 .cursor/     regole Cursor per sviluppo assistito da AI
 scripts/     run-backend.sh · run-frontend.sh · run-dev.sh · run-tests.sh
 ```

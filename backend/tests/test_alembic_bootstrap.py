@@ -7,4 +7,4 @@ def test_current_head_matches_initial_migration():
     backend_dir = Path(__file__).resolve().parents[1]
     script = ScriptDirectory.from_config(Config(str(backend_dir / "alembic.ini")))
 
-    assert script.get_current_head() == "20260616_0002"
+    assert script.get_current_head() == "20260630_0003"

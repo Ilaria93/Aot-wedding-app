@@ -10,8 +10,8 @@ Reference visivo: `/Users/misa/Downloads/Premium Wedding Experience`
 | Design tokens | `frontend/src/index.css` | ✅ |
 | Component library | `frontend/src/styles/shared/aot-design-system.scss` | ✅ |
 | Top bar | `components/AppTopBar/` | ✅ |
-| RSVP page | `pages/RsvpPage/`, `components/Rsvp/` | ✅ |
-| Landing RSVP CTA | `components/Landing/LandingRsvpSection.tsx` | ✅ |
+| RSVP page | `pages/RsvpPage/`, `components/Rsvp/` | ✅ party UI OBW |
+| Landing RSVP CTA | `components/Landing/LandingRsvpSection.tsx` | ✅ briefing split |
 | Mission document hero | `components/MissionDocumentHero/` | ✅ |
 | Story section | `components/Landing/LandingStorySection.tsx` | ✅ |
 | Ceremony section | `components/Landing/LandingCeremonySection.tsx` | ✅ |
@@ -19,7 +19,7 @@ Reference visivo: `/Users/misa/Downloads/Premium Wedding Experience`
 | FAQ section | `components/Landing/LandingFaqSection.tsx` | ✅ |
 | Contacts section | `components/Landing/LandingContactsSection.tsx` | ✅ |
 | Home wrapper | `pages/HomePage/` | ✅ |
-| Login / Register | `pages/LoginPage/`, `pages/RegisterPage/` | ⬜ |
+| Login / Register | `pages/LoginPage/`, `pages/RegisterPage/`, `components/AuthExperience/` | ✅ split auth experience |
 | Album | `pages/AlbumPage/` | ⬜ |
 | Travel / Location | `pages/TravelPage/` | ⬜ |
 | Profile | `pages/ProfilePage/` | ⬜ |

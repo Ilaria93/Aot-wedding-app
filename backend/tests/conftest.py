@@ -1,15 +1,13 @@
 import os
 from pathlib import Path
 
-from alembic import command
-from alembic.config import Config
-
-from settings import DEFAULT_TEST_DATABASE_URL
-
-TEST_DATABASE_URL = os.environ.setdefault("TEST_DATABASE_URL", DEFAULT_TEST_DATABASE_URL)
+TEST_DATABASE_URL = os.environ.setdefault(
+    "TEST_DATABASE_URL",
+    "postgresql+psycopg://postgres:postgres@127.0.0.1:5432/aot_wedding_app_test",
+)
 os.environ["DATABASE_URL"] = TEST_DATABASE_URL
-os.environ["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "test-jwt-secret-key-for-local-tests")
-os.environ["WEDDING_ROLE_SECRET"] = os.environ.get("WEDDING_ROLE_SECRET", "test-wedding-role-secret")
+os.environ["JWT_SECRET_KEY"] = "test-jwt-secret-key-for-local-tests"
+os.environ["WEDDING_ROLE_SECRET"] = "test-wedding-role-secret"
 os.environ["S3_BUCKET_NAME"] = "test-wedding-album"
 os.environ["S3_REGION"] = "eu-central-1"
 os.environ["S3_ACCESS_KEY_ID"] = "test-access-key"
@@ -17,6 +15,8 @@ os.environ["S3_SECRET_ACCESS_KEY"] = "test-secret-key"
 os.environ["S3_PUBLIC_BASE_URL"] = "https://cdn.test-wedding.app"
 
 import pytest
+from alembic import command
+from alembic.config import Config
 from fastapi.testclient import TestClient
 
 from database.postgres_admin import ensure_database_exists
@@ -49,6 +49,7 @@ def truncate_test_tables():
                 TRUNCATE TABLE
                     refresh_token_sessions,
                     photo_album_items,
+                    rsvp_guests,
                     rsvps,
                     logistics_contacts,
                     users

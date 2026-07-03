@@ -1,5 +1,7 @@
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 
+import { isCinematicHeroEnabled } from '@/constants/cinematicHero';
+
 type HeroScrollContextValue = {
   /** Normalized hero scroll progress in [0, 1]. */
   progress: number;
@@ -48,7 +50,9 @@ export function HeroScrollProvider({ children }: { children: ReactNode }) {
     () => ({
       progress,
       isIntroSkipped,
-      isHeroScrollActive: isHeroScrollActiveProgress(progress, isIntroSkipped),
+      isHeroScrollActive: isCinematicHeroEnabled()
+        ? isHeroScrollActiveProgress(progress, isIntroSkipped)
+        : false,
       setHeroScrollProgress,
       setHeroIntroSkipped,
       resetHeroScroll,

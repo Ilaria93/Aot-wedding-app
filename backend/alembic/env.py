@@ -9,6 +9,7 @@ from models import (  # noqa: F401
     logistics_contact_model,
     photo_album_item_model,
     refresh_token_session_model,
+    rsvp_guest_model,
     rsvp_model,
     user_model,
 )

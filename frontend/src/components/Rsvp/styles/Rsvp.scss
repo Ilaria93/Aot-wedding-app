@@ -1,0 +1,207 @@
+.rsvp-panel__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--obw-space-sm);
+  margin-top: var(--obw-space-lg);
+}
+
+.rsvp-panel__party-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--obw-space-sm);
+  margin-top: var(--obw-space-xs);
+}
+
+.rsvp-panel__party-count {
+  margin: 0;
+  color: var(--obw-gold);
+  letter-spacing: 0.12em;
+}
+
+.rsvp-guest-list {
+  display: grid;
+  gap: var(--obw-space-md);
+  margin-top: var(--obw-space-md);
+}
+
+.rsvp-guest-card {
+  position: relative;
+  padding: var(--obw-space-md);
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius);
+  background: var(--obw-paper);
+  transition:
+    border-color var(--obw-duration-fast) ease,
+    box-shadow var(--obw-duration-fast) var(--obw-ease-out);
+}
+
+.rsvp-guest-card:hover {
+  border-color: color-mix(in srgb, var(--obw-gold) 22%, var(--obw-border));
+  box-shadow: var(--obw-shadow-soft);
+}
+
+.rsvp-guest-card--account {
+  border-color: color-mix(in srgb, var(--obw-gold) 40%, var(--obw-border));
+  background: var(--obw-paper-deep);
+}
+
+.rsvp-guest-card--account::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  border-radius: var(--obw-radius) 0 0 var(--obw-radius);
+  background: var(--obw-gold);
+}
+
+.rsvp-guest-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--obw-space-sm);
+  margin-bottom: var(--obw-space-md);
+}
+
+.rsvp-guest-card__title-wrap {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.rsvp-guest-card__badge {
+  margin: 0;
+  color: var(--obw-gold);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+}
+
+.rsvp-guest-card__remove {
+  flex-shrink: 0;
+  padding-inline: 0;
+  min-height: auto;
+}
+
+.rsvp-guest-card__grid {
+  display: grid;
+  gap: var(--obw-space-sm);
+}
+
+.rsvp-guest-card__grid .obw-field {
+  margin-bottom: 0;
+}
+
+.rsvp-guest-card__notes {
+  grid-column: 1 / -1;
+}
+
+.rsvp-field-error {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--obw-burgundy);
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.obw-input:disabled,
+.obw-textarea:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+  background: color-mix(in srgb, var(--obw-paper-muted) 85%, var(--obw-paper-deep));
+}
+
+.rsvp-deadline-banner {
+  margin-bottom: var(--obw-space-md);
+  padding: var(--obw-space-md);
+  border: 1px solid color-mix(in srgb, var(--obw-burgundy) 25%, var(--obw-border));
+  border-left: 3px solid var(--obw-burgundy);
+  border-radius: var(--obw-radius);
+  background: color-mix(in srgb, var(--obw-burgundy) 6%, var(--obw-paper-deep));
+}
+
+.rsvp-deadline-banner .obw-body {
+  margin: 0;
+  color: var(--obw-charcoal);
+}
+
+.rsvp-faction-reveal {
+  margin-top: var(--obw-space-md);
+  padding-top: var(--obw-space-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.rsvp-faction-reveal__name {
+  margin: 0.35rem 0 0;
+  color: var(--obw-paper);
+}
+
+.rsvp-guest-summary {
+  margin-top: var(--obw-space-md);
+  padding-top: var(--obw-space-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.rsvp-guest-summary__list {
+  display: grid;
+  gap: var(--obw-space-sm);
+  margin: var(--obw-space-sm) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rsvp-guest-summary__item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--obw-space-sm);
+  padding: var(--obw-space-sm) var(--obw-space-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--obw-radius);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.rsvp-guest-summary__index {
+  margin: 0;
+  color: var(--obw-gold);
+  font-family: var(--font-kicker);
+  font-size: 1.125rem;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+}
+
+.rsvp-guest-summary__content {
+  min-width: 0;
+}
+
+.rsvp-guest-summary__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--obw-paper);
+}
+
+.rsvp-guest-summary__meta {
+  margin: 0.35rem 0 0;
+  color: rgba(240, 233, 216, 0.78);
+  font-size: 0.875rem;
+  font-weight: 300;
+}
+
+.rsvp-guest-summary__notes {
+  margin: 0.35rem 0 0;
+  color: rgba(240, 233, 216, 0.9);
+  font-size: 0.875rem;
+  font-weight: 300;
+  font-style: italic;
+}
+
+@media (min-width: 640px) {
+  .rsvp-guest-card__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rsvp-guest-card:hover {
+    box-shadow: none;
+  }
+}

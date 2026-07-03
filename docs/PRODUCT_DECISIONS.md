@@ -1,11 +1,13 @@
 # AOT Wedding App — Decisioni di prodotto
 
 Documento di riferimento per sviluppo, agenti AI e scelte UX.  
-Ultimo aggiornamento: 2026-06-26
+Visione, stack, hero e roadmap → [`PROJECT_BRIEF.md`](PROJECT_BRIEF.md).
+
+Ultimo aggiornamento: 2026-06-29
 
 ## Visione
 
-Sito matrimonio **semplice e accessibile** su mobile, con **effetto wow** all’apertura (tema AoT),
+Sito matrimonio **semplice e accessibile** su mobile, con **effetto wow** all’apertura (tema AoT / Operation Ravenna),
 e flusso chiaro: informarsi → registrarsi → confermare presenza (anche per familiari) → servizi/regalo → foto.
 
 | | |
@@ -14,6 +16,8 @@ e flusso chiaro: informarsi → registrarsi → confermare presenza (anche per f
 | **Operazione** | Operation Ravenna |
 | **Data** | 31 maggio 2027, 16:30 (Europe/Rome) |
 | **Luogo** | Lido Adriano · Amarissimo Cala Celeste · Ravenna |
+| **Invitati teorici** | ~140 (bigliettini / capienza) |
+| **Partecipanti attesi** | ~100 o meno (stima per cucina e spille) |
 
 Costanti codice: `frontend/src/constants/weddingEvent.ts`
 
@@ -25,7 +29,7 @@ Costanti codice: `frontend/src/constants/weddingEvent.ts`
 
 - Bigliettino cartaceo con **QR → sito** (URL canonico).
 - **Nessuna lista chiusa** a livello tecnico: chi ha il link può registrarsi.
-- Su alcuni biglietti sono invitati **più persone (familiari)** — gestiti nel RSVP di gruppo.
+- Su alcuni bigliettini sono invitati **più persone (familiari)** — gestiti nel RSVP di gruppo.
 
 ### 1.2 Registrazione obbligatoria
 
@@ -62,8 +66,10 @@ Riferimenti: `backend/settings.py`, `frontend/src/services/authSession.ts`, `api
 ### 2.1 Regole business
 
 - Un **account** = una **prenotazione di gruppo** (party) legata all’invito cartaceo.
-- **Modifica consentita** fino a **15 giorni prima** del matrimonio → deadline **16 maggio 2027**.
-- Dopo la deadline: sola lettura o messaggio “contattaci”.
+- L’utente si **registra**, poi indica **quanti partecipano** e inserisce **manualmente** i dati di ciascuno.
+- **Modifica consentita** fino a **25 giorni prima** del matrimonio → deadline **6 maggio 2027**.
+- Dopo la deadline: **nessuna modifica** (blocco totale — avviso cucina ~2 settimane prima dell’evento).
+- Motivo deadline: comunicare i numeri finali alla cucina con margine sufficiente.
 
 ### 2.2 Gruppo invitati (`party`)
 
@@ -78,69 +84,129 @@ Per **ogni persona** del gruppo (incluso chi compila) sono obbligatori:
 |-------|--------------|------|
 | **Nome** | Sì | |
 | **Cognome** | Sì | |
-| **Menu / intolleranze / allergie** | Sì* | Scelta menu o note; vedi sotto |
-| **Menu baby** | Se applicabile | Per bambini piccoli |
+| **Tipo menu** | Sì | Select — vedi §2.3 |
+| **Intolleranze** | Sì | Select — vedi §2.3; default “Nessuna” |
+| **Altre segnalazioni** | No | Campo testo libero (allergie non in lista, note baby, ecc.) |
 
-\* Se non ci sono allergie, si seleziona il **menu standard** (non lasciare vuoto).
+**Presenza:** l’account indica quanti partecipano; ogni partecipante è una riga con nome, cognome e scelte menu. Non tutti gli invitati teorici (~140) si registreranno: i totali reali emergono dalle conferme.
 
-**Presenza gruppo:** indicare se l’intero gruppo partecipa o meno; in caso di assenze parziali, ogni persona va comunque elencata con la propria scelta menu (o il gruppo viene ridotto aggiornando la lista entro deadline).
+### 2.3 Menu — due select + testo
 
-### 2.3 Modello dati (target implementazione)
+**Select 1 — Tipo menu**
+
+| Valore | Note |
+|--------|------|
+| Standard | Default |
+| Vegetariano | |
+| Vegano | |
+| Senza glutine | |
+| Menu bambino | |
+
+**Select 2 — Intolleranze**
+
+| Valore |
+|--------|
+| Nessuna |
+| Glutine |
+| Lattosio |
+| Uova |
+| Frutta a guscio |
+| Pesce / crostacei |
+| Altro (specificare nel campo testo) |
+
+**Campo testo — Altre segnalazioni:** allergie non coperte, preferenze baby, note per la cucina.
+
+Lista intolleranze **v1**: come sopra; aggiornabile se la cucina richiede voci diverse.
+
+### 2.4 Fazioni (3 reggimenti — tema AoT)
+
+#### Comportamento
+
+- **3 fazioni**, ispirate alle tre divisioni di AoT (verde / guarnigione / gendarmeria).
+- L’ospite **non sceglie** la fazione: viene **assegnata automaticamente dal backend al save**.
+- **Tutto il gruppo** (famiglia / party) riceve la **stessa fazione**.
+- **Bilanciamento:** ad ogni save il backend assegna la fazione con il **conteggio persone più basso** (tie-break deterministico).
+- Target indicativo su ~100 partecipanti: ~33 / ~33 / ~33 (non un cap fisso su 140 invitati teorici).
+
+#### Nomi in UI — custom Operation Ravenna (da definire)
+
+**Non** usare in produzione nomi canon AoT su spille e materiali stampati se si preferisce un’identità propria.
+
+| ID codice (stabile) | Ruolo AoT | Colore / icona | Nome display (TBD — esempi) |
+|---------------------|-----------|----------------|----------------------------|
+| `scout_regiment` | Corpo di ricerca | Verde | es. *Compagnia del Volo* |
+| `garrison` | Guarnigione | Rosso / mura | es. *Guardia di Lido* |
+| `military_police` | Gendarmeria | Blu | es. *Ordine del Cerimoniale* |
+
+I nomi definitivi li sceglie la coppia (tono briefing militare + matrimonio). In i18n: 4 lingue. L’ID enum resta in codice; cambiano solo le stringhe display.
+
+#### Spille
+
+- **1 spilla per partecipante** (ogni riga `GuestLine`), non per account.
+- Admin deve poter **esportare / visualizzare** conteggi per fazione e lista nome → fazione per produzione spille.
+
+### 2.5 Modello dati (target implementazione)
 
 ```
 RSVP (1 per user_id)
-  ├── attending: bool          # gruppo conferma / declina
-  ├── faction: enum | null     # solo se attending (tema AoT)
+  ├── attending: bool
+  ├── faction: enum | null     # assegnata dal BE al save; null se non partecipa
   └── guests: GuestLine[]       # 1..10 righe
 
 GuestLine
   ├── first_name: string
   ├── last_name: string
-  ├── meal_choice: enum        # es. standard | vegetarian | vegan | gluten_free | baby
-  └── dietary_notes: string?   # allergie / intolleranze / note menu baby
+  ├── meal_choice: enum        # standard | vegetarian | vegan | gluten_free | baby
+  ├── intolerance: enum        # none | gluten | lactose | eggs | nuts | seafood | other
+  └── dietary_notes: string?   # testo libero — altre segnalazioni
 ```
 
 Alternativa equivalente: tabella `rsvp_guests` con FK a `rsvps.id`.
 
-### 2.4 Campi legacy (da migrare)
+### 2.6 Campi legacy (da migrare)
 
 | Campo attuale | Destino |
 |---------------|---------|
-| `dietary_notes` (unico testo) | Sostituito da note per persona in `GuestLine` |
-| `faction` | Resta a livello gruppo |
+| `dietary_notes` (unico testo) | Sostituito da meal + intolerance + note per persona |
+| `faction` scelta utente | Sostituita da **assegnazione automatica** bilanciata |
 
-### 2.5 Stato implementazione
+### 2.7 Stato implementazione
 
 - [x] Conferma iniziale (`POST /rsvp/confirm`) — modello vecchio (1 persona implicita)
 - [ ] `party` con max 10 ospiti e righe nome/cognome/menu
+- [ ] Due select menu + campo testo per persona
+- [ ] Fazione auto-assegnata e bilanciata (gruppo omogeneo)
 - [ ] Modifica (`PATCH /rsvp/me` o equivalente)
-- [ ] Blocco deadline 15 giorni
+- [ ] Blocco deadline **25 giorni** (6 maggio 2027)
 - [ ] Email conferma + magic link modifica
-- [ ] Copy/i18n (rimuovere riferimenti “token invito”)
+- [ ] Admin: conteggi fazione per spille / export
+- [ ] Copy/i18n (rimuovere riferimenti “token invito”; aggiornare nomi fazione custom)
 
 ---
 
 ## 3. Hero / esperienza AoT
 
-### 3.1 Direzione
+### 3.1 Direzione (decisa)
 
-- **Niente scroll lungo** come UX principale su mobile.
-- **Trailer autoplay 3D** (timeline a tempo, ~20–40 s), scena Operation Ravenna.
+- **Ora:** hero = **immagine fissa** stile briefing operazione (no sviluppo trailer finché RSVP non è pronto).
+- **Dopo:** trailer **≈35–55 s**, stile reel + overlay testi (Astra) e parallax opzionale desktop (One Piece).
+- **Narrazione:** 10 atti Operation Ravenna (vialetto → ODM → mura → giganti → couple strike → countdown) — vedi [`hero-references/HERO_STORYBOARD.md`](hero-references/HERO_STORYBOARD.md).
+- **Produzione:** video prerender + overlay React; 3D WebGL in pausa come runtime mobile.
 - Pulsante **“Salta”** sempre visibile → landing + CTA “Conferma presenza”.
 - `prefers-reduced-motion`: poster statico / countdown, senza sequenza pesante.
+- **Mobile-first:** 90%+ aperture da smartphone (QR).
 
-### 3.2 Due registri visivi
+### 3.2 Look del sito (oltre l’hero)
 
-| Area | Stile |
-|------|--------|
-| Hero / `cinematic/` / `scenes/` | Cinematografico AoT, 3D |
-| Pagine prodotto (RSVP, album, travel…) | Design system OBW (`obw-*`) |
+Mix **briefing militare** + **matrimonio elegante AoT**: non rivista di nozze generica, non UI da videogioco. Copy e skin richiamano Operation Ravenna; form RSVP restano chiari.
 
 ### 3.3 Stato implementazione
 
-- [x] Hero scroll-scrub (da sostituire/affiancare con trailer)
-- [ ] Trailer a tempo + skip
-- [ ] CTA mobile evidente post-hero
+- [x] Hero scroll-scrub 3D (in pausa — non estendere)
+- [ ] Placeholder immagine briefing + CTA
+- [ ] Redesign pagine verso identità AoT-matrimonio
+- [ ] Trailer video reel-style + skip (fase successiva)
+- [ ] Test su iPhone + Android reali
 
 ---
 
@@ -148,11 +214,11 @@ Alternativa equivalente: tabella `rsvp_guests` con FK a `rsvps.id`.
 
 | Sezione | Accesso | Stato |
 |---------|---------|--------|
-| Landing (storia, cerimonia, FAQ, regalo IBAN) | Pubblico | OBW ✅ |
-| Travel / servizi logistici | Login | Da migrare OBW |
+| Landing (storia, cerimonia, FAQ, regalo IBAN) | Pubblico | OBW ✅ — **da riallineare** look AoT |
+| Travel / servizi logistici | Login | Da migrare |
 | Band / programma giornata | Pubblico o login | Da aggiungere |
-| Album foto | Lettura pubblica; upload con login | Da migrare OBW |
-| Admin (stats, utenti, contatti) | bride / groom / admin | Parziale |
+| Album foto | Lettura pubblica; upload con login | Da migrare |
+| Admin (stats, utenti, fazioni, contatti) | bride / groom / admin | Parziale — serve export spille |
 
 ---
 
@@ -189,18 +255,19 @@ Alternativa equivalente: tabella `rsvp_guests` con FK a `rsvps.id`.
 - Storybook / catalogo design system
 - Headquarters dashboard ospite esteso
 - Moderazione foto in admin (API non ancora esposte)
+- BaaS (Supabase/Firebase) al posto del backend custom — **non previsto**
 
 ---
 
 ## 9. Ordine di implementazione
 
-1. RSVP: party fino a 10 ospiti (nome, cognome, menu per persona), modifica, deadline 15 gg
-2. Email conferma + magic link modifica RSVP
-3. Hero: trailer + skip (mobile-first)
-4. Flusso register → RSVP continuo
-5. Migrazione pagine secondarie OBW
-6. Band/programma + asset QR bigliettino
-7. (Opz.) refresh token più lungo in produzione
+1. Placeholder hero + direzione visiva AoT-matrimonio (mix briefing + elegante)
+2. RSVP: party fino a 10, due select menu + testo, fazione auto-bilanciata, modifica, deadline **6 maggio 2027**
+3. Email conferma + magic link modifica RSVP
+4. Flusso register → RSVP continuo + login allineato
+5. Pagine Album, Travel, Profile, Admin + export fazioni per spille
+6. Storyboard hero → video reel (AI / montaggio esterno) → integrazione mobile
+7. Band/programma + asset QR bigliettino
 
 ---
 
@@ -211,5 +278,8 @@ Alternativa equivalente: tabella `rsvp_guests` con FK a `rsvps.id`.
 | Data matrimonio | `frontend/src/constants/weddingEvent.ts` |
 | Auth / sessione | `backend/settings.py`, `frontend/src/services/authSession.ts` |
 | RSVP attuale | `backend/services/rsvp_service.py`, `frontend/src/pages/RsvpPage/` |
+| Fazioni (enum) | `frontend/src/services/rsvpApi.ts` (`FactionId`) |
 | Checklist UI | `.cursor/skills/aot-premium-design/ui-migration-checklist.md` |
 | Agenti Cursor | `.cursor/README.md` |
+| Storyboard hero | `docs/hero-references/HERO_STORYBOARD.md` |
+| Frame / video ref. | `docs/hero-references/` (`.mov` in `.gitignore`) |

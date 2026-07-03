@@ -134,6 +134,92 @@
   animation: obw-fade-up 480ms var(--obw-ease-out) both;
 }
 
+/* ─── Portal frame (AOT official site inspired, OBW palette) ─ */
+
+.obw-portal-frame {
+  position: relative;
+  padding: clamp(1.25rem, 3vw, 2rem);
+}
+
+.obw-portal-frame::before {
+  pointer-events: none;
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 28px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 1px 28px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right top / 28px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right top / 1px 28px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left bottom / 28px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left bottom / 1px 28px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 28px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 1px 28px no-repeat;
+  opacity: 0.72;
+}
+
+.obw-portal-frame--light::before {
+  background:
+    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) left top / 28px 1px no-repeat,
+    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) left top / 1px 28px no-repeat,
+    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) right top / 28px 1px no-repeat,
+    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) right top / 1px 28px no-repeat,
+    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) left bottom / 28px 1px no-repeat,
+    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) left bottom / 1px 28px no-repeat,
+    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) right bottom / 28px 1px no-repeat,
+    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) right bottom / 1px 28px no-repeat;
+  opacity: 0.22;
+}
+
+.obw-portal-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: var(--obw-space-sm);
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--obw-gold) 45%, transparent);
+}
+
+.obw-portal-stamp__date {
+  font-family: var(--font-kicker);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  color: color-mix(in srgb, var(--obw-paper) 88%, white);
+}
+
+.obw-portal-stamp__label {
+  padding: 0.2rem 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--obw-gold) 55%, transparent);
+  color: var(--obw-gold);
+  font-family: var(--font-kicker);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  line-height: 1;
+}
+
+.obw-portal-series {
+  margin: 0 0 var(--obw-space-xs);
+  font-family: var(--font-kicker);
+  font-size: clamp(0.72rem, 1.6vw, 0.82rem);
+  letter-spacing: 0.28em;
+  line-height: 1.35;
+  color: color-mix(in srgb, var(--obw-paper) 62%, var(--obw-gold));
+}
+
+.obw-portal-scanlines {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent,
+    transparent 3px,
+    color-mix(in srgb, var(--obw-paper) 35%, black) 3px,
+    color-mix(in srgb, var(--obw-paper) 35%, black) 4px
+  );
+}
+
 /* ─── Cards ──────────────────────────────────────────────── */
 
 .obw-card {
@@ -259,6 +345,16 @@
 .obw-field {
   display: block;
   margin-bottom: var(--obw-space-md);
+}
+
+.obw-field-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--obw-charcoal);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .obw-input,

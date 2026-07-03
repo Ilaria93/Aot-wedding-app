@@ -4,6 +4,7 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ScreenBackButton } from '@/components/ScreenBackButton';
 import { useI18n } from '@/contexts/I18nContext';
 import './styles/AuthStackLayout.scss';
+import './styles/AuthForms.scss';
 
 const STACK_TITLE_KEYS = {
   '/auth/login': 'login',
@@ -20,12 +21,15 @@ export function AuthStackLayout() {
       ? STACK_TITLE_KEYS['/rsvp']
       : (STACK_TITLE_KEYS[location.pathname as keyof typeof STACK_TITLE_KEYS] ?? 'login');
 
+  const isPortalAuth =
+    location.pathname === '/auth/login' || location.pathname === '/auth/register';
+
   return (
     <>
-      <header className="stack-header">
-        <div className="stack-header__start">
+      <header className={`obw-auth-header${isPortalAuth ? ' obw-auth-header--portal' : ''}`}>
+        <div className="obw-auth-header__start">
           <ScreenBackButton fallback="/" />
-          <h1 className="stack-header__title">{t(`navigation.stack.${titleKey}`)}</h1>
+          <h1 className="obw-auth-header__title">{t(`navigation.stack.${titleKey}`)}</h1>
         </div>
         <LanguageSwitcher compact />
       </header>

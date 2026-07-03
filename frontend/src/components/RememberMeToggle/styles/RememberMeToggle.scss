@@ -2,28 +2,36 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 16px;
+  margin: 0;
   padding: 0;
   border: none;
   background: none;
-  color: var(--aot-text-primary);
-  font-size: 14px;
+  color: var(--obw-charcoal);
+  font-size: 0.9375rem;
+  font-weight: 300;
   cursor: pointer;
 }
 
 .inline-toggle__box {
   display: grid;
+  flex-shrink: 0;
   place-items: center;
   width: 18px;
   height: 18px;
-  border: 1px solid var(--aot-border);
-  border-radius: 5px;
-  background: var(--aot-surface-muted);
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius);
+  background: var(--obw-paper-muted);
+  color: var(--obw-paper);
+  transition:
+    border-color var(--obw-duration-fast) ease,
+    background var(--obw-duration-fast) ease;
 }
 
 .inline-toggle__box.is-active {
-  border-color: var(--aot-bronze);
-  background: var(--aot-bronze);
-  color: var(--aot-surface);
+  border-color: var(--obw-gold);
+  background: var(--obw-charcoal);
 }
 
+.inline-toggle:hover .inline-toggle__box {
+  border-color: color-mix(in srgb, var(--obw-gold) 40%, var(--obw-border));
+}

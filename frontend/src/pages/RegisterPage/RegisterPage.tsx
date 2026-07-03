@@ -1,14 +1,17 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
+import { AuthPageShell } from '@/components/AuthExperience';
 import { RememberMeToggle } from '@/components/RememberMeToggle';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
-import './styles/RegisterPage.scss';
+import type { LoginLocationState } from '@/pages/LoginPage/types/LoginPage.types';
 
 /** Registration screen for guests; optional admin code for spouse accounts. */
 export function RegisterPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTarget = (location.state as LoginLocationState | null)?.from ?? '/';
   const { signUp } = useAuth();
   const { t } = useI18n();
   const [firstName, setFirstName] = useState('');
@@ -33,7 +36,7 @@ export function RegisterPage() {
         ...(roleSecret.trim() ? { role_secret: roleSecret.trim() } : {}),
         remember_me: rememberMe,
       });
-      navigate('/');
+      navigate(redirectTarget, { replace: true });
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : t('register.genericError'));
     } finally {
@@ -42,63 +45,98 @@ export function RegisterPage() {
   }
 
   return (
-    <div className="auth-screen">
-      <form className="card" onSubmit={(event) => void handleRegister(event)}>
-        <p className="eyebrow">{t('register.eyebrow')}</p>
-        <h1 className="title">{t('register.title')}</h1>
-        <p className="subtitle">{t('register.subtitle')}</p>
+    <AuthPageShell variant="register">
+      <form className="auth-form" onSubmit={(event) => void handleRegister(event)}>
+        <header className="auth-form__header">
+          <h2 className="obw-display obw-display--sm">{t('register.title')}</h2>
+          <p className="obw-body">{t('register.subtitle')}</p>
+        </header>
 
-        <input
-          className="input"
-          placeholder={t('common.fields.firstName')}
-          value={firstName}
-          onChange={(event) => setFirstName(event.target.value)}
-        />
-        <input
-          className="input"
-          placeholder={t('common.fields.lastName')}
-          value={lastName}
-          onChange={(event) => setLastName(event.target.value)}
-        />
-        <input
-          className="input"
-          type="email"
-          placeholder={t('common.fields.email')}
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-        />
-        <input
-          className="input"
-          type="password"
-          placeholder={t('common.fields.password')}
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-        />
-        <input
-          className="input"
-          type="password"
-          placeholder={t('register.roleSecretLabel')}
-          value={roleSecret}
-          onChange={(event) => setRoleSecret(event.target.value)}
-        />
-        <p className="helper-text">{t('register.roleSecretHint')}</p>
+        <div className="auth-form__fields auth-form__fields--split">
+          <label className="obw-field auth-form__field--stagger" htmlFor="register-first-name">
+            <span className="obw-field-label">{t('common.fields.firstName')}</span>
+            <input
+              id="register-first-name"
+              className="obw-input"
+              autoComplete="given-name"
+              value={firstName}
+              onChange={(event) => setFirstName(event.target.value)}
+            />
+          </label>
 
-        <RememberMeToggle
-          checked={rememberMe}
-          label={t('register.rememberMe')}
-          onChange={setRememberMe}
-        />
+          <label className="obw-field auth-form__field--stagger" htmlFor="register-last-name">
+            <span className="obw-field-label">{t('common.fields.lastName')}</span>
+            <input
+              id="register-last-name"
+              className="obw-input"
+              autoComplete="family-name"
+              value={lastName}
+              onChange={(event) => setLastName(event.target.value)}
+            />
+          </label>
 
-        {error ? <p className="error-text">{error}</p> : null}
+          <label className="obw-field auth-form__field--stagger auth-form__field--full" htmlFor="register-email">
+            <span className="obw-field-label">{t('common.fields.email')}</span>
+            <input
+              id="register-email"
+              className="obw-input"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+          </label>
 
-        <button type="submit" className="button button-primary" disabled={submitting}>
+          <label className="obw-field auth-form__field--stagger auth-form__field--full" htmlFor="register-password">
+            <span className="obw-field-label">{t('common.fields.password')}</span>
+            <input
+              id="register-password"
+              className="obw-input"
+              type="password"
+              autoComplete="new-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+          </label>
+
+          <label className="obw-field auth-form__field--stagger auth-form__field--full" htmlFor="register-role-secret">
+            <span className="obw-field-label">{t('register.roleSecretLabel')}</span>
+            <input
+              id="register-role-secret"
+              className="obw-input"
+              type="password"
+              autoComplete="off"
+              value={roleSecret}
+              onChange={(event) => setRoleSecret(event.target.value)}
+            />
+          </label>
+        </div>
+
+        <p className="auth-form__hint">{t('register.roleSecretHint')}</p>
+
+        <div className="auth-form__remember">
+          <RememberMeToggle
+            checked={rememberMe}
+            label={t('register.rememberMe')}
+            onChange={setRememberMe}
+          />
+        </div>
+
+        {error ? <p className="auth-form__error">{error}</p> : null}
+
+        <button
+          type="submit"
+          className="obw-btn obw-btn--primary obw-btn--block auth-form__submit"
+          disabled={submitting}>
           {submitting ? t('register.submitLoading') : t('register.submitLabel')}
         </button>
 
-        <Link className="text-link" to="/auth/login">
-          {t('register.loginLink')}
-        </Link>
+        <p className="auth-form__footer">
+          <Link className="auth-form__footer-link" to="/auth/login" state={{ from: redirectTarget }}>
+            {t('register.loginLink')}
+          </Link>
+        </p>
       </form>
-    </div>
+    </AuthPageShell>
   );
 }

@@ -38,3 +38,9 @@ build/
 
 # Local backend artifacts
 backend/wedding.db
+
+# Hero reference videos (large; keep frames + storyboard in repo)
+docs/hero-references/*.mov
+docs/hero-references/*.mp4
+# Estrazione frame completa (~8k+ JPG, ~1 GB) — solo locale
+docs/hero-references/frames/
