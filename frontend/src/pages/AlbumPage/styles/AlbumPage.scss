@@ -1,9 +1,10 @@
 .preview-card {
   margin-bottom: 12px;
-  padding: 12px;
-  border: 1px solid var(--aot-border);
-  border-radius: 18px;
-  background: var(--aot-surface-muted);
+  padding: 14px;
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius);
+  background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
+  box-shadow: var(--obw-shadow-soft);
 }
 
 .preview-card__image {
@@ -11,21 +12,21 @@
   width: 100%;
   height: 220px;
   margin-bottom: 10px;
-  border-radius: 14px;
+  border-radius: var(--obw-radius-sm);
   object-fit: cover;
-  background: var(--aot-border);
+  background: var(--obw-paper-muted);
 }
 
 .preview-card__meta {
   margin: 0 0 4px;
-  color: var(--aot-text-muted);
-  font-size: 13px;
+  color: var(--obw-stone);
+  font-size: 0.8125rem;
 }
 
 .photo-card {
   padding-top: 16px;
   margin-top: 16px;
-  border-top: 1px solid var(--aot-border);
+  border-top: 1px solid var(--obw-border);
 }
 
 .photo-card__image {
@@ -33,25 +34,26 @@
   width: 100%;
   height: 260px;
   margin-bottom: 12px;
-  border-radius: 18px;
+  border-radius: var(--obw-radius);
   object-fit: cover;
-  background: var(--aot-border);
+  background: var(--obw-paper-muted);
 }
 
 .photo-card__guest {
   margin: 0 0 4px;
-  font-size: 17px;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
   font-weight: 700;
 }
 
 .photo-card__meta {
   margin: 0;
-  color: var(--aot-text-muted);
-  font-size: 13px;
+  color: var(--obw-stone);
+  font-size: 0.8125rem;
 }
 
 .photo-card__caption {
   margin: 6px 0 0;
-  font-size: 15px;
-  line-height: 1.45;
+  font-size: 0.9375rem;
+  line-height: 1.5;
 }

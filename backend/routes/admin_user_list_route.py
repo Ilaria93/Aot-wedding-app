@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from database.base import get_db
-from dependencies.auth_user_dependency import require_admin_user, require_current_user
-from models.user_model import User
+from dependencies.auth_user_dependency import require_admin_user
 from schemas.admin_rsvp_stats_schema import AdminRsvpStatsResponse
 from schemas.admin_user_list_schema import AdminUserListItem
 from services.admin_rsvp_stats_service import compute_rsvp_stats

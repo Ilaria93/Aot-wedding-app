@@ -1,16 +1,30 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { PageAlert } from '@/components/PageShell';
 import { isFactionId } from '@/constants/factions';
+import {
+  buildAccountHolderGuestLine,
+  draftsToGuestPayload,
+  guestLinesToDrafts,
+} from '@/components/Rsvp/buildInitialGuestLines';
+import { RsvpConfirmedSummary } from '@/components/Rsvp/RsvpConfirmedSummary';
+import type { ConfirmedRsvpState } from '@/components/Rsvp/RsvpConfirmedSummary';
+import { RsvpPartyForm } from '@/components/Rsvp/RsvpPartyForm';
+import type { RsvpGuestDraft } from '@/components/Rsvp/types/RsvpGuestDraft';
+import { validateRsvpGuestLines } from '@/components/Rsvp/validateRsvpGuestLines';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
-import { RsvpConfirmedSummary } from '@/components/Rsvp/RsvpConfirmedSummary';
-import { RsvpForm } from '@/components/Rsvp/RsvpForm';
 import { RsvpPageSkeleton } from '@/pages/RsvpPage/components/RsvpPageSkeleton';
-import { fetchMyRsvp, submitRsvpConfirmation, type FactionId } from '@/services/rsvpApi';
+import {
+  fetchMyRsvp,
+  submitRsvpConfirmation,
+  updateMyRsvp,
+  type FactionId,
+} from '@/services/rsvpApi';
 import { getApiStatusCode } from '@/services/apiErrors';
-import type { ConfirmedRsvpState } from '@/components/Rsvp/RsvpConfirmedSummary';
 import './styles/RsvpPage.scss';
+
+type RsvpViewMode = 'form' | 'summary';
 
 /** RSVP screen for the authenticated user at `/rsvp`. */
 export function RsvpPage() {
@@ -19,69 +33,129 @@ export function RsvpPage() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [alreadyConfirmed, setAlreadyConfirmed] = useState(false);
+  const [viewMode, setViewMode] = useState<RsvpViewMode>('form');
+  const [editable, setEditable] = useState(true);
   const [attending, setAttending] = useState(true);
-  const [faction, setFaction] = useState<FactionId>('scout_regiment');
-  const [dietaryNotes, setDietaryNotes] = useState('');
+  const [guests, setGuests] = useState<RsvpGuestDraft[]>([]);
+  const [fieldErrors, setFieldErrors] = useState<ReturnType<typeof validateRsvpGuestLines>>([]);
   const [submitting, setSubmitting] = useState(false);
   const [confirmedRsvp, setConfirmedRsvp] = useState<ConfirmedRsvpState | null>(null);
+  const [hasExistingRsvp, setHasExistingRsvp] = useState(false);
+
+  const accountProfile = useMemo(
+    () => ({
+      first_name: user?.first_name ?? '',
+      last_name: user?.last_name ?? '',
+    }),
+    [user?.first_name, user?.last_name],
+  );
+
+  const resetFormFromProfile = useCallback(() => {
+    setAttending(true);
+    setGuests([buildAccountHolderGuestLine(accountProfile)]);
+    setFieldErrors([]);
+  }, [accountProfile]);
 
   const loadRsvp = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       const rsvp = await fetchMyRsvp();
-      setAlreadyConfirmed(rsvp.has_rsvp);
+      setHasExistingRsvp(rsvp.has_rsvp);
+      setEditable(rsvp.editable);
 
       if (rsvp.has_rsvp) {
-        const confirmedFaction = rsvp.attending && isFactionId(rsvp.faction) ? rsvp.faction : null;
-        setAttending(rsvp.attending ?? true);
-        if (confirmedFaction) {
-          setFaction(confirmedFaction);
-        }
-        setDietaryNotes(rsvp.dietary_notes ?? '');
-        setConfirmedRsvp({
-          attending: rsvp.attending ?? true,
+        const confirmedFaction =
+          rsvp.attending && isFactionId(rsvp.faction) ? (rsvp.faction as FactionId) : null;
+        const nextConfirmed: ConfirmedRsvpState = {
+          attending: rsvp.attending ?? false,
           faction: confirmedFaction,
-          dietaryNotes: rsvp.dietary_notes ?? null,
-        });
+          guests: rsvp.guests,
+        };
+        setConfirmedRsvp(nextConfirmed);
+        setAttending(rsvp.attending ?? false);
+        setGuests(guestLinesToDrafts(rsvp.guests, accountProfile));
+        setViewMode('summary');
       } else {
         setConfirmedRsvp(null);
+        resetFormFromProfile();
+        setViewMode('form');
       }
     } catch {
       setError(t('rsvp.loadError'));
     } finally {
       setLoading(false);
     }
-  }, [t]);
+  }, [accountProfile, resetFormFromProfile, t]);
 
   useEffect(() => {
     void loadRsvp();
   }, [loadRsvp]);
 
+  function beginEdit() {
+    if (!confirmedRsvp || !editable) {
+      return;
+    }
+    setAttending(confirmedRsvp.attending);
+    setGuests(guestLinesToDrafts(confirmedRsvp.guests, accountProfile));
+    setFieldErrors([]);
+    setError(null);
+    setViewMode('form');
+  }
+
+  function cancelEdit() {
+    if (!confirmedRsvp) {
+      return;
+    }
+    setAttending(confirmedRsvp.attending);
+    setGuests(guestLinesToDrafts(confirmedRsvp.guests, accountProfile));
+    setFieldErrors([]);
+    setError(null);
+    setViewMode('summary');
+  }
+
   async function handleSubmit() {
+    if (attending) {
+      const validationErrors = validateRsvpGuestLines(guests);
+      if (validationErrors.length > 0) {
+        setFieldErrors(validationErrors);
+        return;
+      }
+    }
+
+    setFieldErrors([]);
+
     try {
       setSubmitting(true);
       setError(null);
-      const normalizedDietaryNotes = attending ? dietaryNotes.trim() || undefined : undefined;
 
-      await submitRsvpConfirmation({
+      const payload = {
         attending,
-        faction: attending ? faction : undefined,
-        dietary_notes: normalizedDietaryNotes,
-      });
+        guests: attending ? draftsToGuestPayload(guests) : [],
+      };
 
-      setConfirmedRsvp({
+      const response = hasExistingRsvp
+        ? await updateMyRsvp(payload)
+        : await submitRsvpConfirmation(payload);
+
+      const nextConfirmed: ConfirmedRsvpState = {
         attending,
-        faction: attending ? faction : null,
-        dietaryNotes: normalizedDietaryNotes ?? null,
-      });
-      setAlreadyConfirmed(true);
+        faction: attending && isFactionId(response.faction) ? response.faction : null,
+        guests: payload.guests,
+      };
+
+      setConfirmedRsvp(nextConfirmed);
+      setHasExistingRsvp(true);
+      setGuests(guestLinesToDrafts(nextConfirmed.guests, accountProfile));
+      setViewMode('summary');
     } catch (caughtError) {
       const statusCode = getApiStatusCode(caughtError);
       if (statusCode === 409) {
         await loadRsvp();
         setError(t('rsvp.alreadyConfirmedError'));
+      } else if (statusCode === 403) {
+        await loadRsvp();
+        setError(t('rsvp.deadlineClosedError'));
       } else {
         setError(t('rsvp.submitError'));
       }
@@ -91,6 +165,7 @@ export function RsvpPage() {
   }
 
   const guestName = user ? `${user.first_name} ${user.last_name}`.trim() : '';
+  const isEditMode = hasExistingRsvp && viewMode === 'form';
 
   if (loading) {
     return <RsvpPageSkeleton />;
@@ -101,8 +176,11 @@ export function RsvpPage() {
       <div className="obw-page__grain" aria-hidden="true" />
 
       <div className="obw-container rsvp-page__inner">
-        <header className="obw-card obw-card--interactive rsvp-hero obw-fade-up">
+        <header className="obw-card obw-card--interactive rsvp-hero rsvp-hero--mission obw-fade-up">
           <p className="obw-kicker">{t('rsvp.eyebrow')}</p>
+          <p className="obw-kicker rsvp-hero__phase">
+            {viewMode === 'summary' ? t('rsvp.phaseSummary') : t('rsvp.phaseForm')}
+          </p>
           <h1 className="obw-display obw-display--lg">{guestName || t('rsvp.guestFallbackName')}</h1>
           <p className="obw-body obw-body--narrow">{t('rsvp.subtitle')}</p>
           <div className="obw-rule" aria-hidden="true" />
@@ -114,18 +192,28 @@ export function RsvpPage() {
           </div>
         ) : null}
 
-        {alreadyConfirmed ? (
-          <RsvpConfirmedSummary confirmedRsvp={confirmedRsvp} />
+        {viewMode === 'summary' ? (
+          <RsvpConfirmedSummary
+            confirmedRsvp={confirmedRsvp}
+            editable={editable}
+            onEdit={beginEdit}
+          />
         ) : (
-          <RsvpForm
+          <RsvpPartyForm
             attending={attending}
-            faction={faction}
-            dietaryNotes={dietaryNotes}
+            guests={guests}
             submitting={submitting}
-            onAttendingChange={setAttending}
-            onFactionChange={setFaction}
-            onDietaryNotesChange={setDietaryNotes}
+            isEditMode={isEditMode}
+            fieldErrors={fieldErrors}
+            onAttendingChange={(nextAttending) => {
+              setAttending(nextAttending);
+              if (nextAttending && guests.length === 0) {
+                setGuests([buildAccountHolderGuestLine(accountProfile)]);
+              }
+            }}
+            onGuestsChange={setGuests}
             onSubmit={() => void handleSubmit()}
+            onCancelEdit={isEditMode ? cancelEdit : undefined}
           />
         )}
       </div>

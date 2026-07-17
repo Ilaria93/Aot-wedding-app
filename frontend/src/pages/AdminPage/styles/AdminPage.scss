@@ -1,51 +1,44 @@
 .dev-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--obw-space-sm);
 }
 
 .dev-grid--spaced {
-  margin-bottom: 24px;
+  margin-bottom: 0;
 }
 
 .dev-card {
-  flex: 1;
-  min-width: min(100%, 200px);
-  padding: 16px;
-  border: 1px solid var(--aot-border);
-  border-radius: 18px;
-  background: var(--aot-surface-muted);
+  padding: var(--obw-space-md);
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius);
+  background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
+  box-shadow: var(--obw-shadow-soft);
+}
+
+.dev-card .title {
+  margin: 0;
+  font-size: 1.75rem;
 }
 
 .landing-section {
-  margin-bottom: 24px;
-}
-
-.admin-hero-card {
-  max-width: none;
-  margin-bottom: 20px;
+  margin: 0;
 }
 
 .admin-guest-list {
   display: grid;
-  gap: 12px;
+  gap: var(--obw-space-sm);
 }
 
-.admin-photo-grid {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+.admin-guest-list .dev-card strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
 }
 
-.admin-photo-thumb {
-  width: 100%;
-  border-radius: 12px;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-}
-
-.admin-photo-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+@media (max-width: 720px) {
+  .dev-grid {
+    grid-template-columns: 1fr;
+  }
 }

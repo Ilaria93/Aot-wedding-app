@@ -124,11 +124,9 @@ def build_photo_public_url(storage_key: str) -> str:
 
 
 def create_photo_upload_intent(
-    db: Session,
     current_user: User,
     payload: PhotoUploadIntentRequest,
 ) -> dict[str, Any]:
-    _ = db
     _ensure_storage_configuration()
     _validate_photo_metadata(payload.mime_type, payload.file_size_bytes)
 

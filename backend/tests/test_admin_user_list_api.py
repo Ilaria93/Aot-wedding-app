@@ -21,7 +21,17 @@ def test_admin_user_list_shows_user_with_confirmed_rsvp(api_client, admin_header
     api_client.post(
         "/rsvp/confirm",
         headers=user_headers,
-        json={"attending": True, "faction": "scout_regiment"},
+        json={
+            "attending": True,
+            "guests": [
+                {
+                    "first_name": "Mario",
+                    "last_name": "Rossi",
+                    "meal_choice": "standard",
+                    "intolerance": "none",
+                }
+            ],
+        },
     )
 
     response = api_client.get("/admin/users", headers=admin_headers)

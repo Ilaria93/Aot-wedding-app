@@ -8,11 +8,11 @@ export function NotFoundPage() {
   const { t } = useI18n();
 
   return (
-    <div className="page-centered">
-      <div className="card">
-        <h1 className="title">{t('notFound.title')}</h1>
-        <p className="subtitle">{t('notFound.body')}</p>
-        <Link className="button button-primary" to="/">
+    <div className="obw-page not-found-page">
+      <div className="not-found-page__inner obw-portal-frame obw-portal-frame--light">
+        <h1 className="obw-display">{t('notFound.title')}</h1>
+        <p className="obw-body">{t('notFound.body')}</p>
+        <Link className="obw-btn obw-btn--primary obw-btn--block" to="/">
           {t('notFound.backHome')}
         </Link>
       </div>

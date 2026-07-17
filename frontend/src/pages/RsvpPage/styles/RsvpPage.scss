@@ -9,7 +9,37 @@
 }
 
 .rsvp-hero {
+  position: relative;
   margin-bottom: 0;
+  overflow: hidden;
+}
+
+.rsvp-hero--mission::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(
+    180deg,
+    var(--obw-gold) 0%,
+    color-mix(in srgb, var(--obw-crimson) 70%, var(--obw-gold)) 100%
+  );
+}
+
+.rsvp-hero--mission {
+  padding-left: calc(var(--obw-space-md) + 6px);
+  border-color: color-mix(in srgb, var(--obw-gold) 22%, var(--obw-border));
+  background: linear-gradient(
+    135deg,
+    var(--obw-paper-deep) 0%,
+    var(--obw-paper) 55%,
+    color-mix(in srgb, var(--obw-paper-muted) 40%, var(--obw-paper)) 100%
+  );
+}
+
+.rsvp-hero__phase {
+  margin: 0 0 var(--obw-space-xs);
+  color: var(--obw-gold);
 }
 
 .rsvp-alert-wrap {
@@ -22,10 +52,8 @@
 
 .rsvp-panel__section {
   margin-top: var(--obw-space-md);
-}
-
-.rsvp-panel__submit {
-  margin-top: var(--obw-space-lg);
+  padding-top: var(--obw-space-md);
+  border-top: 1px solid var(--obw-border);
 }
 
 .rsvp-panel--confirmed {
@@ -45,6 +73,19 @@
   z-index: 1;
 }
 
+.rsvp-panel__hint {
+  margin-top: var(--obw-space-xs);
+  color: var(--obw-stone);
+}
+
+.rsvp-panel__add-guest {
+  margin-top: var(--obw-space-md);
+}
+
+.rsvp-panel__edit {
+  margin-top: var(--obw-space-md);
+}
+
 .rsvp-skeleton--hero {
   height: 180px;
   margin-bottom: var(--obw-space-md);
@@ -52,4 +93,10 @@
 
 .rsvp-skeleton--panel {
   height: 420px;
+}
+
+@media (min-width: 768px) {
+  .rsvp-page__inner {
+    gap: var(--obw-space-lg);
+  }
 }

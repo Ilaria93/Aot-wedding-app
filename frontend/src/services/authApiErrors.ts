@@ -1,0 +1,118 @@
+import {
+  extractApiValidationErrors,
+  getApiErrorMessage,
+  type ApiValidationErrorItem,
+} from '@/services/apiErrors';
+
+type TranslateFn = (key: string) => string;
+
+function validationField(item: ApiValidationErrorItem): string {
+  const location = item.loc ?? [];
+  return String(location[location.length - 1] ?? '');
+}
+
+function mapRegisterValidationError(item: ApiValidationErrorItem, translate: TranslateFn): string | null {
+  const field = validationField(item);
+  const message = item.msg ?? '';
+
+  if (field === 'password' && message.includes('at least 8')) {
+    return translate('register.validation.passwordMinLength');
+  }
+
+  if (field === 'password' && message.includes('cannot be empty')) {
+    return translate('register.validation.passwordRequired');
+  }
+
+  if (field === 'first_name' && message.includes('cannot be empty')) {
+    return translate('register.validation.firstNameRequired');
+  }
+
+  if (field === 'last_name' && message.includes('cannot be empty')) {
+    return translate('register.validation.lastNameRequired');
+  }
+
+  if (field === 'email' && message.includes('cannot be empty')) {
+    return translate('register.validation.emailRequired');
+  }
+
+  if (field === 'email' && message.includes('format is invalid')) {
+    return translate('register.validation.emailInvalid');
+  }
+
+  return null;
+}
+
+function mapRegisterStringDetail(detail: string, translate: TranslateFn): string | null {
+  if (detail === 'An account with this email already exists.') {
+    return translate('register.validation.emailTaken');
+  }
+
+  if (detail === 'Invalid role secret.') {
+    return translate('register.validation.invalidRoleSecret');
+  }
+
+  return null;
+}
+
+function mapLoginValidationError(item: ApiValidationErrorItem, translate: TranslateFn): string | null {
+  const field = validationField(item);
+  const message = item.msg ?? '';
+
+  if (field === 'email' && message.includes('format is invalid')) {
+    return translate('login.validation.emailInvalid');
+  }
+
+  if (field === 'password' && message.includes('cannot be empty')) {
+    return translate('login.validation.passwordRequired');
+  }
+
+  return null;
+}
+
+function mapLoginStringDetail(detail: string, translate: TranslateFn): string | null {
+  if (detail === 'Invalid email or password.') {
+    return translate('login.validation.invalidCredentials');
+  }
+
+  return null;
+}
+
+/** Maps auth endpoint errors to localized, user-facing messages. */
+export function getAuthApiErrorMessage(
+  caughtError: unknown,
+  translate: TranslateFn,
+  scope: 'register' | 'login' | 'profile',
+  fallback: string,
+): string {
+  const validationErrors = extractApiValidationErrors(caughtError);
+
+  if (validationErrors.length > 0) {
+    const mapper =
+      scope === 'register' ? mapRegisterValidationError : scope === 'login' ? mapLoginValidationError : null;
+
+    if (mapper) {
+      const localized = mapper(validationErrors[0], translate);
+      if (localized) {
+        return localized;
+      }
+    }
+  }
+
+  const requestError = caughtError as { response?: { data?: { detail?: string } } };
+  const stringDetail = requestError.response?.data?.detail;
+
+  if (typeof stringDetail === 'string') {
+    const localized =
+      scope === 'register'
+        ? mapRegisterStringDetail(stringDetail, translate)
+        : scope === 'login'
+          ? mapLoginStringDetail(stringDetail, translate)
+          : null;
+
+    if (localized) {
+      return localized;
+    }
+  }
+
+  return getApiErrorMessage(caughtError, fallback);
+}

@@ -33,11 +33,10 @@ def list_public_photos(db: Session = Depends(get_db)):
 @router.post("/upload-intent", response_model=PhotoUploadIntentResponse)
 def create_user_photo_upload_intent(
     payload: PhotoUploadIntentRequest,
-    db: Session = Depends(get_db),
     current_user: User = Depends(require_current_user),
 ):
     try:
-        return create_photo_upload_intent(db, current_user, payload)
+        return create_photo_upload_intent(current_user, payload)
     except PhotoAlbumValidationError as error:
         raise HTTPException(status_code=400, detail=str(error)) from error
     except PhotoAlbumConfigError as error:

@@ -1,22 +1,26 @@
-.stack-header {
+.obw-auth-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--aot-border);
-  background: var(--aot-surface);
+  gap: var(--obw-space-sm);
+  padding: var(--obw-space-sm) var(--obw-space-md);
+  border-bottom: 1px solid var(--obw-border);
+  background: color-mix(in srgb, var(--obw-paper) 92%, var(--obw-paper-deep));
+  backdrop-filter: blur(8px);
 }
 
-.stack-header__start {
+.obw-auth-header__start {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--obw-space-xs);
   min-width: 0;
 }
 
-.stack-header__title {
+.obw-auth-header__title {
   margin: 0;
-  font-size: 17px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--obw-charcoal);
 }

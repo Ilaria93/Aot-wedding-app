@@ -118,6 +118,8 @@ export async function logoutCurrentSession(): Promise<void> {
         refresh_token: refreshToken,
       });
     }
+  } catch {
+    // Logout stays idempotent even if the backend call fails (offline, already-revoked token, etc.).
   } finally {
     await clearCurrentSession();
   }

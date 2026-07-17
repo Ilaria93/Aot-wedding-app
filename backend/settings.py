@@ -1,3 +1,7 @@
+from datetime import datetime
+from typing import Optional
+from zoneinfo import ZoneInfo
+
 import os
 
 from dotenv import load_dotenv
@@ -114,3 +118,18 @@ def read_photo_max_upload_bytes() -> int:
 def read_wedding_role_secret() -> str:
     """Secret required to register as bride or groom. Empty string disables those roles."""
     return os.getenv("WEDDING_ROLE_SECRET", "").strip()
+
+
+def read_rsvp_edit_deadline() -> datetime:
+    """Last moment (exclusive) when RSVP edits are allowed — end of 6 May 2027 Europe/Rome."""
+    raw_value = os.getenv("RSVP_EDIT_DEADLINE", "2027-05-07T00:00:00+02:00").strip()
+    return datetime.fromisoformat(raw_value)
+
+
+def is_rsvp_editable(now: Optional[datetime] = None) -> bool:
+    """Returns True if RSVP create/update is still allowed."""
+    moment = now or datetime.now(tz=ZoneInfo("Europe/Rome"))
+    deadline = read_rsvp_edit_deadline()
+    if deadline.tzinfo is None:
+        deadline = deadline.replace(tzinfo=ZoneInfo("Europe/Rome"))
+    return moment < deadline
