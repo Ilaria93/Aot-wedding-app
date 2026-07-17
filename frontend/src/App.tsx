@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { AuthGuard } from '@/components/AuthGuard/index';
@@ -14,8 +15,13 @@ import { NotFoundPage } from '@/pages/NotFoundPage/index';
 import { ProfilePage } from '@/pages/ProfilePage/index';
 import { RegisterPage } from '@/pages/RegisterPage/index';
 import { RsvpPage } from '@/pages/RsvpPage/index';
-import { TitanPreviewPage } from '@/pages/TitanPreviewPage/index';
 import { TravelPage } from '@/pages/TravelPage/index';
+
+// Dev-only 3D preview route: lazy + gated on import.meta.env.DEV so the heavy
+// titan preview/scene code never ends up in the production bundle.
+const TitanPreviewPage = lazy(() =>
+  import('@/pages/TitanPreviewPage/index').then((module) => ({ default: module.TitanPreviewPage })),
+);
 
 /** Root router for the Vite web app. */
 export function App() {
@@ -40,7 +46,16 @@ export function App() {
                 <Route path="/admin" element={<AdminPage />} />
               </Route>
 
-              <Route path="/dev/titan-preview" element={<TitanPreviewPage />} />
+              {import.meta.env.DEV && (
+                <Route
+                  path="/dev/titan-preview"
+                  element={
+                    <Suspense fallback={null}>
+                      <TitanPreviewPage />
+                    </Suspense>
+                  }
+                />
+              )}
 
               <Route path="/home" element={<Navigate to="/" replace />} />
               <Route path="*" element={<NotFoundPage />} />

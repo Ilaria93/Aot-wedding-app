@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 from constants.rsvp_party import MAX_PARTY_GUESTS, MIN_PARTY_GUESTS
-from schemas.rsvp_enums import IntoleranceEnum, MealChoiceEnum
+from schemas.rsvp_enums import FactionEnum, IntoleranceEnum, MealChoiceEnum
 
 
 class RsvpGuestLineRequest(BaseModel):
@@ -42,5 +42,5 @@ class RSVPSubmitRequest(BaseModel):
 class RsvpSubmitResponse(BaseModel):
     ok: bool
     user: str
-    faction: Optional[str] = None
+    faction: Optional[FactionEnum] = None
     guest_count: int = 0

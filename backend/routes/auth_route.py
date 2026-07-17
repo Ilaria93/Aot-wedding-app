@@ -14,7 +14,6 @@ from schemas.auth_schema import (
     ProfileUpdateRequest,
 )
 from services.auth_service import (
-    AuthConfigError,
     AuthValidationError,
     authenticate_user,
     logout_refresh_session,
@@ -34,8 +33,6 @@ def register_auth_user(payload: AuthRegisterRequest, db: Session = Depends(get_d
         return register_user(db, payload)
     except AuthValidationError as error:
         raise HTTPException(status_code=400, detail=str(error)) from error
-    except AuthConfigError as error:
-        raise HTTPException(status_code=503, detail=str(error)) from error
 
 
 # Logs in an existing account and returns fresh access and refresh tokens.
@@ -45,8 +42,6 @@ def login_auth_user(payload: AuthLoginRequest, db: Session = Depends(get_db)):
         return authenticate_user(db, payload)
     except AuthValidationError as error:
         raise HTTPException(status_code=401, detail=str(error)) from error
-    except AuthConfigError as error:
-        raise HTTPException(status_code=503, detail=str(error)) from error
 
 
 # Rotates the refresh session and returns a new token pair.
@@ -56,8 +51,6 @@ def refresh_auth_tokens(payload: AuthRefreshRequest, db: Session = Depends(get_d
         return refresh_auth_session(db, payload.refresh_token)
     except AuthValidationError as error:
         raise HTTPException(status_code=401, detail=str(error)) from error
-    except AuthConfigError as error:
-        raise HTTPException(status_code=503, detail=str(error)) from error
 
 
 # Returns the profile of the currently authenticated user.

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
-import { PageHero } from '@/components/PageShell';
+import { PageAlert, PageHero, PageShell } from '@/components/PageShell';
 import {
   type AdminUserListItem,
   type AdminRsvpStats,
@@ -58,70 +58,54 @@ export function AdminPage() {
     }
   }, [isBootstrapping, loadAdminDashboard]);
 
-  if (isBootstrapping || loading) {
-    return (
-      <div className="loading-screen">
-        <span className="loading-text">{t('common.loading')}</span>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="obw-page obw-page--app">
-        <div className="obw-container obw-page__stack">
-          <div className="alert-card" role="alert">
-            <p className="error-text error-text--flush">{error}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="obw-page obw-page--app">
-      <div className="obw-container obw-page__stack">
-        <PageHero
-          eyebrow={t('admin.hero.eyebrow')}
-          title={t('admin.hero.title')}
-          subtitle={t('admin.hero.subtitle')}
-          subtitleFlush
-        />
+    <PageShell loading={isBootstrapping || loading}>
+      {error ? (
+        <PageAlert message={error} />
+      ) : (
+        <>
+          <PageHero
+            eyebrow={t('admin.hero.eyebrow')}
+            title={t('admin.hero.title')}
+            subtitle={t('admin.hero.subtitle')}
+            subtitleFlush
+          />
 
-        {stats ? (
-          <div className="dev-grid dev-grid--spaced">
-            <div className="dev-card">
-              <p className="obw-kicker">{t('admin.stats.users')}</p>
-              <p className="title">{stats.total_users}</p>
+          {stats ? (
+            <div className="dev-grid dev-grid--spaced">
+              <div className="dev-card">
+                <p className="obw-kicker">{t('admin.stats.users')}</p>
+                <p className="title">{stats.total_users}</p>
+              </div>
+              <div className="dev-card">
+                <p className="obw-kicker">{t('admin.stats.confirmed')}</p>
+                <p className="title">{stats.total_confirmed}</p>
+              </div>
+              <div className="dev-card">
+                <p className="obw-kicker">{t('admin.stats.attending')}</p>
+                <p className="title">{stats.total_attending}</p>
+              </div>
             </div>
-            <div className="dev-card">
-              <p className="obw-kicker">{t('admin.stats.confirmed')}</p>
-              <p className="title">{stats.total_confirmed}</p>
-            </div>
-            <div className="dev-card">
-              <p className="obw-kicker">{t('admin.stats.attending')}</p>
-              <p className="title">{stats.total_attending}</p>
-            </div>
-          </div>
-        ) : null}
+          ) : null}
 
-        <section className="obw-card landing-section">
-          <h2 className="obw-display obw-display--sm">{t('admin.users.title')}</h2>
-          <div className="admin-guest-list">
-            {users.map((user) => (
-              <article key={user.id} className="dev-card">
-                <strong>{formatUserName(user)}</strong>
-                <p className="helper-text helper-text--flush">{user.email}</p>
-                <p className="helper-text">
-                  {user.has_rsvp
-                    ? t('admin.rsvpStatuses.attending')
-                    : t('admin.rsvpStatuses.pending')}
-                </p>
-              </article>
-            ))}
-          </div>
-        </section>
-      </div>
-    </div>
+          <section className="obw-card landing-section">
+            <h2 className="obw-display obw-display--sm">{t('admin.users.title')}</h2>
+            <div className="admin-guest-list">
+              {users.map((user) => (
+                <article key={user.id} className="dev-card">
+                  <strong>{formatUserName(user)}</strong>
+                  <p className="helper-text helper-text--flush">{user.email}</p>
+                  <p className="helper-text">
+                    {user.has_rsvp
+                      ? t('admin.rsvpStatuses.attending')
+                      : t('admin.rsvpStatuses.pending')}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+    </PageShell>
   );
 }

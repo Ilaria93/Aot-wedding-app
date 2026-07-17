@@ -1,10 +1,11 @@
 from enum import Enum
 
 
+# Declaration order is also the faction-balancing tie-break order (see rsvp_faction_service).
 class FactionEnum(str, Enum):
     scout_regiment = "scout_regiment"
-    military_police = "military_police"
     garrison = "garrison"
+    military_police = "military_police"
 
 
 class MealChoiceEnum(str, Enum):

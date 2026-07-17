@@ -111,6 +111,62 @@ def test_photo_complete_upload_rejects_reused_storage_key(api_client, user_heade
     assert second_complete.status_code == 400
 
 
+def test_photo_upload_intent_rejects_unsupported_mime_type(api_client, user_headers):
+    response = api_client.post(
+        "/photos/upload-intent",
+        headers=user_headers,
+        json={
+            "original_filename": "invite.pdf",
+            "mime_type": "application/pdf",
+            "file_size_bytes": 2048,
+        },
+    )
+    assert response.status_code == 400
+
+
+def test_photo_upload_intent_rejects_oversized_file(api_client, user_headers):
+    response = api_client.post(
+        "/photos/upload-intent",
+        headers=user_headers,
+        json={
+            "original_filename": "huge.jpg",
+            "mime_type": "image/jpeg",
+            "file_size_bytes": 10 * 1024 * 1024 + 1,
+        },
+    )
+    assert response.status_code == 400
+
+
+def test_photo_complete_upload_rejects_storage_key_from_another_user(api_client, user_headers):
+    response = api_client.post(
+        "/photos/complete-upload",
+        headers=user_headers,
+        json={
+            "storage_key": "wedding-album/999999/not-mine.jpg",
+            "original_filename": "not-mine.jpg",
+            "mime_type": "image/jpeg",
+            "file_size_bytes": 2048,
+        },
+    )
+    assert response.status_code == 400
+
+
+def test_photo_complete_upload_rejects_unsupported_mime_type(api_client, user_headers):
+    user_id = _current_user_id(api_client, user_headers)
+
+    response = api_client.post(
+        "/photos/complete-upload",
+        headers=user_headers,
+        json={
+            "storage_key": f"wedding-album/{user_id}/invite.pdf",
+            "original_filename": "invite.pdf",
+            "mime_type": "application/pdf",
+            "file_size_bytes": 2048,
+        },
+    )
+    assert response.status_code == 400
+
+
 def test_photo_complete_upload_requires_login(api_client):
     response = api_client.post(
         "/photos/complete-upload",

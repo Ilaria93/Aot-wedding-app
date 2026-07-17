@@ -3,6 +3,14 @@ import type { LogisticsContactItem } from '@/services/logisticsContactsApi';
 
 import type { ContactAction } from '@/pages/TravelPage/types/TravelPage.types';
 
+// Official brand colors (not part of aotTheme — these identify third-party platforms).
+const SOCIAL_BRAND_COLORS = {
+  whatsapp: '#25D366',
+  instagram: '#E4405F',
+  facebook: '#1877F2',
+  tiktok: '#111111',
+} as const;
+
 function buildWhatsappUrl(phone: string) {
   const normalized = phone.replace(/[^\d+]/g, '');
   return `https://wa.me/${normalized.replace(/^\+/, '')}`;
@@ -33,7 +41,7 @@ export function buildContactActions(contact: LogisticsContactItem, t: TranslateF
       id: 'whatsapp',
       label: t('contactActions.whatsapp'),
       url: buildWhatsappUrl(contact.whatsapp_phone),
-      accentColor: '#25D366',
+      accentColor: SOCIAL_BRAND_COLORS.whatsapp,
     });
   }
 
@@ -60,7 +68,7 @@ export function buildContactActions(contact: LogisticsContactItem, t: TranslateF
       id: 'instagram',
       label: t('contactActions.instagram'),
       url: normalizeExternalUrl(contact.instagram_url),
-      accentColor: '#E4405F',
+      accentColor: SOCIAL_BRAND_COLORS.instagram,
     });
   }
 
@@ -69,7 +77,7 @@ export function buildContactActions(contact: LogisticsContactItem, t: TranslateF
       id: 'facebook',
       label: t('contactActions.facebook'),
       url: normalizeExternalUrl(contact.facebook_url),
-      accentColor: '#1877F2',
+      accentColor: SOCIAL_BRAND_COLORS.facebook,
     });
   }
 
@@ -78,7 +86,7 @@ export function buildContactActions(contact: LogisticsContactItem, t: TranslateF
       id: 'tiktok',
       label: t('contactActions.tiktok'),
       url: normalizeExternalUrl(contact.tiktok_url),
-      accentColor: '#111111',
+      accentColor: SOCIAL_BRAND_COLORS.tiktok,
     });
   }
 

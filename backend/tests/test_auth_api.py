@@ -134,3 +134,40 @@ def test_profile_update_changes_first_and_last_name(api_client):
     )
     assert update_response.status_code == 200
     assert update_response.json()["last_name"] == "Kirstein"
+
+
+def test_register_returns_503_when_jwt_secret_missing(api_client, monkeypatch):
+    monkeypatch.setattr("services.auth_token_service.read_jwt_secret_key", lambda: "")
+
+    response = api_client.post(
+        "/auth/register",
+        json={
+            "first_name": "Armin",
+            "last_name": "Arlert",
+            "email": "armin@example.com",
+            "password": "strong-password",
+            "remember_me": True,
+        },
+    )
+    assert response.status_code == 503
+
+
+def test_login_returns_503_when_jwt_secret_missing(api_client, monkeypatch):
+    api_client.post(
+        "/auth/register",
+        json={
+            "first_name": "Sasha",
+            "last_name": "Braus",
+            "email": "sasha@example.com",
+            "password": "strong-password",
+            "remember_me": True,
+        },
+    )
+
+    monkeypatch.setattr("services.auth_token_service.read_jwt_secret_key", lambda: "")
+
+    response = api_client.post(
+        "/auth/login",
+        json={"email": "sasha@example.com", "password": "strong-password"},
+    )
+    assert response.status_code == 503

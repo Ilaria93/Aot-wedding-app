@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from schemas.rsvp_enums import IntoleranceEnum, MealChoiceEnum
+from schemas.rsvp_enums import FactionEnum, IntoleranceEnum, MealChoiceEnum
 
 
 class RsvpGuestResponse(BaseModel):
@@ -17,6 +17,6 @@ class RsvpGuestResponse(BaseModel):
 class RsvpMeResponse(BaseModel):
     has_rsvp: bool
     attending: Optional[bool] = None
-    faction: Optional[str] = None
+    faction: Optional[FactionEnum] = None
     guests: list[RsvpGuestResponse] = []
     editable: bool = True

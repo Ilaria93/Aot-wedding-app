@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from schemas.rsvp_enums import FactionEnum
+
 
 class AdminRsvpStatsResponse(BaseModel):
     total_users: int
@@ -7,4 +9,4 @@ class AdminRsvpStatsResponse(BaseModel):
     total_attending: int
     total_not_attending: int
     total_participants: int
-    by_faction: dict[str, int]
+    by_faction: dict[FactionEnum, int]
