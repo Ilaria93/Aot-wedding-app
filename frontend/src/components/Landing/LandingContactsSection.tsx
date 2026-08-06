@@ -7,7 +7,7 @@ export function LandingContactsSection() {
   const { t } = useI18n();
 
   return (
-    <section className="obw-section obw-fade-up">
+    <section className="obw-section obw-fade-up" id="contacts">
       <div className="obw-container">
         <div className="obw-section-header">
           <h2 className="obw-display obw-display--sm">{t('landing.contacts.title')}</h2>

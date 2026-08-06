@@ -1,0 +1,19 @@
+.landing-story .obw-photo-mosaic__frame {
+  padding: 0;
+  overflow: hidden;
+}
+
+.landing-story .obw-photo-mosaic__frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.landing-story .obw-photo-mosaic__frame--first {
+  align-self: end;
+}
+
+.landing-story .obw-photo-mosaic__frame--second {
+  top: 0;
+}

@@ -99,6 +99,9 @@ export const en = {
       profile: 'Profile',
       login: 'Log in',
       admin: 'Admin',
+      gallery: 'Gallery',
+      faq: 'FAQ',
+      contacts: 'Contacts',
     },
     hero: {
       eyebrow: 'Attack on Titan inspired wedding',
@@ -225,6 +228,18 @@ export const en = {
       copyIban: 'Copy IBAN',
       copiedIban: 'IBAN copied',
     },
+    gallery: {
+      eyebrow: 'Our memories',
+      title: 'Our gallery',
+      intro: 'A treasure of shared moments: take a look at the photos loved ones have sent.',
+      loading: 'Loading photos...',
+      empty: 'No photos yet. The first ones will be here soon!',
+      error: 'Could not load photos. Please try again later.',
+      retry: 'Retry',
+      ctaTitle: 'Want to relive the moments?',
+      ctaBody: 'Upload your photos of our day to the shared gallery.',
+      ctaButton: 'Open the gallery',
+    },
     devTools: {
       title: 'RSVP area and tools',
       description:
@@ -276,7 +291,6 @@ export const en = {
       ceremonyBody:
         'Perfect for gathering the latest practical information without overloading the home page.',
     },
-    apiConnected: 'Connected API: {{apiBaseUrl}}',
   },
   auth: {
     experience: {

@@ -99,6 +99,9 @@ export const fr = {
       profile: 'Profil',
       login: 'Connexion',
       admin: 'Admin',
+      gallery: 'Galerie',
+      faq: 'FAQ',
+      contacts: 'Contacts',
     },
     hero: {
       eyebrow: 'Mariage inspiré par Attack on Titan',
@@ -225,6 +228,18 @@ export const fr = {
       copyIban: "Copier l'IBAN",
       copiedIban: 'IBAN copié',
     },
+    gallery: {
+      eyebrow: 'Nos souvenirs',
+      title: 'Notre galerie',
+      intro: 'Un trésor de moments partagés : jetez un œil aux photos envoyées par vos proches.',
+      loading: 'Chargement des photos...',
+      empty: 'Pas encore de photos. Les premières arrivent bientôt !',
+      error: 'Impossible de charger les photos. Réessayez plus tard.',
+      retry: 'Réessayer',
+      ctaTitle: 'Envie de revivre ces moments ?',
+      ctaBody: 'Téléversez vos photos de notre journée dans la galerie partagée.',
+      ctaButton: 'Ouvrir la galerie',
+    },
     devTools: {
       title: 'Zone RSVP et outils',
       description:
@@ -277,7 +292,6 @@ export const fr = {
       ceremonyBody:
         'Parfaite pour rassembler les dernières informations pratiques sans surcharger la page d’accueil.',
     },
-    apiConnected: 'API connectée : {{apiBaseUrl}}',
   },
   auth: {
     experience: {
