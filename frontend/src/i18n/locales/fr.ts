@@ -107,6 +107,7 @@ export const fr = {
     },
     mission: {
       subtitle: 'La plus belle bataille est celle que l’on mène ensemble',
+      scrollCue: 'Offrez votre cœur',
       ordersLabel: '— ORDRES DE MISSION —',
       cards: {
         rsvpTitle: 'RSVP',
@@ -265,7 +266,7 @@ export const fr = {
     contacts: {
       title: 'Contacts utiles',
       teamTitle: 'Équipe mariage',
-      teamLine: 'Ilaria & Davide',
+      teamLine: 'Davide & Ilaria',
       teamBody:
         'Ici, nous pouvons ajouter des numéros, des e-mails ou une personne de référence pour les invités.',
       travelTitle: 'Assistance voyage',

@@ -1,74 +1,226 @@
 .mission-hero {
   width: min(100%, var(--obw-max));
   margin: 0 auto;
-  border: 1px solid var(--obw-border);
-  border-radius: var(--obw-radius);
-  overflow: hidden;
-  background: var(--obw-paper);
-  box-shadow: var(--obw-shadow-soft);
 }
 
+/* The band is deliberately see-through: the fixed sunset artwork on body::before
+   is the hero image, so only a soft top-down scrim sits between it and the copy.
+   It breaks out of the container gutters to sit full-bleed, like a cover. */
 .mission-hero__band {
-  padding: var(--obw-space-xl) var(--obw-space-md) var(--obw-space-lg);
+  position: relative;
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  padding: clamp(4.5rem, 12vh, 7rem) var(--obw-space-md) clamp(2rem, 5vh, 3.5rem);
   text-align: center;
-  background: var(--obw-charcoal);
-  border-bottom: 1px solid color-mix(in srgb, var(--obw-gold) 22%, transparent);
+  background: linear-gradient(
+    180deg,
+    rgba(20, 29, 26, 0.58) 0%,
+    rgba(20, 29, 26, 0.26) 34%,
+    rgba(20, 29, 26, 0.3) 58%,
+    rgba(20, 29, 26, 0.52) 100%
+  );
+  border-bottom: 1px solid color-mix(in srgb, var(--obw-bone) 26%, transparent);
+}
+
+.mission-hero__particles {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.mission-hero__band-content {
+  position: relative;
+  z-index: 1;
 }
 
 .mission-hero__seal {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto var(--obw-space-md);
-  color: var(--obw-gold);
+  display: block;
+  width: clamp(88px, 9.5vw, 124px);
+  height: auto;
+  margin: clamp(0.75rem, 2vh, 1.25rem) auto 0;
+  filter: drop-shadow(0 2px 10px rgba(20, 29, 26, 0.55));
 }
 
 .mission-hero__title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 5vw, 2rem);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--obw-paper);
-  line-height: 1.15;
-}
-
-.mission-hero__subtitle {
-  margin: var(--obw-space-sm) 0 0;
-  color: color-mix(in srgb, var(--obw-paper) 65%, var(--obw-gold));
-  font-size: 1rem;
-  font-style: italic;
-  font-weight: 300;
-  line-height: 1.6;
+  font-size: clamp(2.2rem, 6.4vw, 4.6rem);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding-left: 0.06em;
+  color: var(--obw-bone);
+  line-height: 1.12;
+  text-shadow:
+    0 2px 34px rgba(20, 29, 26, 0.6),
+    0 1px 3px rgba(20, 29, 26, 0.45);
 }
 
 .mission-hero__date {
-  margin: var(--obw-space-md) 0 0;
-  font-family: var(--font-kicker);
-  font-size: 12px;
-  letter-spacing: 0.22em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: clamp(0.5rem, 1.6vh, 1rem) 0 0;
+  font-family: var(--font-editorial);
+  font-size: clamp(1.05rem, 2.1vw, 1.5rem);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  padding-left: 0.14em;
+  color: var(--obw-bone);
+  text-shadow: 0 1px 16px rgba(20, 29, 26, 0.6);
+}
+
+.mission-hero__date-rule {
+  display: block;
+  width: clamp(28px, 5vw, 54px);
+  height: 1px;
+  background: color-mix(in srgb, var(--obw-bone) 65%, transparent);
+}
+
+.mission-hero__venue {
+  margin: clamp(0.35rem, 1vh, 0.6rem) 0 0;
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  letter-spacing: 0.03em;
+  color: color-mix(in srgb, var(--obw-bone) 92%, transparent);
+  text-shadow: 0 1px 16px rgba(20, 29, 26, 0.6);
+}
+
+.mission-hero__vow {
+  margin: clamp(0.75rem, 2vh, 1.15rem) auto 0;
+  max-width: 30ch;
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--obw-bone) 84%, transparent);
+  text-shadow: 0 1px 14px rgba(20, 29, 26, 0.6);
+}
+
+/* Fixed four-up grid: a flex row wrapped 3+1 once the letter-spaced labels
+   pushed the cells past the viewport width. */
+.mission-hero__countdown {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(6px, 1.5vw, 10px);
+  width: min(100%, 400px);
+  margin: clamp(1.25rem, 3vh, 2rem) auto 0;
+}
+
+.mission-hero__countdown-cell {
+  min-width: 0;
+  padding: 10px 4px;
+  background: color-mix(in srgb, var(--obw-void) 46%, transparent);
+  border: 1px solid color-mix(in srgb, var(--obw-bone) 24%, transparent);
+  border-radius: var(--obw-radius);
+  text-align: center;
+  backdrop-filter: blur(3px);
+}
+
+.mission-hero__countdown-cell b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--obw-gold);
+}
+
+.mission-hero__countdown-cell span {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(0.5rem, 1.7vw, 0.58rem);
+  letter-spacing: 0.1em;
+  padding-left: 0.1em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--obw-paper) 55%, transparent);
+  color: color-mix(in srgb, var(--obw-bone) 76%, transparent);
+}
+
+.mission-hero__scroll-cue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: clamp(1.5rem, 3.5vh, 2.5rem);
+}
+
+.mission-hero__scroll-label {
+  font-family: var(--font-display);
+  font-size: clamp(0.72rem, 1.4vw, 0.95rem);
+  letter-spacing: 0.32em;
+  padding-left: 0.32em;
+  text-transform: uppercase;
+  color: var(--obw-bone);
+  text-shadow: 0 1px 14px rgba(20, 29, 26, 0.7);
+}
+
+.mission-hero__scroll-mouse {
+  display: flex;
+  justify-content: center;
+  width: 22px;
+  height: 36px;
+  padding-top: 6px;
+  border: 1.5px solid color-mix(in srgb, var(--obw-bone) 85%, transparent);
+  border-radius: 11px;
+}
+
+.mission-hero__scroll-wheel {
+  width: 3px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--obw-bone);
+  animation: mission-hero-scroll-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes mission-hero-scroll-pulse {
+  0% {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+
+  70% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
 }
 
 .mission-hero__divider {
   display: flex;
   align-items: center;
   gap: var(--obw-space-sm);
-  padding: var(--obw-space-sm) var(--obw-space-md);
-  background: var(--obw-paper-deep);
+  padding: var(--obw-space-md);
+  background: var(--obw-veil);
+  backdrop-filter: var(--obw-veil-blur);
   border-bottom: 1px solid var(--obw-border);
 }
 
 .mission-hero__divider-line {
   flex: 1;
   height: 1px;
-  background: var(--obw-border);
+  background: color-mix(in srgb, var(--obw-bone) 32%, transparent);
 }
 
 .mission-hero__divider-label {
-  font-family: var(--font-kicker);
+  font-family: var(--font-display);
   font-size: 10px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.28em;
+  padding-left: 0.28em;
   text-transform: uppercase;
   color: var(--obw-gold);
   white-space: nowrap;
@@ -80,16 +232,19 @@
 }
 
 .mission-hero__card {
+  position: relative;
   display: block;
-  padding: var(--obw-space-md) var(--obw-space-md);
+  padding: var(--obw-space-lg) var(--obw-space-md);
   text-decoration: none;
   color: inherit;
-  background: var(--obw-paper);
+  background: var(--obw-veil);
+  backdrop-filter: var(--obw-veil-blur);
   border-right: 1px solid var(--obw-border);
   border-bottom: 1px solid var(--obw-border);
   transition:
-    background var(--obw-duration-fast) ease,
-    transform var(--obw-duration-fast) var(--obw-ease-out);
+    background var(--obw-duration-normal) ease,
+    transform var(--obw-duration-normal) var(--obw-ease-out),
+    box-shadow var(--obw-duration-normal) ease;
 }
 
 .mission-hero__card:nth-child(2n) {
@@ -102,34 +257,70 @@
 
 .mission-hero__card:hover,
 .mission-hero__card:focus-visible {
-  background: var(--obw-paper-deep);
+  z-index: 1;
+  background: var(--obw-veil-strong);
   outline: none;
-  transform: translateY(-1px);
+  transform: translateY(-3px);
+  box-shadow: var(--obw-shadow-soft);
+}
+
+.mission-hero__card:hover .mission-hero__card-arrow,
+.mission-hero__card:focus-visible .mission-hero__card-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.mission-hero__card:hover .mission-hero__card-icon,
+.mission-hero__card:focus-visible .mission-hero__card-icon {
+  background: var(--obw-gold);
+  color: var(--obw-void);
 }
 
 .mission-hero__card-icon {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--obw-space-sm);
+  border: 1px solid color-mix(in srgb, var(--obw-gold) 45%, transparent);
+  border-radius: var(--obw-radius);
   color: var(--obw-gold);
+  transition:
+    background var(--obw-duration-fast) ease,
+    color var(--obw-duration-fast) ease;
 }
 
 .mission-hero__card-title {
   display: block;
-  font-family: var(--font-kicker);
-  font-size: 14px;
-  letter-spacing: 0.12em;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
   text-transform: uppercase;
-  color: var(--obw-charcoal);
+  color: var(--obw-bone);
 }
 
 .mission-hero__card-desc {
   display: block;
-  margin-top: 4px;
-  color: var(--obw-stone);
-  font-size: 0.9rem;
-  font-weight: 300;
+  margin-top: 6px;
+  color: var(--obw-text-muted);
+  font-family: var(--font-editorial);
+  font-size: 1.05rem;
   line-height: 1.55;
+}
+
+.mission-hero__card-arrow {
+  position: absolute;
+  right: var(--obw-space-md);
+  bottom: var(--obw-space-md);
+  color: var(--obw-gold);
+  font-family: var(--font-display);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity var(--obw-duration-normal) ease,
+    transform var(--obw-duration-normal) var(--obw-ease-out);
 }
 
 @media (max-width: 520px) {
@@ -149,5 +340,9 @@
 @media (prefers-reduced-motion: reduce) {
   .mission-hero__card:hover {
     transform: none;
+  }
+
+  .mission-hero__scroll-wheel {
+    animation: none;
   }
 }

@@ -1,24 +1,38 @@
 :root {
-  /* AoT portal — cool smoke, white bone, crimson accent only */
-  --obw-void: #0a0a0a;
-  --obw-charcoal: #141414;
-  --obw-charcoal-deep: #1c1c1c;
-  --obw-bone: #f2f2f2;
-  --obw-paper: #dcdcdc;
-  --obw-paper-deep: #d0d0d0;
-  --obw-paper-muted: #c4c4c4;
-  --obw-stone: #7a7a7a;
-  --obw-rust: #5c4a3d;
-  --obw-fog: #6b7280;
-  --obw-crimson: #8c1d2a;
-  --obw-crimson-hot: #b52d3f;
-  --obw-gold: #9a7f52;
-  --obw-burgundy: #7a1f28;
-  --obw-green: var(--obw-rust);
-  --obw-border: rgba(10, 10, 10, 0.12);
-  --obw-border-dark: rgba(242, 242, 242, 0.14);
+  /* Oltre le Mura — AoT sunset: cream on deep pine, over a fixed illustration */
+  --obw-void: #141d1a;
+  --obw-charcoal: #1e2c28;
+  --obw-charcoal-deep: #182320;
+  --obw-bone: #fdf6ec;
+  --obw-paper: #1e2c28;
+  --obw-paper-deep: #24332e;
+  --obw-paper-muted: #2b3a35;
+  --obw-stone: #b3ab9c;
+  --obw-rust: #7a4a3a;
+  --obw-fog: #8e968f;
+  --obw-crimson: #c25a4a;
+  --obw-crimson-hot: #d9603e;
+  --obw-gold: #f4b183;
+  --obw-gold-bright: #f7cba6;
+  --obw-gold-dim: #d9603e;
+  --obw-burgundy: #b0322a;
+  --obw-green: var(--obw-gold);
+  --obw-border: rgba(253, 246, 236, 0.28);
+  --obw-border-dark: rgba(253, 246, 236, 0.18);
 
-  --obw-radius: 4px;
+  /* Semantic text — surfaces are dark, so copy is cream. Components use these
+     instead of picking a raw colour, so a palette change stays a one-line edit. */
+  --obw-text: var(--obw-bone);
+  --obw-text-muted: rgba(253, 246, 236, 0.72);
+
+  /* Translucent veils the sections float on above the fixed illustration.
+     The blur is what keeps copy legible where the artwork is bright and busy —
+     tinting alone was not enough over the sunlit flower field. */
+  --obw-veil: rgba(30, 44, 40, 0.78);
+  --obw-veil-strong: rgba(20, 29, 26, 0.9);
+  --obw-veil-blur: blur(9px);
+
+  --obw-radius: 3px;
   --obw-radius-sm: 2px;
   --obw-max: 1200px;
   --obw-space-xs: 8px;
@@ -27,9 +41,10 @@
   --obw-space-lg: 32px;
   --obw-space-xl: 64px;
   --obw-space-2xl: 96px;
-  --obw-shadow-soft: 0 16px 48px rgba(10, 10, 10, 0.1);
-  --obw-shadow-lift: 0 24px 56px rgba(10, 10, 10, 0.16);
-  --obw-shadow-dark: 0 28px 72px rgba(0, 0, 0, 0.45);
+  --obw-shadow-soft: 0 14px 38px rgba(12, 20, 17, 0.34);
+  --obw-shadow-lift: 0 20px 52px rgba(12, 20, 17, 0.46);
+  --obw-shadow-dark: 0 26px 64px rgba(8, 14, 12, 0.6);
+  --obw-shadow-gold: 0 0 24px rgba(244, 177, 131, 0.3);
   --obw-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --obw-duration-fast: 160ms;
   --obw-duration-normal: 220ms;
@@ -38,27 +53,27 @@
   --aot-background: var(--obw-paper);
   --aot-surface: color-mix(in srgb, var(--obw-paper) 88%, var(--obw-bone));
   --aot-surface-muted: var(--obw-paper-deep);
-  --aot-military-green: var(--obw-rust);
+  --aot-military-green: var(--obw-gold);
   --aot-military-green-dark: var(--obw-void);
   --aot-parchment: var(--obw-stone);
   --aot-bronze: var(--obw-gold);
   --aot-border: var(--obw-border);
-  --aot-text-primary: var(--obw-void);
-  --aot-text-muted: var(--obw-stone);
+  --aot-text-primary: var(--obw-text);
+  --aot-text-muted: var(--obw-text-muted);
   --aot-danger: var(--obw-burgundy);
   --aot-peach: var(--obw-paper-deep);
   --aot-sky: var(--obw-paper-deep);
   --aot-sky-border: var(--obw-border);
-  --aot-alert-bg: color-mix(in srgb, var(--obw-crimson) 8%, var(--obw-paper));
-  --aot-alert-border: color-mix(in srgb, var(--obw-crimson) 24%, transparent);
+  --aot-alert-bg: color-mix(in srgb, var(--obw-burgundy) 10%, var(--obw-paper));
+  --aot-alert-border: color-mix(in srgb, var(--obw-burgundy) 30%, transparent);
   --aot-faction-active: var(--obw-paper-deep);
   --page-max-width: var(--obw-max);
 
-  --font-sans: 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'Oswald', var(--font-sans);
-  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-editorial: var(--font-sans);
-  --font-kicker: var(--font-mono);
+  --font-sans: 'Lato', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Cinzel', Georgia, serif;
+  --font-mono: 'Cinzel', Georgia, serif;
+  --font-editorial: 'Cormorant Garamond', Georgia, serif;
+  --font-kicker: var(--font-display);
 
   --mission-parchment: var(--obw-paper);
   --mission-parchment-deep: var(--obw-paper-deep);
@@ -80,6 +95,9 @@
 
 html {
   scroll-behavior: smooth;
+  /* Fallback lives on html: body must stay transparent or its own background
+     would paint over the z-index:-1 artwork layer below. */
+  background-color: var(--obw-charcoal);
 }
 
 body {
@@ -87,10 +105,29 @@ body {
   min-height: 100vh;
   font-family: var(--font-sans);
   font-weight: 400;
-  color: var(--obw-void);
-  background: var(--obw-paper);
+  color: var(--obw-text);
+  background: transparent;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* The sunset illustration every screen scrolls over. A fixed pseudo-element
+   rather than background-attachment: fixed, which janks badly while scrolling. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url('/assets/wedding/hero-sunset-mobile.webp');
+  background-size: cover;
+  background-position: center 60%;
+  background-repeat: no-repeat;
+}
+
+@media (min-width: 900px) {
+  body::before {
+    background-image: url('/assets/wedding/hero-sunset.webp');
+  }
 }
 
 a {

@@ -14,9 +14,9 @@ export function LandingHeroSection({ onScrollToRsvp }: LandingHeroSectionProps) 
       <div className="landing-hero__blob landing-hero__blob--bottom" aria-hidden />
       <div className="landing-hero__inner">
         <p className="landing-hero__eyebrow">{t('landing.hero.eyebrow')}</p>
-        <h1 className="landing-hero__name">ILARIA</h1>
-        <p className="landing-hero__ampersand">&</p>
         <h1 className="landing-hero__name">DAVIDE</h1>
+        <p className="landing-hero__ampersand">&</p>
+        <h1 className="landing-hero__name">ILARIA</h1>
         <button type="button" className="landing-hero__button" onClick={onScrollToRsvp}>
           {t('landing.hero.button')}
         </button>

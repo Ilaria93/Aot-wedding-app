@@ -107,6 +107,7 @@ export const it = {
     },
     mission: {
       subtitle: 'La battaglia più bella è quella che si combatte insieme',
+      scrollCue: 'Offri il tuo cuore',
       ordersLabel: '— ORDINI DI MISSIONE —',
       cards: {
         rsvpTitle: 'RSVP',
@@ -183,7 +184,7 @@ export const it = {
       photoTwo: 'Foto sposi 02',
       heading: 'Un amore travolgente',
       paragraphOne:
-        'Ilaria e Davide stanno costruendo una pagina che racconti il loro giorno in modo più intimo, elegante e personale.',
+        'Davide e Ilaria stanno costruendo una pagina che racconti il loro giorno in modo più intimo, elegante e personale.',
       paragraphTwo:
         'L’idea è unire il linguaggio di un wedding site editoriale con una navigazione moderna, un RSVP digitale e dettagli organizzati in un unico posto.',
     },
@@ -265,7 +266,7 @@ export const it = {
     contacts: {
       title: 'Contatti utili',
       teamTitle: 'Wedding team',
-      teamLine: 'Ilaria & Davide',
+      teamLine: 'Davide & Ilaria',
       teamBody:
         'Qui possiamo aggiungere numeri, email o una persona di riferimento per gli invitati.',
       travelTitle: 'Supporto viaggio',

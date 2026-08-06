@@ -1,6 +1,11 @@
 .landing-page {
   width: 100%;
-  background: var(--obw-paper);
+  /* Transparent so the fixed sunset illustration stays visible: each section
+     lays its own translucent veil over it. */
+  background: transparent;
+  /* Contains the hero band's full-bleed 100vw break-out so the page itself
+     never scrolls sideways. */
+  overflow-x: clip;
 }
 
 .landing-page--hero-active {

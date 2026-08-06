@@ -46,7 +46,7 @@
   font-size: 1.125rem;
   letter-spacing: 0.1em;
   line-height: 1.2;
-  color: var(--obw-gold);
+  color: var(--obw-gold-bright);
 }
 
 .landing-rsvp__step-copy {
@@ -62,14 +62,14 @@
 
 .landing-rsvp__deadline {
   margin: 0;
-  color: var(--obw-gold);
+  color: var(--obw-gold-bright);
 }
 
 .landing-rsvp__cta {
   justify-self: start;
   border-color: var(--obw-bone);
   background: var(--obw-bone);
-  color: var(--obw-void);
+  color: var(--obw-text);
 }
 
 .landing-rsvp__cta:hover {
@@ -98,14 +98,14 @@
 
 .landing-rsvp__visual-tag {
   margin: 0;
-  color: var(--obw-gold);
+  color: var(--obw-gold-dim);
 }
 
 .landing-rsvp__visual-title {
   margin: 0;
   font-size: clamp(1.75rem, 4vw, 2.35rem);
   line-height: 1.15;
-  color: var(--obw-charcoal);
+  color: var(--obw-text);
 }
 
 .landing-rsvp__visual-rule {

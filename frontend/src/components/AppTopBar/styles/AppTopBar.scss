@@ -6,8 +6,8 @@
   height: 40px;
   border: 1px solid var(--obw-border-dark);
   border-radius: var(--obw-radius-sm);
-  background: color-mix(in srgb, var(--obw-paper) 6%, transparent);
-  color: var(--obw-paper);
+  background: color-mix(in srgb, var(--obw-bone) 6%, transparent);
+  color: var(--obw-bone);
   cursor: pointer;
   transition:
     border-color var(--obw-duration-fast) ease,
@@ -32,7 +32,7 @@
   display: block;
   padding: 14px 4px;
   border-bottom: 1px solid var(--obw-border-dark);
-  color: color-mix(in srgb, var(--obw-paper) 78%, var(--obw-stone));
+  color: color-mix(in srgb, var(--obw-bone) 78%, var(--obw-stone));
   font-size: 0.9rem;
   font-weight: 500;
   text-decoration: none;
@@ -86,13 +86,13 @@
 }
 
 .site-header .app-user-menu__chevron {
-  color: color-mix(in srgb, var(--obw-paper) 55%, var(--obw-stone));
+  color: color-mix(in srgb, var(--obw-bone) 55%, var(--obw-stone));
 }
 
 .site-header .language-switcher__trigger {
   border-color: var(--obw-border-dark);
-  background: color-mix(in srgb, var(--obw-paper) 6%, transparent);
-  color: var(--obw-paper);
+  background: color-mix(in srgb, var(--obw-bone) 6%, transparent);
+  color: var(--obw-bone);
 }
 
 .site-header .language-switcher__trigger.is-open {
@@ -105,7 +105,7 @@
 }
 
 @media (max-width: 768px) {
-  .site-header__nav--desktop {
+  .site-header .site-header__nav--desktop {
     display: none;
   }
 

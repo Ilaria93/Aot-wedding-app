@@ -5,7 +5,7 @@ Contesto prodotto: [`../PROJECT_BRIEF.md`](../PROJECT_BRIEF.md) · [`../PRODUCT_
 
 **Render spec (come produrre ogni atto):** [`HERO_RENDER_SPEC.md`](HERO_RENDER_SPEC.md)
 
-Ultimo aggiornamento: 2026-06-30
+Ultimo aggiornamento: 2026-07-20
 
 ---
 
@@ -112,6 +112,18 @@ Sequenza epica concordata (prima persona, soldato Survey Corps a Ravenna).
 | **8** | Tra i piedi / quasi presi | Mani che si allungano, schivare / mangiare | Beat di tensione massima |
 | **9** | Salto + piroetta sul gigante | Risalita lungo il corpo; camera ruota con il movimento | Unico beat con rotazione 3D marcata |
 | **10** | Couple strike + countdown | Superata la testa del gigante: **sposi di schiena** da sx e dx → piroetta → si girano verso camera → **attacco incrociato lame** → flash → **countdown 31/05/2027 16:30** | Payoff matrimonio |
+
+### Mura — dettaglio (atti 5–6, dettato dalla coppia 2026-07-20)
+
+| Momento | Inquadratura | Contenuto |
+|---------|--------------|-----------|
+| Arrivo | POV in salita sulle mura | Ci si tira su sul cammino di ronda |
+| +0–1 s | Da dietro, destra | Davide sopraggiunge da dietro, sorpassa a destra, si ferma |
+| +1–3 s | Camera ferma | Pausa: si guarda il panorama oltre le mura (~2 s, nessuna azione) |
+| +3–4 s | POV | Ci si gira a destra e si corre per pochi passi lungo il cammino di ronda |
+| +4–5 s | POV in caduta | Lancio oltre il bordo esterno delle mura, verso i giganti |
+
+Questo dettaglio raffina gli atti 5–6 esistenti (arrivo mura → oltre le mura) con la coreografia esatta indicata dalla coppia, da usare per i prompt video §12.
 
 ### Couple strike — dettaglio (atto 10)
 
@@ -254,7 +266,7 @@ Path utili:
 
 - [ ] Vestiti e look sposi nell’atto 10
 - [ ] Durata esatta atti 4 e 8 (taglio montaggio)
-- [ ] Tool AI preferito per le clip
+- [x] Tool AI preferito per le clip → **Leonardo AI** (immagine di partenza) + **Hailuo 2.3 / MiniMax** (image-to-video) — vedi §12
 - [ ] Verticale 9:16 vs 16:9 crop-safe (probabilmente **entrambi**: verticale mobile, crop desktop)
 - [ ] Chiavi i18n definitive per ogni overlay
 - [ ] Musica / SFX (opzionale; rispettare autoplay muted)
@@ -290,3 +302,65 @@ cd docs/hero-references
 Parametri in testa allo script: `FPS_SCREEN=5` (200 ms), `FPS_ACTION=10` (100 ms).
 
 `frames/` resta in `.gitignore`; in repo: `extract-frames.sh` + storyboard.
+
+---
+
+## 12. Prompt generativi (Leonardo AI + Hailuo 2.3)
+
+Tool scelto (2026-07-20): **Leonardo AI** genera il frame di partenza (immagine), **Hailuo 2.3** (MiniMax, disponibile dentro Leonardo) lo anima in clip video (image-to-video). Generare prima l'immagine e poi animarla mantiene i personaggi coerenti tra un atto e l'altro, invece di rigenerarli da zero ad ogni clip.
+
+**Attenzione copyright:** i prompt descrivono equipaggiamento a funi/cavi generico, città mediterranea, giganti umanoidi, stile anime — **mai** nominare "Attack on Titan", personaggi o loghi dell'anime originale. Il linguaggio camera si ispira alla serie ma il contenuto generato deve restare originale.
+
+**Impostazioni Leonardo consigliate:** formato **9:16 verticale** (mobile-first), modello anime/cel-shaded (es. *AlbedoBase XL*, *Anime Pastel Dream*), prompt negativo `text, watermark, logo, extra limbs, blurry face, low quality, western comic style`.
+
+### Stile condiviso (da includere in ogni prompt immagine)
+
+```
+Cinematic anime-style illustration, sakuga-quality dynamic anime action art,
+warm golden hour light, dust and haze in the air, muted terracotta-and-sandstone
+Mediterranean coastal city, thin steel cables trailing from waist-mounted
+mechanical gear, high contrast lighting, dramatic wide-angle lens, no text,
+no logo, no watermark --ar 9:16
+```
+
+Ilaria e Davide: descritti in modo generico (capelli scuri, corporatura atletica, giacca tattica color sabbia con cinghie e rocchetto per i cavi) — **i dettagli fisici vanno personalizzati** per assomigliare davvero a voi due.
+
+### Prompt immagine (Leonardo) — uno per atto
+
+| # | Atto | Prompt |
+|---|------|--------|
+| 1 | Corsa sul viottolo | `First-person POV running fast along a narrow dirt path at golden hour, toward a distant Mediterranean coastal city skyline silhouetted against an orange sky, dust kicked up from the ground, low camera angle showing motion, [stile condiviso]` |
+| 2 | Arrivo in città | `First-person POV sprinting into a dense Mediterranean city at dusk, narrow stone streets opening into a wide piazza, warm terracotta rooftops on both sides, dynamic low-angle motion shot, [stile condiviso]` |
+| 3 | Lancio ODM verso i tetti | `First-person POV, two thin steel cables from mechanical hip-mounted gear firing upward into rooftops above, sudden upward launch, city rooftops falling away below, wind-blown motion lines, dramatic upward wide-angle shot, [stile condiviso]` |
+| 4 | Incrocio in volo | `First-person POV flying above terracotta rooftops, a young woman with long dark hair tied back, tan tactical jacket with belt straps and cable-reel gear, seen from behind, overtaking fast on the left with a motion trail, motion blur, [stile condiviso]` |
+| 5 | Corsa tra i tetti verso le mura | `First-person POV swinging between rooftops on steel cables, skimming just above red clay tiles and chimneys, massive ancient stone walls looming straight ahead on the horizon, dynamic low sweeping camera angle, [stile condiviso]` |
+| 6 | Le mura: arrivo e pausa panorama | `First-person POV standing on top of a massive ancient stone wall, a young man with short dark hair, athletic build, tan tactical jacket with cable-reel gear, sweeping past from behind on the right and coming to a stop beside camera, both looking out over a wide panoramic coastal landscape beyond the wall, calm cinematic wide shot, [stile condiviso]` |
+| 7 | Corsa sulle mura e lancio | `First-person POV sprinting along the top of a massive stone wall then leaping off the outer edge into open air, camera pitching downward mid-fall, vast landscape opening up below, motion blur, [stile condiviso]` |
+| 8 | Tra i giganti | `First-person POV flying fast at ground level between the legs of colossal humanoid giants, extreme scale contrast, low camera angle emphasizing height of the giants, two other airborne figures overtaking nearby, dust and haze, motion blur, [stile condiviso]` |
+| 9 | Avvitamento sul gigante | `First-person POV spiraling upward around the leg and torso of a colossal giant in one continuous corkscrew motion, camera rotating with the spin, reaching the neck and launching straight up into the sky, dramatic motion blur, [stile condiviso]` |
+| 10 | Couple strike + countdown | `First-person POV airborne high above a colossal giant's head, a young woman with long dark hair on the left and a young man with short dark hair on the right, both tan tactical jackets with cable-reel gear, streaking past at high speed and turning mid-air to face camera in perfect sync, blades raised toward the viewer in a crossed strike pose, dramatic backlit golden sky, epic cinematic anime art, high contrast, [stile condiviso]` |
+
+### Prompt motion (Hailuo 2.3, image-to-video) — uno per atto
+
+Più corti di proposito: Hailuo riceve già l'immagine come primo fotogramma, il prompt deve descrivere solo **cosa si muove**, non ridescrivere la scena.
+
+| # | Atto | Motion prompt |
+|---|------|----------------|
+| 1 | Corsa sul viottolo | `Camera tracks forward at running speed, slight vertical bounce, dust particles kicked up, steady forward momentum toward the horizon.` |
+| 2 | Arrivo in città | `Camera continues forward tracking motion, streets rush past on both sides, slight speed lines, smooth forward push into the piazza.` |
+| 3 | Lancio ODM verso i tetti | `Sudden sharp upward camera movement as cables pull taut, whip-fast vertical launch, city drops away below, motion blur on the edges.` |
+| 4 | Incrocio in volo | `Camera holds steady flying forward, second figure sweeps past from left to right at high speed leaving a motion trail, brief camera flinch to follow.` |
+| 5 | Corsa tra i tetti verso le mura | `Camera swings and glides forward in an arc motion between rooftops, banking slightly left and right, walls growing larger straight ahead.` |
+| 6 | Le mura: arrivo e pausa panorama | `Camera settles from motion to stillness as figure lands, second figure sweeps in from behind on the right and stops, camera holds still on the wide view for a beat.` |
+| 7 | Corsa sulle mura e lancio | `Camera pushes forward rapidly for a few steps then tips sharply downward and forward as the leap begins, falling motion, wind rushing.` |
+| 8 | Tra i giganti | `Camera flies fast and low, weaving side to side between giant legs, motion blur, two figures overtake from behind.` |
+| 9 | Avvitamento sul gigante | `Camera spirals continuously upward in a tight corkscrew rotation following the giant's body, then straightens and launches vertically upward.` |
+| 10 | Couple strike + countdown | `Two figures streak past camera from left and right at high speed, both rotate to face camera in sync, arms swing weapons toward the lens, hard flash to white.` |
+
+### Flusso di lavoro consigliato
+
+1. Genera l'immagine dell'atto 1 in Leonardo con il prompt immagine.
+2. Passa quell'immagine a Hailuo 2.3 (image-to-video) con il motion prompt corrispondente.
+3. Ripeti per gli atti 2–10, riusando la stessa descrizione fisica di Ilaria/Davide per coerenza tra i frame.
+4. Se un atto risulta troppo statico con Hailuo (probabile per gli atti 3, 9, 10 — molto dinamici), prova lo stesso frame di partenza su Runway Gen-3, Kling o Luma Dream Machine prima di scartarlo.
+5. Monta le clip risultanti in ordine (Fase 2 — vedi §9).

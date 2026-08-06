@@ -8,7 +8,7 @@ const SOCIAL_BRAND_COLORS = {
   whatsapp: '#25D366',
   instagram: '#E4405F',
   facebook: '#1877F2',
-  tiktok: '#111111',
+  tiktok: 'var(--obw-void)',
 } as const;
 
 function buildWhatsappUrl(phone: string) {
@@ -32,7 +32,7 @@ export function buildContactActions(contact: LogisticsContactItem, t: TranslateF
       id: 'phone',
       label: t('contactActions.call'),
       url: `tel:${contact.phone}`,
-      accentColor: 'var(--aot-military-green)',
+      accentColor: 'var(--obw-gold)',
     });
   }
 
@@ -50,7 +50,7 @@ export function buildContactActions(contact: LogisticsContactItem, t: TranslateF
       id: 'email',
       label: t('contactActions.email'),
       url: `mailto:${contact.email}`,
-      accentColor: 'var(--aot-bronze)',
+      accentColor: 'var(--obw-gold-dim)',
     });
   }
 
@@ -59,7 +59,7 @@ export function buildContactActions(contact: LogisticsContactItem, t: TranslateF
       id: 'website',
       label: t('contactActions.website'),
       url: normalizeExternalUrl(contact.website),
-      accentColor: 'var(--aot-text-primary)',
+      accentColor: 'var(--obw-charcoal)',
     });
   }
 

@@ -101,12 +101,12 @@ export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
   }
 
   return (
-    <div className="section-card">
-      <h2 className="section-title">{t('album.uploadTitle')}</h2>
-      <p className="section-description">{t('album.uploadDescription')}</p>
+    <div className="obw-card">
+      <h2 className="obw-display obw-display--sm">{t('album.uploadTitle')}</h2>
+      <p className="obw-body">{t('album.uploadDescription')}</p>
       {!isAuthenticated ? <p className="helper-text">{t('album.loginHint')}</p> : null}
       <textarea
-        className="textarea input--multiline"
+        className="obw-textarea album-upload-panel__field"
         placeholder={t('album.captionPlaceholder')}
         value={caption}
         onChange={(event) => setCaption(event.target.value)}
@@ -128,7 +128,10 @@ export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
           setPreviewUrl(objectUrl);
         }}
       />
-      <button type="button" className="button button-secondary" onClick={handlePickImage}>
+      <button
+        type="button"
+        className="obw-btn obw-btn--secondary album-upload-panel__choose"
+        onClick={handlePickImage}>
         {isAuthenticated
           ? selectedFile
             ? t('album.changePhoto')
@@ -147,7 +150,7 @@ export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
       ) : null}
       <button
         type="button"
-        className="button button-primary button--spaced-top-sm"
+        className="obw-btn obw-btn--primary obw-btn--block album-upload-panel__submit"
         disabled={uploading}
         onClick={() => void handleUpload()}>
         {isAuthenticated

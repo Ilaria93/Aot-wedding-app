@@ -11,10 +11,10 @@ export function AlbumGrid({ photos }: AlbumGridProps) {
   const { locale, t } = useI18n();
 
   return (
-    <div className="section-card">
-      <h2 className="section-title">{t('album.galleryTitle')}</h2>
+    <div className="obw-card">
+      <h2 className="obw-display obw-display--sm">{t('album.galleryTitle')}</h2>
       {photos.length === 0 ? (
-        <p className="empty-text">{t('album.galleryEmpty')}</p>
+        <p className="obw-body obw-body--flush">{t('album.galleryEmpty')}</p>
       ) : (
         photos.map((photo) => (
           <article key={photo.id} className="photo-card">

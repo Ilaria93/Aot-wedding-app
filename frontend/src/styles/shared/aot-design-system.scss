@@ -27,35 +27,44 @@
 .obw-kicker {
   margin: 0 0 var(--obw-space-sm);
   color: var(--obw-gold);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  padding-left: 0.22em;
   line-height: 1.4;
   text-transform: uppercase;
 }
 
 .obw-kicker--light {
-  color: color-mix(in srgb, var(--obw-bone) 72%, var(--obw-gold));
+  color: color-mix(in srgb, var(--obw-bone) 78%, var(--obw-gold));
 }
 
 .obw-display {
   margin: 0 0 var(--obw-space-md);
   font-family: var(--font-display);
-  font-size: clamp(1.9rem, 4vw, 2.85rem);
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  line-height: 1.02;
-  text-transform: uppercase;
-  color: var(--obw-void);
+  font-size: clamp(1.7rem, 4.4vw, 2.9rem);
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  padding-left: 0.07em;
+  line-height: 1.24;
+  text-wrap: balance;
+  color: var(--obw-text);
+  text-shadow: 0 1px 3px rgba(20, 29, 26, 0.35);
 }
 
 .obw-display--lg {
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(2rem, 5.2vw, 3.3rem);
 }
 
 .obw-display--sm {
-  font-size: clamp(1.35rem, 2.5vw, 1.65rem);
+  font-size: clamp(1.35rem, 2.6vw, 1.75rem);
+}
+
+/* Wide inscriptional spacing — only for short standalone titles. */
+.obw-display--spaced {
+  letter-spacing: 0.16em;
+  padding-left: 0.16em;
 }
 
 .obw-display--light {
@@ -64,8 +73,9 @@
 
 .obw-body {
   margin: 0 0 var(--obw-space-md);
-  color: var(--obw-stone);
-  font-size: 1rem;
+  color: var(--obw-text-muted);
+  font-family: var(--font-editorial);
+  font-size: clamp(1.05rem, 1.9vw, 1.28rem);
   font-weight: 400;
   line-height: 1.7;
 }
@@ -84,10 +94,10 @@
 }
 
 .obw-rule {
-  width: 40px;
+  width: 64px;
   height: 1px;
   margin: var(--obw-space-md) 0;
-  background: color-mix(in srgb, var(--obw-gold) 50%, transparent);
+  background: color-mix(in srgb, var(--obw-bone) 55%, transparent);
 }
 
 .obw-rule--center {
@@ -100,7 +110,8 @@
   position: relative;
   width: 100%;
   min-height: calc(100vh - 57px);
-  background: var(--obw-paper);
+  background: var(--obw-veil-strong);
+  backdrop-filter: blur(3px);
 }
 
 .obw-page--app {
@@ -115,10 +126,10 @@
 }
 
 .obw-page-hero {
-  padding: clamp(1.5rem, 4vw, 2.25rem);
+  padding: clamp(1.75rem, 4.5vw, 2.75rem);
   border: 1px solid var(--obw-border-dark);
   border-radius: var(--obw-radius);
-  background: linear-gradient(155deg, var(--obw-charcoal-deep) 0%, var(--obw-void) 55%, #000 100%);
+  background: color-mix(in srgb, var(--obw-void) 68%, transparent);
   box-shadow: var(--obw-shadow-dark);
   color: var(--obw-bone);
 }
@@ -156,20 +167,31 @@
 
 .obw-section {
   position: relative;
-  padding: var(--obw-space-xl) var(--obw-space-md);
+  padding: clamp(64px, 10vh, 120px) clamp(24px, 6vw, 80px);
+  color: var(--obw-text);
+  background: var(--obw-veil);
+  backdrop-filter: var(--obw-veil-blur);
 }
 
 .obw-section--center {
   text-align: center;
 }
 
+/* Lets the fixed artwork show through untinted — used by the hero, which
+   carries its own scrim. Doubled class so it also outranks the narrow-viewport
+   `.obw-section` padding override further down this file. */
+.obw-section.obw-section--bare {
+  padding: 0;
+  background: none;
+  backdrop-filter: none;
+}
+
 .obw-section--dark {
-  color: var(--obw-bone);
-  background: var(--obw-void);
+  background: var(--obw-veil-strong);
 }
 
 .obw-section--deep {
-  background: var(--obw-paper-deep);
+  background: color-mix(in srgb, var(--obw-veil) 88%, var(--obw-void));
 }
 
 .obw-fade-up {
@@ -202,15 +224,15 @@
 
 .obw-portal-frame--light::before {
   background:
-    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) left top / 28px 1px no-repeat,
-    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) left top / 1px 28px no-repeat,
-    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) right top / 28px 1px no-repeat,
-    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) right top / 1px 28px no-repeat,
-    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) left bottom / 28px 1px no-repeat,
-    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) left bottom / 1px 28px no-repeat,
-    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) right bottom / 28px 1px no-repeat,
-    linear-gradient(var(--obw-charcoal), var(--obw-charcoal)) right bottom / 1px 28px no-repeat;
-  opacity: 0.22;
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 28px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 1px 28px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right top / 28px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right top / 1px 28px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left bottom / 28px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left bottom / 1px 28px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 28px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 1px 28px no-repeat;
+  opacity: 0.55;
 }
 
 .obw-portal-stamp {
@@ -270,13 +292,14 @@
   padding: var(--obw-space-lg) var(--obw-space-md);
   border: 1px solid var(--obw-border);
   border-radius: var(--obw-radius);
-  background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
-  box-shadow: var(--obw-shadow-soft);
+  background: color-mix(in srgb, var(--obw-void) 46%, transparent);
+  backdrop-filter: var(--obw-veil-blur);
+  color: var(--obw-text);
 }
 
 .obw-card--dark {
   border-color: var(--obw-border-dark);
-  background: linear-gradient(165deg, var(--obw-charcoal) 0%, var(--obw-void) 100%);
+  background: color-mix(in srgb, var(--obw-void) 62%, transparent);
   box-shadow: var(--obw-shadow-dark);
   color: var(--obw-bone);
 }
@@ -313,14 +336,15 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 44px;
-  padding: 12px 24px;
+  min-height: 46px;
+  padding: 14px 32px;
   border: 1px solid transparent;
-  border-radius: var(--obw-radius);
+  border-radius: var(--obw-radius-sm);
   font-family: var(--font-display);
-  font-size: 0.875rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-size: 0.82rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  padding-left: calc(32px + 0.16em);
   line-height: 1.2;
   text-decoration: none;
   text-transform: uppercase;
@@ -334,27 +358,36 @@
 }
 
 .obw-btn--primary {
-  border-color: var(--obw-void);
-  background: var(--obw-void);
-  color: var(--obw-bone);
+  border-color: var(--obw-gold);
+  background: var(--obw-gold);
+  color: var(--obw-void);
 }
 
 .obw-btn--primary:hover {
-  border-color: var(--obw-crimson);
-  background: var(--obw-charcoal);
-  color: var(--obw-bone);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+  border-color: var(--obw-gold-bright);
+  background: var(--obw-gold-bright);
+  color: var(--obw-void);
+  box-shadow: var(--obw-shadow-gold);
 }
 
 .obw-btn--secondary {
   border-color: var(--obw-border);
   background: transparent;
-  color: var(--obw-charcoal);
+  color: var(--obw-text);
 }
 
-.obw-btn--secondary:hover {
-  border-color: color-mix(in srgb, var(--obw-charcoal) 35%, transparent);
-  background: var(--obw-paper-deep);
+.obw-page-hero .obw-btn--secondary,
+.obw-card--dark .obw-btn--secondary {
+  border-color: var(--obw-border-dark);
+  color: var(--obw-bone);
+}
+
+.obw-btn--secondary:hover,
+.obw-page-hero .obw-btn--secondary:hover,
+.obw-card--dark .obw-btn--secondary:hover {
+  border-color: var(--obw-gold);
+  background: color-mix(in srgb, var(--obw-bone) 10%, transparent);
+  color: var(--obw-gold-bright);
 }
 
 .obw-btn--ghost {
@@ -365,7 +398,7 @@
 }
 
 .obw-btn--ghost:hover {
-  color: var(--obw-charcoal);
+  color: var(--obw-gold-bright);
 }
 
 .obw-btn--block {
@@ -377,7 +410,7 @@
 }
 
 .obw-btn:focus-visible {
-  outline: 2px solid var(--obw-crimson-hot);
+  outline: 2px solid var(--obw-gold-bright);
   outline-offset: 2px;
 }
 
@@ -396,7 +429,7 @@
 .obw-field-label {
   display: block;
   margin-bottom: 0.4rem;
-  color: var(--obw-charcoal);
+  color: var(--obw-text);
   font-family: var(--font-sans);
   font-size: 0.8125rem;
   font-weight: 500;
@@ -410,8 +443,8 @@
   padding: 12px 14px;
   border: 1px solid var(--obw-border);
   border-radius: var(--obw-radius-sm);
-  background: color-mix(in srgb, var(--obw-paper) 85%, var(--obw-bone));
-  color: var(--obw-void);
+  background: color-mix(in srgb, var(--obw-bone) 8%, transparent);
+  color: var(--obw-text);
   font-weight: 400;
   transition:
     border-color var(--obw-duration-fast) ease,
@@ -434,9 +467,9 @@
 .obw-textarea:focus,
 .obw-select:focus {
   outline: none;
-  border-color: color-mix(in srgb, var(--obw-crimson) 55%, var(--obw-void));
-  background: color-mix(in srgb, var(--obw-paper) 70%, var(--obw-bone));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--obw-crimson) 14%, transparent);
+  border-color: var(--obw-gold);
+  background: color-mix(in srgb, var(--obw-bone) 14%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--obw-gold) 20%, transparent);
 }
 
 .obw-input::placeholder,
@@ -461,7 +494,7 @@
   border: 1px solid var(--obw-border);
   border-radius: var(--obw-radius);
   background: var(--obw-paper);
-  color: var(--obw-charcoal);
+  color: var(--obw-text);
   text-align: left;
   cursor: pointer;
   transition:
@@ -478,9 +511,9 @@
 }
 
 .obw-choice.is-active {
-  border-color: color-mix(in srgb, var(--obw-crimson) 45%, var(--obw-void));
-  background: color-mix(in srgb, var(--obw-crimson) 6%, var(--obw-paper-deep));
-  box-shadow: var(--obw-shadow-soft);
+  border-color: var(--obw-gold);
+  background: color-mix(in srgb, var(--obw-gold) 8%, var(--obw-paper-deep));
+  box-shadow: var(--obw-shadow-gold);
 }
 
 .obw-choice__radio {
@@ -495,7 +528,7 @@
 }
 
 .obw-choice.is-active .obw-choice__radio {
-  border-color: var(--obw-crimson);
+  border-color: var(--obw-gold-bright);
 }
 
 .obw-choice.is-active .obw-choice__radio::after {
@@ -503,7 +536,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--obw-crimson);
+  background: var(--obw-gold-bright);
 }
 
 .obw-choice__label {
@@ -555,7 +588,7 @@
 }
 
 .obw-summary--dark .obw-summary__row {
-  border-color: color-mix(in srgb, var(--obw-paper) 12%, transparent);
+  border-color: color-mix(in srgb, var(--obw-bone) 12%, transparent);
 }
 
 .obw-summary__label {
@@ -568,7 +601,7 @@
 }
 
 .obw-summary--dark .obw-summary__label {
-  color: color-mix(in srgb, var(--obw-paper) 45%, transparent);
+  color: color-mix(in srgb, var(--obw-bone) 45%, transparent);
 }
 
 .obw-summary__value {
@@ -579,7 +612,96 @@
 }
 
 .obw-summary--dark .obw-summary__value {
-  color: color-mix(in srgb, var(--obw-paper) 92%, white);
+  color: color-mix(in srgb, var(--obw-bone) 92%, white);
+}
+
+/* ─── Stat tiles (dashboards) ────────────────────────────── */
+
+.obw-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--obw-space-sm);
+}
+
+.obw-stat-card {
+  padding: var(--obw-space-md);
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius);
+  background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
+  box-shadow: var(--obw-shadow-soft);
+}
+
+.obw-stat-card__value {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 600;
+  color: var(--obw-text);
+}
+
+@media (max-width: 720px) {
+  .obw-stat-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Data rows (admin / dashboard lists) ────────────────── */
+
+.obw-data-list {
+  display: grid;
+  gap: var(--obw-space-sm);
+}
+
+.obw-data-row {
+  padding: var(--obw-space-md);
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius);
+  background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
+  box-shadow: var(--obw-shadow-soft);
+}
+
+.obw-data-row__title {
+  display: block;
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--obw-text);
+}
+
+.obw-data-row__meta {
+  margin: 0 0 4px;
+  color: var(--obw-stone);
+  font-size: 0.875rem;
+}
+
+.obw-data-row__meta--flush {
+  margin-bottom: 0;
+}
+
+.obw-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.obw-status-pill--active {
+  border: 1px solid color-mix(in srgb, var(--obw-gold) 45%, transparent);
+  background: color-mix(in srgb, var(--obw-gold) 12%, transparent);
+  color: var(--obw-gold-dim);
+}
+
+.obw-status-pill--pending {
+  border: 1px solid var(--obw-border);
+  background: color-mix(in srgb, var(--obw-charcoal) 4%, transparent);
+  color: var(--obw-stone);
 }
 
 /* ─── Nav (header) ─────────────────────────────────────── */
@@ -589,9 +711,9 @@
   top: 0;
   z-index: 50;
   border-bottom: 1px solid var(--obw-border-dark);
-  background: color-mix(in srgb, var(--obw-void) 92%, transparent);
+  background: color-mix(in srgb, var(--obw-void) 72%, transparent);
   color: var(--obw-bone);
-  backdrop-filter: blur(18px) saturate(1.05);
+  backdrop-filter: blur(12px) saturate(1.05);
 }
 
 .obw-nav__inner {
@@ -613,10 +735,10 @@
 
 .obw-nav__brand-title {
   font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  padding-left: 0.14em;
 }
 
 .obw-nav__brand-sub {
@@ -659,7 +781,7 @@
   bottom: -3px;
   width: 100%;
   height: 1px;
-  background: var(--obw-crimson-hot);
+  background: var(--obw-gold-bright);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--obw-duration-normal) var(--obw-ease-out);
@@ -738,7 +860,7 @@
   letter-spacing: 0.1em;
   line-height: 1.5;
   text-transform: uppercase;
-  color: var(--obw-void);
+  color: var(--obw-text);
 }
 
 .obw-meta--light {
@@ -834,7 +956,7 @@
 
 .obw-faq-list__item p {
   margin: 0;
-  color: color-mix(in srgb, var(--obw-paper) 72%, transparent);
+  color: color-mix(in srgb, var(--obw-bone) 72%, transparent);
   font-size: 0.95rem;
   font-weight: 300;
   line-height: 1.75;
@@ -856,7 +978,7 @@
 .obw-tag--on-paper {
   border-color: var(--obw-border);
   background: var(--obw-paper-deep);
-  color: var(--obw-charcoal);
+  color: var(--obw-text);
 }
 
 .obw-tag-row {
@@ -882,10 +1004,10 @@
   align-items: center;
   gap: 8px;
   padding: 10px 14px;
-  border: 1px solid color-mix(in srgb, var(--obw-paper) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--obw-bone) 14%, transparent);
   border-radius: var(--obw-radius);
-  background: color-mix(in srgb, var(--obw-paper) 6%, transparent);
-  color: var(--obw-paper);
+  background: color-mix(in srgb, var(--obw-bone) 6%, transparent);
+  color: var(--obw-bone);
   font-family: var(--font-kicker);
   font-size: 11px;
   letter-spacing: 0.12em;
@@ -900,26 +1022,26 @@
 }
 
 .obw-card--dark .obw-btn--secondary {
-  border-color: color-mix(in srgb, var(--obw-paper) 22%, transparent);
-  color: var(--obw-paper);
+  border-color: color-mix(in srgb, var(--obw-bone) 22%, transparent);
+  color: var(--obw-bone);
 }
 
 .obw-card--dark .obw-btn--secondary:hover {
   border-color: var(--obw-gold);
   background: var(--obw-gold);
-  color: var(--obw-charcoal);
+  color: var(--obw-bone);
 }
 
 .obw-card--dark .obw-gift-row {
-  border-color: color-mix(in srgb, var(--obw-paper) 12%, transparent);
+  border-color: color-mix(in srgb, var(--obw-bone) 12%, transparent);
 }
 
 .obw-card--dark .obw-gift-row span {
-  color: color-mix(in srgb, var(--obw-paper) 45%, transparent);
+  color: color-mix(in srgb, var(--obw-bone) 45%, transparent);
 }
 
 .obw-card--dark .obw-gift-row strong {
-  color: color-mix(in srgb, var(--obw-paper) 92%, white);
+  color: color-mix(in srgb, var(--obw-bone) 92%, white);
 }
 
 .obw-gift-row {

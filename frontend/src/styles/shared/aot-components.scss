@@ -2,7 +2,7 @@
 
 .eyebrow {
   margin: 0 0 8px;
-  color: var(--obw-gold);
+  color: var(--obw-gold-dim);
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 600;
@@ -13,11 +13,10 @@
 .title {
   margin: 0 0 10px;
   font-family: var(--font-display);
-  font-size: clamp(1.35rem, 3vw, 1.75rem);
-  font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-size: clamp(1.5rem, 3.2vw, 1.9rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
 }
 
 .subtitle {
@@ -37,10 +36,9 @@
 .section-title {
   margin: 0 0 14px;
   font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .section-description {
@@ -156,8 +154,8 @@
   padding: 12px 14px;
   border: 1px solid var(--obw-border);
   border-radius: var(--obw-radius-sm);
-  background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
-  color: var(--obw-void);
+  background: color-mix(in srgb, var(--obw-bone) 8%, transparent);
+  color: var(--obw-text);
 }
 
 .textarea,
@@ -175,7 +173,7 @@
   width: 100%;
   padding: 12px 18px;
   border: none;
-  border-radius: var(--obw-radius);
+  border-radius: 999px;
   font-family: var(--font-display);
   font-size: 0.875rem;
   font-weight: 700;
@@ -187,8 +185,8 @@
 
 .button-primary,
 .aot-btn-primary {
-  background: var(--obw-void);
-  color: var(--obw-bone);
+  background: var(--obw-gold);
+  color: var(--obw-paper);
 }
 
 .button-secondary,
@@ -197,7 +195,7 @@
   align-self: flex-start;
   border: 1px solid var(--obw-border);
   background: var(--obw-paper-deep);
-  color: var(--obw-void);
+  color: var(--obw-text);
 }
 
 .button-secondary--block,
@@ -237,7 +235,7 @@
 
 .text-link,
 .aot-link {
-  color: var(--obw-void);
+  color: var(--obw-gold-dim);
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
@@ -303,6 +301,6 @@
 }
 
 .loading-text {
-  color: color-mix(in srgb, var(--obw-paper) 65%, var(--obw-stone));
+  color: color-mix(in srgb, var(--obw-bone) 65%, var(--obw-stone));
   font-size: 0.95rem;
 }

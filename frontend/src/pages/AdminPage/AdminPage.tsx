@@ -72,34 +72,37 @@ export function AdminPage() {
           />
 
           {stats ? (
-            <div className="dev-grid dev-grid--spaced">
-              <div className="dev-card">
+            <div className="obw-stat-grid">
+              <div className="obw-stat-card">
                 <p className="obw-kicker">{t('admin.stats.users')}</p>
-                <p className="title">{stats.total_users}</p>
+                <p className="obw-stat-card__value">{stats.total_users}</p>
               </div>
-              <div className="dev-card">
+              <div className="obw-stat-card">
                 <p className="obw-kicker">{t('admin.stats.confirmed')}</p>
-                <p className="title">{stats.total_confirmed}</p>
+                <p className="obw-stat-card__value">{stats.total_confirmed}</p>
               </div>
-              <div className="dev-card">
+              <div className="obw-stat-card">
                 <p className="obw-kicker">{t('admin.stats.attending')}</p>
-                <p className="title">{stats.total_attending}</p>
+                <p className="obw-stat-card__value">{stats.total_attending}</p>
               </div>
             </div>
           ) : null}
 
-          <section className="obw-card landing-section">
+          <section className="obw-card">
             <h2 className="obw-display obw-display--sm">{t('admin.users.title')}</h2>
-            <div className="admin-guest-list">
+            <div className="obw-data-list">
               {users.map((user) => (
-                <article key={user.id} className="dev-card">
-                  <strong>{formatUserName(user)}</strong>
-                  <p className="helper-text helper-text--flush">{user.email}</p>
-                  <p className="helper-text">
+                <article key={user.id} className="obw-data-row">
+                  <span className="obw-data-row__title">{formatUserName(user)}</span>
+                  <p className="obw-data-row__meta obw-data-row__meta--flush">{user.email}</p>
+                  <span
+                    className={`obw-status-pill ${
+                      user.has_rsvp ? 'obw-status-pill--active' : 'obw-status-pill--pending'
+                    }`}>
                     {user.has_rsvp
                       ? t('admin.rsvpStatuses.attending')
                       : t('admin.rsvpStatuses.pending')}
-                  </p>
+                  </span>
                 </article>
               ))}
             </div>

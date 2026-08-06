@@ -16,7 +16,7 @@
 
 .rsvp-panel__party-count {
   margin: 0;
-  color: var(--obw-gold);
+  color: var(--obw-gold-dim);
   letter-spacing: 0.12em;
 }
 
@@ -71,7 +71,7 @@
 
 .rsvp-guest-card__badge {
   margin: 0;
-  color: var(--obw-gold);
+  color: var(--obw-gold-dim);
   font-size: 0.7rem;
   letter-spacing: 0.14em;
 }
@@ -121,7 +121,7 @@
 
 .rsvp-deadline-banner .obw-body {
   margin: 0;
-  color: var(--obw-charcoal);
+  color: var(--obw-text);
 }
 
 .rsvp-faction-reveal {
@@ -132,7 +132,7 @@
 
 .rsvp-faction-reveal__name {
   margin: 0.35rem 0 0;
-  color: var(--obw-paper);
+  color: var(--obw-bone);
 }
 
 .rsvp-guest-summary {
@@ -161,7 +161,7 @@
 
 .rsvp-guest-summary__index {
   margin: 0;
-  color: var(--obw-gold);
+  color: var(--obw-gold-bright);
   font-family: var(--font-kicker);
   font-size: 1.125rem;
   letter-spacing: 0.08em;
@@ -176,19 +176,19 @@
   margin: 0;
   font-family: var(--font-display);
   font-size: 1.05rem;
-  color: var(--obw-paper);
+  color: var(--obw-bone);
 }
 
 .rsvp-guest-summary__meta {
   margin: 0.35rem 0 0;
-  color: rgba(240, 233, 216, 0.78);
+  color: color-mix(in srgb, var(--obw-bone) 78%, transparent);
   font-size: 0.875rem;
   font-weight: 300;
 }
 
 .rsvp-guest-summary__notes {
   margin: 0.35rem 0 0;
-  color: rgba(240, 233, 216, 0.9);
+  color: color-mix(in srgb, var(--obw-bone) 90%, transparent);
   font-size: 0.875rem;
   font-weight: 300;
   font-style: italic;

@@ -107,6 +107,7 @@ export const de = {
     },
     mission: {
       subtitle: 'Der schönste Kampf ist der, den wir gemeinsam führen',
+      scrollCue: 'Schenkt euer Herz',
       ordersLabel: '— MISSIONSBEFEHLE —',
       cards: {
         rsvpTitle: 'RSVP',
@@ -265,7 +266,7 @@ export const de = {
     contacts: {
       title: 'Nützliche Kontakte',
       teamTitle: 'Wedding-Team',
-      teamLine: 'Ilaria & Davide',
+      teamLine: 'Davide & Ilaria',
       teamBody: 'Hier können wir Nummern, E-Mails oder eine Kontaktperson für die Gäste hinzufügen.',
       travelTitle: 'Reisehilfe',
       travelLine: 'Hotels, Transfers, Parkplätze',
