@@ -99,6 +99,9 @@ export const it = {
       profile: 'Profilo',
       login: 'Accedi',
       admin: 'Admin',
+      gallery: 'Galleria',
+      faq: 'FAQ',
+      contacts: 'Contatti',
     },
     hero: {
       eyebrow: 'Matrimonio ispirato ad Attack on Titan',
@@ -107,6 +110,7 @@ export const it = {
     },
     mission: {
       subtitle: 'La battaglia più bella è quella che si combatte insieme',
+      scrollCue: 'Offri il tuo cuore',
       ordersLabel: '— ORDINI DI MISSIONE —',
       cards: {
         rsvpTitle: 'RSVP',
@@ -183,7 +187,7 @@ export const it = {
       photoTwo: 'Foto sposi 02',
       heading: 'Un amore travolgente',
       paragraphOne:
-        'Ilaria e Davide stanno costruendo una pagina che racconti il loro giorno in modo più intimo, elegante e personale.',
+        'Davide e Ilaria stanno costruendo una pagina che racconti il loro giorno in modo più intimo, elegante e personale.',
       paragraphTwo:
         'L’idea è unire il linguaggio di un wedding site editoriale con una navigazione moderna, un RSVP digitale e dettagli organizzati in un unico posto.',
     },
@@ -223,6 +227,19 @@ export const it = {
       reference: 'Causale',
       copyIban: 'Copia IBAN',
       copiedIban: 'IBAN copiato',
+    },
+    gallery: {
+      eyebrow: 'I nostri ricordi',
+      title: 'La nostra galleria',
+      intro:
+        'Un tesoro di istanti condivisi: buttate un occhio alle foto arrivate da parenti e amici.',
+      loading: 'Caricamento foto...',
+      empty: 'Non ci sono ancora foto. Le prime arriveranno presto!',
+      error: 'Impossibile caricare le foto. Riprova più tardi.',
+      retry: 'Riprova',
+      ctaTitle: 'Vuoi rivivere i momenti?',
+      ctaBody: 'Carica le tue foto del nostro giorno nella galleria condivisa.',
+      ctaButton: 'Apri la galleria',
     },
     devTools: {
       title: 'Area RSVP e strumenti',
@@ -265,7 +282,7 @@ export const it = {
     contacts: {
       title: 'Contatti utili',
       teamTitle: 'Wedding team',
-      teamLine: 'Ilaria & Davide',
+      teamLine: 'Davide & Ilaria',
       teamBody:
         'Qui possiamo aggiungere numeri, email o una persona di riferimento per gli invitati.',
       travelTitle: 'Supporto viaggio',
@@ -276,7 +293,6 @@ export const it = {
       ceremonyBody:
         'Perfetta per raccogliere le ultime informazioni pratiche senza sovraccaricare la home.',
     },
-    apiConnected: 'API collegata: {{apiBaseUrl}}',
   },
   auth: {
     experience: {

@@ -31,11 +31,15 @@ export function ProfilePage() {
           <p className="obw-body obw-body--flush">{t('profile.subtitle')}</p>
         </header>
 
-        <div className="obw-card profile-page__card">
-          <p className="summary-label">{t('profile.emailLabel')}</p>
-          <p className="summary-value">{user.email}</p>
-          <p className="summary-label">{t('profile.roleLabel')}</p>
-          <p className="summary-value summary-value--flush">{formatUserRoleLabel(user.role, t)}</p>
+        <div className="obw-card profile-page__card obw-summary">
+          <div className="obw-summary__row">
+            <p className="obw-summary__label">{t('profile.emailLabel')}</p>
+            <p className="obw-summary__value">{user.email}</p>
+          </div>
+          <div className="obw-summary__row">
+            <p className="obw-summary__label">{t('profile.roleLabel')}</p>
+            <p className="obw-summary__value">{formatUserRoleLabel(user.role, t)}</p>
+          </div>
         </div>
 
         <button

@@ -1,20 +1,9 @@
 .landing-page {
   width: 100%;
-  background: var(--obw-paper);
-}
-
-.landing-page--hero-active {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.landing-api {
-  margin: 0;
-  padding: var(--obw-space-md) var(--obw-space-md) var(--obw-space-lg);
-  color: var(--obw-stone);
-  font-family: var(--font-kicker);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-align: center;
-  text-transform: uppercase;
+  /* Transparent so the fixed sunset illustration stays visible: each section
+     lays its own translucent veil over it. */
+  background: transparent;
+  /* Contains the hero band's full-bleed 100vw break-out so the page itself
+     never scrolls sideways. */
+  overflow-x: clip;
 }

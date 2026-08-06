@@ -1,9 +1,10 @@
 import type { AppLocale } from '@/i18n/translations';
 
-export const WEDDING_COUPLE_NAMES = 'Ilaria & Davide' as const;
+export const WEDDING_COUPLE_NAMES = 'Davide & Ilaria' as const;
 export const WEDDING_OPERATION_NAME = 'Operation Ravenna' as const;
 export const WEDDING_VENUE_NAME = 'Lido Adriano' as const;
 export const WEDDING_VENUE_AREA = 'Amarissimo Cala Celeste' as const;
+export const WEDDING_VENUE_SHORT = 'Cala Celeste' as const;
 export const WEDDING_CITY = 'Ravenna' as const;
 export const WEDDING_TIMEZONE = 'Europe/Rome' as const;
 
@@ -159,6 +160,21 @@ function toRomanNumeral(value: number): string {
   }
 
   return result;
+}
+
+/** Hero date line (e.g. 31 Maggio 2027). */
+export function formatWeddingHeroDate(locale: AppLocale): string {
+  return new Intl.DateTimeFormat(localeMap[locale], {
+    timeZone: WEDDING_TIMEZONE,
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(new Date(getWeddingTimestampMs()));
+}
+
+/** Short hero place line (e.g. Cala Celeste — Ravenna). */
+export function formatWeddingHeroVenue(): string {
+  return `${WEDDING_VENUE_SHORT} — ${WEDDING_CITY}`;
 }
 
 /** Mission hero date line with roman numerals (e.g. XXXI · MAGGIO · MMXXVII). */

@@ -6,7 +6,7 @@
   padding: 0;
   border: none;
   background: none;
-  color: var(--obw-charcoal);
+  color: var(--obw-text);
   font-size: 0.9375rem;
   font-weight: 300;
   cursor: pointer;
@@ -21,7 +21,7 @@
   border: 1px solid var(--obw-border);
   border-radius: var(--obw-radius);
   background: var(--obw-paper-muted);
-  color: var(--obw-paper);
+  color: var(--obw-bone);
   transition:
     border-color var(--obw-duration-fast) ease,
     background var(--obw-duration-fast) ease;
@@ -29,7 +29,7 @@
 
 .inline-toggle__box.is-active {
   border-color: var(--obw-gold);
-  background: var(--obw-charcoal);
+  background: var(--obw-gold);
 }
 
 .inline-toggle:hover .inline-toggle__box {

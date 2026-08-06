@@ -99,6 +99,9 @@ export const de = {
       profile: 'Profil',
       login: 'Anmelden',
       admin: 'Admin',
+      gallery: 'Galerie',
+      faq: 'FAQ',
+      contacts: 'Kontakte',
     },
     hero: {
       eyebrow: 'Von Attack on Titan inspirierte Hochzeit',
@@ -107,6 +110,7 @@ export const de = {
     },
     mission: {
       subtitle: 'Der schönste Kampf ist der, den wir gemeinsam führen',
+      scrollCue: 'Schenkt euer Herz',
       ordersLabel: '— MISSIONSBEFEHLE —',
       cards: {
         rsvpTitle: 'RSVP',
@@ -224,6 +228,18 @@ export const de = {
       copyIban: 'IBAN kopieren',
       copiedIban: 'IBAN kopiert',
     },
+    gallery: {
+      eyebrow: 'Unsere Erinnerungen',
+      title: 'Unsere Galerie',
+      intro: 'Ein Schatz geteilter Momente: schauen Sie sich die Fotos an, die Freunde und Familie geschickt haben.',
+      loading: 'Fotos werden geladen...',
+      empty: 'Noch keine Fotos. Die ersten kommen bald!',
+      error: 'Fotos konnten nicht geladen werden. Bitte versuchen Sie es später erneut.',
+      retry: 'Erneut versuchen',
+      ctaTitle: 'Die Momente noch einmal erleben?',
+      ctaBody: 'Laden Sie Ihre Fotos von unserem Tag in die gemeinsame Galerie hoch.',
+      ctaButton: 'Galerie öffnen',
+    },
     devTools: {
       title: 'RSVP-Bereich und Tools',
       description:
@@ -265,7 +281,7 @@ export const de = {
     contacts: {
       title: 'Nützliche Kontakte',
       teamTitle: 'Wedding-Team',
-      teamLine: 'Ilaria & Davide',
+      teamLine: 'Davide & Ilaria',
       teamBody: 'Hier können wir Nummern, E-Mails oder eine Kontaktperson für die Gäste hinzufügen.',
       travelTitle: 'Reisehilfe',
       travelLine: 'Hotels, Transfers, Parkplätze',
@@ -275,7 +291,6 @@ export const de = {
       ceremonyBody:
         'Perfekt, um die neuesten praktischen Informationen zu sammeln, ohne die Startseite zu überladen.',
     },
-    apiConnected: 'Verbundene API: {{apiBaseUrl}}',
   },
   auth: {
     experience: {

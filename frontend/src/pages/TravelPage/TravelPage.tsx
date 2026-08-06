@@ -75,7 +75,7 @@ export function TravelPage() {
       <PageHero eyebrow={t('travel.eyebrow')} title={t('travel.title')} subtitle={t('travel.subtitle')}>
         <button
           type="button"
-          className="button button-secondary"
+          className="obw-btn obw-btn--secondary"
           disabled={refreshing}
           onClick={() => {
             setRefreshing(true);
@@ -88,16 +88,16 @@ export function TravelPage() {
       {error ? <PageAlert message={error} /> : null}
 
       {contacts.length === 0 ? (
-        <div className="section-card">
-          <h2 className="section-title">{t('travel.emptyTitle')}</h2>
-          <p className="empty-text">{t('travel.emptyBody')}</p>
+        <div className="obw-card">
+          <h2 className="obw-display obw-display--sm">{t('travel.emptyTitle')}</h2>
+          <p className="obw-body obw-body--flush">{t('travel.emptyBody')}</p>
         </div>
       ) : (
         LOGISTICS_CONTACT_CATEGORY_IDS.filter(
           (categoryId) => groupedContacts[categoryId].length > 0,
         ).map((categoryId) => (
-          <section key={categoryId} className="section-card">
-            <h2 className="section-title">{getLogisticsContactCategoryLabel(categoryId, t)}</h2>
+          <section key={categoryId} className="obw-card">
+            <h2 className="obw-display obw-display--sm">{getLogisticsContactCategoryLabel(categoryId, t)}</h2>
             {groupedContacts[categoryId].map((contact) => {
               const contactActions = buildContactActions(contact, t);
 

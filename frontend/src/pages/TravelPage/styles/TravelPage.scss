@@ -1,7 +1,7 @@
 .contact-card {
   padding-top: 14px;
   margin-top: 14px;
-  border-top: 1px solid var(--aot-border);
+  border-top: 1px solid var(--obw-border);
 }
 
 .contact-card:first-child {
@@ -18,7 +18,7 @@
 
 .contact-card__meta {
   margin: 0 0 4px;
-  color: var(--aot-text-muted);
+  color: var(--obw-stone);
   font-size: 14px;
 }
 
@@ -40,10 +40,10 @@
   align-items: center;
   gap: 8px;
   padding: 10px 14px;
-  border: 1px solid var(--aot-border);
+  border: 1px solid var(--obw-border);
   border-radius: 12px;
-  background: var(--aot-surface-muted);
-  color: var(--aot-text-primary);
+  background: var(--obw-paper-deep);
+  color: var(--obw-text);
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;

@@ -40,7 +40,7 @@ export function AlbumPage() {
       <PageHero eyebrow={t('album.eyebrow')} title={t('album.title')} subtitle={t('album.subtitle')}>
         <button
           type="button"
-          className="button button-secondary"
+          className="obw-btn obw-btn--secondary"
           disabled={refreshing}
           onClick={() => {
             setRefreshing(true);
