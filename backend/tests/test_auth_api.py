@@ -29,7 +29,7 @@ def test_register_admin_without_role_secret_returns_400(api_client):
         },
     )
     assert response.status_code == 400
-    assert response.json()["detail"] == "Invalid role secret."
+    assert response.json()["detail"]["code"] == "INVALID_ROLE_SECRET"
 
 
 def test_register_creates_admin_with_valid_role_secret(api_client):
