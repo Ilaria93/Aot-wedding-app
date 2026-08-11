@@ -104,6 +104,39 @@
   color: var(--obw-bone);
 }
 
+.site-header {
+  inset-inline: 0;
+}
+
+/* Home only: taken out of flow so the hero cover starts at the very top of the
+   viewport. Sticky would still reserve its height and push the artwork down.
+   Doubled class to outrank `.obw-nav`, which also sets position. */
+.site-header.site-header--overlay {
+  position: fixed;
+  top: 0;
+}
+
+/* Slide-in behaviour. These must stay at top level: nested inside the
+   narrow-viewport media query they never applied on desktop, so the bar sat
+   over the hero cover at all times. */
+.site-header--visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+  transition:
+    transform 0.5s var(--obw-ease-out),
+    opacity 0.4s ease;
+}
+
+.site-header:not(.site-header--visible) {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.4s var(--obw-ease-out),
+    opacity 0.3s ease;
+}
+
 @media (max-width: 768px) {
   .site-header .site-header__nav--desktop {
     display: none;
@@ -120,6 +153,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .site-header--visible,
+  .site-header:not(.site-header--visible) {
+    transition: none;
+  }
+
   .site-header__menu-btn:active {
     transform: none;
   }
