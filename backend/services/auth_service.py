@@ -3,6 +3,7 @@ import hmac
 
 from sqlalchemy.orm import Session
 
+from constants.auth_error_codes import EMAIL_TAKEN, INVALID_CREDENTIALS, INVALID_ROLE_SECRET
 from models.user_model import User
 from schemas.auth_schema import (
     AuthLoginRequest,
@@ -50,7 +51,7 @@ def _resolve_registration_role(payload: AuthRegisterRequest) -> str:
 
     expected_secret = read_wedding_role_secret()
     if not expected_secret or not hmac.compare_digest(provided_secret, expected_secret):
-        raise AuthValidationError("Invalid role secret.")
+        raise AuthValidationError("Invalid role secret.", code=INVALID_ROLE_SECRET)
     return UserRoleEnum.admin.value
 
 
@@ -59,7 +60,7 @@ def register_user(db: Session, payload: AuthRegisterRequest) -> AuthSessionRespo
     normalized_email = normalize_email(payload.email)
     existing_user = db.query(User).filter(User.email == normalized_email).first()
     if existing_user:
-        raise AuthValidationError("An account with this email already exists.")
+        raise AuthValidationError("An account with this email already exists.", code=EMAIL_TAKEN)
 
     created_user = User(
         first_name=payload.first_name.strip(),
@@ -81,7 +82,7 @@ def authenticate_user(db: Session, payload: AuthLoginRequest) -> AuthSessionResp
     normalized_email = normalize_email(payload.email)
     user = db.query(User).filter(User.email == normalized_email).first()
     if not user or not verify_password(payload.password, user.password_hash):
-        raise AuthValidationError("Invalid email or password.")
+        raise AuthValidationError("Invalid email or password.", code=INVALID_CREDENTIALS)
 
     user.last_login_at = datetime.utcnow()
     db.commit()

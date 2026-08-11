@@ -13,18 +13,22 @@
   min-height: 100svh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* Copy sits at the top of the cover so it never lands on the couple. */
+  justify-content: flex-start;
   overflow: hidden;
-  padding: clamp(4.5rem, 12vh, 7rem) var(--obw-space-md) clamp(2rem, 5vh, 3.5rem);
+  padding: clamp(1.75rem, 6.5vh, 5rem) var(--obw-space-md) clamp(1.5rem, 3.4vh, 2.25rem);
   text-align: center;
+  /* Long, gentle top-down scrim: just enough behind the copy, fading to nothing
+     well before the couple so the illustration keeps its colour. */
   background: linear-gradient(
     180deg,
-    rgba(42, 22, 20, 0.58) 0%,
-    rgba(42, 22, 20, 0.26) 34%,
-    rgba(42, 22, 20, 0.3) 58%,
-    rgba(42, 22, 20, 0.52) 100%
+    rgba(20, 29, 26, 0.34) 0%,
+    rgba(20, 29, 26, 0.26) 18%,
+    rgba(20, 29, 26, 0.16) 34%,
+    rgba(20, 29, 26, 0.07) 50%,
+    rgba(20, 29, 26, 0.02) 64%,
+    rgba(20, 29, 26, 0) 78%
   );
-  border-bottom: 1px solid color-mix(in srgb, var(--obw-bone) 26%, transparent);
 }
 
 .mission-hero__particles {
@@ -40,6 +44,9 @@
 .mission-hero__band-content {
   position: relative;
   z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .mission-hero__seal {
@@ -96,74 +103,28 @@
   text-shadow: 0 1px 16px rgba(42, 22, 20, 0.6);
 }
 
-.mission-hero__vow {
-  margin: clamp(0.75rem, 2vh, 1.15rem) auto 0;
-  max-width: 30ch;
-  font-family: var(--font-editorial);
-  font-style: italic;
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  line-height: 1.6;
-  color: color-mix(in srgb, var(--obw-bone) 84%, transparent);
-  text-shadow: 0 1px 14px rgba(42, 22, 20, 0.6);
-}
-
-/* Fixed four-up grid: a flex row wrapped 3+1 once the letter-spaced labels
-   pushed the cells past the viewport width. */
-.mission-hero__countdown {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(6px, 1.5vw, 10px);
-  width: min(100%, 400px);
-  margin: clamp(1.25rem, 3vh, 2rem) auto 0;
-}
-
-.mission-hero__countdown-cell {
-  min-width: 0;
-  padding: 10px 4px;
-  background: color-mix(in srgb, var(--obw-void) 46%, transparent);
-  border: 1px solid color-mix(in srgb, var(--obw-bone) 24%, transparent);
-  border-radius: var(--obw-radius);
-  text-align: center;
-  backdrop-filter: blur(3px);
-}
-
-.mission-hero__countdown-cell b {
-  display: block;
-  font-family: var(--font-editorial);
-  font-size: 1.6rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  color: var(--obw-gold);
-}
-
-.mission-hero__countdown-cell span {
-  display: block;
-  font-family: var(--font-sans);
-  font-size: clamp(0.5rem, 1.7vw, 0.58rem);
-  font-weight: 400;
-  letter-spacing: 0.14em;
-  padding-left: 0.14em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--obw-bone) 76%, transparent);
-}
-
+/* Pushed to the foot of the cover, away from the top-anchored copy. */
 .mission-hero__scroll-cue {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  margin-top: clamp(1.5rem, 3.5vh, 2.5rem);
+  margin-top: auto;
+  padding-top: clamp(1.5rem, 3.5vh, 2.5rem);
 }
 
 .mission-hero__scroll-label {
-  font-family: var(--font-sans);
-  font-size: clamp(0.72rem, 1.4vw, 0.95rem);
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.6vw, 1.85rem);
+  font-style: italic;
   font-weight: 400;
-  letter-spacing: 0.32em;
-  padding-left: 0.32em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
   color: var(--obw-bone);
-  text-shadow: 0 1px 14px rgba(42, 22, 20, 0.7);
+  /* Sits on the sunlit part of the artwork, where the scrim has faded out. */
+  text-shadow:
+    0 1px 3px rgba(28, 14, 13, 0.85),
+    0 2px 18px rgba(28, 14, 13, 0.7);
 }
 
 .mission-hero__scroll-mouse {
@@ -201,150 +162,7 @@
   }
 }
 
-.mission-hero__divider {
-  display: flex;
-  align-items: center;
-  gap: var(--obw-space-sm);
-  padding: var(--obw-space-md);
-  background: var(--obw-veil);
-  backdrop-filter: var(--obw-veil-blur);
-  border-bottom: 1px solid var(--obw-border);
-}
-
-.mission-hero__divider-line {
-  flex: 1;
-  height: 1px;
-  background: color-mix(in srgb, var(--obw-bone) 32%, transparent);
-}
-
-.mission-hero__divider-label {
-  font-family: var(--font-sans);
-  font-size: 10px;
-  font-weight: 400;
-  letter-spacing: 0.28em;
-  padding-left: 0.28em;
-  text-transform: uppercase;
-  color: var(--obw-gold);
-  white-space: nowrap;
-}
-
-.mission-hero__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.mission-hero__card {
-  position: relative;
-  display: block;
-  padding: var(--obw-space-lg) var(--obw-space-md);
-  text-decoration: none;
-  color: inherit;
-  background: var(--obw-veil);
-  backdrop-filter: var(--obw-veil-blur);
-  border-right: 1px solid var(--obw-border);
-  border-bottom: 1px solid var(--obw-border);
-  transition:
-    background var(--obw-duration-normal) ease,
-    transform var(--obw-duration-normal) var(--obw-ease-out),
-    box-shadow var(--obw-duration-normal) ease;
-}
-
-.mission-hero__card:nth-child(2n) {
-  border-right: none;
-}
-
-.mission-hero__card:nth-last-child(-n + 2) {
-  border-bottom: none;
-}
-
-.mission-hero__card:hover,
-.mission-hero__card:focus-visible {
-  z-index: 1;
-  background: var(--obw-veil-strong);
-  outline: none;
-  transform: translateY(-3px);
-  box-shadow: var(--obw-shadow-soft);
-}
-
-.mission-hero__card:hover .mission-hero__card-arrow,
-.mission-hero__card:focus-visible .mission-hero__card-arrow {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.mission-hero__card:hover .mission-hero__card-icon,
-.mission-hero__card:focus-visible .mission-hero__card-icon {
-  background: var(--obw-gold);
-  color: var(--obw-void);
-}
-
-.mission-hero__card-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  margin-bottom: var(--obw-space-sm);
-  border: 1px solid color-mix(in srgb, var(--obw-gold) 45%, transparent);
-  border-radius: var(--obw-radius);
-  color: var(--obw-gold);
-  transition:
-    background var(--obw-duration-fast) ease,
-    color var(--obw-duration-fast) ease;
-}
-
-.mission-hero__card-title {
-  display: block;
-  font-family: var(--font-sans);
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  padding-left: 0.18em;
-  text-transform: uppercase;
-  color: var(--obw-bone);
-}
-
-.mission-hero__card-desc {
-  display: block;
-  margin-top: 6px;
-  color: var(--obw-text-muted);
-  font-family: var(--font-editorial);
-  font-size: 1.05rem;
-  line-height: 1.55;
-}
-
-.mission-hero__card-arrow {
-  position: absolute;
-  right: var(--obw-space-md);
-  bottom: var(--obw-space-md);
-  color: var(--obw-gold);
-  font-family: var(--font-display);
-  opacity: 0;
-  transform: translateX(-6px);
-  transition:
-    opacity var(--obw-duration-normal) ease,
-    transform var(--obw-duration-normal) var(--obw-ease-out);
-}
-
-@media (max-width: 520px) {
-  .mission-hero__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .mission-hero__card {
-    border-right: none;
-  }
-
-  .mission-hero__card:not(:last-child) {
-    border-bottom: 1px solid var(--obw-border);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .mission-hero__card:hover {
-    transform: none;
-  }
-
   .mission-hero__scroll-wheel {
     animation: none;
   }

@@ -1,9 +1,9 @@
-import { MAX_PARTY_GUESTS } from '@/constants/rsvpParty';
 import { buildEmptyGuestLine } from '@/components/Rsvp/buildInitialGuestLines';
 import { RsvpGuestLineFields } from '@/components/Rsvp/RsvpGuestLineFields';
 import type { RsvpGuestDraft } from '@/components/Rsvp/types/RsvpGuestDraft';
 import type { RsvpGuestFieldError } from '@/components/Rsvp/validateRsvpGuestLines';
 import { useI18n } from '@/contexts/I18nContext';
+import type { RsvpPartyLimits } from '@/pages/RsvpPage/useRsvpDraft';
 import './styles/Rsvp.scss';
 
 type RsvpPartyFormProps = {
@@ -12,6 +12,8 @@ type RsvpPartyFormProps = {
   submitting: boolean;
   isEditMode: boolean;
   fieldErrors: RsvpGuestFieldError[];
+  /** Read from the backend — see useRsvpDraft — never hardcoded here. */
+  partyLimits: RsvpPartyLimits;
   onAttendingChange: (attending: boolean) => void;
   onGuestsChange: (guests: RsvpGuestDraft[]) => void;
   onSubmit: () => void;
@@ -25,13 +27,14 @@ export function RsvpPartyForm({
   submitting,
   isEditMode,
   fieldErrors,
+  partyLimits,
   onAttendingChange,
   onGuestsChange,
   onSubmit,
   onCancelEdit,
 }: RsvpPartyFormProps) {
   const { t } = useI18n();
-  const canAddGuest = attending && guests.length < MAX_PARTY_GUESTS;
+  const canAddGuest = attending && guests.length < partyLimits.max;
 
   function updateGuest(clientId: string, patch: Partial<RsvpGuestDraft>) {
     onGuestsChange(
@@ -81,7 +84,7 @@ export function RsvpPartyForm({
           <div className="rsvp-panel__party-meta">
             <p className="obw-kicker">{t('rsvp.guestsTitle')}</p>
             <p className="obw-kicker rsvp-panel__party-count">
-              {t('rsvp.partyCount', { current: guests.length, max: MAX_PARTY_GUESTS })}
+              {t('rsvp.partyCount', { current: guests.length, max: partyLimits.max })}
             </p>
           </div>
           <p className="obw-body rsvp-panel__hint">{t('rsvp.guestsHint')}</p>

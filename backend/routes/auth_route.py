@@ -26,13 +26,19 @@ from services.auth_service import (
 router = APIRouter(prefix="/auth")
 
 
+def _auth_error_detail(error: AuthValidationError) -> dict[str, str]:
+    """Shapes the HTTP error body around `code`, the seam the frontend keys off,
+    with `message` kept only as a human-readable fallback/log line."""
+    return {"code": error.code, "message": str(error)}
+
+
 # Registers a new account and immediately returns an authenticated session.
 @router.post("/register", response_model=AuthSessionResponse)
 def register_auth_user(payload: AuthRegisterRequest, db: Session = Depends(get_db)):
     try:
         return register_user(db, payload)
     except AuthValidationError as error:
-        raise HTTPException(status_code=400, detail=str(error)) from error
+        raise HTTPException(status_code=400, detail=_auth_error_detail(error)) from error
 
 
 # Logs in an existing account and returns fresh access and refresh tokens.
@@ -41,7 +47,7 @@ def login_auth_user(payload: AuthLoginRequest, db: Session = Depends(get_db)):
     try:
         return authenticate_user(db, payload)
     except AuthValidationError as error:
-        raise HTTPException(status_code=401, detail=str(error)) from error
+        raise HTTPException(status_code=401, detail=_auth_error_detail(error)) from error
 
 
 # Rotates the refresh session and returns a new token pair.
@@ -50,7 +56,7 @@ def refresh_auth_tokens(payload: AuthRefreshRequest, db: Session = Depends(get_d
     try:
         return refresh_auth_session(db, payload.refresh_token)
     except AuthValidationError as error:
-        raise HTTPException(status_code=401, detail=str(error)) from error
+        raise HTTPException(status_code=401, detail=_auth_error_detail(error)) from error
 
 
 # Returns the profile of the currently authenticated user.

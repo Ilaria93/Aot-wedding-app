@@ -1,7 +1,7 @@
 import type { AppLocale } from '@/i18n/translations';
 
 export const WEDDING_COUPLE_NAMES = 'Davide & Ilaria' as const;
-export const WEDDING_OPERATION_NAME = 'Operation Ravenna' as const;
+export const WEDDING_OPERATION_NAME = 'Operazione Pirulini' as const;
 export const WEDDING_VENUE_NAME = 'Lido Adriano' as const;
 export const WEDDING_VENUE_AREA = 'Amarissimo Cala Celeste' as const;
 export const WEDDING_VENUE_SHORT = 'Cala Celeste' as const;

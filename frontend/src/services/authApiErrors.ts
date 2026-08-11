@@ -3,6 +3,7 @@ import {
   getApiErrorMessage,
   type ApiValidationErrorItem,
 } from '@/services/apiErrors';
+import { AUTH_ERROR_CODES } from '@/services/authErrorCodes';
 
 type TranslateFn = (key: string) => string;
 
@@ -42,12 +43,12 @@ function mapRegisterValidationError(item: ApiValidationErrorItem, translate: Tra
   return null;
 }
 
-function mapRegisterStringDetail(detail: string, translate: TranslateFn): string | null {
-  if (detail === 'An account with this email already exists.') {
+function mapRegisterErrorCode(code: string, translate: TranslateFn): string | null {
+  if (code === AUTH_ERROR_CODES.emailTaken) {
     return translate('register.validation.emailTaken');
   }
 
-  if (detail === 'Invalid role secret.') {
+  if (code === AUTH_ERROR_CODES.invalidRoleSecret) {
     return translate('register.validation.invalidRoleSecret');
   }
 
@@ -69,8 +70,8 @@ function mapLoginValidationError(item: ApiValidationErrorItem, translate: Transl
   return null;
 }
 
-function mapLoginStringDetail(detail: string, translate: TranslateFn): string | null {
-  if (detail === 'Invalid email or password.') {
+function mapLoginErrorCode(code: string, translate: TranslateFn): string | null {
+  if (code === AUTH_ERROR_CODES.invalidCredentials) {
     return translate('login.validation.invalidCredentials');
   }
 
@@ -98,15 +99,15 @@ export function getAuthApiErrorMessage(
     }
   }
 
-  const requestError = caughtError as { response?: { data?: { detail?: string } } };
-  const stringDetail = requestError.response?.data?.detail;
+  const requestError = caughtError as { response?: { data?: { detail?: { code?: string } } } };
+  const errorCode = requestError.response?.data?.detail?.code;
 
-  if (typeof stringDetail === 'string') {
+  if (typeof errorCode === 'string') {
     const localized =
       scope === 'register'
-        ? mapRegisterStringDetail(stringDetail, translate)
+        ? mapRegisterErrorCode(errorCode, translate)
         : scope === 'login'
-          ? mapLoginStringDetail(stringDetail, translate)
+          ? mapLoginErrorCode(errorCode, translate)
           : null;
 
     if (localized) {

@@ -27,6 +27,9 @@ export type RsvpMe = {
   faction?: FactionId | null;
   guests: RsvpGuestLine[];
   editable: boolean;
+  /** Party-size policy, read from the backend — the single owner of this rule. */
+  max_party_guests: number;
+  min_party_guests: number;
 };
 
 export type RsvpSubmitPayload = {

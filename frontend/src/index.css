@@ -28,9 +28,11 @@
   /* Translucent veils the sections float on above the fixed illustration.
      The blur is what keeps copy legible where the artwork is bright and busy —
      tinting alone was not enough over the sunlit flower field. */
-  --obw-veil: rgba(42, 22, 20, 0.78);
-  --obw-veil-strong: rgba(20, 14, 13, 0.9);
-  --obw-veil-blur: blur(9px);
+  /* Deep pine, the mockup's section tint (#1E2C28) — the previous brown cast
+     fought the sunset instead of sitting under it. */
+  --obw-veil: rgba(30, 44, 40, 0.42);
+  --obw-veil-strong: rgba(20, 29, 26, 0.62);
+  --obw-veil-blur: blur(10px);
 
   --obw-radius: 3px;
   --obw-radius-sm: 2px;
@@ -118,16 +120,12 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background-image: url('/assets/wedding/hero-sunset-mobile.webp');
+  /* One file for every viewport. A separate mobile variant used to live here
+     and silently broke the moment the artwork was replaced without it. */
+  background-image: url('/assets/wedding/hero-sunset.webp');
   background-size: cover;
   background-position: center 60%;
   background-repeat: no-repeat;
-}
-
-@media (min-width: 900px) {
-  body::before {
-    background-image: url('/assets/wedding/hero-sunset.webp');
-  }
 }
 
 a {

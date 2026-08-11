@@ -1,6 +1,9 @@
 import type { IntoleranceId, MealChoiceId } from '@/services/rsvpApi';
 
-export const MAX_PARTY_GUESTS = 10;
+// The party-size limit used to be hardcoded here too. It's now read from the
+// backend's /rsvp/me response (see RsvpMeResponse / useRsvpDraft) — the
+// backend is the only place that enforces it, so it's the only place that
+// declares it.
 
 export const MEAL_CHOICE_IDS: MealChoiceId[] = [
   'standard',
