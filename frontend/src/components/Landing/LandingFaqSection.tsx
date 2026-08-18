@@ -9,7 +9,7 @@ export function LandingFaqSection() {
   return (
     <section className="obw-section obw-section--dark obw-section--center obw-fade-up" id="faq">
       <p className="obw-kicker obw-kicker--light">{t('landing.faq.eyebrow')}</p>
-      <h2 className="obw-display obw-display--light">{t('landing.faq.title')}</h2>
+      <h2 className="obw-display obw-display--lg obw-display--light">{t('landing.faq.title')}</h2>
       <div className="obw-rule obw-rule--center" aria-hidden="true" />
       <div className="obw-faq-list">
         <article className="obw-faq-list__item">

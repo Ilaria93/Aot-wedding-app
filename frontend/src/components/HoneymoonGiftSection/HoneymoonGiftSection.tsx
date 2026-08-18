@@ -44,7 +44,7 @@ export function HoneymoonGiftSection() {
       <div className="obw-container obw-gift-layout">
         <div>
           <p className="obw-kicker">{t('landing.gift.eyebrow')}</p>
-          <h2 className="obw-display">{t('landing.gift.title')}</h2>
+          <h2 className="obw-display obw-display--lg">{t('landing.gift.title')}</h2>
           <div className="obw-rule" aria-hidden="true" />
           <p className="obw-body">{t('landing.gift.intro')}</p>
           <p className="obw-body">{t('landing.gift.gratitude')}</p>

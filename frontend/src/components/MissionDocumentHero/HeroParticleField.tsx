@@ -38,7 +38,7 @@ function createPetal(width: number, height: number, startAbove: boolean): Petal 
     spin: (Math.random() - 0.5) * 1.4,
     angle: Math.random() * Math.PI * 2,
     colour: PETAL_COLOURS[Math.floor(Math.random() * PETAL_COLOURS.length)],
-    alpha: 0.45 + Math.random() * 0.45,
+    alpha: 0.55 + Math.random() * 0.4,
   };
 }
 
@@ -78,7 +78,7 @@ export function HeroParticleField() {
     }
 
     function seed() {
-      const count = Math.max(14, Math.min(34, Math.round((width * height) / 34_000)));
+      const count = Math.max(22, Math.min(48, Math.round((width * height) / 22_000)));
       petals = Array.from({ length: count }, () => createPetal(width, height, false));
     }
 

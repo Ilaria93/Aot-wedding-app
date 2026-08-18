@@ -72,7 +72,7 @@ export function GallerySection() {
       <div className="obw-container">
         <div className="obw-section-header">
           <p className="obw-kicker">{t('landing.gallery.eyebrow')}</p>
-          <h2 className="obw-display obw-display--sm">{t('landing.gallery.title')}</h2>
+          <h2 className="obw-display obw-display--lg">{t('landing.gallery.title')}</h2>
           <div className="obw-rule" aria-hidden="true" />
           <p className="obw-body obw-section-header__intro">{t('landing.gallery.intro')}</p>
         </div>

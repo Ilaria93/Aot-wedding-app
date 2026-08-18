@@ -16,7 +16,7 @@ export function LandingStorySection() {
       <div className="obw-container landing-story__inner">
         <header className="landing-story__head">
           <MissionDocumentSeal />
-          <h2 className="obw-display">{t('landing.story.heading')}</h2>
+          <h2 className="obw-display obw-display--lg">{t('landing.story.heading')}</h2>
           <span className="obw-rule obw-rule--center" aria-hidden="true" />
         </header>
 

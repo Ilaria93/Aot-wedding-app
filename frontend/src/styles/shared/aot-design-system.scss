@@ -53,8 +53,9 @@
   text-shadow: 0 1px 3px rgba(42, 22, 16, 0.35);
 }
 
+/* Matches the reference mockup's section-title size (Great Vibes clamp(2.8rem,6vw,4.2rem)). */
 .obw-display--lg {
-  font-size: clamp(2rem, 5.2vw, 3.3rem);
+  font-size: clamp(2.8rem, 6vw, 4.2rem);
 }
 
 .obw-display--sm {
@@ -163,6 +164,20 @@
   width: min(100%, var(--obw-max));
   margin-inline: auto;
   padding-inline: var(--obw-space-md);
+}
+
+/* Narrower reading column for single-column editorial sections (ceremony, RSVP)
+   that float directly on the section veil instead of sitting in a card. */
+.obw-container--narrow {
+  max-width: 780px;
+}
+
+.obw-stack-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--obw-space-sm);
+  text-align: center;
 }
 
 .obw-section {
@@ -711,9 +726,10 @@
   top: 0;
   z-index: 50;
   border-bottom: 1px solid var(--obw-border-dark);
-  background: color-mix(in srgb, var(--obw-void) 72%, transparent);
+  /* Same translucent pine veil as the reference's floating nav, not a solid bar. */
+  background: var(--obw-veil-strong);
   color: var(--obw-bone);
-  backdrop-filter: blur(12px) saturate(1.05);
+  backdrop-filter: blur(8px) saturate(1.05);
 }
 
 .obw-nav__inner {
@@ -852,6 +868,16 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--obw-space-md);
+}
+
+/* Contact entries float on the section veil with no card border, like the
+   reference mockup's contact grid — just a label and a line, centered. */
+.landing-contacts__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
 }
 
 .obw-meta {
