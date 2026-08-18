@@ -564,8 +564,27 @@ export const de = {
   },
   invite: {
     greeting: 'Liebe/r {{firstName}},',
-    body: 'Du bist zu Operation Ravenna eingeladen — der Hochzeit von Ilaria & Davide.',
-    cta: 'Teilnahme bestätigen',
+    headline: 'Mit Freude laden wir euch ein',
+    coupleNames: 'Ilaria & Davide',
+    ceremonyStart: 'Wir erwarten euch um 17:00 Uhr, Beginn der Trauung.',
+    intro:
+      'Es würde uns sehr freuen, euch an unserer Seite zu haben. Bringt nur euch selbst mit und die Lust, bis spät zu tanzen.',
+    directions: {
+      title: 'Anfahrt',
+      mapLabel: 'Karte des Ortes',
+      parkingNote: 'Parkplätze vor Ort verfügbar.',
+      openMaps: 'In Maps öffnen',
+    },
+    rsvpSection: {
+      title: 'Sagt uns Bescheid',
+      note: 'Bitte bestätigt eure Teilnahme bis zum 6. Mai 2027.',
+      yes: 'Wir kommen',
+      contact: 'Schreibt uns',
+    },
+    moreInfo: {
+      text: 'Weitere Informationen findet ihr hier:',
+      cta: 'Zur Webseite',
+    },
     openAria: 'Einladung öffnen',
     tapHint: 'Zum Öffnen auf das Siegel tippen',
     notFoundTitle: 'Einladung nicht gefunden.',

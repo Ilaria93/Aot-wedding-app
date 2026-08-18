@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
+import { MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import {
-  formatWeddingHeroDate,
-  formatWeddingHeroVenue,
-  WEDDING_COUPLE_NAMES,
+  WEDDING_CITY,
+  WEDDING_VENUE_AREA,
+  WEDDING_VENUE_NAME,
+  formatWeddingDateDisplay,
 } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
 
@@ -14,6 +16,12 @@ type EnvelopeInviteProps = {
   firstName: string;
   lastName: string;
 };
+
+const CONTACT_EMAIL = 'davide.ilaria@esempio.it';
+
+const GOOGLE_MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  `${WEDDING_VENUE_AREA} ${WEDDING_VENUE_NAME} ${WEDDING_CITY}`,
+)}`;
 
 /**
  * Personalized envelope for the WhatsApp invite link. Closed by default —
@@ -38,30 +46,6 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   return (
     <div className={`envelope-invite${isOpen ? ' envelope-invite--open' : ''}`}>
       <div className="envelope-invite__stage">
-        <article className="envelope-invite__letter" aria-hidden={!isOpen}>
-          <h1
-            ref={letterHeadingRef}
-            tabIndex={-1}
-            className="obw-display obw-display--sm envelope-invite__greeting">
-            {t('invite.greeting', { firstName })}
-          </h1>
-          <p className="obw-body envelope-invite__body-text">{t('invite.body')}</p>
-          <p className="envelope-invite__details">
-            <span>{WEDDING_COUPLE_NAMES}</span>
-            <span className="envelope-invite__details-rule" aria-hidden />
-            <span>{formatWeddingHeroDate(locale)}</span>
-            <span className="envelope-invite__details-rule" aria-hidden />
-            <span>{formatWeddingHeroVenue()}</span>
-          </p>
-          <Link
-            className="obw-btn obw-btn--primary envelope-invite__cta"
-            to="/auth/register"
-            state={{ from: '/rsvp', prefill: { firstName, lastName } }}
-            tabIndex={isOpen ? 0 : -1}>
-            {t('invite.cta')}
-          </Link>
-        </article>
-
         <div className="envelope-invite__body-shell" aria-hidden={isOpen}>
           <div className="envelope-invite__front" />
           <div className="envelope-invite__flap" />
@@ -72,11 +56,11 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
             disabled={isOpen}
             aria-label={t('invite.openAria')}>
             <img
-              className="envelope-invite__seal-crest"
-              src="/assets/wedding/stemma.webp"
+              className="envelope-invite__seal-wax"
+              src="/assets/wedding/cera-oro.webp"
               alt=""
-              width={96}
-              height={113}
+              width={1601}
+              height={1496}
               loading="eager"
               decoding="async"
             />
@@ -85,6 +69,81 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
       </div>
 
       {!isOpen ? <p className="envelope-invite__hint">{t('invite.tapHint')}</p> : null}
+
+      {/* Sibling of the (perspective:) stage, not a child — position: fixed
+          needs to cover the real viewport, not the stage's containing block. */}
+      <article className="envelope-invite__letter" aria-hidden={!isOpen}>
+        <div className="envelope-invite__letter-content">
+          <p className="envelope-invite__personal-greeting">{t('invite.greeting', { firstName })}</p>
+          <h1
+            ref={letterHeadingRef}
+            tabIndex={-1}
+            className="obw-display obw-display--sm envelope-invite__greeting">
+            {t('invite.headline')}
+          </h1>
+          <p className="envelope-invite__couple-names">{t('invite.coupleNames')}</p>
+          <p className="envelope-invite__details">
+            {formatWeddingDateDisplay(locale)}
+            <br />
+            {WEDDING_VENUE_AREA}
+            <br />
+            {WEDDING_VENUE_NAME}, {WEDDING_CITY}
+          </p>
+          <p className="envelope-invite__ceremony-start">{t('invite.ceremonyStart')}</p>
+          <p className="obw-body envelope-invite__body-text">{t('invite.intro')}</p>
+        </div>
+
+        <div className="envelope-invite__sections">
+          <section className="envelope-invite__section">
+            <h2 className="envelope-invite__section-title">{t('invite.directions.title')}</h2>
+            <div className="envelope-invite__map-placeholder" aria-hidden="true">
+              <MapPin size={22} strokeWidth={1.5} />
+              <span>{t('invite.directions.mapLabel')}</span>
+            </div>
+            <p className="envelope-invite__address">
+              {WEDDING_VENUE_AREA} — {WEDDING_VENUE_NAME}, {WEDDING_CITY}.{' '}
+              {t('invite.directions.parkingNote')}
+            </p>
+            <a
+              className="obw-btn obw-btn--secondary envelope-invite__maps-link"
+              href={GOOGLE_MAPS_URL}
+              target="_blank"
+              rel="noreferrer">
+              {t('invite.directions.openMaps')}
+            </a>
+          </section>
+
+          <section className="envelope-invite__section">
+            <h2 className="envelope-invite__section-title">{t('invite.rsvpSection.title')}</h2>
+            <p className="envelope-invite__rsvp-note">{t('invite.rsvpSection.note')}</p>
+            <div className="envelope-invite__rsvp-actions">
+              <Link
+                className="obw-btn obw-btn--primary envelope-invite__cta"
+                to="/auth/register"
+                state={{ from: '/rsvp', prefill: { firstName, lastName } }}
+                tabIndex={isOpen ? 0 : -1}>
+                {t('invite.rsvpSection.yes')}
+              </Link>
+              <a
+                className="obw-btn obw-btn--secondary envelope-invite__contact"
+                href={`mailto:${CONTACT_EMAIL}`}
+                tabIndex={isOpen ? 0 : -1}>
+                {t('invite.rsvpSection.contact')}
+              </a>
+            </div>
+          </section>
+
+          <section className="envelope-invite__section envelope-invite__section--more-info">
+            <p className="envelope-invite__more-info-text">{t('invite.moreInfo.text')}</p>
+            <Link
+              className="obw-btn obw-btn--secondary envelope-invite__more-info-link"
+              to="/"
+              tabIndex={isOpen ? 0 : -1}>
+              {t('invite.moreInfo.cta')}
+            </Link>
+          </section>
+        </div>
+      </article>
     </div>
   );
 }
