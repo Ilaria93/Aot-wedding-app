@@ -197,13 +197,13 @@ export const en = {
       title: 'Frequently asked questions',
       locationQuestion: 'Is the venue accessible?',
       locationAnswer:
-        'This section is ready to host all practical information useful for guests, including any accessibility details.',
+        'Yes, all the practical information will be shared in good time, including any accessibility needs.',
       foodQuestion: 'How do I share allergies or dietary needs?',
       foodAnswer:
         'You will be able to do it directly in the RSVP form, so every note stays linked to your personal invitation.',
       phoneQuestion: 'Can I use my phone during the ceremony?',
       phoneAnswer:
-        'This area can collect any guest guidelines you want to share in a clear, elegant, and always accessible way.',
+        "We'd love for you to enjoy the moment with us — a dedicated photographer will be there to capture it.",
     },
     decorative: {
       wings: 'Wings of Freedom',
@@ -214,14 +214,11 @@ export const en = {
       title: 'Useful contacts',
       teamTitle: 'Wedding team',
       teamLine: 'Davide & Ilaria',
-      teamBody: 'Here we can add numbers, emails, or a reference person for guests.',
+      teamBody: 'davide.ilaria@example.com',
       travelTitle: 'Travel support',
       travelLine: 'Hotels, transfers, parking',
-      travelBody: 'This section can evolve into the future travel area of the project.',
       ceremonyTitle: 'Ceremony',
       ceremonyLine: 'Venue and access details',
-      ceremonyBody:
-        'Perfect for gathering the latest practical information without overloading the home page.',
     },
   },
   auth: {

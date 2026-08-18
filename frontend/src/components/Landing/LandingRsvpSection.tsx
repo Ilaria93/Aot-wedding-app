@@ -18,7 +18,7 @@ export function LandingRsvpSection() {
           <div className="obw-card__texture" aria-hidden="true" />
           <div className="landing-rsvp__briefing-body">
             <p className="obw-kicker obw-kicker--light">{t('landing.rsvp.eyebrow')}</p>
-            <h2 className="obw-display obw-display--sm obw-display--light">
+            <h2 className="obw-display obw-display--lg obw-display--light">
               {t('landing.rsvp.heading')}
             </h2>
             <p className="obw-body landing-rsvp__lead">{t('landing.rsvp.body')}</p>
