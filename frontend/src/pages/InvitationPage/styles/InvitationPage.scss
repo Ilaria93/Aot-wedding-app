@@ -1,0 +1,133 @@
+.invitation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--obw-space-lg);
+  min-height: calc(100svh - 73px);
+  padding: var(--obw-space-lg) var(--obw-space-md);
+}
+
+.invitation__envelope {
+  position: relative;
+  width: min(90vw, 420px);
+  aspect-ratio: 4 / 5;
+  perspective: 1400px;
+}
+
+.invitation__body {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 1px solid var(--obw-border-dark);
+  border-radius: var(--obw-radius);
+  background: var(--obw-paper-deep);
+  box-shadow: var(--obw-shadow-soft);
+}
+
+/* Sits inside the envelope until opened, then slides up to become the invite. */
+.invitation__card {
+  position: absolute;
+  inset: 10px;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--obw-space-xs);
+  padding: var(--obw-space-lg) var(--obw-space-md);
+  border: 1px solid var(--obw-border);
+  border-radius: var(--obw-radius);
+  background: var(--obw-paper);
+  box-shadow: var(--obw-shadow-soft);
+  text-align: center;
+  transform: translateY(0) scale(1);
+  transition: transform 0.7s 0.3s var(--obw-ease-out);
+}
+
+.invitation__card .mission-hero__seal {
+  width: 56px;
+  margin: 0 0 var(--obw-space-xs);
+}
+
+.invitation__card-title {
+  margin: 0;
+  font-size: clamp(1.6rem, 6vw, 2.4rem);
+}
+
+.invitation__card-date,
+.invitation__card-venue {
+  margin: 0;
+  font-family: var(--font-editorial);
+  color: var(--obw-text-muted);
+}
+
+.invitation__envelope--open .invitation__card {
+  transform: translateY(-22%) scale(1.05);
+  z-index: 4;
+}
+
+/* Top flap: a triangle pointing down to the envelope centre, hinged at the top edge. */
+.invitation__flap {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  clip-path: polygon(0 0, 100% 0, 50% 60%);
+  background: var(--obw-paper-muted);
+  border: 1px solid var(--obw-border-dark);
+  transform-origin: top center;
+  transition: transform 0.6s var(--obw-ease-out);
+  will-change: transform;
+}
+
+.invitation__envelope--open .invitation__flap {
+  transform: rotateX(180deg);
+  z-index: 0;
+}
+
+/* Sits on the flap's tip, not clipped by it — a plain sibling, positioned to match. */
+.invitation__seal {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  z-index: 3;
+  width: 56px;
+  height: 56px;
+  min-height: 56px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid var(--obw-burgundy);
+  background: var(--obw-crimson);
+  color: var(--obw-bone);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: var(--obw-shadow-soft);
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s var(--obw-ease-out);
+}
+
+.invitation__seal:hover {
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+.invitation__seal:active {
+  transform: translate(-50%, -50%) scale(0.95);
+}
+
+.invitation__hint {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  padding-left: 0.2em;
+  text-transform: uppercase;
+  color: var(--obw-text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .invitation__card,
+  .invitation__flap {
+    transition: none;
+  }
+}

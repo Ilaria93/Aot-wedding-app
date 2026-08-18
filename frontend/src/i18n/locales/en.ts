@@ -90,6 +90,12 @@ export const en = {
     transfer: 'Transfer',
     car_rental: 'Car rental',
   },
+  invitation: {
+    sealInitials: 'D & I',
+    openLabel: 'Open the envelope',
+    hint: 'Tap the seal to open',
+    cta: 'Discover the site',
+  },
   landing: {
     nav: {
       story: 'Us',

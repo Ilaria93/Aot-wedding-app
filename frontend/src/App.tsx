@@ -8,6 +8,7 @@ import { AuthStackLayout } from '@/layouts/AuthStackLayout/index';
 import { AdminPage } from '@/pages/AdminPage/index';
 import { AlbumPage } from '@/pages/AlbumPage/index';
 import { HomePage } from '@/pages/HomePage/index';
+import { InvitationPage } from '@/pages/InvitationPage/index';
 import { LoginPage } from '@/pages/LoginPage/index';
 import { NotFoundPage } from '@/pages/NotFoundPage/index';
 import { ProfilePage } from '@/pages/ProfilePage/index';
@@ -30,6 +31,7 @@ export function App() {
 
               <Route element={<AppLayout />}>
                 <Route index element={<HomePage />} />
+                <Route path="/invito" element={<InvitationPage />} />
                 <Route path="/album" element={<AlbumPage />} />
                 <Route path="/rsvp" element={<RsvpPage />} />
                 <Route path="/travel" element={<TravelPage />} />

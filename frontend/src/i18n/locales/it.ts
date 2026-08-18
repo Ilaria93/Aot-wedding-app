@@ -90,6 +90,12 @@ export const it = {
     transfer: 'Transfer',
     car_rental: 'Noleggio auto',
   },
+  invitation: {
+    sealInitials: 'D & I',
+    openLabel: 'Apri la busta',
+    hint: 'Tocca il sigillo per aprire',
+    cta: 'Scopri il sito',
+  },
   landing: {
     nav: {
       story: 'Noi',
