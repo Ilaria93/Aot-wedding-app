@@ -1,1 +1,0 @@
-export { InvitationPage } from './InvitationPage';

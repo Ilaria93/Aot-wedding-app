@@ -90,12 +90,6 @@ export const de = {
     transfer: 'Transfer',
     car_rental: 'Mietwagen',
   },
-  invitation: {
-    sealInitials: 'D & I',
-    openLabel: 'Umschlag öffnen',
-    hint: 'Zum Öffnen auf das Siegel tippen',
-    cta: 'Zur Website',
-  },
   landing: {
     nav: {
       story: 'Wir',
@@ -203,13 +197,13 @@ export const de = {
       title: 'Häufige Fragen',
       locationQuestion: 'Ist die Location barrierefrei?',
       locationAnswer:
-        'Dieser Bereich ist bereit, alle praktischen Informationen für Gäste aufzunehmen, einschließlich möglicher Details zur Barrierefreiheit.',
+        'Ja, alle praktischen Informationen werden rechtzeitig geteilt, einschließlich möglicher Bedürfnisse zur Barrierefreiheit.',
       foodQuestion: 'Wie teile ich Allergien oder Ernährungsbedürfnisse mit?',
       foodAnswer:
         'Das kannst du direkt im RSVP-Formular tun, damit alle Hinweise mit deiner persönlichen Einladung verknüpft bleiben.',
       phoneQuestion: 'Darf ich während der Zeremonie mein Handy benutzen?',
       phoneAnswer:
-        'Dieser Bereich kann alle Hinweise sammeln, die ihr den Gästen klar, elegant und jederzeit zugänglich geben möchtet.',
+        'Wir würden uns freuen, wenn ihr den Moment mit uns genießt — ein eigener Fotograf wird da sein, um ihn festzuhalten.',
     },
     decorative: {
       wings: 'Flügel der Freiheit',
@@ -220,14 +214,11 @@ export const de = {
       title: 'Nützliche Kontakte',
       teamTitle: 'Wedding-Team',
       teamLine: 'Davide & Ilaria',
-      teamBody: 'Hier können wir Nummern, E-Mails oder eine Kontaktperson für die Gäste hinzufügen.',
+      teamBody: 'davide.ilaria@beispiel.de',
       travelTitle: 'Reisehilfe',
       travelLine: 'Hotels, Transfers, Parkplätze',
-      travelBody: 'Dieser Bereich kann sich zum zukünftigen Reisebereich des Projekts entwickeln.',
       ceremonyTitle: 'Zeremonie',
       ceremonyLine: 'Details zu Location und Zugängen',
-      ceremonyBody:
-        'Perfekt, um die neuesten praktischen Informationen zu sammeln, ohne die Startseite zu überladen.',
     },
   },
   auth: {
@@ -570,5 +561,15 @@ export const de = {
     title: 'Diese Seite existiert nicht.',
     body: 'Der Link ist möglicherweise unvollständig oder die Seite wurde noch nicht erstellt.',
     backHome: 'Zur Startseite',
+  },
+  invite: {
+    greeting: 'Liebe/r {{firstName}},',
+    body: 'Du bist zu Operation Ravenna eingeladen — der Hochzeit von Ilaria & Davide.',
+    cta: 'Teilnahme bestätigen',
+    openAria: 'Einladung öffnen',
+    tapHint: 'Zum Öffnen auf das Siegel tippen',
+    notFoundTitle: 'Einladung nicht gefunden.',
+    notFoundBody: 'Dieser Link ist möglicherweise abgelaufen oder falsch geschrieben.',
+    notFoundBackHome: 'Zur Hochzeitsseite',
   },
 } as const;

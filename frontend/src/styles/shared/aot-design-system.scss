@@ -854,6 +854,16 @@
   gap: var(--obw-space-md);
 }
 
+/* Contact entries float on the section veil with no card border — just a
+   label and a line, centered. */
+.landing-contacts__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
 .obw-meta {
   margin: 0 0 6px;
   font-family: var(--font-mono);
