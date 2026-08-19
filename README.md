@@ -97,6 +97,7 @@ Swagger: [localhost:8000/docs](http://127.0.0.1:8000/docs)
 | `POST /guest/create-invite` | Admin — crea invito |
 | `GET /guest/{token}` | Lookup ospite |
 | `POST /rsvp/confirm` · `GET /rsvp/by-token/{token}` | RSVP |
+| `GET /invites/{token}` | Lookup invito WhatsApp (nome ospite) |
 | `GET /photos` · `POST /photos/upload-intent` · `POST /photos/complete-upload` | Album |
 | `GET /contacts` | Contatti pubblici |
 | `GET /admin/guests` · `GET /admin/rsvp-stats` | Admin |
@@ -104,6 +105,23 @@ Swagger: [localhost:8000/docs](http://127.0.0.1:8000/docs)
 | `GET/POST/PATCH/DELETE /admin/contacts` | Gestione contatti |
 
 Route **admin** richiedono bearer token con ruolo `admin`, `bride` o `groom`.
+
+---
+
+## Inviti WhatsApp (busta digitale)
+
+Pagina `/invito/{token}` — busta animata (video) con lettera personalizzata e CTA RSVP, pensata per essere inviata come link WhatsApp. Pubblica, senza login; il token identifica solo il nome dell'ospite (non è un meccanismo di autenticazione — vedi `docs/PRODUCT_DECISIONS.md` §1.1bis e §8).
+
+**Ogni ambiente (anche in locale) ha il proprio database**, quindi un token generato su un Mac non esiste sul DB di un altro. Per testare in locale, ognuno deve generarsi il proprio token:
+
+```bash
+cd backend
+echo "first_name,last_name
+Mario,Rossi" > /tmp/inviti.csv
+./venv/bin/python scripts/generate_invite_links.py /tmp/inviti.csv
+```
+
+Lo script stampa il link pronto, es. `http://localhost:5173/invito/<token>` — apri quello, non un token generato su un'altra macchina.
 
 ---
 
