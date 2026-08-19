@@ -26,13 +26,15 @@ const GOOGLE_MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encod
 // Real footage: seal breaks, flap opens, the parchment note slides out and
 // fills the frame — its last frame already matches the letter's own
 // background (same parchment art), so the cut to the HTML letter is seamless.
-const OPENER_VIDEO_SRC = '/assets/wedding/green-letter-2.mp4';
+const OPENER_VIDEO_SRC = '/assets/wedding/green-letter.mp4';
 
-// Native size of green-letter-2.mp4 — needed to compute how much bigger than
+// Native size of green-letter.mp4 — needed to compute how much bigger than
 // `contain` the video has to grow to match the letter's `cover` background,
-// and where its baked-in seal sits on screen.
-const VIDEO_NATURAL_WIDTH = 792;
-const VIDEO_NATURAL_HEIGHT = 1160;
+// and where its baked-in seal sits on screen. Re-measure these against the
+// actual file any time the video is swapped — they're not derived at
+// runtime from the source.
+const VIDEO_NATURAL_WIDTH = 1220;
+const VIDEO_NATURAL_HEIGHT = 1696;
 
 // The video plays at its natural `contain` size (whole envelope visible,
 // nothing cropped) until this point, then smoothly scales up to fill the
@@ -43,15 +45,9 @@ const VIDEO_NATURAL_HEIGHT = 1160;
 // has time to finish before the clip's natural end.
 const ZOOM_START_SECONDS = 4;
 
-// Where the video's own baked-in wax seal sits, as a fraction of the
-// video's native frame — measured by eye against the source footage. Our
-// seal button sits exactly on top of it.
-const SEAL_X_FRACTION = 0.503;
-const SEAL_Y_FRACTION = 0.614;
-
 /**
  * Personalized envelope for the WhatsApp invite link. Closed by default —
- * tapping the wax seal starts the opening video; once it ends, the letter
+ * tapping anywhere starts the opening video; once it ends, the letter
  * fades in with the guest's name.
  */
 export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
@@ -59,7 +55,6 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isZooming, setIsZooming] = useState(false);
-  const [sealPosition, setSealPosition] = useState({ left: 0, top: 0 });
   const letterHeadingRef = useRef<HTMLHeadingElement>(null);
   const openerVideoRef = useRef<HTMLVideoElement>(null);
 
@@ -71,34 +66,6 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
       letterHeadingRef.current?.focus();
     }
   }, [isOpen]);
-
-  useEffect(() => {
-    // The video sits `object-fit: contain` — depending on the screen's own
-    // aspect ratio that leaves letterbox space on either the sides or top
-    // and bottom. The seal button has to land on top of the video's own
-    // seal regardless, so this re-derives its on-screen position from the
-    // same contain math every time the viewport changes.
-    function updateSealPosition() {
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      const containScale = Math.min(
-        viewportWidth / VIDEO_NATURAL_WIDTH,
-        viewportHeight / VIDEO_NATURAL_HEIGHT,
-      );
-      const contentWidth = VIDEO_NATURAL_WIDTH * containScale;
-      const contentHeight = VIDEO_NATURAL_HEIGHT * containScale;
-      const offsetX = (viewportWidth - contentWidth) / 2;
-      const offsetY = (viewportHeight - contentHeight) / 2;
-      setSealPosition({
-        left: offsetX + SEAL_X_FRACTION * contentWidth,
-        top: offsetY + SEAL_Y_FRACTION * contentHeight,
-      });
-    }
-
-    updateSealPosition();
-    window.addEventListener('resize', updateSealPosition);
-    return () => window.removeEventListener('resize', updateSealPosition);
-  }, []);
 
   return (
     <div className={`envelope-invite${isOpen ? ' envelope-invite--open' : ''}`}>
@@ -141,22 +108,12 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
           <button
             type="button"
             className="envelope-invite__video-trigger"
-            style={{ left: `${sealPosition.left}px`, top: `${sealPosition.top}px` }}
             onClick={() => {
               void openerVideoRef.current?.play();
               setIsVideoPlaying(true);
             }}
-            aria-label={t('invite.openAria')}>
-            <img
-              className="envelope-invite__video-trigger-seal"
-              src="/assets/wedding/cera-rosso.webp"
-              alt=""
-              width={1614}
-              height={1500}
-              loading="eager"
-              decoding="async"
-            />
-          </button>
+            aria-label={t('invite.openAria')}
+          />
         ) : null}
       </div>
 
