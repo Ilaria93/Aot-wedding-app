@@ -11,11 +11,14 @@ import type { LoginLocationState } from '@/pages/LoginPage/types/LoginPage.types
 export function RegisterPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const redirectTarget = (location.state as LoginLocationState | null)?.from ?? '/';
+  const locationState = location.state as LoginLocationState | null;
+  const redirectTarget = locationState?.from ?? '/';
   const { signUp } = useAuth();
   const { t } = useI18n();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  // Prefilled from the envelope invite link, if the guest arrived via one — never
+  // read from the URL, so the name stays out of browser history and server logs.
+  const [firstName, setFirstName] = useState(locationState?.prefill?.firstName ?? '');
+  const [lastName, setLastName] = useState(locationState?.prefill?.lastName ?? '');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [roleSecret, setRoleSecret] = useState('');

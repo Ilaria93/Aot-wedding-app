@@ -8,6 +8,7 @@ import { AuthStackLayout } from '@/layouts/AuthStackLayout/index';
 import { AdminPage } from '@/pages/AdminPage/index';
 import { AlbumPage } from '@/pages/AlbumPage/index';
 import { HomePage } from '@/pages/HomePage/index';
+import { InvitePage } from '@/pages/InvitePage/index';
 import { LoginPage } from '@/pages/LoginPage/index';
 import { NotFoundPage } from '@/pages/NotFoundPage/index';
 import { ProfilePage } from '@/pages/ProfilePage/index';
@@ -36,6 +37,9 @@ export function App() {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/admin" element={<AdminPage />} />
               </Route>
+
+              {/* Standalone, no topbar/back-button chrome — same reasoning as NotFoundPage below. */}
+              <Route path="/invito/:token" element={<InvitePage />} />
 
               <Route path="/home" element={<Navigate to="/" replace />} />
               <Route path="*" element={<NotFoundPage />} />
