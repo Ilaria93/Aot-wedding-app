@@ -14,17 +14,75 @@
   text-align: center;
 }
 
-/* Full-screen while sealed too — dominates the page, same as the opened
-   letter. The front/flap fade and rotate away on open, the letter (z-index
-   20) then covers it, so this stays fixed the whole time with no visibility
-   toggle of its own. */
+/* Full-screen opening video — the seal-break/flap/parchment-slide-out is
+   baked into the footage, not built from CSS layers.
+   Stays fully opaque forever, even after the letter opens — it never fades
+   itself. Its last frame is the same parchment art as the letter's own
+   background, so it works as a solid backstop underneath the letter's own
+   fade-in. (Fading both layers at once, video-out and letter-in on the same
+   clock, sounds symmetric but isn't: at the midpoint neither is fully
+   opaque, and the page's own hero background bleeds through both — this
+   avoids that by never letting the video become anything less than 100%
+   covering.) */
 .envelope-invite__stage {
   position: fixed;
   inset: 0;
   z-index: 1;
-  /* Perspective lives on the ancestor so the flap's rotateX reads as a fold,
-     not a flat squash. */
-  perspective: 1200px;
+  overflow: hidden;
+  background: var(--obw-charcoal-deep);
+}
+
+/* Whole sealed envelope visible, nothing cropped, while it's actually an
+   envelope on screen — object-fit stays `contain` for the video's whole
+   life, it's never switched (browsers snap object-fit changes instantly,
+   which read as a jump cut no matter how well-timed). Filling the screen
+   like `cover` at the end is done below with an animated transform
+   instead, which *does* interpolate smoothly. */
+.envelope-invite__opener-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1);
+  transition: transform 3200ms var(--obw-ease-out);
+}
+
+/* EnvelopeInvite.tsx sets --zoom-scale (contain→cover ratio for the actual
+   screen) and adds this class once playback passes ZOOM_START_SECONDS —
+   the video grows smoothly to fill the viewport, landing exactly at the
+   letter's own `cover` scale by the time the clip ends. */
+.envelope-invite__opener-video--zoomed {
+  transform: scale(var(--zoom-scale, 1));
+}
+
+/* Positioned in px by EnvelopeInvite.tsx (left/top inline style), landing
+   exactly on the video's own baked-in seal regardless of how `contain`
+   letterboxes the video on this screen. Only this seal is clickable to
+   start the video now — not the envelope at large. */
+.envelope-invite__video-trigger {
+  position: absolute;
+  z-index: 2;
+  width: clamp(64px, 20vw, 108px);
+  height: clamp(64px, 20vw, 108px);
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.envelope-invite__video-trigger-seal {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(28, 14, 13, 0.5));
+  transition: transform 150ms var(--obw-ease-out);
+}
+
+.envelope-invite__video-trigger:hover .envelope-invite__video-trigger-seal {
+  transform: scale(1.05);
 }
 
 /* ─── The letter (revealed) ─────────────────────────────── */
@@ -63,11 +121,9 @@
   pointer-events: none;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  /* Opaque well before the envelope front (delay 300ms) finishes fading out
-     below — otherwise there's a gap where neither covers the fixed hero
-     background behind both layers, and it flashes through. */
-  transition: opacity 220ms var(--obw-ease-out);
-  transition-delay: 40ms;
+  /* Same duration as the video-stage fade-out above — a matched cross-fade,
+     not a race against it. */
+  transition: opacity 900ms var(--obw-ease-out);
 }
 
 .envelope-invite--open .envelope-invite__letter {
@@ -286,99 +342,7 @@
   color: var(--obw-charcoal-deep);
 }
 
-/* ─── The closed cover: front panel + triangular flap + seal ───── */
-
-.envelope-invite__body-shell {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-}
-
-/* Full face while sealed. Fades away just after the flap folds back, as if
-   the whole front dropped away to let the letter rise out. */
-.envelope-invite__front {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  background: linear-gradient(155deg, var(--obw-paper) 0%, var(--obw-paper-deep) 100%);
-  transition: opacity 450ms var(--obw-ease-out);
-  transition-delay: 300ms;
-}
-
-.envelope-invite--open .envelope-invite__front {
-  opacity: 0;
-}
-
-/* Triangular fold — decorative on top of the front panel, folds back on open. */
-.envelope-invite__flap {
-  position: absolute;
-  inset: 0 0 40% 0;
-  z-index: 4;
-  transform-origin: top center;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-  background: linear-gradient(160deg, var(--obw-paper-deep) 0%, var(--obw-paper) 100%);
-  transition: transform 500ms var(--obw-ease-out);
-  transition-delay: 200ms;
-}
-
-.envelope-invite--open .envelope-invite__flap {
-  transform: rotateX(-165deg);
-}
-
-/* The wax photo is the seal now — real texture, no CSS-drawn circle. */
-.envelope-invite__seal {
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  z-index: 5;
-  width: clamp(92px, 24vw, 120px);
-  height: clamp(92px, 24vw, 120px);
-  transform: translate(-50%, -50%);
-  display: grid;
-  place-items: center;
-  border: none;
-  padding: 0;
-  background: none;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
-.envelope-invite__seal:disabled {
-  cursor: default;
-}
-
-.envelope-invite__seal-wax {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 3px 8px rgba(28, 14, 13, 0.45));
-}
-
-.envelope-invite--open .envelope-invite__seal {
-  animation: envelope-seal-crack 250ms ease-out forwards;
-  pointer-events: none;
-}
-
-@keyframes envelope-seal-crack {
-  0% {
-    transform: translate(-50%, -50%) scale(1) rotate(0deg);
-    opacity: 1;
-  }
-
-  60% {
-    transform: translate(-50%, -50%) scale(1.12) rotate(6deg);
-    opacity: 1;
-  }
-
-  100% {
-    transform: translate(-50%, -50%) scale(0.85) rotate(-10deg);
-    opacity: 0;
-  }
-}
-
-/* Fixed above the now full-screen stage (z-index 1) — a static sibling would
+/* Fixed above the full-screen stage (z-index 1) — a static sibling would
    otherwise paint underneath it. */
 .envelope-invite__hint {
   position: fixed;
@@ -399,18 +363,12 @@
   .envelope-invite__letter,
   .envelope-invite__letter-content > *,
   .envelope-invite__sections,
-  .envelope-invite__front,
-  .envelope-invite__flap {
+  .envelope-invite__opener-video {
     transition: none;
   }
 
   .envelope-invite--open .envelope-invite__letter-content > *,
   .envelope-invite--open .envelope-invite__sections {
     transition-delay: 0ms;
-  }
-
-  .envelope-invite--open .envelope-invite__seal {
-    animation: none;
-    opacity: 0;
   }
 }
