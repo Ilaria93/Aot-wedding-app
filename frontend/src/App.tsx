@@ -14,6 +14,7 @@ import { NotFoundPage } from '@/pages/NotFoundPage/index';
 import { ProfilePage } from '@/pages/ProfilePage/index';
 import { RegisterPage } from '@/pages/RegisterPage/index';
 import { RsvpPage } from '@/pages/RsvpPage/index';
+import { StarCrawlPreviewPage } from '@/pages/StarCrawlPreviewPage/index';
 import { TravelPage } from '@/pages/TravelPage/index';
 
 /** Root router for the Vite web app. */
@@ -40,6 +41,12 @@ export function App() {
 
               {/* Standalone, no topbar/back-button chrome — same reasoning as NotFoundPage below. */}
               <Route path="/invito/:token" element={<InvitePage />} />
+
+              {/* Dev-only preview, never built in production — see DEV_PUBLIC_PATHS
+                  in authRouteAccess.ts and docs/deferred/star-crawl.md. */}
+              {import.meta.env.DEV ? (
+                <Route path="/dev/star-crawl" element={<StarCrawlPreviewPage />} />
+              ) : null}
 
               <Route path="/home" element={<Navigate to="/" replace />} />
               <Route path="*" element={<NotFoundPage />} />

@@ -1,4 +1,4 @@
-const DEV_PUBLIC_PATHS = import.meta.env.DEV ? ['/dev/titan-preview'] : [];
+const DEV_PUBLIC_PATHS = import.meta.env.DEV ? ['/dev/titan-preview', '/dev/star-crawl'] : [];
 
 const PUBLIC_PATHS = new Set([
   '/',

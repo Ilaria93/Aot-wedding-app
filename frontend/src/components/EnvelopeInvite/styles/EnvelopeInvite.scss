@@ -43,7 +43,7 @@
   height: 100%;
   object-fit: contain;
   transform: scale(1);
-  transition: transform 8000ms var(--obw-ease-out);
+  transition: transform 4000ms var(--obw-ease-out);
 }
 
 /* EnvelopeInvite.tsx sets --zoom-scale (contain→cover ratio for the actual
@@ -100,9 +100,7 @@
   pointer-events: none;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  /* Same duration as the video-stage fade-out above — a matched cross-fade,
-     not a race against it. */
-  transition: opacity 900ms var(--obw-ease-out);
+  transition: opacity 600ms var(--obw-ease-out);
 }
 
 .envelope-invite--open .envelope-invite__letter {
@@ -120,47 +118,35 @@
   padding-top: clamp(1rem, 6vh, 3rem);
 }
 
-/* Each line reveals on its own, a beat after the last — not one block fade. */
+/* Text is revealed character-by-character in EnvelopeInvite.tsx (each line
+   typed in turn), not faded in — these elements just need to not collapse
+   to zero height while empty. */
 .envelope-invite__letter-content > * {
-  opacity: 0;
-  transform: translateY(14px);
-  transition:
-    opacity 500ms var(--obw-ease-out),
-    transform 500ms var(--obw-ease-out);
+  min-height: 1.4em;
 }
 
-.envelope-invite--open .envelope-invite__letter-content > * {
-  opacity: 1;
-  transform: translateY(0);
+/* Blinking caret on whichever line is currently mid-type, removed once that
+   line finishes and moves to the next. */
+.envelope-invite__letter-content > .is-typing::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 0.9em;
+  margin-left: 2px;
+  vertical-align: -0.1em;
+  background: currentColor;
+  animation: envelope-invite-caret-blink 0.85s steps(2, jump-none) infinite;
 }
 
-.envelope-invite--open .envelope-invite__letter-content > *:nth-child(1) {
-  transition-delay: 650ms;
+@keyframes envelope-invite-caret-blink {
+  50% {
+    opacity: 0;
+  }
 }
 
-.envelope-invite--open .envelope-invite__letter-content > *:nth-child(2) {
-  transition-delay: 850ms;
-}
-
-.envelope-invite--open .envelope-invite__letter-content > *:nth-child(3) {
-  transition-delay: 1050ms;
-}
-
-.envelope-invite--open .envelope-invite__letter-content > *:nth-child(4) {
-  transition-delay: 1250ms;
-}
-
-.envelope-invite--open .envelope-invite__letter-content > *:nth-child(5) {
-  transition-delay: 1450ms;
-}
-
-.envelope-invite--open .envelope-invite__letter-content > *:nth-child(6) {
-  transition-delay: 1650ms;
-}
-
-/* Everything below the header fold reveals as one block, on its own beat —
-   staggering every line of a full-day schedule would drag the reveal out
-   for content the guest has to scroll to see anyway. */
+/* Everything below the header fold reveals as one block once the letter has
+   finished typing — staggering every line of a full-day schedule would drag
+   the reveal out for content the guest has to scroll to see anyway. */
 .envelope-invite__sections {
   display: flex;
   flex-direction: column;
@@ -175,10 +161,9 @@
     transform 500ms var(--obw-ease-out);
 }
 
-.envelope-invite--open .envelope-invite__sections {
+.envelope-invite__sections--visible {
   opacity: 1;
   transform: translateY(0);
-  transition-delay: 1850ms;
 }
 
 .envelope-invite__section {
@@ -237,6 +222,7 @@
   font-size: clamp(0.85rem, 1.8vw, 1rem);
   line-height: 1.6;
   color: color-mix(in srgb, var(--obw-charcoal-deep) 70%, transparent);
+  white-space: pre-line;
 }
 
 .envelope-invite__ceremony-start {
@@ -245,35 +231,6 @@
   font-size: 0.85rem;
   letter-spacing: 0.02em;
   color: var(--obw-gold-dim);
-}
-
-/* ─── Directions ─────────────────────────────────────────── */
-
-.envelope-invite__map-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  max-width: 22rem;
-  aspect-ratio: 16 / 9;
-  border: 1px solid color-mix(in srgb, var(--obw-charcoal-deep) 20%, transparent);
-  border-radius: var(--obw-radius);
-  background: color-mix(in srgb, var(--obw-charcoal-deep) 5%, transparent);
-  color: color-mix(in srgb, var(--obw-charcoal-deep) 55%, transparent);
-  font-family: var(--font-sans);
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.envelope-invite__address {
-  margin: 0;
-  max-width: 24rem;
-  font-family: var(--font-editorial);
-  font-size: 0.95rem;
-  color: color-mix(in srgb, var(--obw-charcoal-deep) 78%, transparent);
 }
 
 /* ─── RSVP ───────────────────────────────────────────────── */
@@ -340,14 +297,12 @@
 
 @media (prefers-reduced-motion: reduce) {
   .envelope-invite__letter,
-  .envelope-invite__letter-content > *,
   .envelope-invite__sections,
   .envelope-invite__opener-video {
     transition: none;
   }
 
-  .envelope-invite--open .envelope-invite__letter-content > *,
-  .envelope-invite--open .envelope-invite__sections {
-    transition-delay: 0ms;
+  .envelope-invite__letter-content > .is-typing::after {
+    animation: none;
   }
 }

@@ -1,0 +1,71 @@
+/* Star-Wars-crawl mechanic, wedding palette: a fixed rotateX() tilt on the
+   text block plus a `top` animation (100% -> far above the viewport) — the
+   perspective on the parent does the shrinking-into-the-distance for free,
+   the same way the original effect works. */
+
+.star-crawl {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      ellipse 70% 55% at 50% 8%,
+      color-mix(in srgb, var(--obw-charcoal-deep) 70%, transparent),
+      transparent
+    ),
+    var(--obw-charcoal-deep);
+}
+
+.star-crawl__viewport {
+  position: absolute;
+  inset: 0;
+  perspective: 380px;
+  perspective-origin: 50% 0%;
+  overflow: hidden;
+}
+
+.star-crawl__text {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: min(88%, 38rem);
+  transform: translateX(-50%) rotateX(28deg);
+  transform-origin: 50% 100%;
+  text-align: center;
+  animation: star-crawl-scroll var(--star-crawl-duration, 32s) linear forwards;
+}
+
+.star-crawl__title {
+  margin: 0 0 1.2em;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4.4vw, 2.6rem);
+  font-weight: 400;
+  color: var(--obw-gold);
+  text-shadow: 0 2px 20px rgba(20, 14, 8, 0.55);
+}
+
+.star-crawl__line {
+  margin: 0 0 1.5em;
+  font-family: var(--font-editorial);
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  line-height: 1.55;
+  color: var(--obw-gold-dim);
+  text-shadow: 0 2px 18px rgba(20, 14, 8, 0.5);
+}
+
+@keyframes star-crawl-scroll {
+  0% {
+    top: 100%;
+  }
+
+  100% {
+    top: -230%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star-crawl__text {
+    animation: none;
+    top: 30%;
+  }
+}

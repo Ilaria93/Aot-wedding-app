@@ -33,7 +33,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from database.base import SessionLocal  # noqa: E402
 from models.invite_link_model import InviteLink  # noqa: E402
 
-DEFAULT_BASE_URL = "http://127.0.0.1:5173"
+DEFAULT_BASE_URL = "http://localhost:5173"
 TOKEN_BYTES = 12  # secrets.token_urlsafe(12) -> 16 chars, 96 bits of entropy
 
 

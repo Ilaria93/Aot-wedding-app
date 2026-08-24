@@ -271,6 +271,8 @@ Mix **briefing militare** + **matrimonio elegante AoT**: non rivista di nozze ge
 - Headquarters dashboard ospite esteso
 - Moderazione foto in admin (API non ancora esposte)
 - BaaS (Supabase/Firebase) al posto del backend custom — **non previsto**
+- Effetto "particle text" (canvas, testo che si ricompone da particelle) sulla pagina invito (`/invito/{token}`) — **valutato, non implementato**. Il componente di riferimento (via 21st.dev) è scritto per uno stack Next.js/shadcn/Tailwind; questo progetto usa Vite + SCSS senza Tailwind, quindi andrebbe riscritto per il design system esistente (nessuna nuova dipendenza: solo `<canvas>` + `requestAnimationFrame`, già usati in [`HeroParticleField.tsx`](../frontend/src/components/MissionDocumentHero/HeroParticleField.tsx) per i petali sull'hero). Se ripreso in futuro: sostituire le parole demo con nome ospite/data matrimonio, e capire come farlo convivere con l'apertura busta + macchina da scrivere già presenti in `EnvelopeInvite.tsx`. Snippet originale conservato in [`docs/deferred/particle-text-effect.md`](deferred/particle-text-effect.md).
+- "Star crawl" (testo che scorre con prospettiva 3D, meccanica del crawl di Star Wars vestita con la palette del sito) — **componente costruito e funzionante, non ancora agganciato a nessuna pagina reale**. Solo CSS/SCSS, nessuna dipendenza nuova. Anteprima dev-only su `/dev/star-crawl` (mai in produzione). Mancano ancora: dove usarlo (pagina invito? prima o dopo la lettera?) e che testo fargli scorrere. Dettagli in [`docs/deferred/star-crawl.md`](deferred/star-crawl.md).
 
 ---
 
@@ -299,3 +301,4 @@ Mix **briefing militare** + **matrimonio elegante AoT**: non rivista di nozze ge
 | Agenti Cursor | `.cursor/README.md` |
 | Storyboard hero | `docs/hero-references/HERO_STORYBOARD.md` |
 | Frame / video ref. | `docs/hero-references/` (`.mov` in `.gitignore`) |
+| Star crawl (non agganciato) | `frontend/src/components/StarCrawl/`, anteprima dev su `/dev/star-crawl`, note in `docs/deferred/star-crawl.md` |

@@ -568,12 +568,6 @@ export const fr = {
     ceremonyStart: 'Nous vous attendons pour 17h00, début de la cérémonie.',
     intro:
       "Votre présence à nos côtés compterait beaucoup pour nous. Venez comme vous êtes, avec l'envie de danser jusqu'au bout de la nuit.",
-    directions: {
-      title: 'Comment venir',
-      mapLabel: 'Carte du lieu',
-      parkingNote: 'Parking disponible sur place.',
-      openMaps: 'Ouvrir dans Maps',
-    },
     rsvpSection: {
       title: 'Faites-le nous savoir',
       note: 'Merci de confirmer votre présence avant le 6 mai 2027.',

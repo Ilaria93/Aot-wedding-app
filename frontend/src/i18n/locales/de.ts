@@ -569,12 +569,6 @@ export const de = {
     ceremonyStart: 'Wir erwarten euch um 17:00 Uhr, Beginn der Trauung.',
     intro:
       'Es würde uns sehr freuen, euch an unserer Seite zu haben. Bringt nur euch selbst mit und die Lust, bis spät zu tanzen.',
-    directions: {
-      title: 'Anfahrt',
-      mapLabel: 'Karte des Ortes',
-      parkingNote: 'Parkplätze vor Ort verfügbar.',
-      openMaps: 'In Maps öffnen',
-    },
     rsvpSection: {
       title: 'Sagt uns Bescheid',
       note: 'Bitte bestätigt eure Teilnahme bis zum 6. Mai 2027.',

@@ -562,12 +562,6 @@ export const en = {
     coupleNames: 'Ilaria & Davide',
     ceremonyStart: 'We look forward to seeing you at 5:00 PM, ceremony start.',
     intro: "It would mean the world to have you with us. Bring only yourselves and the will to dance until late.",
-    directions: {
-      title: 'Getting there',
-      mapLabel: 'Venue map',
-      parkingNote: 'Parking available on site.',
-      openMaps: 'Open in Maps',
-    },
     rsvpSection: {
       title: 'Let us know',
       note: 'Please confirm your attendance by 6 May 2027.',
