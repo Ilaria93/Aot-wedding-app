@@ -268,7 +268,6 @@ export const de = {
     roleMismatchError: 'Du hast {{selected}} gewählt, aber dieses Konto hat eine andere Rolle.',
     registerGuestLink: 'Noch kein Konto? Registriere dich',
     registerAdminLink: 'Erster Zugang? Mit autorisierter E-Mail registrieren',
-    registerLink: 'Noch kein Konto? Registriere dich',
     identities: {
       bride: {
         label: 'Braut',

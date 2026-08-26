@@ -7,6 +7,9 @@ import { AppLayout } from '@/layouts/AppLayout/index';
 import { AuthStackLayout } from '@/layouts/AuthStackLayout/index';
 import { AdminPage } from '@/pages/AdminPage/index';
 import { AlbumPage } from '@/pages/AlbumPage/index';
+import { GuestAccessRecoveryPage } from '@/pages/GuestAccessRecoveryPage/index';
+import { GuestAccessVerifyPage } from '@/pages/GuestAccessVerifyPage/index';
+import { GuestRsvpPage } from '@/pages/GuestRsvpPage/index';
 import { HomePage } from '@/pages/HomePage/index';
 import { InvitePage } from '@/pages/InvitePage/index';
 import { LoginPage } from '@/pages/LoginPage/index';
@@ -41,6 +44,9 @@ export function App() {
 
               {/* Standalone, no topbar/back-button chrome — same reasoning as NotFoundPage below. */}
               <Route path="/invito/:token" element={<InvitePage />} />
+              <Route path="/invito/:token/rsvp" element={<GuestRsvpPage />} />
+              <Route path="/accedi/verifica" element={<GuestAccessVerifyPage />} />
+              <Route path="/accedi/recupera" element={<GuestAccessRecoveryPage />} />
 
               {/* Dev-only preview, never built in production — see DEV_PUBLIC_PATHS
                   in authRouteAccess.ts and docs/deferred/star-crawl.md. */}

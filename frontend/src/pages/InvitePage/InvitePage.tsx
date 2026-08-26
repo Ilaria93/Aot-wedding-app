@@ -70,7 +70,7 @@ export function InvitePage() {
 
   return (
     <div className="invite-page">
-      <EnvelopeInvite firstName={invite.first_name} lastName={invite.last_name} />
+      <EnvelopeInvite token={token ?? ''} firstName={invite.first_name} />
     </div>
   );
 }

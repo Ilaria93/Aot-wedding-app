@@ -5,6 +5,8 @@ const PUBLIC_PATHS = new Set([
   '/album',
   '/auth/login',
   '/auth/register',
+  '/accedi/verifica',
+  '/accedi/recupera',
   ...DEV_PUBLIC_PATHS,
 ]);
 // Prefix, not exact match: the token segment is different for every guest link.

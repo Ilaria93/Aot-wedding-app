@@ -267,7 +267,6 @@ export const en = {
     roleMismatchError: 'You selected {{selected}}, but this account has a different role.',
     registerGuestLink: "Don't have an account yet? Sign up",
     registerAdminLink: 'First access? Sign up with the authorized email',
-    registerLink: "Don't have an account yet? Sign up",
     identities: {
       bride: {
         label: 'Bride',

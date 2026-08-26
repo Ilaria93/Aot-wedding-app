@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 import { AuthPageShell } from '@/components/AuthExperience';
@@ -84,12 +84,6 @@ export function LoginPage() {
           disabled={submitting}>
           {submitting ? t('login.submitLoading') : t('login.submitLabel')}
         </button>
-
-        <p className="auth-form__footer">
-          <Link className="auth-form__footer-link" to="/auth/register" state={{ from: redirectTarget }}>
-            {t('login.registerLink')}
-          </Link>
-        </p>
       </form>
     </AuthPageShell>
   );

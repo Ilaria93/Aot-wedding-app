@@ -269,7 +269,6 @@ export const it = {
     roleMismatchError: 'Hai selezionato {{selected}}, ma questo account ha un ruolo diverso.',
     registerGuestLink: 'Non hai ancora un account? Registrati',
     registerAdminLink: "Primo accesso? Registrati con l'email autorizzata",
-    registerLink: 'Non hai ancora un account? Registrati',
     identities: {
       bride: {
         label: 'Sposa',

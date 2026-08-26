@@ -12,8 +12,8 @@ import { useI18n } from '@/contexts/I18nContext';
 import './styles/EnvelopeInvite.scss';
 
 type EnvelopeInviteProps = {
+  token: string;
   firstName: string;
-  lastName: string;
 };
 
 const CONTACT_EMAIL = 'davide.ilaria@esempio.it';
@@ -141,7 +141,7 @@ const LETTER_REVEAL_LEAD_SECONDS = 1;
  * and typing during the video's last second (see LETTER_REVEAL_LEAD_SECONDS),
  * overlapping the tail of the footage instead of waiting for it to fully end.
  */
-export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
+export function EnvelopeInvite({ token, firstName }: EnvelopeInviteProps) {
   const { locale, t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
@@ -271,8 +271,7 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
             <div className="envelope-invite__rsvp-actions">
               <Link
                 className="obw-btn obw-btn--primary envelope-invite__cta"
-                to="/auth/register"
-                state={{ from: '/rsvp', prefill: { firstName, lastName } }}
+                to={`/invito/${token}/rsvp`}
                 tabIndex={isOpen ? 0 : -1}>
                 {t('invite.rsvpSection.yes')}
               </Link>
