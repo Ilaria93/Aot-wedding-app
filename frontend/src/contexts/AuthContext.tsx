@@ -6,6 +6,7 @@ import {
   loginAccount,
   registerAccount,
   updateCurrentUserProfile,
+  type AuthSessionResponse,
   type AuthUser,
   type LoginPayload,
   type RegisterPayload,
@@ -32,6 +33,7 @@ type AuthContextValue = {
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   saveProfile: (payload: UpdateProfilePayload) => Promise<void>;
+  applySession: (session: AuthSessionResponse) => Promise<AuthUser>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -70,16 +72,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return unsubscribe;
   }, []);
 
+  async function applySession(sessionResponse: AuthSessionResponse) {
+    await setCurrentSession({
+      accessToken: sessionResponse.access_token,
+      refreshToken: sessionResponse.refresh_token,
+      rememberMe: sessionResponse.remember_me,
+    });
+    setUser(sessionResponse.user);
+    return sessionResponse.user;
+  }
+
   async function signIn(payload: LoginPayload) {
     try {
       const sessionResponse = await loginAccount(payload);
-      await setCurrentSession({
-        accessToken: sessionResponse.access_token,
-        refreshToken: sessionResponse.refresh_token,
-        rememberMe: sessionResponse.remember_me,
-      });
-      setUser(sessionResponse.user);
-      return sessionResponse.user;
+      return await applySession(sessionResponse);
     } catch (caughtError) {
       throw new Error(
         getAuthApiErrorMessage(caughtError, translate, 'login', translate('login.genericError')),
@@ -90,13 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function signUp(payload: RegisterPayload) {
     try {
       const sessionResponse = await registerAccount(payload);
-      await setCurrentSession({
-        accessToken: sessionResponse.access_token,
-        refreshToken: sessionResponse.refresh_token,
-        rememberMe: sessionResponse.remember_me,
-      });
-      setUser(sessionResponse.user);
-      return sessionResponse.user;
+      return await applySession(sessionResponse);
     } catch (caughtError) {
       throw new Error(
         getAuthApiErrorMessage(caughtError, translate, 'register', translate('register.genericError')),
@@ -136,6 +136,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signOut,
       refreshProfile,
       saveProfile,
+      applySession,
     }),
     [user, isBootstrapping],
   );
