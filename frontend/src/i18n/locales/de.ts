@@ -562,4 +562,27 @@ export const de = {
     body: 'Der Link ist möglicherweise unvollständig oder die Seite wurde noch nicht erstellt.',
     backHome: 'Zur Startseite',
   },
+  invite: {
+    greeting: 'Liebe/r {{firstName}},',
+    headline: 'Mit Freude laden wir euch ein',
+    coupleNames: 'Ilaria & Davide',
+    ceremonyStart: 'Wir erwarten euch um 17:00 Uhr, Beginn der Trauung.',
+    intro:
+      'Es würde uns sehr freuen, euch an unserer Seite zu haben. Bringt nur euch selbst mit und die Lust, bis spät zu tanzen.',
+    rsvpSection: {
+      title: 'Sagt uns Bescheid',
+      note: 'Bitte bestätigt eure Teilnahme bis zum 6. Mai 2027.',
+      yes: 'Wir kommen',
+      contact: 'Schreibt uns',
+    },
+    moreInfo: {
+      text: 'Weitere Informationen findet ihr hier:',
+      cta: 'Zur Webseite',
+    },
+    openAria: 'Einladung öffnen',
+    tapHint: 'Zum Öffnen auf das Siegel tippen',
+    notFoundTitle: 'Einladung nicht gefunden.',
+    notFoundBody: 'Dieser Link ist möglicherweise abgelaufen oder falsch geschrieben.',
+    notFoundBackHome: 'Zur Hochzeitsseite',
+  },
 } as const;

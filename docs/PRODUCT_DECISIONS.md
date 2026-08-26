@@ -31,6 +31,21 @@ Costanti codice: `frontend/src/constants/weddingEvent.ts`
 - **Nessuna lista chiusa** a livello tecnico: chi ha il link può registrarsi.
 - Su alcuni bigliettini sono invitati **più persone (familiari)** — gestiti nel RSVP di gruppo.
 
+### 1.1bis Invito digitale personalizzato (WhatsApp) — busta animata
+
+Canale **aggiuntivo**, non sostitutivo del QR generico: per gli invii diretti (WhatsApp),
+un link tipo `/invito/{token}` apre una busta animata (CSS puro, click sul sigillo →
+si apre) con il nome dell'invitato precompilato.
+
+- **Non è un meccanismo di autenticazione** — resta fuori scope il passwordless login (§8).
+  Il token risolve solo `first_name`/`last_name` per personalizzare il saluto, via
+  `GET /invites/{token}` pubblico e read-only. Nessun dato di sessione, nessun RSVP.
+- Tabella dedicata `invite_links` (id, token, first_name, last_name, created_at),
+  generata offline con `backend/scripts/generate_invite_links.py` a partire da un CSV.
+- Il tasto "Conferma presenza" nella busta porta a `/auth/register` con nome/cognome
+  precompilati (passati via router state, mai in URL/query — restano fuori da history e log).
+- Non cambia §1.1: chi non ha un link personale può comunque registrarsi dal QR/home.
+
 ### 1.2 Registrazione obbligatoria
 
 - Per **confermare presenza** e **caricare foto** serve account (email + password alla prima volta).
@@ -256,6 +271,8 @@ Mix **briefing militare** + **matrimonio elegante AoT**: non rivista di nozze ge
 - Headquarters dashboard ospite esteso
 - Moderazione foto in admin (API non ancora esposte)
 - BaaS (Supabase/Firebase) al posto del backend custom — **non previsto**
+- Effetto "particle text" (canvas, testo che si ricompone da particelle) sulla pagina invito (`/invito/{token}`) — **valutato, non implementato**. Il componente di riferimento (via 21st.dev) è scritto per uno stack Next.js/shadcn/Tailwind; questo progetto usa Vite + SCSS senza Tailwind, quindi andrebbe riscritto per il design system esistente (nessuna nuova dipendenza: solo `<canvas>` + `requestAnimationFrame`, già usati in [`HeroParticleField.tsx`](../frontend/src/components/MissionDocumentHero/HeroParticleField.tsx) per i petali sull'hero). Se ripreso in futuro: sostituire le parole demo con nome ospite/data matrimonio, e capire come farlo convivere con l'apertura busta + macchina da scrivere già presenti in `EnvelopeInvite.tsx`. Snippet originale conservato in [`docs/deferred/particle-text-effect.md`](deferred/particle-text-effect.md).
+- "Star crawl" (testo che scorre con prospettiva 3D, meccanica del crawl di Star Wars vestita con la palette del sito) — **componente costruito e funzionante, non ancora agganciato a nessuna pagina reale**. Solo CSS/SCSS, nessuna dipendenza nuova. Anteprima dev-only su `/dev/star-crawl` (mai in produzione). Mancano ancora: dove usarlo (pagina invito? prima o dopo la lettera?) e che testo fargli scorrere. Dettagli in [`docs/deferred/star-crawl.md`](deferred/star-crawl.md).
 
 ---
 
@@ -279,7 +296,9 @@ Mix **briefing militare** + **matrimonio elegante AoT**: non rivista di nozze ge
 | Auth / sessione | `backend/settings.py`, `frontend/src/services/authSession.ts` |
 | RSVP attuale | `backend/services/rsvp_service.py`, `frontend/src/pages/RsvpPage/` |
 | Fazioni (enum) | `frontend/src/services/rsvpApi.ts` (`FactionId`) |
+| Invito digitale (WhatsApp) | `backend/models/invite_link_model.py`, `backend/scripts/generate_invite_links.py`, `frontend/src/pages/InvitePage/` |
 | Checklist UI | `.cursor/skills/aot-premium-design/ui-migration-checklist.md` |
 | Agenti Cursor | `.cursor/README.md` |
 | Storyboard hero | `docs/hero-references/HERO_STORYBOARD.md` |
 | Frame / video ref. | `docs/hero-references/` (`.mov` in `.gitignore`) |
+| Star crawl (non agganciato) | `frontend/src/components/StarCrawl/`, anteprima dev su `/dev/star-crawl`, note in `docs/deferred/star-crawl.md` |
