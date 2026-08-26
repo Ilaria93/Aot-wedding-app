@@ -593,4 +593,13 @@ export const de = {
     confirmedTitle: 'Danke, alles eingetragen.',
     confirmedBody: 'Wir haben eine Zusammenfassung an {{email}} geschickt. Darin findest du den Link zum Zurückkehren.',
   },
+  guestAccess: {
+    recoveryTitle: 'Link verloren?',
+    recoveryIntro: 'Gib die hinterlegte E-Mail ein: wir schicken dir den Zugang zu deiner Einladung erneut.',
+    recoverySubmit: 'Link erneut senden',
+    recoverySent: 'Falls die Adresse zu einer Einladung passt, sieh in deinem Postfach nach: der Link bleibt 24 Stunden gültig.',
+    verifyErrorTitle: 'Ungültiger Link.',
+    verifyErrorBody: 'Dieser Link ist möglicherweise abgelaufen oder wurde bereits verwendet.',
+    requestNewLink: 'Neuen Link anfordern',
+  },
 } as const;

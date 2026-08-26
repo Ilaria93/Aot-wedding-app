@@ -592,4 +592,13 @@ export const fr = {
     confirmedTitle: "Merci, c'est noté.",
     confirmedBody: 'Nous avons envoyé un récapitulatif à {{email}}. Le lien de retour y figure.',
   },
+  guestAccess: {
+    recoveryTitle: 'Vous avez perdu le lien ?',
+    recoveryIntro: "Indiquez l'email laissé : nous vous renvoyons l'accès à votre invitation.",
+    recoverySubmit: 'Renvoyer le lien',
+    recoverySent: 'Si cette adresse correspond à une invitation, vérifiez votre boîte mail : le lien reste valable 24 heures.',
+    verifyErrorTitle: 'Lien invalide.',
+    verifyErrorBody: 'Ce lien a peut-être expiré ou déjà été utilisé.',
+    requestNewLink: 'Demander un nouveau lien',
+  },
 } as const;

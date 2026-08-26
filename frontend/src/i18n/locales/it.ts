@@ -590,4 +590,13 @@ export const it = {
     confirmedTitle: 'Grazie, è tutto segnato.',
     confirmedBody: 'Ti abbiamo mandato un riepilogo a {{email}}. Nella stessa email trovi il link per rientrare.',
   },
+  guestAccess: {
+    recoveryTitle: 'Hai perso il link?',
+    recoveryIntro: "Scrivi l'email che ci hai lasciato: ti rimandiamo l'accesso al tuo invito.",
+    recoverySubmit: 'Rimandami il link',
+    recoverySent: 'Se l'indirizzo corrisponde a un invito, controlla la posta: il link resta valido 24 ore.',
+    verifyErrorTitle: 'Link non valido.',
+    verifyErrorBody: 'Il link potrebbe essere scaduto o già usato.',
+    requestNewLink: 'Richiedi un nuovo link',
+  },
 } as const;

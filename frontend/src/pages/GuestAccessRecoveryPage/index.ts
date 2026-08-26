@@ -1,0 +1,1 @@
+export { GuestAccessRecoveryPage } from './GuestAccessRecoveryPage';
