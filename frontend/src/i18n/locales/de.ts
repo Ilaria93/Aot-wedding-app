@@ -585,4 +585,12 @@ export const de = {
     notFoundBody: 'Dieser Link ist möglicherweise abgelaufen oder falsch geschrieben.',
     notFoundBackHome: 'Zur Hochzeitsseite',
   },
+  guestRsvp: {
+    intro: 'Bestätige deine Teilnahme und die deiner Gruppe.',
+    emailLabel: 'Deine E-Mail',
+    emailHint: 'Kein Passwort nötig — die E-Mail dient nur dazu, dir später den Link erneut zu schicken.',
+    emailRequiredError: 'Gib deine E-Mail ein, bevor du bestätigst.',
+    confirmedTitle: 'Danke, alles eingetragen.',
+    confirmedBody: 'Wir haben eine Zusammenfassung an {{email}} geschickt. Darin findest du den Link zum Zurückkehren.',
+  },
 } as const;

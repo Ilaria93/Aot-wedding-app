@@ -578,4 +578,12 @@ export const en = {
     notFoundBody: 'This link may have expired or be mistyped.',
     notFoundBackHome: 'Go to the wedding site',
   },
+  guestRsvp: {
+    intro: 'Confirm your attendance and your group’s.',
+    emailLabel: 'Your email',
+    emailHint: "No password needed — the email is only used to send you the link back later.",
+    emailRequiredError: 'Enter your email before confirming.',
+    confirmedTitle: 'Thank you, all set.',
+    confirmedBody: "We've sent a recap to {{email}}. The same email has your link back in.",
+  },
 } as const;

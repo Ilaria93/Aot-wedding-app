@@ -582,4 +582,12 @@ export const it = {
     notFoundBody: 'Il link potrebbe essere scaduto o scritto in modo scorretto.',
     notFoundBackHome: 'Vai al sito del matrimonio',
   },
+  guestRsvp: {
+    intro: 'Conferma la tua presenza e quella del tuo gruppo.',
+    emailLabel: 'La tua email',
+    emailHint: "Non serve una password — l'email serve solo per ricevere il link per rientrare più tardi.",
+    emailRequiredError: 'Inserisci la tua email prima di confermare.',
+    confirmedTitle: 'Grazie, è tutto segnato.',
+    confirmedBody: 'Ti abbiamo mandato un riepilogo a {{email}}. Nella stessa email trovi il link per rientrare.',
+  },
 } as const;

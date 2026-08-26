@@ -584,4 +584,12 @@ export const fr = {
     notFoundBody: "Ce lien a peut-être expiré ou est incorrect.",
     notFoundBackHome: 'Aller au site du mariage',
   },
+  guestRsvp: {
+    intro: 'Confirmez votre présence et celle de votre groupe.',
+    emailLabel: 'Votre email',
+    emailHint: "Pas besoin de mot de passe — l'email sert seulement à vous renvoyer le lien plus tard.",
+    emailRequiredError: 'Indiquez votre email avant de confirmer.',
+    confirmedTitle: "Merci, c'est noté.",
+    confirmedBody: 'Nous avons envoyé un récapitulatif à {{email}}. Le lien de retour y figure.',
+  },
 } as const;
