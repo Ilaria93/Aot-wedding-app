@@ -1,11 +1,11 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 from schemas.auth_schema import AuthSessionResponse
 from schemas.rsvp_confirmation_schema import RSVPSubmitRequest, RsvpSubmitResponse
 
 
 class GuestRsvpConfirmRequest(RSVPSubmitRequest):
-    email: EmailStr
+    email: str
 
 
 class GuestRsvpConfirmResponse(BaseModel):
@@ -14,7 +14,7 @@ class GuestRsvpConfirmResponse(BaseModel):
 
 
 class GuestMagicLinkRequest(BaseModel):
-    email: EmailStr
+    email: str
 
 
 class GuestMagicLinkRequestResponse(BaseModel):
