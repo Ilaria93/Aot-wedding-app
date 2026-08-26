@@ -120,6 +120,30 @@ def read_wedding_role_secret() -> str:
     return os.getenv("WEDDING_ROLE_SECRET", "").strip()
 
 
+def read_resend_api_key() -> str:
+    """API key for Resend transactional email service."""
+    return os.getenv("RESEND_API_KEY", "").strip()
+
+
+def read_email_from_address() -> str:
+    """Sender address for transactional emails."""
+    return os.getenv("EMAIL_FROM_ADDRESS", "onboarding@resend.dev").strip()
+
+
+def read_frontend_base_url() -> str:
+    """Public URL of the deployed frontend — used to build magic-link URLs."""
+    return os.getenv("FRONTEND_BASE_URL", "http://localhost:5173").strip().rstrip("/")
+
+
+def read_guest_magic_link_expires_minutes() -> int:
+    """Lifetime of guest magic link tokens in minutes."""
+    raw_value = os.getenv("GUEST_MAGIC_LINK_EXPIRES_MINUTES", "1440").strip()
+    try:
+        return int(raw_value)
+    except ValueError:
+        return 1440
+
+
 def read_rsvp_edit_deadline() -> datetime:
     """Last moment (exclusive) when RSVP edits are allowed — end of 6 May 2027 Europe/Rome."""
     raw_value = os.getenv("RSVP_EDIT_DEADLINE", "2027-05-07T00:00:00+02:00").strip()
