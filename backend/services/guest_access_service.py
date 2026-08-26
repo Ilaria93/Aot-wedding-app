@@ -78,16 +78,19 @@ def _issue_and_send_magic_link(db: Session, user: User, email: str) -> None:
 
     verify_url = f"{read_frontend_base_url()}/accedi/verifica?token={raw_token}"
     hours = max(1, expires_minutes // 60)
-    send_email(
-        to=email,
-        subject="Il tuo link per il matrimonio",
-        html_body=(
-            f"<p>Ciao {user.first_name},</p>"
-            f"<p>Usa questo link per rivedere o modificare la tua conferma:</p>"
-            f'<p><a href="{verify_url}">{verify_url}</a></p>'
-            f"<p>Il link resta valido per {hours} ore.</p>"
-        ),
-    )
+    try:
+        send_email(
+            to=email,
+            subject="Il tuo link per il matrimonio",
+            html_body=(
+                f"<p>Ciao {user.first_name},</p>"
+                f"<p>Usa questo link per rivedere o modificare la tua conferma:</p>"
+                f'<p><a href="{verify_url}">{verify_url}</a></p>'
+                f"<p>Il link resta valido per {hours} ore.</p>"
+            ),
+        )
+    except EmailSendError:
+        pass  # the magic link is still created/valid; the guest just won't get the email
 
 
 def confirm_guest_rsvp(
@@ -108,10 +111,7 @@ def confirm_guest_rsvp(
     )
 
     session = issue_auth_session(db, user, remember_me=True)
-    try:
-        _issue_and_send_magic_link(db, user, payload.email)
-    except EmailSendError:
-        pass  # confirmation still succeeds; the guest just won't get the recap email
+    _issue_and_send_magic_link(db, user, payload.email)
     return session, rsvp_response
 
 
