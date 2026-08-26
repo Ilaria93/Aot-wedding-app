@@ -1,4 +1,5 @@
-from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 from database.base import Base
 
@@ -15,3 +16,8 @@ class InviteLink(Base):
     first_name = Column(String(80), nullable=False)
     last_name = Column(String(80), nullable=False)
     created_at = Column(DateTime, nullable=False)
+    # Set the first time this invite's guest confirms/recovers access — lets
+    # a repeat visit reuse the same guest User instead of creating another.
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=True, index=True)
+
+    user = relationship("User")

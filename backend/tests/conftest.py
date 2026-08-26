@@ -47,6 +47,8 @@ def truncate_test_tables():
             text(
                 """
                 TRUNCATE TABLE
+                    guest_magic_links,
+                    invite_links,
                     refresh_token_sessions,
                     photo_album_items,
                     rsvp_guests,
