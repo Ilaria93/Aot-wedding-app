@@ -1,8 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import type { StoredAuthSession } from '@/services/authSessionStorage';
 
 const authStorageMock = {
   persistAuthSession: vi.fn(async () => {}),
-  readStoredAuthSession: vi.fn(async () => null),
+  readStoredAuthSession: vi.fn(async (): Promise<StoredAuthSession | null> => null),
   clearStoredAuthSession: vi.fn(async () => {}),
 };
 
