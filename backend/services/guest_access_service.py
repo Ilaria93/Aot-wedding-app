@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import hashlib
+import html
 import secrets
 
 from sqlalchemy.orm import Session
@@ -14,7 +15,11 @@ from schemas.rsvp_confirmation_schema import RSVPSubmitRequest, RsvpSubmitRespon
 from services.auth_credentials_service import normalize_email
 from services.auth_token_service import issue_auth_session
 from services.email_service import EmailSendError, send_email
-from services.rsvp_service import confirm_rsvp_for_user, update_rsvp_for_user
+from services.rsvp_service import (
+    assert_rsvp_editable_window,
+    confirm_rsvp_for_user,
+    update_rsvp_for_user,
+)
 from settings import read_frontend_base_url, read_guest_magic_link_expires_minutes
 
 
@@ -26,30 +31,42 @@ class GuestMagicLinkInvalidError(Exception):
     """Raised when a magic link token is unknown, expired, or already used."""
 
 
+class GuestEmailAlreadyInUseError(Exception):
+    """Raised when the submitted email already belongs to some other account."""
+
+
 def _hash_token(raw_token: str) -> str:
     return hashlib.sha256(raw_token.encode("utf-8")).hexdigest()
 
 
 def get_or_create_guest_user(db: Session, invite_link: InviteLink, email: str) -> User:
+    # `invite_link.user_id` is the ONLY thing that identifies the bound guest.
+    # The submitted email must never select an account: holding an invite token
+    # would otherwise hand the holder a session for any address they can guess
+    # (the couple's admin account included).
     if invite_link.user_id:
         existing_linked_user = db.query(User).filter(User.id == invite_link.user_id).first()
         if existing_linked_user:
             return existing_linked_user
 
     normalized_email = normalize_email(email)
-    user = db.query(User).filter(User.email == normalized_email).first()
-    if not user:
-        user = User(
-            first_name=invite_link.first_name,
-            last_name=invite_link.last_name,
-            email=normalized_email,
-            password_hash=None,
-            role="user",
-            created_at=datetime.utcnow(),
-            last_login_at=datetime.utcnow(),
+    if db.query(User).filter(User.email == normalized_email).first():
+        raise GuestEmailAlreadyInUseError(
+            "This email is already associated with an account. "
+            "Use a different email, or log in normally."
         )
-        db.add(user)
-        db.flush()
+
+    user = User(
+        first_name=invite_link.first_name,
+        last_name=invite_link.last_name,
+        email=normalized_email,
+        password_hash=None,
+        role="user",
+        created_at=datetime.utcnow(),
+        last_login_at=datetime.utcnow(),
+    )
+    db.add(user)
+    db.flush()
 
     invite_link.user_id = user.id
     db.commit()
@@ -83,7 +100,7 @@ def _issue_and_send_magic_link(db: Session, user: User, email: str) -> None:
             to=email,
             subject="Il tuo link per il matrimonio",
             html_body=(
-                f"<p>Ciao {user.first_name},</p>"
+                f"<p>Ciao {html.escape(user.first_name)},</p>"
                 f"<p>Usa questo link per rivedere o modificare la tua conferma:</p>"
                 f'<p><a href="{verify_url}">{verify_url}</a></p>'
                 f"<p>Il link resta valido per {hours} ore.</p>"
@@ -100,6 +117,11 @@ def confirm_guest_rsvp(
     if not invite_link:
         raise GuestInviteNotFoundError("Invite not found")
 
+    # Deadline first: get_or_create_guest_user commits (creates the guest and
+    # permanently binds the invite to it), so a later check would leave those
+    # side effects behind a 403.
+    assert_rsvp_editable_window()
+
     user = get_or_create_guest_user(db, invite_link, payload.email)
     rsvp_payload = RSVPSubmitRequest(attending=payload.attending, guests=payload.guests)
 
@@ -111,7 +133,7 @@ def confirm_guest_rsvp(
     )
 
     session = issue_auth_session(db, user, remember_me=True)
-    _issue_and_send_magic_link(db, user, payload.email)
+    _issue_and_send_magic_link(db, user, normalize_email(payload.email))
     return session, rsvp_response
 
 

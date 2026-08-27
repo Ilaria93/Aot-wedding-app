@@ -72,6 +72,39 @@ def test_login_returns_fresh_session(api_client):
     assert response.json()["user"]["email"] == "armin@example.com"
 
 
+def test_login_with_a_passwordless_guest_email_is_a_plain_401(api_client):
+    """Guest accounts store password_hash = NULL. Password login must fail the
+    same way an unknown email does — a 500 would leak which emails are guests."""
+    from datetime import datetime
+
+    from database.base import SessionLocal
+    from models.user_model import User
+
+    session = SessionLocal()
+    session.add(
+        User(
+            first_name="Mario",
+            last_name="Rossi",
+            email="passwordless@example.com",
+            password_hash=None,
+            role="user",
+            created_at=datetime.utcnow(),
+        )
+    )
+    session.commit()
+    session.close()
+
+    response = api_client.post(
+        "/auth/login",
+        json={
+            "email": "passwordless@example.com",
+            "password": "anything-at-all",
+            "remember_me": False,
+        },
+    )
+    assert response.status_code == 401, response.text
+
+
 def test_me_returns_authenticated_user(api_client):
     register_response = api_client.post(
         "/auth/register",

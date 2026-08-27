@@ -48,6 +48,9 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
+    # Caveat: the final alter_column below fails once any passwordless guest
+    # exists (users.password_hash IS NULL). Backfill or delete those rows first
+    # — deliberately not automated here, since either choice destroys data.
     op.drop_index("ix_guest_magic_links_token_hash", table_name="guest_magic_links")
     op.drop_index("ix_guest_magic_links_user_id", table_name="guest_magic_links")
     op.drop_table("guest_magic_links")

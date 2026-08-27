@@ -3,7 +3,11 @@ from sqlalchemy.orm import Session
 
 from database.base import get_db
 from schemas.guest_access_schema import GuestRsvpConfirmRequest, GuestRsvpConfirmResponse
-from services.guest_access_service import GuestInviteNotFoundError, confirm_guest_rsvp
+from services.guest_access_service import (
+    GuestEmailAlreadyInUseError,
+    GuestInviteNotFoundError,
+    confirm_guest_rsvp,
+)
 from services.rsvp_service import RsvpDeadlineError
 
 router = APIRouter(prefix="/invites")
@@ -21,6 +25,8 @@ def confirm_rsvp_via_invite(
         session, rsvp = confirm_guest_rsvp(db, token, payload)
     except GuestInviteNotFoundError as error:
         raise HTTPException(status_code=404, detail=str(error)) from error
+    except GuestEmailAlreadyInUseError as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
     except RsvpDeadlineError as error:
         raise HTTPException(status_code=403, detail=str(error)) from error
     return GuestRsvpConfirmResponse(session=session, rsvp=rsvp)
