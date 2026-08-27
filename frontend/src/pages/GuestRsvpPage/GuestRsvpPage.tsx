@@ -37,12 +37,6 @@ export function GuestRsvpPage() {
     };
   }, [token]);
 
-  const draft = useGuestRsvpDraft(
-    token ?? '',
-    invite ?? { first_name: '', last_name: '' },
-    t,
-  );
-
   if (loadState === 'loading') {
     return (
       <div className="obw-page guest-rsvp-page guest-rsvp-page--centered">
@@ -51,7 +45,7 @@ export function GuestRsvpPage() {
     );
   }
 
-  if (loadState === 'error' || !invite) {
+  if (loadState === 'error' || !invite || !token) {
     return (
       <div className="obw-page guest-rsvp-page guest-rsvp-page--centered">
         <h1 className="obw-display obw-display--sm">{t('invite.notFoundTitle')}</h1>
@@ -59,6 +53,17 @@ export function GuestRsvpPage() {
       </div>
     );
   }
+
+  // Deliberately a child component: useGuestRsvpDraft seeds the account-holder
+  // row in a lazy useState initializer that never re-runs, so mounting it
+  // before `invite` arrived would lock in empty names — which the form then
+  // renders disabled and validation skips, so every submit 422'd server-side.
+  return <GuestRsvpConfirmForm token={token} invite={invite} />;
+}
+
+function GuestRsvpConfirmForm({ token, invite }: { token: string; invite: InviteLink }) {
+  const { t } = useI18n();
+  const draft = useGuestRsvpDraft(token, invite, t);
 
   if (draft.confirmed) {
     return (

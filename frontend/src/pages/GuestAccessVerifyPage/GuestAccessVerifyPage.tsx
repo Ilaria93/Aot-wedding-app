@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -14,6 +14,10 @@ export function GuestAccessVerifyPage() {
   const { applySession } = useAuth();
   const { t } = useI18n();
   const [state, setState] = useState<VerifyState>('verifying');
+  // Magic links are mono-use, so a double call burns the token and shows the
+  // guest an "invalid link" page. StrictMode's dev double-invoke does exactly
+  // that; the ref survives it (state and effect cleanup do not).
+  const hasRedeemed = useRef(false);
 
   useEffect(() => {
     const token = searchParams.get('token');
@@ -21,6 +25,8 @@ export function GuestAccessVerifyPage() {
       setState('error');
       return;
     }
+    if (hasRedeemed.current) return;
+    hasRedeemed.current = true;
 
     let isMounted = true;
     verifyGuestMagicLink(token)

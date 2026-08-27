@@ -10,15 +10,22 @@ export function GuestAccessRecoveryPage() {
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setSubmitting(true);
+    setError(null);
     try {
+      // The backend answers 200 whether or not the address matches a guest, so
+      // reaching here is the only honest signal. Telling the guest to check
+      // their inbox after a failed request would just strand them.
       await requestGuestMagicLink(email.trim());
+      setSent(true);
+    } catch {
+      setError(t('rsvp.submitError'));
     } finally {
       setSubmitting(false);
-      setSent(true);
     }
   }
 
@@ -43,6 +50,7 @@ export function GuestAccessRecoveryPage() {
                 onChange={(event) => setEmail(event.target.value)}
               />
             </label>
+            {error ? <p className="auth-form__error">{error}</p> : null}
             <button
               type="submit"
               className="obw-btn obw-btn--primary obw-btn--block"

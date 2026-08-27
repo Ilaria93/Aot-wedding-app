@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 import { AuthPageShell } from '@/components/AuthExperience';
@@ -84,6 +84,15 @@ export function LoginPage() {
           disabled={submitting}>
           {submitting ? t('login.submitLoading') : t('login.submitLabel')}
         </button>
+
+        {/* Only inbound link to the magic-link recovery page: a guest who lost
+            their WhatsApp invite has no password to log in with, and no other
+            way to find /accedi/recupera. */}
+        <p className="auth-form__footer">
+          <Link className="auth-form__footer-link" to="/accedi/recupera">
+            {t('login.guestRecoveryLink')}
+          </Link>
+        </p>
       </form>
     </AuthPageShell>
   );

@@ -269,6 +269,7 @@ export const it = {
     roleMismatchError: 'Hai selezionato {{selected}}, ma questo account ha un ruolo diverso.',
     registerGuestLink: 'Non hai ancora un account? Registrati',
     registerAdminLink: "Primo accesso? Registrati con l'email autorizzata",
+    guestRecoveryLink: "Hai perso il link d'invito? Recuperalo qui",
     identities: {
       bride: {
         label: 'Sposa',
@@ -586,6 +587,8 @@ export const it = {
     emailLabel: 'La tua email',
     emailHint: "Non serve una password — l'email serve solo per ricevere il link per rientrare più tardi.",
     emailRequiredError: 'Inserisci la tua email prima di confermare.',
+    emailInUseError:
+      'Questa email è già collegata a un altro account. Usa un altro indirizzo, oppure accedi normalmente.',
     confirmedTitle: 'Grazie, è tutto segnato.',
     confirmedBody: 'Ti abbiamo mandato un riepilogo a {{email}}. Nella stessa email trovi il link per rientrare.',
   },

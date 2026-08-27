@@ -267,6 +267,7 @@ export const en = {
     roleMismatchError: 'You selected {{selected}}, but this account has a different role.',
     registerGuestLink: "Don't have an account yet? Sign up",
     registerAdminLink: 'First access? Sign up with the authorized email',
+    guestRecoveryLink: 'Lost your invite link? Get it back here',
     identities: {
       bride: {
         label: 'Bride',
@@ -582,6 +583,8 @@ export const en = {
     emailLabel: 'Your email',
     emailHint: "No password needed — the email is only used to send you the link back later.",
     emailRequiredError: 'Enter your email before confirming.',
+    emailInUseError:
+      'This email is already linked to another account. Use a different address, or log in normally.',
     confirmedTitle: 'Thank you, all set.',
     confirmedBody: "We've sent a recap to {{email}}. The same email has your link back in.",
   },

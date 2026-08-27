@@ -8,5 +8,8 @@ export function mapGuestRsvpErrorToMessageKey(statusCode: number | undefined): T
   if (statusCode === 404) {
     return 'invite.notFoundBody';
   }
+  if (statusCode === 409) {
+    return 'guestRsvp.emailInUseError';
+  }
   return 'rsvp.submitError';
 }
