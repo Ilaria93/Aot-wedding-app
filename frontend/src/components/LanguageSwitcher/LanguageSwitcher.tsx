@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Check, ChevronDown, ChevronUp, Globe } from 'lucide-react';
 
 import { getLocaleLabel, useI18n } from '@/contexts/I18nContext';
-import { supportedLocales } from '@/i18n/translations';
+import { toggleableLocales } from '@/i18n/translations';
 import type { LanguageSwitcherProps } from '@/components/LanguageSwitcher/types/LanguageSwitcher.types';
 import './styles/LanguageSwitcher.scss';
 
@@ -16,7 +16,7 @@ export function LanguageSwitcher({
   const [isOpen, setIsOpen] = useState(false);
   const currentLabel = compact ? locale.toUpperCase() : getLocaleLabel(locale);
 
-  async function handleSelect(nextLocale: (typeof supportedLocales)[number]) {
+  async function handleSelect(nextLocale: (typeof toggleableLocales)[number]) {
     setIsOpen(false);
     if (nextLocale !== locale) {
       await setLocale(nextLocale);
@@ -27,7 +27,7 @@ export function LanguageSwitcher({
   if (embedded) {
     return (
       <div className="language-switcher language-switcher--embedded" role="group" aria-label={t('language.label')}>
-        {supportedLocales.map((item) => {
+        {toggleableLocales.map((item) => {
           const isActive = item === locale;
           return (
             <button
@@ -61,7 +61,7 @@ export function LanguageSwitcher({
         </button>
         {isOpen ? (
           <div className="language-switcher__menu" role="menu">
-            {supportedLocales.map((item) => {
+            {toggleableLocales.map((item) => {
               const isActive = item === locale;
               return (
                 <button
