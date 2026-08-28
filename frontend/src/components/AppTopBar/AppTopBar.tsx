@@ -5,6 +5,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 const SHOW_AFTER_SCROLL = 88;
 
 import { AppUserMenu } from '@/components/AppUserMenu';
+import { AppUserMenuContent } from '@/components/AppUserMenu/AppUserMenuContent';
 import { ScreenBackButton } from '@/components/ScreenBackButton';
 import { WEDDING_COUPLE_NAMES, WEDDING_OPERATION_NAME } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
@@ -178,6 +179,7 @@ export function AppTopBar() {
               onNavigate={closeMobileNav}
             />
           ))}
+          <AppUserMenuContent onNavigate={closeMobileNav} />
         </div>
       ) : null}
     </header>

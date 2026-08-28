@@ -145,6 +145,12 @@
     display: inline-flex;
   }
 
+  /* Its content now lives inside the mobile panel below, opened by the
+     hamburger — one menu trigger on small screens, not two. */
+  .site-header .app-user-menu {
+    display: none;
+  }
+
   .site-header__mobile-panel {
     display: grid;
     gap: 0;
