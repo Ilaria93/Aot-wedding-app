@@ -1,6 +1,6 @@
-import { ChevronDown, LogIn, LogOut, Settings, Shield, User } from 'lucide-react';
+import { CalendarCheck, ChevronDown, LogIn, LogOut, Settings, Shield, User } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { getUserInitials } from '@/components/AppUserMenu/getUserInitials';
@@ -16,6 +16,8 @@ export function AppUserMenu() {
   const { user, isAuthenticated, canManageWedding, signOut } = useAuth();
   const { t } = useI18n();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === '/';
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -89,6 +91,28 @@ export function AppUserMenu() {
           className="app-user-menu__panel obw-fade-up"
           role="menu"
           aria-labelledby={`${menuId}-trigger`}>
+          <div className="app-user-menu__section">
+            {isHome ? (
+              <a
+                href="#rsvp"
+                role="menuitem"
+                className="app-user-menu__action app-user-menu__action--rsvp"
+                onClick={closeMenu}>
+                <CalendarCheck size={15} aria-hidden />
+                {t('navigation.stack.rsvp')}
+              </a>
+            ) : (
+              <Link
+                to={isAuthenticated ? '/rsvp' : '/auth/login'}
+                role="menuitem"
+                className="app-user-menu__action app-user-menu__action--rsvp"
+                onClick={closeMenu}>
+                <CalendarCheck size={15} aria-hidden />
+                {t('navigation.stack.rsvp')}
+              </Link>
+            )}
+          </div>
+
           <div className="app-user-menu__header">
             {isAuthenticated && user ? (
               <>

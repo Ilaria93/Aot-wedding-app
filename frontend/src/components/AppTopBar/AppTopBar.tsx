@@ -7,7 +7,6 @@ const SHOW_AFTER_SCROLL = 88;
 import { AppUserMenu } from '@/components/AppUserMenu';
 import { ScreenBackButton } from '@/components/ScreenBackButton';
 import { WEDDING_COUPLE_NAMES, WEDDING_OPERATION_NAME } from '@/constants/weddingEvent';
-import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
 import type { TranslateFn } from '@/i18n/translations';
 import './styles/AppTopBar.scss';
@@ -82,10 +81,9 @@ function NavItemLink({ item, className, activeClassName, onNavigate }: NavItemLi
   );
 }
 
-/** Global sticky header — primary routes, RSVP CTA and account menu. */
+/** Global sticky header — primary routes and account menu. */
 export function AppTopBar() {
   const location = useLocation();
-  const { isAuthenticated } = useAuth();
   const { t } = useI18n();
   const isHome = location.pathname === '/';
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -150,20 +148,6 @@ export function AppTopBar() {
                 onNavigate={closeMobileNav}
               />
             ))}
-
-            {isHome ? (
-              <a className="obw-btn obw-btn--primary obw-nav__cta site-header__route" href="#rsvp">
-                {t('navigation.stack.rsvp')}
-              </a>
-            ) : (
-              <NavLink
-                to={isAuthenticated ? '/rsvp' : '/auth/login'}
-                className={({ isActive }) =>
-                  `obw-btn obw-btn--primary obw-nav__cta site-header__route${isActive ? ' is-active' : ''}`
-                }>
-                {t('navigation.stack.rsvp')}
-              </NavLink>
-            )}
           </nav>
 
           <button
@@ -194,21 +178,6 @@ export function AppTopBar() {
               onNavigate={closeMobileNav}
             />
           ))}
-          {isHome ? (
-            <a
-              className="obw-btn obw-btn--primary obw-btn--block site-header__mobile-cta"
-              href="#rsvp"
-              onClick={closeMobileNav}>
-              {t('navigation.stack.rsvp')}
-            </a>
-          ) : (
-            <NavLink
-              to={isAuthenticated ? '/rsvp' : '/auth/login'}
-              className="obw-btn obw-btn--primary obw-btn--block site-header__mobile-cta"
-              onClick={closeMobileNav}>
-              {t('navigation.stack.rsvp')}
-            </NavLink>
-          )}
         </div>
       ) : null}
     </header>
