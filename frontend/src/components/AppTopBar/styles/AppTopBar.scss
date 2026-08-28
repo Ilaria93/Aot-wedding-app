@@ -107,7 +107,6 @@
 .site-header {
   inset-inline: 0;
 }
-
 /* Home only: taken out of flow so the hero cover starts at the very top of the
    viewport. Sticky would still reserve its height and push the artwork down.
    Doubled class to outrank `.obw-nav`, which also sets position. */
