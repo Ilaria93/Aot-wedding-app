@@ -162,24 +162,14 @@ export function AppUserMenu() {
                   </button>
                 </>
               ) : (
-                <>
-                  <Link
-                    to="/auth/login"
-                    role="menuitem"
-                    className="app-user-menu__action"
-                    onClick={closeMenu}>
-                    <LogIn size={15} aria-hidden />
-                    {t('navigation.stack.login')}
-                  </Link>
-                  <Link
-                    to="/auth/register"
-                    role="menuitem"
-                    className="app-user-menu__action"
-                    onClick={closeMenu}>
-                    <User size={15} aria-hidden />
-                    {t('navigation.stack.register')}
-                  </Link>
-                </>
+                <Link
+                  to="/auth/login"
+                  role="menuitem"
+                  className="app-user-menu__action"
+                  onClick={closeMenu}>
+                  <LogIn size={15} aria-hidden />
+                  {t('navigation.stack.login')}
+                </Link>
               )}
             </div>
           </div>
