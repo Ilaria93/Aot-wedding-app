@@ -186,6 +186,15 @@ const LETTER_REVEAL_LEAD_SECONDS = 1;
 // typed "Davide & Ilaria" line, which echoes it a few seconds later.
 const TITLE_START_SECONDS = 3.0;
 const TITLE_END_SECONDS = 3.9;
+// The title/terminal reveal and the zoom into the letter both live in this
+// same ~1s stretch of *footage* (3.0s to the letter opening at duration-1).
+// At normal speed that's under a second of real time — nowhere near enough
+// to read "Pirulini's Wedding" and the save-the-date line, let alone the
+// terminal card's longer command string. Slowing playback here (not just
+// stretching the reveal via CSS) is what actually buys real reading time —
+// same trick already used for the zoom-in below, just starting earlier and
+// replacing that spot's own separate rate change (see hasSlowedRef).
+const SLOW_PLAYBACK_RATE = 0.35;
 // Vertical placement within the video's own rendered (contain-fit) box, not
 // the screen — keeps the title on the blank upper parchment above the
 // crest regardless of how much the viewport's aspect ratio letterboxes the
@@ -207,6 +216,7 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   const [sectionsVisible, setSectionsVisible] = useState(false);
   const letterHeadingRef = useRef<HTMLHeadingElement>(null);
   const openerVideoRef = useRef<HTMLVideoElement>(null);
+  const hasSlowedRef = useRef(false);
   const stageRef = useRef<HTMLDivElement>(null);
 
   // Memoized so the array keeps the same reference across re-renders
@@ -260,6 +270,11 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
           preload="auto"
           onTimeUpdate={(event) => {
             const video = event.currentTarget;
+            if (!hasSlowedRef.current && video.currentTime >= TITLE_START_SECONDS) {
+              hasSlowedRef.current = true;
+              video.playbackRate = SLOW_PLAYBACK_RATE;
+            }
+
             if (!isOpen && video.duration - video.currentTime <= LETTER_REVEAL_LEAD_SECONDS) {
               setIsOpen(true);
             }
@@ -299,13 +314,9 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
               video.clientHeight / VIDEO_NATURAL_HEIGHT,
             );
             video.style.setProperty('--zoom-scale', String(coverScale / containScale));
-            // The footage's own last second (the paper filling the frame)
-            // plays out quickly on its own — slowing playback here, not
-            // just the CSS zoom on top of it, is what actually makes the
-            // ending feel unhurried instead of stacking a slow zoom onto a
-            // fast clip. Keep this above ~0.5 or the gap before the letter's
-            // text appears drags.
-            video.playbackRate = 0.55;
+            // Playback is already slowed (see hasSlowedRef, set back at
+            // TITLE_START_SECONDS) — no separate rate change needed here,
+            // just the CSS zoom class.
             setIsZooming(true);
           }}
           onEnded={() => setIsOpen(true)}
