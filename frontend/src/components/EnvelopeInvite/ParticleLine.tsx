@@ -1,4 +1,3 @@
-// frontend/src/components/EnvelopeInvite/ParticleLine.tsx
 import { useEffect, useRef } from 'react';
 
 import { distanceToTarget, stepParticle, type SteeringParticle, type Vector2D } from '@/components/EnvelopeInvite/particleSteering';
@@ -36,6 +35,23 @@ const SETTLE_MAX_MS = 900;
 // steering approaches asymptotically and would never truly reach.
 const SETTLE_DISTANCE_PX = 2;
 const FADE_OUT_MS = 220;
+
+/** Mirrors the CSS `text-transform` values buildTargets() reads from
+ * `getComputedStyle`, so the rasterized particle text matches what the
+ * real DOM text underneath ends up rendering (e.g. the personal-greeting
+ * line's `text-transform: uppercase`). */
+function applyTextTransform(value: string, transform: string): string {
+  switch (transform) {
+    case 'uppercase':
+      return value.toUpperCase();
+    case 'lowercase':
+      return value.toLowerCase();
+    case 'capitalize':
+      return value.replace(/\b\w/g, (char) => char.toUpperCase());
+    default:
+      return value;
+  }
+}
 
 /**
  * Canvas overlay that forms `text` out of particles once `active` and this
@@ -95,7 +111,26 @@ export function ParticleLine({ text, startMs, active }: ParticleLineProps) {
 
     function buildTargets(): Vector2D[] {
       ctx!.font = font;
-      const lines = wrapText(text, width, (line) => ctx!.measureText(line).width);
+      // CanvasRenderingContext2D.letterSpacing is a newer API — unsupported
+      // browsers simply ignore the assignment, which just means the
+      // particle text is a bit tighter than the real DOM text during
+      // formation (cosmetic only, no crash).
+      ctx!.letterSpacing = computedStyle.letterSpacing;
+
+      // Match what the real DOM does to this text before it's measured or
+      // rasterized — otherwise particles form different characters/shape
+      // than what's underneath (e.g. the personal-greeting line's
+      // text-transform: uppercase) and jump-cut on fade-out.
+      const transformedText = applyTextTransform(text, computedStyle.textTransform);
+      const measure = (line: string) => ctx!.measureText(line).width;
+      // `white-space: pre-line` (the date/venue line) renders each `\n` as
+      // a real line break in the DOM — wrapText alone would collapse `\n`
+      // into ordinary whitespace and regroup words into a different line
+      // shape. Split on the real breaks first, then word-wrap each segment
+      // independently, so the canvas's line structure matches the DOM's.
+      const lines = computedStyle.whiteSpace.startsWith('pre')
+        ? transformedText.split('\n').flatMap((segment) => wrapText(segment, width, measure))
+        : wrapText(transformedText, width, measure);
 
       const offscreen = document.createElement('canvas');
       offscreen.width = canvas!.width;
@@ -103,6 +138,7 @@ export function ParticleLine({ text, startMs, active }: ParticleLineProps) {
       const offCtx = offscreen.getContext('2d')!;
       offCtx.setTransform(ctx!.getTransform());
       offCtx.font = font;
+      offCtx.letterSpacing = computedStyle.letterSpacing;
       offCtx.fillStyle = '#fff';
       offCtx.textAlign = canvasTextAlign;
       offCtx.textBaseline = 'middle';
@@ -166,11 +202,22 @@ export function ParticleLine({ text, startMs, active }: ParticleLineProps) {
       const particles = spawnParticles(buildTargets());
       const formationStart = performance.now();
       let settledAt = 0;
+      let lastFrame = 0;
 
       function frame(now: number) {
+        // Frame-rate-independent physics: stepParticle's motion was written
+        // as "1 unit per call", so scale each call by how many nominal 60fps
+        // frames' worth of wall-clock time actually elapsed since the last
+        // frame — same idea as HeroParticleField.tsx's deltaSeconds, adapted
+        // to this file's per-frame (not per-second) unit. Without this, a
+        // slower device gets fewer, unscaled steps and ends up further from
+        // its targets when SETTLE_MAX_MS fires. See particleSteering.ts.
+        const deltaFrames = lastFrame === 0 ? 1 : Math.min(((now - lastFrame) / 1000) * 60, 4);
+        lastFrame = now;
+
         let totalDistance = 0;
         for (const particle of particles) {
-          stepParticle(particle);
+          stepParticle(particle, deltaFrames);
           totalDistance += distanceToTarget(particle);
         }
         draw(particles);

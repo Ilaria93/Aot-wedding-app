@@ -23,9 +23,19 @@ const CLOSE_ENOUGH_TARGET = 40;
  * canvas to a new target, so none of that applies — see the design spec's
  * "Perché non un porting 1:1 della demo".
  *
+ * `deltaFrames` scales the step to the actual time elapsed since the last
+ * frame, expressed as a multiple of a nominal 60fps frame (1 = 1/60s). This
+ * is what `HeroParticleField.tsx` does with `deltaSeconds` for continuous
+ * motion — here the physics was originally written as "1 unit per call", so
+ * frames are the natural unit rather than seconds. Without this, a slower
+ * device (fewer, longer frames) covers less distance for the same wall-clock
+ * budget, because the physics advances per *call* rather than per unit of
+ * real time. Defaults to 1 so existing call sites (and tests) keep behaving
+ * exactly as before.
+ *
  * Mutates `particle.pos`/`vel`/`acc` in place.
  */
-export function stepParticle(particle: SteeringParticle): void {
+export function stepParticle(particle: SteeringParticle, deltaFrames = 1): void {
   const dx = particle.target.x - particle.pos.x;
   const dy = particle.target.y - particle.pos.y;
   const distance = Math.sqrt(dx * dx + dy * dy);
@@ -47,12 +57,12 @@ export function stepParticle(particle: SteeringParticle): void {
     steerY = (steerY / steerMagnitude) * particle.maxForce;
   }
 
-  particle.acc.x += steerX;
-  particle.acc.y += steerY;
+  particle.acc.x += steerX * deltaFrames;
+  particle.acc.y += steerY * deltaFrames;
   particle.vel.x += particle.acc.x;
   particle.vel.y += particle.acc.y;
-  particle.pos.x += particle.vel.x;
-  particle.pos.y += particle.vel.y;
+  particle.pos.x += particle.vel.x * deltaFrames;
+  particle.pos.y += particle.vel.y * deltaFrames;
   particle.acc.x = 0;
   particle.acc.y = 0;
 }

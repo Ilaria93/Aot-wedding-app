@@ -1,6 +1,7 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { ParticleLine } from '@/components/EnvelopeInvite/ParticleLine';
 import {
   WEDDING_CITY,
   WEDDING_COUPLE_NAMES,
@@ -9,9 +10,6 @@ import {
   formatWeddingDateDisplay,
 } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
-
-import { ParticleLine } from '@/components/EnvelopeInvite/ParticleLine';
-
 import './styles/EnvelopeInvite.scss';
 
 type EnvelopeInviteProps = {
