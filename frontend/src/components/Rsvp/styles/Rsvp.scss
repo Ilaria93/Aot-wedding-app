@@ -189,9 +189,9 @@
 .rsvp-guest-summary__notes {
   margin: 0.35rem 0 0;
   color: color-mix(in srgb, var(--obw-bone) 90%, transparent);
+  font-family: var(--font-display);
   font-size: 0.875rem;
   font-weight: 300;
-  font-style: italic;
 }
 
 @media (min-width: 640px) {

@@ -1,0 +1,23 @@
+/* Absolute overlay on top of the real letter text (see the host selectors
+   in EnvelopeInvite.scss that give each line `position: relative`).
+   Starts transparent; ParticleLine.tsx flips this to 1 when its line's
+   startMs arrives and back to 0 once particles settle — this transition
+   is what makes that fade-out smooth. */
+.particle-line {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Belt-and-suspenders: ParticleLine.tsx's effect already exits early
+     under reduced motion and never touches this element's opacity, but
+     forcing display:none here removes any doubt. */
+  .particle-line {
+    display: none;
+  }
+}

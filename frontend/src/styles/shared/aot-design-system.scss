@@ -752,7 +752,9 @@
 .obw-nav__brand-title {
   font-family: var(--font-display);
   font-size: 24px;
-  font-style: italic;
+  /* Great Vibes is a script face already — font-style: italic on top of it
+     applies a synthetic slant to an already-slanted font, which is what
+     was making corsivo text like this read as distorted/hard to read. */
   font-weight: 400;
   letter-spacing: 0.02em;
   padding-left: 0.02em;

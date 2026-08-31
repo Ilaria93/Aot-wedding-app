@@ -559,4 +559,27 @@ export const it = {
     body: 'Il link potrebbe essere incompleto oppure la pagina non è ancora stata creata.',
     backHome: 'Torna alla home',
   },
+  invite: {
+    greeting: 'Cara/o {{firstName}},',
+    headline: 'Con gioia vi invitiamo',
+    coupleNames: 'Davide & Ilaria',
+    ceremonyStart: 'Vi aspettiamo per le 17:00, inizio cerimonia.',
+    intro:
+      'Ci farebbe felice avervi accanto in questa giornata. Portate solo voi stessi e la voglia di ballare fino a tardi.',
+    rsvpSection: {
+      title: 'Fatecelo sapere',
+      note: 'Confermate la vostra presenza entro il 6 maggio 2027.',
+      yes: 'Ci saremo',
+      contact: 'Scriveteci',
+    },
+    moreInfo: {
+      text: 'Per altre informazioni trovate tutto qui:',
+      cta: 'Vai al sito',
+    },
+    openAria: 'Apri l’invito',
+    tapHint: 'Tocca il sigillo per aprire',
+    notFoundTitle: 'Invito non trovato.',
+    notFoundBody: 'Il link potrebbe essere scaduto o scritto in modo scorretto.',
+    notFoundBackHome: 'Vai al sito del matrimonio',
+  },
 } as const;
