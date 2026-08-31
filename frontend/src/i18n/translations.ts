@@ -9,6 +9,9 @@ export type AppLocale = (typeof supportedLocales)[number];
 
 export const defaultLocale: AppLocale = 'it';
 
+// fr/de content stays in the repo but isn't offered as a choice in the UI.
+export const toggleableLocales = ['it', 'en'] as const;
+
 export const localeLabels: Record<AppLocale, string> = {
   it: 'Italiano',
   en: 'English',
