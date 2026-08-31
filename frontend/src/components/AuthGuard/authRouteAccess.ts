@@ -3,6 +3,7 @@ const DEV_PUBLIC_PATHS = import.meta.env.DEV ? ['/dev/titan-preview'] : [];
 const PUBLIC_PATHS = new Set([
   '/',
   '/album',
+  '/tema',
   '/auth/login',
   '/auth/register',
   ...DEV_PUBLIC_PATHS,

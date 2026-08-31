@@ -26,6 +26,7 @@ export const it = {
       admin: 'Admin',
       album: 'Album',
       travel: 'Contatti',
+      tema: 'Il Tema',
       profile: 'Profilo',
     },
   },
@@ -122,6 +123,7 @@ export const it = {
         'Davide e Ilaria stanno costruendo una pagina che racconti il loro giorno in modo più intimo, elegante e personale.',
       paragraphTwo:
         'L’idea è unire il linguaggio di un wedding site editoriale con una navigazione moderna, un RSVP digitale e dettagli organizzati in un unico posto.',
+      temaLink: 'Scopri il tema →',
     },
     ceremony: {
       heading: 'Partecipa alla loro intima cerimonia',
@@ -444,6 +446,28 @@ export const it = {
     emptyTitle: 'Nessun contatto disponibile',
     emptyBody: 'Quando l’admin inserirà i servizi logistici, li troverai qui divisi per categoria.',
     contactPerson: 'Referente: {{value}}',
+  },
+  tema: {
+    eyebrow: 'Operazione Pirulini',
+    title: 'Il tema del nostro matrimonio',
+    subtitle:
+      'Ali della libertà, un manoscritto di missione e due calopsite che hanno conquistato i nostri cuori: ecco perché tutto qui parla di Attack on Titan.',
+    crestTitle: 'Lo stemma',
+    crestBody:
+      'Le ali del Corpo di Ricerca racchiudono le nostre due calopsite: la nostra piccola spedizione oltre le mura, dal primo appuntamento all’altare.',
+    styleTitle: 'Lo stile',
+    styleBody:
+      'Ogni pagina di questo sito è scritta come un documento di missione — badge, gerghi militari e mappe al posto delle solite formule da matrimonio — perché Attack on Titan è la serie che ci ha fatto innamorare anche di questo.',
+    missionTitle: 'La missione',
+    missionBody:
+      'Il nome "Pirulini" viene da Pirulì, un creator che guardavamo insieme: le nostre calopsite hanno preso il soprannome "Pirù" da lì, e "Operazione Pirulini" è diventato il nome in codice del giorno del sì — un’unica battaglia da vincere insieme, circondati dalle persone che amiamo.',
+    watchTitle: 'Dove vederlo',
+    watchIntro:
+      'Se vuoi scoprire (o rivedere) la serie prima del matrimonio, ecco dove trovarla in modo legale.',
+    watchAnimeLabel: 'Anime — in streaming',
+    watchMangaLabel: 'Manga — capitoli gratuiti ufficiali',
+    watchNote:
+      'I capitoli gratuiti sono limitati: sono il modo più economico per assaggiare la storia, non per leggerla tutta.',
   },
   admin: {
     photoStatuses: {
