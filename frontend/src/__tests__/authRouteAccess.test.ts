@@ -8,7 +8,16 @@ describe('authRouteAccess', () => {
     expect(isPublicPath('/album')).toBe(true);
     expect(isPublicPath('/travel')).toBe(true);
     expect(isPublicPath('/auth/login')).toBe(true);
-    expect(isPublicPath('/rsvp/demo-token')).toBe(true);
+  });
+
+  // No public /rsvp/{token} route exists yet — /rsvp is always protected
+  // (see ALWAYS_PROTECTED_PATHS). AuthStackLayout.tsx already special-cases
+  // a /rsvp/ prefix for its header title, anticipating the magic-link RSVP
+  // route from PRODUCT_DECISIONS.md §1.3, but the route itself isn't wired
+  // into App.tsx yet.
+  it('protects /rsvp sub-paths until the magic-link route exists', () => {
+    expect(isPublicPath('/rsvp/demo-token')).toBe(false);
+    expect(requiresAuthentication('/rsvp/demo-token', false)).toBe(true);
   });
 
   it('always protects profile and admin even in dev unlock mode', () => {
