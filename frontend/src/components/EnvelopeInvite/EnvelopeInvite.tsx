@@ -1,6 +1,7 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { DecryptText } from '@/components/EnvelopeInvite/DecryptText';
 import { ParticleLine } from '@/components/EnvelopeInvite/ParticleLine';
 import {
   WEDDING_CITY,
@@ -317,8 +318,7 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
         <p
           className={`envelope-invite__title${showTitle ? ' envelope-invite__title--visible' : ''}`}
           aria-hidden={!showTitle}>
-          {VIDEO_TITLE}
-          <ParticleLine text={VIDEO_TITLE} startMs={0} active={showTitle} />
+          <DecryptText text={VIDEO_TITLE} active={showTitle} />
         </p>
       </div>
 
