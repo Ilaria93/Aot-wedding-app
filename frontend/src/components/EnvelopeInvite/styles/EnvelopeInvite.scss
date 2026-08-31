@@ -70,8 +70,10 @@
   height: 1.4em;
   margin: 0;
   text-align: center;
+  /* Great Vibes (font-display) is a script face already — no font-style:
+     italic on top, that was a synthetic double-slant and the reason this
+     read as distorted/hard to read. */
   font-family: var(--font-display);
-  font-style: italic;
   font-size: clamp(1.6rem, 6vw, 2.6rem);
   color: var(--obw-charcoal-deep);
   opacity: 0;
@@ -286,8 +288,7 @@
 
 .envelope-invite__details {
   margin: 0;
-  font-family: var(--font-editorial);
-  font-style: italic;
+  font-family: var(--font-display);
   font-size: clamp(0.85rem, 1.8vw, 1rem);
   line-height: 1.6;
   color: color-mix(in srgb, var(--obw-charcoal-deep) 70%, transparent);
