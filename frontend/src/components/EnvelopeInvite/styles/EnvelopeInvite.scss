@@ -262,6 +262,17 @@
   color: color-mix(in srgb, var(--obw-charcoal-deep) 55%, transparent);
 }
 
+/* Anchors each ParticleLine canvas overlay (position: absolute) to its
+   own text line instead of some further-up positioned ancestor. */
+.envelope-invite__personal-greeting,
+.envelope-invite__greeting,
+.envelope-invite__couple-names,
+.envelope-invite__details,
+.envelope-invite__ceremony-start,
+.envelope-invite__body-text {
+  position: relative;
+}
+
 .envelope-invite__couple-names {
   margin: 0;
   font-family: var(--font-display);

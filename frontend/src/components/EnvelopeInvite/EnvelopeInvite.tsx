@@ -10,6 +10,8 @@ import {
 } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
 
+import { ParticleLine } from '@/components/EnvelopeInvite/ParticleLine';
+
 import './styles/EnvelopeInvite.scss';
 
 type EnvelopeInviteProps = {
@@ -327,24 +329,30 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
           <p
             className={`envelope-invite__personal-greeting${activeIndex === 0 ? ' is-typing' : ''}`}>
             <TypedText text={letterLines[0]} startMs={schedule[0].startMs} endMs={schedule[0].endMs} />
+            <ParticleLine text={letterLines[0]} startMs={schedule[0].startMs} active={isOpen} />
           </p>
           <h1
             ref={letterHeadingRef}
             tabIndex={-1}
             className={`obw-display obw-display--sm envelope-invite__greeting${activeIndex === 1 ? ' is-typing' : ''}`}>
             <TypedText text={letterLines[1]} startMs={schedule[1].startMs} endMs={schedule[1].endMs} />
+            <ParticleLine text={letterLines[1]} startMs={schedule[1].startMs} active={isOpen} />
           </h1>
           <p className={`envelope-invite__couple-names${activeIndex === 2 ? ' is-typing' : ''}`}>
             <TypedText text={letterLines[2]} startMs={schedule[2].startMs} endMs={schedule[2].endMs} />
+            <ParticleLine text={letterLines[2]} startMs={schedule[2].startMs} active={isOpen} />
           </p>
           <p className={`envelope-invite__details${activeIndex === 3 ? ' is-typing' : ''}`}>
             <TypedText text={letterLines[3]} startMs={schedule[3].startMs} endMs={schedule[3].endMs} />
+            <ParticleLine text={letterLines[3]} startMs={schedule[3].startMs} active={isOpen} />
           </p>
           <p className={`envelope-invite__ceremony-start${activeIndex === 4 ? ' is-typing' : ''}`}>
             <TypedText text={letterLines[4]} startMs={schedule[4].startMs} endMs={schedule[4].endMs} />
+            <ParticleLine text={letterLines[4]} startMs={schedule[4].startMs} active={isOpen} />
           </p>
           <p className={`obw-body envelope-invite__body-text${activeIndex === 5 ? ' is-typing' : ''}`}>
             <TypedText text={letterLines[5]} startMs={schedule[5].startMs} endMs={schedule[5].endMs} />
+            <ParticleLine text={letterLines[5]} startMs={schedule[5].startMs} active={isOpen} />
           </p>
         </div>
 
