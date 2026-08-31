@@ -14,6 +14,10 @@ type DecryptTextProps = {
    * command line still finishes inside the same on-screen window as a
    * short title reveals in. */
   stagger?: number;
+  /** Fires once, when every character has locked in (or immediately, under
+   * reduced motion). Read through a ref internally so passing a fresh
+   * inline function every render doesn't tear down and restart the effect. */
+  onComplete?: () => void;
 };
 
 const GLYPHS = '#%&@$?!*+=/{}[]<>~^';
@@ -38,10 +42,18 @@ function randomGlyph() {
  * retrigger, no visibility-pause. This only ever plays once, inside the
  * small, always-in-view envelope video stage — see EnvelopeInvite.tsx.
  */
-export function DecryptText({ text, active, variant = 'display', stagger = DEFAULT_STAGGER_MS }: DecryptTextProps) {
+export function DecryptText({
+  text,
+  active,
+  variant = 'display',
+  stagger = DEFAULT_STAGGER_MS,
+  onComplete,
+}: DecryptTextProps) {
   const charRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const rafRef = useRef(0);
   const playedRef = useRef(false);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   // Words keep their letters grouped so the line only wraps between words,
   // and the space between them stays a real space (never scrambled).
@@ -72,6 +84,7 @@ export function DecryptText({ text, active, variant = 'display', stagger = DEFAU
         el.textContent = el.dataset.char ?? '';
         el.dataset.state = 'locked';
       }
+      onCompleteRef.current?.();
       return undefined;
     }
 
@@ -106,6 +119,8 @@ export function DecryptText({ text, active, variant = 'display', stagger = DEFAU
       });
       if (remaining > 0) {
         rafRef.current = requestAnimationFrame(frame);
+      } else {
+        onCompleteRef.current?.();
       }
     }
 
@@ -143,14 +158,19 @@ export function DecryptText({ text, active, variant = 'display', stagger = DEFAU
 
   if (variant === 'terminal') {
     return (
-      <span className="decrypt-text decrypt-text--terminal">
+      <div className="decrypt-text decrypt-text--terminal">
         <span className="sr-only">{text}</span>
-        <span className="decrypt-text__prompt" aria-hidden="true">
-          $
-        </span>
-        {glyphs}
-        <span className="decrypt-text__caret" aria-hidden="true" />
-      </span>
+        <div className="decrypt-text__titlebar" aria-hidden="true">
+          <span className="decrypt-text__dot decrypt-text__dot--red" />
+          <span className="decrypt-text__dot decrypt-text__dot--yellow" />
+          <span className="decrypt-text__dot decrypt-text__dot--green" />
+        </div>
+        <div className="decrypt-text__line" aria-hidden="true">
+          <span className="decrypt-text__prompt">$</span>
+          {glyphs}
+          <span className="decrypt-text__caret" />
+        </div>
+      </div>
     );
   }
 

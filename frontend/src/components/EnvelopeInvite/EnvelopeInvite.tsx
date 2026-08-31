@@ -1,8 +1,7 @@
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { DecryptText } from '@/components/EnvelopeInvite/DecryptText';
-import { ParticleLine } from '@/components/EnvelopeInvite/ParticleLine';
 import {
   WEDDING_CITY,
   WEDDING_VENUE_AREA,
@@ -117,37 +116,6 @@ function useTypewriterLines(lines: string[], active: boolean) {
   return { revealed, activeIndex, done };
 }
 
-/** Renders `text` as one span per character, each with a fixed `animation-delay`
- * spread across [startMs, endMs] (the same window `buildTypeSchedule` gave this
- * line) so a pure CSS keyframe fades it in — see `.envelope-invite__char` in
- * EnvelopeInvite.scss. Deliberately NOT driven by the live `revealed` state:
- * an earlier version toggled a class on every one of ~200 character spans on
- * every animation-frame re-render, and with that many elements each running
- * their own CSS *transition*, the transitions never settled — every span sat
- * stuck at a low mid-fade opacity indefinitely (confirmed by forcing
- * `transition: none`, which snapped them to the correct full opacity
- * instantly). A `startMs`/`endMs` pair is static for a line's whole life, so
- * this component's props never change after mount — zero re-renders, and the
- * browser's own compositor drives the fade instead of React/JS. */
-const TypedText = memo(function TypedText({ text, startMs, endMs }: { text: string; startMs: number; endMs: number }) {
-  const chars = useMemo(() => {
-    const duration = endMs - startMs;
-    return text.split('').map((char, index) => ({
-      char,
-      delayMs: text.length > 0 ? startMs + (index / text.length) * duration : startMs,
-    }));
-  }, [text, startMs, endMs]);
-  return (
-    <>
-      {chars.map(({ char, delayMs }, index) => (
-        <span key={index} className="envelope-invite__char" style={{ animationDelay: `${delayMs}ms` }}>
-          {char}
-        </span>
-      ))}
-    </>
-  );
-});
-
 // Real footage: seal breaks, flap opens, the parchment note slides out and
 // fills the frame — its last frame already matches the letter's own
 // background (same parchment art), so the cut to the HTML letter is seamless.
@@ -165,36 +133,40 @@ const VIDEO_NATURAL_HEIGHT = 1696;
 // nothing cropped) until this point, then smoothly scales up to fill the
 // screen like `cover` would. `object-fit` itself can't be transitioned —
 // browsers snap between values — so this animates a CSS transform instead,
-// which they interpolate. By ~4s the parchment already fills most of the
-// frame on its own, so the added zoom is small and the CSS transition below
-// has time to finish before the clip's natural end.
-const ZOOM_START_SECONDS = 4;
-
-// The letter starts revealing (and typing) this many seconds before the
-// video's own end, instead of waiting for onEnded — the video keeps playing
-// underneath (it never fades, see the stage comment below), so the last
-// second of the seal/flap footage and the first lines of the letter overlap
-// instead of the text only starting once the clip has fully stopped.
-const LETTER_REVEAL_LEAD_SECONDS = 1;
+// which they interpolate. Earlier than the clip's own end on purpose: the
+// footage's own backdrop around the parchment (a light surface, not part of
+// the site's dark palette) is only ever meant to be on screen briefly — the
+// sooner the zoom crops it out, the less of it the guest actually sees.
+const ZOOM_START_SECONDS = 3.3;
 
 // Couple-names title, sovraimposto on the video itself while the flap is
 // open and the parchment inside is visible but still blank. Starts at 3.0s,
 // not when the flap first cracks open (~2.3s) — before ~2.9s the parchment
 // is still a narrow wedge with dark envelope on both sides, and dark text
-// loses all contrast sitting on dark green. Ends before ZOOM_START_SECONDS
-// so it never overlaps the zoom-in. A title card before the letter's own
-// typed "Davide & Ilaria" line, which echoes it a few seconds later.
+// loses all contrast sitting on dark green. Once shown it stays up — see
+// hasShownTitleRef below — through the zoom, past the video's own natural
+// end (frozen on its last frame), and into the letter opening: the letter's
+// own lines don't start until TITLE_HOLD_MS after the terminal card finishes
+// (see the terminalRevealed effect), so the title is never yanked away
+// mid-read.
 const TITLE_START_SECONDS = 3.0;
-const TITLE_END_SECONDS = 3.9;
-// The title/terminal reveal and the zoom into the letter both live in this
-// same ~1s stretch of *footage* (3.0s to the letter opening at duration-1).
-// At normal speed that's under a second of real time — nowhere near enough
-// to read "Pirulini's Wedding" and the save-the-date line, let alone the
-// terminal card's longer command string. Slowing playback here (not just
-// stretching the reveal via CSS) is what actually buys real reading time —
-// same trick already used for the zoom-in below, just starting earlier and
-// replacing that spot's own separate rate change (see hasSlowedRef).
-const SLOW_PLAYBACK_RATE = 0.35;
+// The title/terminal reveal shares this stretch of *footage* with the
+// zoom into the letter. At normal speed that's well under a second of real
+// time — nowhere near enough to read "Pirulini's Wedding" and the
+// save-the-date line, let alone the terminal card's longer command string.
+// Slowing playback here (not just stretching the reveal via CSS) is what
+// actually buys real reading time. Not too slow, though — much below this
+// and the gap between the footage settling and the letter opening (the
+// title now holds the screen on its own via TITLE_HOLD_MS, not the video)
+// starts to feel like the video itself is dragging.
+const SLOW_PLAYBACK_RATE = 0.6;
+// How long the fully-revealed title/terminal card stays up, on its own,
+// before the letter's lines start — timed from the terminal command's own
+// last character locking in (DecryptText's onComplete), not from the video.
+// Just long enough for a glance-read of the short terminal line — the
+// letter itself now looks like a terminal too, so there's no need to make
+// this hold do the "feel like a terminal" work on its own.
+const TITLE_HOLD_MS = 2000;
 // Vertical placement within the video's own rendered (contain-fit) box, not
 // the screen — keeps the title on the blank upper parchment above the
 // crest regardless of how much the viewport's aspect ratio letterboxes the
@@ -203,9 +175,9 @@ const TITLE_TOP_FRACTION = 0.3;
 
 /**
  * Personalized envelope for the WhatsApp invite link. Closed by default —
- * tapping anywhere starts the opening video; the letter starts fading in
- * and typing during the video's last second (see LETTER_REVEAL_LEAD_SECONDS),
- * overlapping the tail of the footage instead of waiting for it to fully end.
+ * tapping anywhere starts the opening video; the title/terminal card reveals
+ * partway through, and the letter (background, then its own typed lines)
+ * only opens once that card has held the screen for TITLE_HOLD_MS.
  */
 export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   const { locale, t } = useI18n();
@@ -213,10 +185,16 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isZooming, setIsZooming] = useState(false);
   const [showTitle, setShowTitle] = useState(false);
+  const [terminalRevealed, setTerminalRevealed] = useState(false);
   const [sectionsVisible, setSectionsVisible] = useState(false);
   const letterHeadingRef = useRef<HTMLHeadingElement>(null);
   const openerVideoRef = useRef<HTMLVideoElement>(null);
   const hasSlowedRef = useRef(false);
+  // Local mirror of `showTitle`, read synchronously inside onTimeUpdate —
+  // the state setter's update wouldn't be visible until next render/tick,
+  // and the position math below needs to know "has the title started"
+  // within the very same tick it just flipped.
+  const hasShownTitleRef = useRef(false);
   const stageRef = useRef<HTMLDivElement>(null);
 
   // Memoized so the array keeps the same reference across re-renders
@@ -235,10 +213,22 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
     ],
     [t, firstName, locale],
   );
-  const { activeIndex, done: typingDone } = useTypewriterLines(letterLines, isOpen);
-  // Static per-line windows for TypedText's animation-delay — see its own
-  // comment for why the char fade is driven by this instead of live state.
+  const { revealed, activeIndex, done: typingDone } = useTypewriterLines(letterLines, isOpen);
+  // Same schedule that drives activeIndex/revealed above — reused here only
+  // to size each line's DecryptText stagger to its own budgeted window, so
+  // the decrypt reveal keeps roughly the same per-line pacing typing did.
   const schedule = useMemo(() => buildTypeSchedule(letterLines), [letterLines]);
+  // A line "has started" once computeTypeReveal stops returning '' for it
+  // (or everything's done, e.g. reduced motion) — reusing that instead of
+  // exposing a separate boolean from useTypewriterLines.
+  const lineActive = (index: number) => typingDone || revealed[index].length > 0;
+  // Spreads each line's own decrypt reveal across roughly the same window
+  // the typewriter budgeted it (schedule[index]), so the overall pacing
+  // between lines doesn't change just because the per-character effect did.
+  const lineStagger = (index: number) => {
+    const { startMs, endMs } = schedule[index];
+    return Math.max(6, (endMs - startMs) / Math.max(letterLines[index].length, 1));
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -258,6 +248,17 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
     return () => clearTimeout(timeoutId);
   }, [typingDone]);
 
+  // The letter (background + its own lines) opens once the title/terminal
+  // card has held the screen on its own for TITLE_HOLD_MS after finishing —
+  // not tied to the (much shorter) video's own runtime at all anymore.
+  useEffect(() => {
+    if (!terminalRevealed) {
+      return undefined;
+    }
+    const timeoutId = setTimeout(() => setIsOpen(true), TITLE_HOLD_MS);
+    return () => clearTimeout(timeoutId);
+  }, [terminalRevealed]);
+
   return (
     <div className={`envelope-invite${isOpen ? ' envelope-invite--open' : ''}`}>
       <div className="envelope-invite__stage" ref={stageRef} aria-hidden={isOpen}>
@@ -275,14 +276,11 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
               video.playbackRate = SLOW_PLAYBACK_RATE;
             }
 
-            if (!isOpen && video.duration - video.currentTime <= LETTER_REVEAL_LEAD_SECONDS) {
-              setIsOpen(true);
+            if (!hasShownTitleRef.current && video.currentTime >= TITLE_START_SECONDS) {
+              hasShownTitleRef.current = true;
+              setShowTitle(true);
             }
-
-            const shouldShowTitle =
-              !isOpen && video.currentTime >= TITLE_START_SECONDS && video.currentTime < TITLE_END_SECONDS;
-            setShowTitle((current) => (current === shouldShowTitle ? current : shouldShowTitle));
-            if (shouldShowTitle && stageRef.current) {
+            if (hasShownTitleRef.current && stageRef.current) {
               // Same contain-fit math as the zoom scale below, computed early
               // so the title stays registered on the parchment inside the
               // video regardless of how the viewport letterboxes it.
@@ -319,7 +317,6 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
             // just the CSS zoom class.
             setIsZooming(true);
           }}
-          onEnded={() => setIsOpen(true)}
         />
         {!isVideoPlaying ? (
           <button
@@ -343,6 +340,7 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
             active={showTitle}
             variant="terminal"
             stagger={TERMINAL_STAGGER_MS}
+            onComplete={() => setTerminalRevealed(true)}
           />
         </div>
       </div>
@@ -354,32 +352,26 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
       <article className="envelope-invite__letter" aria-hidden={!isOpen}>
         <div className="envelope-invite__letter-content">
           <p
-            className={`envelope-invite__personal-greeting${activeIndex === 0 ? ' is-typing' : ''}`}>
-            <TypedText text={letterLines[0]} startMs={schedule[0].startMs} endMs={schedule[0].endMs} />
-            <ParticleLine text={letterLines[0]} startMs={schedule[0].startMs} active={isOpen} />
+            className={`envelope-invite__personal-greeting${activeIndex === 0 ? ' is-typing' : ''}${lineActive(0) ? ' is-revealed' : ''}`}>
+            <DecryptText text={letterLines[0]} active={lineActive(0)} stagger={lineStagger(0)} />
           </p>
           <h1
             ref={letterHeadingRef}
             tabIndex={-1}
-            className={`obw-display obw-display--sm envelope-invite__greeting${activeIndex === 1 ? ' is-typing' : ''}`}>
-            <TypedText text={letterLines[1]} startMs={schedule[1].startMs} endMs={schedule[1].endMs} />
-            <ParticleLine text={letterLines[1]} startMs={schedule[1].startMs} active={isOpen} />
+            className={`obw-display obw-display--sm envelope-invite__greeting${activeIndex === 1 ? ' is-typing' : ''}${lineActive(1) ? ' is-revealed' : ''}`}>
+            <DecryptText text={letterLines[1]} active={lineActive(1)} stagger={lineStagger(1)} />
           </h1>
-          <p className={`envelope-invite__couple-names${activeIndex === 2 ? ' is-typing' : ''}`}>
-            <TypedText text={letterLines[2]} startMs={schedule[2].startMs} endMs={schedule[2].endMs} />
-            <ParticleLine text={letterLines[2]} startMs={schedule[2].startMs} active={isOpen} />
+          <p className={`envelope-invite__couple-names${activeIndex === 2 ? ' is-typing' : ''}${lineActive(2) ? ' is-revealed' : ''}`}>
+            <DecryptText text={letterLines[2]} active={lineActive(2)} stagger={lineStagger(2)} />
           </p>
-          <p className={`envelope-invite__details${activeIndex === 3 ? ' is-typing' : ''}`}>
-            <TypedText text={letterLines[3]} startMs={schedule[3].startMs} endMs={schedule[3].endMs} />
-            <ParticleLine text={letterLines[3]} startMs={schedule[3].startMs} active={isOpen} />
+          <p className={`envelope-invite__details${activeIndex === 3 ? ' is-typing' : ''}${lineActive(3) ? ' is-revealed' : ''}`}>
+            <DecryptText text={letterLines[3]} active={lineActive(3)} stagger={lineStagger(3)} />
           </p>
-          <p className={`envelope-invite__ceremony-start${activeIndex === 4 ? ' is-typing' : ''}`}>
-            <TypedText text={letterLines[4]} startMs={schedule[4].startMs} endMs={schedule[4].endMs} />
-            <ParticleLine text={letterLines[4]} startMs={schedule[4].startMs} active={isOpen} />
+          <p className={`envelope-invite__ceremony-start${activeIndex === 4 ? ' is-typing' : ''}${lineActive(4) ? ' is-revealed' : ''}`}>
+            <DecryptText text={letterLines[4]} active={lineActive(4)} stagger={lineStagger(4)} />
           </p>
-          <p className={`obw-body envelope-invite__body-text${activeIndex === 5 ? ' is-typing' : ''}`}>
-            <TypedText text={letterLines[5]} startMs={schedule[5].startMs} endMs={schedule[5].endMs} />
-            <ParticleLine text={letterLines[5]} startMs={schedule[5].startMs} active={isOpen} />
+          <p className={`obw-body envelope-invite__body-text${activeIndex === 5 ? ' is-typing' : ''}${lineActive(5) ? ' is-revealed' : ''}`}>
+            <DecryptText text={letterLines[5]} active={lineActive(5)} stagger={lineStagger(5)} />
           </p>
         </div>
 

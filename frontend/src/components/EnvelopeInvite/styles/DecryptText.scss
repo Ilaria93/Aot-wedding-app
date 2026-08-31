@@ -32,31 +32,65 @@
   }
 }
 
-/* ─── Terminal variant: bordered CLI card, $ prompt, blinking caret ────── */
+/* ─── Terminal variant: an actual terminal window, not a pill ───────────
+   A bordered CLI pill with a serif-adjacent font didn't read as "a
+   terminal" at a glance — a real monospace face, a solid dark pane and the
+   classic three-dot titlebar make it unambiguous. */
 
 .decrypt-text--terminal {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.5em;
-  padding: 0.4em 0.75em;
-  border: 1px solid color-mix(in srgb, var(--obw-charcoal-deep) 30%, transparent);
+  --decrypt-terminal-green: #4ade80;
+  display: inline-block;
   border-radius: var(--obw-radius-sm, 6px);
-  background: color-mix(in srgb, var(--obw-bone) 55%, transparent);
-  /* --font-mono is actually Cormorant Infant (serif) in this design system,
-     not a monospace face — Geist (--font-sans) reads more like a real
-     command line at this size. */
-  font-family: var(--font-sans);
-  font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+  overflow: hidden;
+  background: #0a0f0a;
+  border: 1px solid color-mix(in srgb, var(--decrypt-terminal-green) 25%, transparent);
+  box-shadow: 0 8px 24px color-mix(in srgb, black 35%, transparent);
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  font-size: clamp(0.85rem, 2.2vw, 1.05rem);
   letter-spacing: 0.01em;
 }
 
+.decrypt-text__titlebar {
+  display: flex;
+  gap: 6px;
+  padding: 0.45em 0.6em;
+  background: color-mix(in srgb, var(--decrypt-terminal-green) 8%, #0a0f0a);
+  border-bottom: 1px solid color-mix(in srgb, var(--decrypt-terminal-green) 18%, transparent);
+}
+
+.decrypt-text__dot {
+  width: 0.6em;
+  height: 0.6em;
+  border-radius: 50%;
+}
+
+.decrypt-text__dot--red {
+  background: #ff5f56;
+}
+
+.decrypt-text__dot--yellow {
+  background: #ffbd2e;
+}
+
+.decrypt-text__dot--green {
+  background: #27c93f;
+}
+
+.decrypt-text__line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  padding: 0.5em 0.75em;
+  color: var(--decrypt-terminal-green);
+}
+
 .decrypt-text--terminal .decrypt-text__prompt {
-  color: var(--obw-gold-dim);
+  color: color-mix(in srgb, var(--decrypt-terminal-green) 70%, transparent);
   font-weight: 600;
 }
 
 .decrypt-text--terminal .decrypt-text__char {
-  color: var(--obw-charcoal-deep);
+  color: var(--decrypt-terminal-green);
 }
 
 .decrypt-text__caret {
@@ -64,7 +98,7 @@
   width: 0.5em;
   height: 1em;
   margin-left: 0.1em;
-  background: var(--obw-gold-dim);
+  background: var(--decrypt-terminal-green);
   animation: decrypt-text-caret-blink 1s steps(1) infinite;
 }
 
