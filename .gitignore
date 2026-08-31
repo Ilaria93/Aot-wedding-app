@@ -46,3 +46,6 @@ docs/hero-references/*.mp4
 docs/hero-references/frames/
 # Claude local settings
 .claude/
+
+# Subagent-driven-development scratch workspaces (ledgers, briefs, review packages)
+.superpowers/
