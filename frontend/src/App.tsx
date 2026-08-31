@@ -13,6 +13,7 @@ import { NotFoundPage } from '@/pages/NotFoundPage/index';
 import { ProfilePage } from '@/pages/ProfilePage/index';
 import { RegisterPage } from '@/pages/RegisterPage/index';
 import { RsvpPage } from '@/pages/RsvpPage/index';
+import { TemaPage } from '@/pages/TemaPage/index';
 import { TravelPage } from '@/pages/TravelPage/index';
 
 /** Root router for the Vite web app. */
@@ -33,6 +34,7 @@ export function App() {
                 <Route path="/album" element={<AlbumPage />} />
                 <Route path="/rsvp" element={<RsvpPage />} />
                 <Route path="/travel" element={<TravelPage />} />
+                <Route path="/tema" element={<TemaPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/admin" element={<AdminPage />} />
               </Route>

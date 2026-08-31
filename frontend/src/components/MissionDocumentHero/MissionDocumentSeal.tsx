@@ -1,4 +1,4 @@
-/** The couple's crest — Survey Corps wings around their two cats. */
+/** The couple's crest — Survey Corps wings around their two cockatiels. */
 export function MissionDocumentSeal() {
   return (
     <img

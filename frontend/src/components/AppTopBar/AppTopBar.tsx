@@ -15,6 +15,7 @@ import './styles/AppTopBar.scss';
 const APP_ROUTES = [
   { to: '/album', labelKey: 'album' as const },
   { to: '/travel', labelKey: 'travel' as const },
+  { to: '/tema', labelKey: 'tema' as const },
 ] as const;
 
 const HOME_ANCHORS = [
