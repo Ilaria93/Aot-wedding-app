@@ -268,7 +268,7 @@ export const de = {
     roleMismatchError: 'Du hast {{selected}} gewählt, aber dieses Konto hat eine andere Rolle.',
     registerGuestLink: 'Noch kein Konto? Registriere dich',
     registerAdminLink: 'Erster Zugang? Mit autorisierter E-Mail registrieren',
-    registerLink: 'Noch kein Konto? Registriere dich',
+    guestRecoveryLink: 'Einladungslink verloren? Hier zurückholen',
     identities: {
       bride: {
         label: 'Braut',
@@ -561,5 +561,47 @@ export const de = {
     title: 'Diese Seite existiert nicht.',
     body: 'Der Link ist möglicherweise unvollständig oder die Seite wurde noch nicht erstellt.',
     backHome: 'Zur Startseite',
+  },
+  invite: {
+    greeting: 'Liebe/r {{firstName}},',
+    headline: 'Mit Freude laden wir euch ein',
+    coupleNames: 'Ilaria & Davide',
+    ceremonyStart: 'Wir erwarten euch um 17:00 Uhr, Beginn der Trauung.',
+    intro:
+      'Es würde uns sehr freuen, euch an unserer Seite zu haben. Bringt nur euch selbst mit und die Lust, bis spät zu tanzen.',
+    rsvpSection: {
+      title: 'Sagt uns Bescheid',
+      note: 'Bitte bestätigt eure Teilnahme bis zum 6. Mai 2027.',
+      yes: 'Wir kommen',
+      contact: 'Schreibt uns',
+    },
+    moreInfo: {
+      text: 'Weitere Informationen findet ihr hier:',
+      cta: 'Zur Webseite',
+    },
+    openAria: 'Einladung öffnen',
+    tapHint: 'Zum Öffnen auf das Siegel tippen',
+    notFoundTitle: 'Einladung nicht gefunden.',
+    notFoundBody: 'Dieser Link ist möglicherweise abgelaufen oder falsch geschrieben.',
+    notFoundBackHome: 'Zur Hochzeitsseite',
+  },
+  guestRsvp: {
+    intro: 'Bestätige deine Teilnahme und die deiner Gruppe.',
+    emailLabel: 'Deine E-Mail',
+    emailHint: 'Kein Passwort nötig — die E-Mail dient nur dazu, dir später den Link erneut zu schicken.',
+    emailRequiredError: 'Gib deine E-Mail ein, bevor du bestätigst.',
+    emailInUseError:
+      'Diese E-Mail gehört bereits zu einem anderen Konto. Nutze eine andere Adresse oder melde dich normal an.',
+    confirmedTitle: 'Danke, alles eingetragen.',
+    confirmedBody: 'Wir haben eine Zusammenfassung an {{email}} geschickt. Darin findest du den Link zum Zurückkehren.',
+  },
+  guestAccess: {
+    recoveryTitle: 'Link verloren?',
+    recoveryIntro: 'Gib die hinterlegte E-Mail ein: wir schicken dir den Zugang zu deiner Einladung erneut.',
+    recoverySubmit: 'Link erneut senden',
+    recoverySent: 'Falls die Adresse zu einer Einladung passt, sieh in deinem Postfach nach: der Link bleibt 24 Stunden gültig.',
+    verifyErrorTitle: 'Ungültiger Link.',
+    verifyErrorBody: 'Dieser Link ist möglicherweise abgelaufen oder wurde bereits verwendet.',
+    requestNewLink: 'Neuen Link anfordern',
   },
 } as const;

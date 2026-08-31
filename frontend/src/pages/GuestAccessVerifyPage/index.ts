@@ -1,0 +1,1 @@
+export { GuestAccessVerifyPage } from './GuestAccessVerifyPage';

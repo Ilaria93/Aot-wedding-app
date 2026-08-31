@@ -121,7 +121,7 @@ export const it = {
       paragraphOne:
         'Davide e Ilaria stanno costruendo una pagina che racconti il loro giorno in modo più intimo, elegante e personale.',
       paragraphTwo:
-        'L’idea è unire il linguaggio di un wedding site editoriale con una navigazione moderna, un RSVP digitale e dettagli organizzati in un unico posto.',
+        "L'idea è unire il linguaggio di un wedding site editoriale con una navigazione moderna, un RSVP digitale e dettagli organizzati in un unico posto.",
     },
     ceremony: {
       heading: 'Partecipa alla loro intima cerimonia',
@@ -183,7 +183,7 @@ export const it = {
         button: 'Genera token e apri RSVP',
         loadingButton: 'Generazione invito...',
         hint: 'Questa azione è riservata agli account admin autorizzati.',
-        emptyNameError: 'Inserisci un nome prima di generare l’invito.',
+        emptyNameError: "Inserisci un nome prima di generare l'invito.",
         createError: 'Creazione invito non riuscita. Devi essere loggata/o come admin.',
       },
       open: {
@@ -229,11 +229,11 @@ export const it = {
         seriesTitle: 'OPERATION BEYOND THE WALLS',
         stampLabel: 'ACCESSO',
         eyebrow: 'Accesso missione',
-        headline: 'Entra nell’operazione.',
+        headline: "Entra nell'operazione.",
         lead: 'Un account per RSVP, album condiviso e aggiornamenti sul matrimonio.',
         featureOne: 'Conferma presenza e partecipanti in un solo passaggio',
         featureTwo: 'Modifica il tuo RSVP fino alla deadline',
-        featureThree: 'Carica foto nell’album dopo la cerimonia',
+        featureThree: "Carica foto nell'album dopo la cerimonia",
         missionCode: 'OP · RAVENNA · HQ',
       },
       register: {
@@ -269,7 +269,7 @@ export const it = {
     roleMismatchError: 'Hai selezionato {{selected}}, ma questo account ha un ruolo diverso.',
     registerGuestLink: 'Non hai ancora un account? Registrati',
     registerAdminLink: "Primo accesso? Registrati con l'email autorizzata",
-    registerLink: 'Non hai ancora un account? Registrati',
+    guestRecoveryLink: "Hai perso il link d'invito? Recuperalo qui",
     identities: {
       bride: {
         label: 'Sposa',
@@ -310,7 +310,7 @@ export const it = {
     validation: {
       firstNameRequired: 'Inserisci il nome.',
       lastNameRequired: 'Inserisci il cognome.',
-      emailRequired: 'Inserisci l’email.',
+      emailRequired: "Inserisci l'email.",
       emailInvalid: 'Inserisci un indirizzo email valido.',
       emailTaken: 'Esiste già un account con questa email.',
       passwordRequired: 'Inserisci la password.',
@@ -322,7 +322,7 @@ export const it = {
     eyebrow: 'Profilo',
     guestTitle: 'Accedi per salvare il tuo account.',
     guestSubtitle:
-      'Da qui puoi registrarti, entrare nell’app e mantenere la sessione attiva tra una visita e l’altra.',
+      "Da qui puoi registrarti, entrare nell'app e mantenere la sessione attiva tra una visita e l'altra.",
     loginLink: 'Vai al login',
     registerLink: 'Crea un nuovo account',
     subtitle:
@@ -366,7 +366,7 @@ export const it = {
     editButton: 'Modifica risposta',
     loginSubmitLabel: 'Accedi per confermare RSVP',
     guestsTitle: 'Partecipanti',
-    guestsHint: 'La prima riga corrisponde all’account con cui hai effettuato l’accesso.',
+    guestsHint: "La prima riga corrisponde all'account con cui hai effettuato l'accesso.",
     guestsSummaryTitle: 'Dettaglio partecipanti',
     guestLabel: 'Partecipante {{number}}',
     accountHolderBadge: 'Account registrato',
@@ -403,20 +403,20 @@ export const it = {
     validation: {
       firstNameRequired: 'Inserisci il nome del partecipante.',
       lastNameRequired: 'Inserisci il cognome del partecipante.',
-      otherNotesRequired: 'Specifica l’intolleranza nel campo note.',
+      otherNotesRequired: "Specifica l'intolleranza nel campo note.",
     },
   },
   album: {
-    loadError: 'Impossibile caricare l’album in questo momento.',
+    loadError: "Impossibile caricare l'album in questo momento.",
     galleryPermissionError: 'Permesso galleria negato. Abilitalo dalle impostazioni del dispositivo.',
     missingTokenError: 'Inserisci il token invito prima di caricare una foto.',
     missingPhotoError: 'Seleziona prima una foto dalla galleria.',
-    uploadSuccess: 'Foto inviata e pubblicata nell’album.',
+    uploadSuccess: "Foto inviata e pubblicata nell'album.",
     uploadError: 'Caricamento non riuscito. Controlla token e rete.',
     eyebrow: 'Album',
     title: 'Raccogliamo i ricordi del matrimonio in un solo posto.',
     subtitle:
-      'Accedi e condividi le tue foto: compariranno subito nell’album condiviso.',
+      "Accedi e condividi le tue foto: compariranno subito nell'album condiviso.",
     refreshButton: 'Aggiorna album',
     refreshLoading: 'Aggiornamento...',
     uploadTitle: 'Invia una foto',
@@ -427,22 +427,22 @@ export const it = {
     choosePhoto: 'Scegli foto dalla galleria',
     changePhoto: 'Cambia foto selezionata',
     loginChoosePhoto: 'Accedi per scegliere una foto',
-    uploadButton: 'Invia foto all’album',
+    uploadButton: "Invia foto all'album",
     uploadLoading: 'Caricamento in corso...',
     loginUploadButton: 'Accedi per inviare una foto',
-    galleryTitle: 'Foto dell’album',
+    galleryTitle: "Foto dell'album",
     galleryEmpty: 'Nessuna foto ancora. Sii il primo a condividere un ricordo.',
   },
   travel: {
     loadError: 'Impossibile caricare i contatti logistici.',
     eyebrow: 'Travel Hub',
-    title: 'Tutti i riferimenti utili in un’unica schermata.',
+    title: "Tutti i riferimenti utili in un'unica schermata.",
     subtitle:
       'Qui trovi i contatti operativi per preparazione, albergo, transfer e altri servizi comodi per il matrimonio.',
     refreshButton: 'Aggiorna contatti',
     refreshLoading: 'Aggiornamento...',
     emptyTitle: 'Nessun contatto disponibile',
-    emptyBody: 'Quando l’admin inserirà i servizi logistici, li troverai qui divisi per categoria.',
+    emptyBody: "Quando l'admin inserirà i servizi logistici, li troverai qui divisi per categoria.",
     contactPerson: 'Referente: {{value}}',
   },
   admin: {
@@ -558,5 +558,47 @@ export const it = {
     title: 'Questa pagina non esiste.',
     body: 'Il link potrebbe essere incompleto oppure la pagina non è ancora stata creata.',
     backHome: 'Torna alla home',
+  },
+  invite: {
+    greeting: 'Cara/o {{firstName}},',
+    headline: 'Con gioia vi invitiamo',
+    coupleNames: 'Ilaria & Davide',
+    ceremonyStart: 'Vi aspettiamo per le 17:00, inizio cerimonia.',
+    intro:
+      'Ci farebbe felice avervi accanto in questa giornata. Portate solo voi stessi e la voglia di ballare fino a tardi.',
+    rsvpSection: {
+      title: 'Fatecelo sapere',
+      note: 'Confermate la vostra presenza entro il 6 maggio 2027.',
+      yes: 'Ci saremo',
+      contact: 'Scriveteci',
+    },
+    moreInfo: {
+      text: 'Per altre informazioni trovate tutto qui:',
+      cta: 'Vai al sito',
+    },
+    openAria: "Apri l'invito",
+    tapHint: 'Tocca il sigillo per aprire',
+    notFoundTitle: 'Invito non trovato.',
+    notFoundBody: 'Il link potrebbe essere scaduto o scritto in modo scorretto.',
+    notFoundBackHome: 'Vai al sito del matrimonio',
+  },
+  guestRsvp: {
+    intro: 'Conferma la tua presenza e quella del tuo gruppo.',
+    emailLabel: 'La tua email',
+    emailHint: "Non serve una password — l'email serve solo per ricevere il link per rientrare più tardi.",
+    emailRequiredError: 'Inserisci la tua email prima di confermare.',
+    emailInUseError:
+      'Questa email è già collegata a un altro account. Usa un altro indirizzo, oppure accedi normalmente.',
+    confirmedTitle: 'Grazie, è tutto segnato.',
+    confirmedBody: 'Ti abbiamo mandato un riepilogo a {{email}}. Nella stessa email trovi il link per rientrare.',
+  },
+  guestAccess: {
+    recoveryTitle: 'Hai perso il link?',
+    recoveryIntro: "Scrivi l'email che ci hai lasciato: ti rimandiamo l'accesso al tuo invito.",
+    recoverySubmit: 'Rimandami il link',
+    recoverySent: "Se l'indirizzo corrisponde a un invito, controlla la posta: il link resta valido 24 ore.",
+    verifyErrorTitle: 'Link non valido.',
+    verifyErrorBody: 'Il link potrebbe essere scaduto o già usato.',
+    requestNewLink: 'Richiedi un nuovo link',
   },
 } as const;

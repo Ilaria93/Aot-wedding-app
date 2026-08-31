@@ -6,6 +6,8 @@ from sqlalchemy import engine_from_config, pool
 from database.base import Base
 from settings import read_database_url
 from models import (  # noqa: F401
+    guest_magic_link_model,
+    invite_link_model,
     logistics_contact_model,
     photo_album_item_model,
     refresh_token_session_model,

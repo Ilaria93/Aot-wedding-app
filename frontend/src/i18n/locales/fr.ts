@@ -268,7 +268,7 @@ export const fr = {
     roleMismatchError: 'Vous avez sélectionné {{selected}}, mais ce compte a un rôle différent.',
     registerGuestLink: "Vous n'avez pas encore de compte ? Inscrivez-vous",
     registerAdminLink: "Première connexion ? Inscrivez-vous avec l'e-mail autorisé",
-    registerLink: "Vous n'avez pas encore de compte ? Inscrivez-vous",
+    guestRecoveryLink: "Vous avez perdu votre lien d'invitation ? Récupérez-le ici",
     identities: {
       bride: {
         label: 'Mariée',
@@ -560,5 +560,47 @@ export const fr = {
     title: "Cette page n'existe pas.",
     body: "Le lien peut être incomplet ou la page n'a pas encore été créée.",
     backHome: "Retour à l'accueil",
+  },
+  invite: {
+    greeting: 'Chère/cher {{firstName}},',
+    headline: 'Avec joie, nous vous invitons',
+    coupleNames: 'Ilaria & Davide',
+    ceremonyStart: 'Nous vous attendons pour 17h00, début de la cérémonie.',
+    intro:
+      "Votre présence à nos côtés compterait beaucoup pour nous. Venez comme vous êtes, avec l'envie de danser jusqu'au bout de la nuit.",
+    rsvpSection: {
+      title: 'Faites-le nous savoir',
+      note: 'Merci de confirmer votre présence avant le 6 mai 2027.',
+      yes: 'Nous serons là',
+      contact: 'Écrivez-nous',
+    },
+    moreInfo: {
+      text: 'Pour plus d’informations, retrouvez tout ici :',
+      cta: 'Aller sur le site',
+    },
+    openAria: "Ouvrir l'invitation",
+    tapHint: "Touchez le sceau pour l'ouvrir",
+    notFoundTitle: 'Invitation introuvable.',
+    notFoundBody: "Ce lien a peut-être expiré ou est incorrect.",
+    notFoundBackHome: 'Aller au site du mariage',
+  },
+  guestRsvp: {
+    intro: 'Confirmez votre présence et celle de votre groupe.',
+    emailLabel: 'Votre email',
+    emailHint: "Pas besoin de mot de passe — l'email sert seulement à vous renvoyer le lien plus tard.",
+    emailRequiredError: 'Indiquez votre email avant de confirmer.',
+    emailInUseError:
+      "Cet email est déjà lié à un autre compte. Utilisez une autre adresse, ou connectez-vous normalement.",
+    confirmedTitle: "Merci, c'est noté.",
+    confirmedBody: 'Nous avons envoyé un récapitulatif à {{email}}. Le lien de retour y figure.',
+  },
+  guestAccess: {
+    recoveryTitle: 'Vous avez perdu le lien ?',
+    recoveryIntro: "Indiquez l'email laissé : nous vous renvoyons l'accès à votre invitation.",
+    recoverySubmit: 'Renvoyer le lien',
+    recoverySent: 'Si cette adresse correspond à une invitation, vérifiez votre boîte mail : le lien reste valable 24 heures.',
+    verifyErrorTitle: 'Lien invalide.',
+    verifyErrorBody: 'Ce lien a peut-être expiré ou déjà été utilisé.',
+    requestNewLink: 'Demander un nouveau lien',
   },
 } as const;
