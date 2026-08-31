@@ -64,6 +64,10 @@
   left: var(--title-left, 0);
   top: var(--title-top, 30%);
   width: var(--title-width, 100%);
+  /* Explicit box (font-size alone gives this element no real height) so
+     the nested ParticleLine canvas — position: absolute; inset: 0 — has
+     an actual area to fill instead of collapsing to zero height. */
+  height: 1.4em;
   margin: 0;
   text-align: center;
   font-family: var(--font-display);

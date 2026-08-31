@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { ParticleLine } from '@/components/EnvelopeInvite/ParticleLine';
 import {
   WEDDING_CITY,
-  WEDDING_COUPLE_NAMES,
   WEDDING_VENUE_AREA,
   WEDDING_VENUE_NAME,
   formatWeddingDateDisplay,
@@ -18,6 +17,10 @@ type EnvelopeInviteProps = {
 };
 
 const CONTACT_EMAIL = 'davide.ilaria@esempio.it';
+// Deliberately not WEDDING_OPERATION_NAME (still "Operazione Pirulini" on
+// this branch) — this title card wants the couple's own English nickname
+// for the wedding, independent of the site-wide constant.
+const VIDEO_TITLE = "Pirulini's Wedding";
 
 // Typewriter pacing for the letter's opening lines: each line's own type
 // duration scales with its length but is clamped so a long paragraph
@@ -314,7 +317,8 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
         <p
           className={`envelope-invite__title${showTitle ? ' envelope-invite__title--visible' : ''}`}
           aria-hidden={!showTitle}>
-          {WEDDING_COUPLE_NAMES}
+          {VIDEO_TITLE}
+          <ParticleLine text={VIDEO_TITLE} startMs={0} active={showTitle} />
         </p>
       </div>
 
