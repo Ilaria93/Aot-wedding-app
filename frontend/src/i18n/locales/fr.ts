@@ -564,7 +564,7 @@ export const fr = {
   invite: {
     greeting: 'Chère/cher {{firstName}},',
     headline: 'Avec joie, nous vous invitons',
-    coupleNames: 'Ilaria & Davide',
+    coupleNames: 'Davide & Ilaria',
     ceremonyStart: 'Nous vous attendons pour 17h00, début de la cérémonie.',
     intro:
       "Votre présence à nos côtés compterait beaucoup pour nous. Venez comme vous êtes, avec l'envie de danser jusqu'au bout de la nuit.",

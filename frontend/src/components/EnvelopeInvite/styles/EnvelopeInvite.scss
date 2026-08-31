@@ -54,6 +54,33 @@
   transform: scale(var(--zoom-scale, 1));
 }
 
+/* Couple-names title card, sovraimposto on the video's own blank parchment
+   (see EnvelopeInvite.tsx for the timing window and the contain-fit math
+   that keeps --title-left/top/width registered on the visible video frame
+   across different viewport aspect ratios). Fallbacks match the video's own
+   default box before the first onTimeUpdate tick sets the real values. */
+.envelope-invite__title {
+  position: absolute;
+  left: var(--title-left, 0);
+  top: var(--title-top, 30%);
+  width: var(--title-width, 100%);
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.6rem, 6vw, 2.6rem);
+  color: var(--obw-charcoal-deep);
+  opacity: 0;
+  pointer-events: none;
+  /* Shorter than the letter's own fades — this only has ~0.9s on screen
+     (see TITLE_START_SECONDS/TITLE_END_SECONDS) before the zoom-in starts. */
+  transition: opacity 300ms var(--obw-ease-out);
+}
+
+.envelope-invite__title--visible {
+  opacity: 1;
+}
+
 .envelope-invite__video-trigger {
   position: absolute;
   inset: 0;
@@ -298,7 +325,8 @@
 @media (prefers-reduced-motion: reduce) {
   .envelope-invite__letter,
   .envelope-invite__sections,
-  .envelope-invite__opener-video {
+  .envelope-invite__opener-video,
+  .envelope-invite__title {
     transition: none;
   }
 

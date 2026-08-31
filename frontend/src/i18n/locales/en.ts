@@ -559,7 +559,7 @@ export const en = {
   invite: {
     greeting: 'Dear {{firstName}},',
     headline: 'We joyfully invite you',
-    coupleNames: 'Ilaria & Davide',
+    coupleNames: 'Davide & Ilaria',
     ceremonyStart: 'We look forward to seeing you at 5:00 PM, ceremony start.',
     intro: "It would mean the world to have you with us. Bring only yourselves and the will to dance until late.",
     rsvpSection: {

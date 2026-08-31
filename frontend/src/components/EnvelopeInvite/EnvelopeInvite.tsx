@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import {
   WEDDING_CITY,
+  WEDDING_COUPLE_NAMES,
   WEDDING_VENUE_AREA,
   WEDDING_VENUE_NAME,
   formatWeddingDateDisplay,
@@ -135,6 +136,21 @@ const ZOOM_START_SECONDS = 4;
 // instead of the text only starting once the clip has fully stopped.
 const LETTER_REVEAL_LEAD_SECONDS = 1;
 
+// Couple-names title, sovraimposto on the video itself while the flap is
+// open and the parchment inside is visible but still blank. Starts at 3.0s,
+// not when the flap first cracks open (~2.3s) — before ~2.9s the parchment
+// is still a narrow wedge with dark envelope on both sides, and dark text
+// loses all contrast sitting on dark green. Ends before ZOOM_START_SECONDS
+// so it never overlaps the zoom-in. A title card before the letter's own
+// typed "Davide & Ilaria" line, which echoes it a few seconds later.
+const TITLE_START_SECONDS = 3.0;
+const TITLE_END_SECONDS = 3.9;
+// Vertical placement within the video's own rendered (contain-fit) box, not
+// the screen — keeps the title on the blank upper parchment above the
+// crest regardless of how much the viewport's aspect ratio letterboxes the
+// video. 0 = top of the frame, 1 = bottom.
+const TITLE_TOP_FRACTION = 0.3;
+
 /**
  * Personalized envelope for the WhatsApp invite link. Closed by default —
  * tapping anywhere starts the opening video; the letter starts fading in
@@ -146,9 +162,11 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isZooming, setIsZooming] = useState(false);
+  const [showTitle, setShowTitle] = useState(false);
   const [sectionsVisible, setSectionsVisible] = useState(false);
   const letterHeadingRef = useRef<HTMLHeadingElement>(null);
   const openerVideoRef = useRef<HTMLVideoElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
 
   // Memoized so the array keeps the same reference across re-renders
   // (including the ones the typing animation itself triggers) — otherwise
@@ -188,7 +206,7 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
 
   return (
     <div className={`envelope-invite${isOpen ? ' envelope-invite--open' : ''}`}>
-      <div className="envelope-invite__stage" aria-hidden={isOpen}>
+      <div className="envelope-invite__stage" ref={stageRef} aria-hidden={isOpen}>
         <video
           ref={openerVideoRef}
           className={`envelope-invite__opener-video${isZooming ? ' envelope-invite__opener-video--zoomed' : ''}`}
@@ -201,6 +219,27 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
             if (!isOpen && video.duration - video.currentTime <= LETTER_REVEAL_LEAD_SECONDS) {
               setIsOpen(true);
             }
+
+            const shouldShowTitle =
+              !isOpen && video.currentTime >= TITLE_START_SECONDS && video.currentTime < TITLE_END_SECONDS;
+            setShowTitle((current) => (current === shouldShowTitle ? current : shouldShowTitle));
+            if (shouldShowTitle && stageRef.current) {
+              // Same contain-fit math as the zoom scale below, computed early
+              // so the title stays registered on the parchment inside the
+              // video regardless of how the viewport letterboxes it.
+              const containScale = Math.min(
+                video.clientWidth / VIDEO_NATURAL_WIDTH,
+                video.clientHeight / VIDEO_NATURAL_HEIGHT,
+              );
+              const renderedWidth = VIDEO_NATURAL_WIDTH * containScale;
+              const renderedHeight = VIDEO_NATURAL_HEIGHT * containScale;
+              const offsetLeft = (video.clientWidth - renderedWidth) / 2;
+              const offsetTop = (video.clientHeight - renderedHeight) / 2;
+              stageRef.current.style.setProperty('--title-left', `${offsetLeft}px`);
+              stageRef.current.style.setProperty('--title-top', `${offsetTop + renderedHeight * TITLE_TOP_FRACTION}px`);
+              stageRef.current.style.setProperty('--title-width', `${renderedWidth}px`);
+            }
+
             if (isZooming || video.currentTime < ZOOM_START_SECONDS) {
               return;
             }
@@ -238,6 +277,11 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
             aria-label={t('invite.openAria')}
           />
         ) : null}
+        <p
+          className={`envelope-invite__title${showTitle ? ' envelope-invite__title--visible' : ''}`}
+          aria-hidden={!showTitle}>
+          {WEDDING_COUPLE_NAMES}
+        </p>
       </div>
 
       {!isOpen && !isVideoPlaying ? <p className="envelope-invite__hint">{t('invite.tapHint')}</p> : null}
