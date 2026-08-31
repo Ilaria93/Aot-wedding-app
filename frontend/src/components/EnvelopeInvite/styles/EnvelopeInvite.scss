@@ -152,6 +152,33 @@
   min-height: 1.4em;
 }
 
+/* Each character fades in on its own fixed schedule (EnvelopeInvite.tsx sets
+   animation-delay per span from the typewriter's startMs/endMs) instead of
+   snapping in as a whole substring. A CSS *animation* with a delay, not a
+   *transition* toggled by React state — an earlier version did that and,
+   with ~200 characters each running their own transition while the
+   component re-rendered every animation frame, the transitions never
+   settled: every span sat stuck at a low mid-fade opacity indefinitely. This
+   version needs no JS driving it once mounted; the browser's own compositor
+   times the whole cascade. */
+.envelope-invite__char {
+  opacity: 0;
+}
+
+.envelope-invite--open .envelope-invite__char {
+  animation: envelope-invite-char-fade 220ms ease-out forwards;
+}
+
+@keyframes envelope-invite-char-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 /* Blinking caret on whichever line is currently mid-type, removed once that
    line finishes and moves to the next. */
 .envelope-invite__letter-content > .is-typing::after {
@@ -328,6 +355,13 @@
   .envelope-invite__opener-video,
   .envelope-invite__title {
     transition: none;
+  }
+
+  /* Matches .envelope-invite--open .envelope-invite__char's own specificity
+     so this wins on source order — text just shows, no per-character fade. */
+  .envelope-invite--open .envelope-invite__char {
+    animation: none;
+    opacity: 1;
   }
 
   .envelope-invite__letter-content > .is-typing::after {

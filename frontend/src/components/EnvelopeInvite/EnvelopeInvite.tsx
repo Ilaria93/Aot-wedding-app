@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import {
@@ -23,16 +23,16 @@ const CONTACT_EMAIL = 'davide.ilaria@esempio.it';
 // duration scales with its length but is clamped so a long paragraph
 // doesn't drag on forever, and lines run one after another (never two
 // typing at once).
-const TYPE_START_DELAY_MS = 350;
-const TYPE_MS_PER_CHAR = 90;
-const TYPE_MIN_LINE_MS = 650;
+const TYPE_START_DELAY_MS = 200;
+const TYPE_MS_PER_CHAR = 38;
+const TYPE_MIN_LINE_MS = 320;
 // High enough that the short identity lines (greeting, headline, names,
 // date/venue, ceremony time) never hit it and all type at the same
 // TYPE_MS_PER_CHAR pace — only the long intro paragraph gets compressed,
 // and only mildly, instead of every line past it visibly speeding up.
-const TYPE_MAX_LINE_MS = 4200;
-const TYPE_LINE_GAP_MS = 350;
-const TYPE_SECTIONS_GAP_MS = 500;
+const TYPE_MAX_LINE_MS = 1900;
+const TYPE_LINE_GAP_MS = 180;
+const TYPE_SECTIONS_GAP_MS = 400;
 
 export type TypedLine = { text: string; startMs: number; endMs: number };
 
@@ -106,6 +106,37 @@ function useTypewriterLines(lines: string[], active: boolean) {
 
   return { revealed, activeIndex, done };
 }
+
+/** Renders `text` as one span per character, each with a fixed `animation-delay`
+ * spread across [startMs, endMs] (the same window `buildTypeSchedule` gave this
+ * line) so a pure CSS keyframe fades it in — see `.envelope-invite__char` in
+ * EnvelopeInvite.scss. Deliberately NOT driven by the live `revealed` state:
+ * an earlier version toggled a class on every one of ~200 character spans on
+ * every animation-frame re-render, and with that many elements each running
+ * their own CSS *transition*, the transitions never settled — every span sat
+ * stuck at a low mid-fade opacity indefinitely (confirmed by forcing
+ * `transition: none`, which snapped them to the correct full opacity
+ * instantly). A `startMs`/`endMs` pair is static for a line's whole life, so
+ * this component's props never change after mount — zero re-renders, and the
+ * browser's own compositor drives the fade instead of React/JS. */
+const TypedText = memo(function TypedText({ text, startMs, endMs }: { text: string; startMs: number; endMs: number }) {
+  const chars = useMemo(() => {
+    const duration = endMs - startMs;
+    return text.split('').map((char, index) => ({
+      char,
+      delayMs: text.length > 0 ? startMs + (index / text.length) * duration : startMs,
+    }));
+  }, [text, startMs, endMs]);
+  return (
+    <>
+      {chars.map(({ char, delayMs }, index) => (
+        <span key={index} className="envelope-invite__char" style={{ animationDelay: `${delayMs}ms` }}>
+          {char}
+        </span>
+      ))}
+    </>
+  );
+});
 
 // Real footage: seal breaks, flap opens, the parchment note slides out and
 // fills the frame — its last frame already matches the letter's own
@@ -184,7 +215,10 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
     ],
     [t, firstName, locale],
   );
-  const { revealed, activeIndex, done: typingDone } = useTypewriterLines(letterLines, isOpen);
+  const { activeIndex, done: typingDone } = useTypewriterLines(letterLines, isOpen);
+  // Static per-line windows for TypedText's animation-delay — see its own
+  // comment for why the char fade is driven by this instead of live state.
+  const schedule = useMemo(() => buildTypeSchedule(letterLines), [letterLines]);
 
   useEffect(() => {
     if (isOpen) {
@@ -292,19 +326,25 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
         <div className="envelope-invite__letter-content">
           <p
             className={`envelope-invite__personal-greeting${activeIndex === 0 ? ' is-typing' : ''}`}>
-            {revealed[0]}
+            <TypedText text={letterLines[0]} startMs={schedule[0].startMs} endMs={schedule[0].endMs} />
           </p>
           <h1
             ref={letterHeadingRef}
             tabIndex={-1}
             className={`obw-display obw-display--sm envelope-invite__greeting${activeIndex === 1 ? ' is-typing' : ''}`}>
-            {revealed[1]}
+            <TypedText text={letterLines[1]} startMs={schedule[1].startMs} endMs={schedule[1].endMs} />
           </h1>
-          <p className={`envelope-invite__couple-names${activeIndex === 2 ? ' is-typing' : ''}`}>{revealed[2]}</p>
-          <p className={`envelope-invite__details${activeIndex === 3 ? ' is-typing' : ''}`}>{revealed[3]}</p>
-          <p className={`envelope-invite__ceremony-start${activeIndex === 4 ? ' is-typing' : ''}`}>{revealed[4]}</p>
+          <p className={`envelope-invite__couple-names${activeIndex === 2 ? ' is-typing' : ''}`}>
+            <TypedText text={letterLines[2]} startMs={schedule[2].startMs} endMs={schedule[2].endMs} />
+          </p>
+          <p className={`envelope-invite__details${activeIndex === 3 ? ' is-typing' : ''}`}>
+            <TypedText text={letterLines[3]} startMs={schedule[3].startMs} endMs={schedule[3].endMs} />
+          </p>
+          <p className={`envelope-invite__ceremony-start${activeIndex === 4 ? ' is-typing' : ''}`}>
+            <TypedText text={letterLines[4]} startMs={schedule[4].startMs} endMs={schedule[4].endMs} />
+          </p>
           <p className={`obw-body envelope-invite__body-text${activeIndex === 5 ? ' is-typing' : ''}`}>
-            {revealed[5]}
+            <TypedText text={letterLines[5]} startMs={schedule[5].startMs} endMs={schedule[5].endMs} />
           </p>
         </div>
 
