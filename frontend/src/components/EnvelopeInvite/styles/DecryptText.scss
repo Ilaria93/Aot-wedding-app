@@ -31,3 +31,51 @@
     animation: none;
   }
 }
+
+/* ─── Terminal variant: bordered CLI card, $ prompt, blinking caret ────── */
+
+.decrypt-text--terminal {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
+  padding: 0.4em 0.75em;
+  border: 1px solid color-mix(in srgb, var(--obw-charcoal-deep) 30%, transparent);
+  border-radius: var(--obw-radius-sm, 6px);
+  background: color-mix(in srgb, var(--obw-bone) 55%, transparent);
+  /* --font-mono is actually Cormorant Infant (serif) in this design system,
+     not a monospace face — Geist (--font-sans) reads more like a real
+     command line at this size. */
+  font-family: var(--font-sans);
+  font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+  letter-spacing: 0.01em;
+}
+
+.decrypt-text--terminal .decrypt-text__prompt {
+  color: var(--obw-gold-dim);
+  font-weight: 600;
+}
+
+.decrypt-text--terminal .decrypt-text__char {
+  color: var(--obw-charcoal-deep);
+}
+
+.decrypt-text__caret {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 0.1em;
+  background: var(--obw-gold-dim);
+  animation: decrypt-text-caret-blink 1s steps(1) infinite;
+}
+
+@keyframes decrypt-text-caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .decrypt-text__caret {
+    animation: none;
+  }
+}

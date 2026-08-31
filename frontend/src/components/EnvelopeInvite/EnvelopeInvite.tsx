@@ -22,6 +22,12 @@ const CONTACT_EMAIL = 'davide.ilaria@esempio.it';
 // this branch) — this title card wants the couple's own English nickname
 // for the wedding, independent of the site-wide constant.
 const VIDEO_TITLE = "Pirulini's Wedding";
+// Real wedding date/venue, terminal-command flavored — sits under the video
+// title as a second decrypt-reveal, styled as a CLI card.
+const TERMINAL_COMMAND = 'save-the-date 31.05.2027 "Cala Celeste"';
+// Faster than the title's default stagger — this string is longer, and both
+// reveals run concurrently inside the same ~0.9s TITLE_START/END window.
+const TERMINAL_STAGGER_MS = 14;
 
 // Typewriter pacing for the letter's opening lines: each line's own type
 // duration scales with its length but is clamped so a long paragraph
@@ -315,11 +321,19 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
             aria-label={t('invite.openAria')}
           />
         ) : null}
-        <p
-          className={`envelope-invite__title${showTitle ? ' envelope-invite__title--visible' : ''}`}
+        <div
+          className={`envelope-invite__title-group${showTitle ? ' envelope-invite__title-group--visible' : ''}`}
           aria-hidden={!showTitle}>
-          <DecryptText text={VIDEO_TITLE} active={showTitle} />
-        </p>
+          <p className="envelope-invite__title">
+            <DecryptText text={VIDEO_TITLE} active={showTitle} />
+          </p>
+          <DecryptText
+            text={TERMINAL_COMMAND}
+            active={showTitle}
+            variant="terminal"
+            stagger={TERMINAL_STAGGER_MS}
+          />
+        </div>
       </div>
 
       {!isOpen && !isVideoPlaying ? <p className="envelope-invite__hint">{t('invite.tapHint')}</p> : null}

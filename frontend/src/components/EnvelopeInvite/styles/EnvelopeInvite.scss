@@ -59,15 +59,30 @@
    that keeps --title-left/top/width registered on the visible video frame
    across different viewport aspect ratios). Fallbacks match the video's own
    default box before the first onTimeUpdate tick sets the real values. */
-.envelope-invite__title {
+/* Positions and fades in the whole title + terminal-command group together
+   — --title-left/top/width are set in JS from the video's own contain-fit
+   box (see EnvelopeInvite.tsx), same as before this held only the title. */
+.envelope-invite__title-group {
   position: absolute;
   left: var(--title-left, 0);
   top: var(--title-top, 30%);
   width: var(--title-width, 100%);
-  /* Explicit box (font-size alone gives this element no real height) so
-     the nested ParticleLine canvas — position: absolute; inset: 0 — has
-     an actual area to fill instead of collapsing to zero height. */
-  height: 1.4em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
+  opacity: 0;
+  pointer-events: none;
+  /* Shorter than the letter's own fades — this only has ~0.9s on screen
+     (see TITLE_START_SECONDS/TITLE_END_SECONDS) before the zoom-in starts. */
+  transition: opacity 300ms var(--obw-ease-out);
+}
+
+.envelope-invite__title-group--visible {
+  opacity: 1;
+}
+
+.envelope-invite__title {
   margin: 0;
   text-align: center;
   /* Great Vibes (font-display) is a script face already — no font-style:
@@ -76,15 +91,6 @@
   font-family: var(--font-display);
   font-size: clamp(1.6rem, 6vw, 2.6rem);
   color: var(--obw-charcoal-deep);
-  opacity: 0;
-  pointer-events: none;
-  /* Shorter than the letter's own fades — this only has ~0.9s on screen
-     (see TITLE_START_SECONDS/TITLE_END_SECONDS) before the zoom-in starts. */
-  transition: opacity 300ms var(--obw-ease-out);
-}
-
-.envelope-invite__title--visible {
-  opacity: 1;
 }
 
 .envelope-invite__video-trigger {
@@ -369,7 +375,7 @@
   .envelope-invite__letter,
   .envelope-invite__sections,
   .envelope-invite__opener-video,
-  .envelope-invite__title {
+  .envelope-invite__title-group {
     transition: none;
   }
 

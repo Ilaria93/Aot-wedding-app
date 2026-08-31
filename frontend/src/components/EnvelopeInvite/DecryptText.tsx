@@ -6,12 +6,20 @@ type DecryptTextProps = {
   text: string;
   /** Starts the one-shot reveal on the false→true transition. */
   active: boolean;
+  /** `terminal` wraps the reveal in a bordered CLI-style card with a
+   * `$` prompt and a blinking caret. Defaults to the plain inline title
+   * treatment. */
+  variant?: 'display' | 'terminal';
+  /** Per-character lock-in delay (ms). Lower for longer strings so a busy
+   * command line still finishes inside the same on-screen window as a
+   * short title reveals in. */
+  stagger?: number;
 };
 
 const GLYPHS = '#%&@$?!*+=/{}[]<>~^';
 const SPEED_MS = 35;
 const CYCLE_SPREAD_MS = 25;
-const STAGGER_MS = 35;
+const DEFAULT_STAGGER_MS = 30;
 const JITTER_MS = 40;
 
 type CharItem = { key: number; ch: string };
@@ -26,11 +34,11 @@ function randomGlyph() {
  * (stagger + jitter per character) with a brief accent flash.
  *
  * Ported from a Motiq reference component (Tailwind/Next — not this stack)
- * down to what a one-shot title reveal actually needs: no loop, no hover
+ * down to what a one-shot reveal actually needs: no loop, no hover
  * retrigger, no visibility-pause. This only ever plays once, inside the
  * small, always-in-view envelope video stage — see EnvelopeInvite.tsx.
  */
-export function DecryptText({ text, active }: DecryptTextProps) {
+export function DecryptText({ text, active, variant = 'display', stagger = DEFAULT_STAGGER_MS }: DecryptTextProps) {
   const charRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const rafRef = useRef(0);
   const playedRef = useRef(false);
@@ -67,7 +75,7 @@ export function DecryptText({ text, active }: DecryptTextProps) {
       return undefined;
     }
 
-    const lockAt = cells.map((_, index) => STAGGER_MS * index + (Math.random() * 2 - 1) * JITTER_MS);
+    const lockAt = cells.map((_, index) => stagger * index + (Math.random() * 2 - 1) * JITTER_MS);
     const nextCycleAt = new Array(cells.length).fill(0);
     const locked = new Array(cells.length).fill(false);
     cells.forEach((el) => {
@@ -103,36 +111,53 @@ export function DecryptText({ text, active }: DecryptTextProps) {
 
     rafRef.current = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [active]);
+  }, [active, stagger]);
 
   let index = -1;
+
+  const glyphs = (
+    <span aria-hidden="true">
+      {words.map((word, wordIndex) => (
+        <span key={wordIndex} className="decrypt-text__word">
+          {word.map((item) => {
+            index += 1;
+            const at = index;
+            return (
+              <span
+                key={item.key}
+                className="decrypt-text__char"
+                data-char={item.ch}
+                data-state="idle"
+                ref={(el) => {
+                  charRefs.current[at] = el;
+                }}>
+                {item.ch}
+              </span>
+            );
+          })}
+          {wordIndex < words.length - 1 ? ' ' : null}
+        </span>
+      ))}
+    </span>
+  );
+
+  if (variant === 'terminal') {
+    return (
+      <span className="decrypt-text decrypt-text--terminal">
+        <span className="sr-only">{text}</span>
+        <span className="decrypt-text__prompt" aria-hidden="true">
+          $
+        </span>
+        {glyphs}
+        <span className="decrypt-text__caret" aria-hidden="true" />
+      </span>
+    );
+  }
 
   return (
     <span className="decrypt-text">
       <span className="sr-only">{text}</span>
-      <span aria-hidden="true">
-        {words.map((word, wordIndex) => (
-          <span key={wordIndex} className="decrypt-text__word">
-            {word.map((item) => {
-              index += 1;
-              const at = index;
-              return (
-                <span
-                  key={item.key}
-                  className="decrypt-text__char"
-                  data-char={item.ch}
-                  data-state="idle"
-                  ref={(el) => {
-                    charRefs.current[at] = el;
-                  }}>
-                  {item.ch}
-                </span>
-              );
-            })}
-            {wordIndex < words.length - 1 ? ' ' : null}
-          </span>
-        ))}
-      </span>
+      {glyphs}
     </span>
   );
 }
