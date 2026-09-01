@@ -67,6 +67,12 @@
   left: var(--title-left, 0);
   top: var(--title-top, 30%);
   width: var(--title-width, 100%);
+  box-sizing: border-box;
+  /* On portrait/narrow viewports the video is width-constrained under
+     object-fit: contain, so --title-width lands on the exact screen width
+     with zero letterboxing either side — without this the terminal card
+     below butts straight into both screen edges. */
+  padding-inline: clamp(0.75rem, 5vw, 1.5rem);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -360,13 +366,6 @@
   .envelope-invite__opener-video,
   .envelope-invite__title-group {
     transition: none;
-  }
-
-  /* Matches .envelope-invite--open .envelope-invite__char's own specificity
-     so this wins on source order — text just shows, no per-character fade. */
-  .envelope-invite--open .envelope-invite__char {
-    animation: none;
-    opacity: 1;
   }
 
   .envelope-invite__letter-content > .is-typing::after {
