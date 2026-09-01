@@ -134,12 +134,14 @@
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
-  /* Same green family as the terminal-command window on the video —
-     the letter reads as that terminal session continuing, just darker
-     than the phosphor green used on black so it still holds contrast
-     against the light parchment. */
-  --envelope-letter-green: #14532d;
+  /* Exact same green and font as the terminal-command window on the video
+     (--decrypt-terminal-green / its monospace stack in DecryptText.scss)
+     — the letter reads as that terminal session continuing, literally,
+     not just a matching palette. */
+  --envelope-letter-green: #4ade80;
+  --envelope-letter-font: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   color: var(--envelope-letter-green);
+  font-family: var(--envelope-letter-font);
   opacity: 0;
   pointer-events: none;
   overflow-y: auto;
@@ -231,7 +233,7 @@
 
 .envelope-invite__section-title {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--envelope-letter-font);
   font-weight: 500;
   font-size: clamp(1.4rem, 4vw, 1.9rem);
   color: var(--envelope-letter-green);
@@ -246,20 +248,20 @@
   color: var(--envelope-letter-green);
   /* Same terminal font as the video's CLI card — the whole letter reads
      as that session continuing. */
-  font-family: var(--font-sans);
+  font-family: var(--envelope-letter-font);
   text-shadow: none;
 }
 
 .envelope-invite__letter .envelope-invite__body-text {
   margin: 0;
   color: color-mix(in srgb, var(--envelope-letter-green) 82%, transparent);
-  font-family: var(--font-sans);
+  font-family: var(--envelope-letter-font);
   font-size: clamp(0.95rem, 2vw, 1.1rem);
 }
 
 .envelope-invite__personal-greeting {
   margin: 0;
-  font-family: var(--font-sans);
+  font-family: var(--envelope-letter-font);
   font-size: 0.8rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -268,14 +270,14 @@
 
 .envelope-invite__couple-names {
   margin: 0;
-  font-family: var(--font-sans);
+  font-family: var(--envelope-letter-font);
   font-size: clamp(1.5rem, 5vw, 2.1rem);
   color: var(--envelope-letter-green);
 }
 
 .envelope-invite__details {
   margin: 0;
-  font-family: var(--font-sans);
+  font-family: var(--envelope-letter-font);
   font-size: clamp(0.85rem, 1.8vw, 1rem);
   line-height: 1.6;
   color: color-mix(in srgb, var(--envelope-letter-green) 78%, transparent);
@@ -284,7 +286,7 @@
 
 .envelope-invite__ceremony-start {
   margin: 0;
-  font-family: var(--font-sans);
+  font-family: var(--envelope-letter-font);
   font-size: 0.85rem;
   letter-spacing: 0.02em;
   color: var(--envelope-letter-green);
@@ -294,7 +296,7 @@
 
 .envelope-invite__rsvp-note {
   margin: 0;
-  font-family: var(--font-sans);
+  font-family: var(--envelope-letter-font);
   font-size: 0.8rem;
   letter-spacing: 0.04em;
   color: color-mix(in srgb, var(--envelope-letter-green) 72%, transparent);
@@ -316,7 +318,7 @@
 
 .envelope-invite__more-info-text {
   margin: 0;
-  font-family: var(--font-sans);
+  font-family: var(--envelope-letter-font);
   font-size: 0.8rem;
   color: color-mix(in srgb, var(--envelope-letter-green) 72%, transparent);
 }
