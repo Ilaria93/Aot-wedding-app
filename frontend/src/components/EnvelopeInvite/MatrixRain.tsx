@@ -13,9 +13,22 @@ type MatrixRainProps = {
   onComplete: () => void;
 };
 
-const GLYPHS = 'アイウエオカキクケコサシスセソタチツテト0123456789$#%&@?!';
+// Same katakana + latin + digits alphabet as the reference implementation
+// (react-mdr, itself following the classic "Matrix raining code" tutorial)
+// — no ASCII symbol glyphs, which read as noise rather than "Matrix" next
+// to the real thing.
+const KATAKANA = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+const LATIN = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const DIGITS = '0123456789';
+const GLYPHS = KATAKANA + LATIN + DIGITS;
 const FONT_SIZE = 18;
 const RAIN_COLOR = '#4ade80';
+// setInterval, not requestAnimationFrame: rAF is suspended while the tab is
+// backgrounded, which would leave this one-shot transition stuck mid-rain
+// (and the letter never opening) if the OS backgrounds the tab partway
+// through — matches the reference implementation's own choice, which uses
+// setInterval for the same reason.
+const TICK_MS = 30;
 
 /**
  * Full-screen canvas "Matrix rain" transition between the video title card
@@ -61,11 +74,9 @@ export function MatrixRain({ active, durationMs, onComplete }: MatrixRainProps) 
     setup();
     window.addEventListener('resize', setup);
 
-    let raf = 0;
-    const start = performance.now();
+    const start = Date.now();
 
-    function frame(now: number) {
-      const elapsed = now - start;
+    function tick() {
       ctx!.fillStyle = 'rgba(10, 15, 10, 0.16)';
       ctx!.fillRect(0, 0, window.innerWidth, window.innerHeight);
       ctx!.fillStyle = RAIN_COLOR;
@@ -80,16 +91,15 @@ export function MatrixRain({ active, durationMs, onComplete }: MatrixRainProps) 
         }
       });
 
-      if (elapsed < durationMs) {
-        raf = requestAnimationFrame(frame);
-      } else {
+      if (Date.now() - start >= durationMs) {
+        clearInterval(intervalId);
         onCompleteRef.current();
       }
     }
-    raf = requestAnimationFrame(frame);
+    const intervalId = setInterval(tick, TICK_MS);
 
     return () => {
-      cancelAnimationFrame(raf);
+      clearInterval(intervalId);
       window.removeEventListener('resize', setup);
     };
   }, [active, durationMs]);
