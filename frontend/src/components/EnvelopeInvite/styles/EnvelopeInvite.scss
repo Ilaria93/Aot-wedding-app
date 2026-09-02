@@ -12,6 +12,11 @@
   gap: var(--obw-space-md);
   padding: var(--obw-space-lg) var(--obw-space-md);
   text-align: center;
+  /* Shared "terminal" text treatment — the video's name/countdown and the
+     letter's own body both read as the same session continuing, in the
+     same green and the same font. */
+  --envelope-mono-font: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  --envelope-mono-green: #4ade80;
 }
 
 /* Full-screen opening video — the seal-break/flap/parchment-slide-out is
@@ -54,14 +59,14 @@
   transform: scale(var(--zoom-scale, 1));
 }
 
-/* Couple-names title card, sovraimposto on the video's own blank parchment
+/* Name + live countdown, sovraimposto on the video's own blank parchment
    (see EnvelopeInvite.tsx for the timing window and the contain-fit math
    that keeps --title-left/top/width registered on the visible video frame
    across different viewport aspect ratios). Fallbacks match the video's own
-   default box before the first onTimeUpdate tick sets the real values. */
-/* Positions and fades in the whole title + terminal-command group together
-   — --title-left/top/width are set in JS from the video's own contain-fit
-   box (see EnvelopeInvite.tsx), same as before this held only the title. */
+   default box before the first onTimeUpdate tick sets the real values.
+   Same green/monospace as the letter itself (see --envelope-letter-green
+   below) — this is the same "terminal" text continuing, just without the
+   bordered CLI-window chrome the earlier version wrapped it in. */
 .envelope-invite__title-group {
   position: absolute;
   left: var(--title-left, 0);
@@ -70,8 +75,8 @@
   box-sizing: border-box;
   /* On portrait/narrow viewports the video is width-constrained under
      object-fit: contain, so --title-width lands on the exact screen width
-     with zero letterboxing either side — without this the terminal card
-     below butts straight into both screen edges. */
+     with zero letterboxing either side — without this the text below
+     butts straight into both screen edges. */
   padding-inline: clamp(0.75rem, 5vw, 1.5rem);
   display: flex;
   flex-direction: column;
@@ -88,15 +93,21 @@
   opacity: 1;
 }
 
-.envelope-invite__title {
+.envelope-invite__intro-name {
   margin: 0;
   text-align: center;
-  /* Great Vibes (font-display) is a script face already — no font-style:
-     italic on top, that was a synthetic double-slant and the reason this
-     read as distorted/hard to read. */
-  font-family: var(--font-display);
-  font-size: clamp(1.6rem, 6vw, 2.6rem);
-  color: var(--obw-charcoal-deep);
+  font-family: var(--envelope-mono-font);
+  font-size: clamp(1.4rem, 5.5vw, 2.2rem);
+  color: var(--envelope-mono-green);
+}
+
+.envelope-invite__intro-countdown {
+  margin: 0;
+  text-align: center;
+  font-family: var(--envelope-mono-font);
+  font-size: clamp(0.9rem, 3vw, 1.15rem);
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--envelope-mono-green) 82%, transparent);
 }
 
 .envelope-invite__video-trigger {
@@ -140,12 +151,12 @@
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
-  /* Exact same green and font as the terminal-command window on the video
-     (--decrypt-terminal-green / its monospace stack in DecryptText.scss)
-     — the letter reads as that terminal session continuing, literally,
-     not just a matching palette. */
-  --envelope-letter-green: #4ade80;
-  --envelope-letter-font: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  /* Exact same green and monospace font as the video's own name/countdown
+     card (see .envelope-invite__intro-name) — the letter reads as that
+     same terminal-styled text continuing, literally, not just a matching
+     palette. */
+  --envelope-letter-green: var(--envelope-mono-green);
+  --envelope-letter-font: var(--envelope-mono-font);
   color: var(--envelope-letter-green);
   font-family: var(--envelope-letter-font);
   opacity: 0;

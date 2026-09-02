@@ -2,11 +2,13 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { DecryptText } from '@/components/EnvelopeInvite/DecryptText';
+import { MatrixRain } from '@/components/EnvelopeInvite/MatrixRain';
 import {
   WEDDING_CITY,
   WEDDING_VENUE_AREA,
   WEDDING_VENUE_NAME,
   formatWeddingDateDisplay,
+  getCountdownParts,
 } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
 import './styles/EnvelopeInvite.scss';
@@ -21,12 +23,27 @@ const CONTACT_EMAIL = 'davide.ilaria@esempio.it';
 // this branch) — this title card wants the couple's own English nickname
 // for the wedding, independent of the site-wide constant.
 const VIDEO_TITLE = "Pirulini's Wedding";
-// Real wedding date/venue, terminal-command flavored — sits under the video
-// title as a second decrypt-reveal, styled as a CLI card.
-const TERMINAL_COMMAND = 'save-the-date 31.05.2027 "Cala Celeste"';
-// Faster than the title's default stagger — this string is longer, and both
-// reveals run concurrently inside the same ~0.9s TITLE_START/END window.
-const TERMINAL_STAGGER_MS = 14;
+
+/** Ticks a live days/hours/minutes/seconds countdown to the wedding while
+ * `active`. Stays frozen at the initial value until then. */
+function useCountdown(active: boolean) {
+  const [parts, setParts] = useState(() => getCountdownParts());
+
+  useEffect(() => {
+    if (!active) {
+      return undefined;
+    }
+    setParts(getCountdownParts());
+    const intervalId = setInterval(() => setParts(getCountdownParts()), 1000);
+    return () => clearInterval(intervalId);
+  }, [active]);
+
+  return parts;
+}
+
+function pad2(value: number) {
+  return String(value).padStart(2, '0');
+}
 
 // Typewriter pacing for the letter's opening lines: each line's own type
 // duration scales with its length but is clamped so a long paragraph
@@ -144,29 +161,29 @@ const ZOOM_START_SECONDS = 3.3;
 // not when the flap first cracks open (~2.3s) — before ~2.9s the parchment
 // is still a narrow wedge with dark envelope on both sides, and dark text
 // loses all contrast sitting on dark green. Once shown it stays up — see
-// hasShownTitleRef below — through the zoom, past the video's own natural
-// end (frozen on its last frame), and into the letter opening: the letter's
-// own lines don't start until TITLE_HOLD_MS after the terminal card finishes
-// (see the terminalRevealed effect), so the title is never yanked away
-// mid-read.
+// hasShownTitleRef below — through the zoom and past the video's own
+// natural end (frozen on its last frame), then fades out, hands off to the
+// matrix-rain transition, and only then does the letter open (see the
+// nameRevealed effect), so the title is never yanked away mid-read.
 const TITLE_START_SECONDS = 3.0;
-// The title/terminal reveal shares this stretch of *footage* with the
-// zoom into the letter. At normal speed that's well under a second of real
-// time — nowhere near enough to read "Pirulini's Wedding" and the
-// save-the-date line, let alone the terminal card's longer command string.
+// The title reveal shares this stretch of *footage* with the zoom into the
+// letter. At normal speed that's well under a second of real time —
+// nowhere near enough to read "Pirulini's Wedding" and the countdown.
 // Slowing playback here (not just stretching the reveal via CSS) is what
 // actually buys real reading time. Not too slow, though — much below this
 // and the gap between the footage settling and the letter opening (the
 // title now holds the screen on its own via TITLE_HOLD_MS, not the video)
 // starts to feel like the video itself is dragging.
 const SLOW_PLAYBACK_RATE = 0.6;
-// How long the fully-revealed title/terminal card stays up, on its own,
-// before the letter's lines start — timed from the terminal command's own
-// last character locking in (DecryptText's onComplete), not from the video.
-// Just long enough for a glance-read of the short terminal line — the
-// letter itself now looks like a terminal too, so there's no need to make
-// this hold do the "feel like a terminal" work on its own.
+// How long the fully-revealed title stays up, on its own, before it fades
+// and hands off to the matrix rain — timed from the name's own last
+// character locking in (DecryptText's onComplete), not from the video.
 const TITLE_HOLD_MS = 2000;
+// Matches .envelope-invite__title-group's own opacity transition — the
+// group must finish fading out before the rain starts, or the two overlap.
+const TITLE_FADE_MS = 300;
+// How long the matrix-rain transition runs before the letter opens.
+const MATRIX_RAIN_MS = 1300;
 // Vertical placement within the video's own rendered (contain-fit) box, not
 // the screen — keeps the title on the blank upper parchment above the
 // crest regardless of how much the viewport's aspect ratio letterboxes the
@@ -175,9 +192,10 @@ const TITLE_TOP_FRACTION = 0.3;
 
 /**
  * Personalized envelope for the WhatsApp invite link. Closed by default —
- * tapping anywhere starts the opening video; the title/terminal card reveals
- * partway through, and the letter (background, then its own typed lines)
- * only opens once that card has held the screen for TITLE_HOLD_MS.
+ * tapping anywhere starts the opening video; the name + live countdown
+ * reveal partway through, hold for TITLE_HOLD_MS, fade out, hand off to a
+ * matrix-rain transition, and only then does the letter (background, then
+ * its own typed lines) open.
  */
 export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   const { locale, t } = useI18n();
@@ -185,8 +203,10 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isZooming, setIsZooming] = useState(false);
   const [showTitle, setShowTitle] = useState(false);
-  const [terminalRevealed, setTerminalRevealed] = useState(false);
+  const [nameRevealed, setNameRevealed] = useState(false);
+  const [showMatrixRain, setShowMatrixRain] = useState(false);
   const [sectionsVisible, setSectionsVisible] = useState(false);
+  const countdown = useCountdown(showTitle);
   const letterHeadingRef = useRef<HTMLHeadingElement>(null);
   const openerVideoRef = useRef<HTMLVideoElement>(null);
   const hasSlowedRef = useRef(false);
@@ -248,16 +268,27 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
     return () => clearTimeout(timeoutId);
   }, [typingDone]);
 
-  // The letter (background + its own lines) opens once the title/terminal
-  // card has held the screen on its own for TITLE_HOLD_MS after finishing —
-  // not tied to the (much shorter) video's own runtime at all anymore.
+  // Once the name has held the screen on its own for TITLE_HOLD_MS (not
+  // tied to the much shorter video runtime), it fades out, and once that
+  // fade finishes the matrix rain takes over — see the MatrixRain
+  // onComplete below for the final handoff into the letter opening.
   useEffect(() => {
-    if (!terminalRevealed) {
+    if (!nameRevealed) {
       return undefined;
     }
-    const timeoutId = setTimeout(() => setIsOpen(true), TITLE_HOLD_MS);
-    return () => clearTimeout(timeoutId);
-  }, [terminalRevealed]);
+    const holdTimeoutId = setTimeout(() => {
+      setShowTitle(false);
+    }, TITLE_HOLD_MS);
+    return () => clearTimeout(holdTimeoutId);
+  }, [nameRevealed]);
+
+  useEffect(() => {
+    if (!nameRevealed || showTitle) {
+      return undefined;
+    }
+    const fadeTimeoutId = setTimeout(() => setShowMatrixRain(true), TITLE_FADE_MS);
+    return () => clearTimeout(fadeTimeoutId);
+  }, [nameRevealed, showTitle]);
 
   return (
     <div className={`envelope-invite${isOpen ? ' envelope-invite--open' : ''}`}>
@@ -332,17 +363,24 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
         <div
           className={`envelope-invite__title-group${showTitle ? ' envelope-invite__title-group--visible' : ''}`}
           aria-hidden={!showTitle}>
-          <p className="envelope-invite__title">
-            <DecryptText text={VIDEO_TITLE} active={showTitle} />
+          <p className="envelope-invite__intro-name">
+            <DecryptText text={VIDEO_TITLE} active={showTitle} onComplete={() => setNameRevealed(true)} />
           </p>
-          <DecryptText
-            text={TERMINAL_COMMAND}
-            active={showTitle}
-            variant="terminal"
-            stagger={TERMINAL_STAGGER_MS}
-            onComplete={() => setTerminalRevealed(true)}
-          />
+          <p className="envelope-invite__intro-countdown">
+            <span aria-hidden="true">
+              {countdown.days}g {pad2(countdown.hours)}:{pad2(countdown.minutes)}:{pad2(countdown.seconds)}
+            </span>
+            <span className="sr-only">{t('invite.countdownAria', countdown)}</span>
+          </p>
         </div>
+        <MatrixRain
+          active={showMatrixRain}
+          durationMs={MATRIX_RAIN_MS}
+          onComplete={() => {
+            setShowMatrixRain(false);
+            setIsOpen(true);
+          }}
+        />
       </div>
 
       {!isOpen && !isVideoPlaying ? <p className="envelope-invite__hint">{t('invite.tapHint')}</p> : null}

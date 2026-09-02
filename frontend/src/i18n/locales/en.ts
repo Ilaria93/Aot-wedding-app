@@ -574,6 +574,7 @@ export const en = {
     },
     openAria: 'Open the invitation',
     tapHint: 'Tap the seal to open',
+    countdownAria: '{{days}} days, {{hours}} hours, {{minutes}} minutes and {{seconds}} seconds until the wedding.',
     notFoundTitle: 'Invitation not found.',
     notFoundBody: 'This link may have expired or be mistyped.',
     notFoundBackHome: 'Go to the wedding site',
