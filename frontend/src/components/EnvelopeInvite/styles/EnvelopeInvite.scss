@@ -93,12 +93,15 @@
   opacity: 1;
 }
 
+/* Dark, not the terminal green — this sits on the video's own light
+   parchment background where the bright green (fine on the letter's aged
+   paper) doesn't hold enough contrast to read. */
 .envelope-invite__intro-name {
   margin: 0;
   text-align: center;
   font-family: var(--envelope-mono-font);
   font-size: clamp(1.4rem, 5.5vw, 2.2rem);
-  color: var(--envelope-mono-green);
+  color: var(--obw-charcoal-deep);
 }
 
 .envelope-invite__intro-countdown {
@@ -107,7 +110,7 @@
   font-family: var(--envelope-mono-font);
   font-size: clamp(0.9rem, 3vw, 1.15rem);
   letter-spacing: 0.04em;
-  color: color-mix(in srgb, var(--envelope-mono-green) 82%, transparent);
+  color: color-mix(in srgb, var(--obw-charcoal-deep) 82%, transparent);
 }
 
 .envelope-invite__video-trigger {

@@ -13,14 +13,13 @@ type MatrixRainProps = {
   onComplete: () => void;
 };
 
-// Same katakana + latin + digits alphabet as the reference implementation
-// (react-mdr, itself following the classic "Matrix raining code" tutorial)
-// — no ASCII symbol glyphs, which read as noise rather than "Matrix" next
-// to the real thing.
-const KATAKANA = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-const LATIN = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+// Italian letters + digits, not the reference implementation's katakana —
+// the rest of this transition (name, countdown, letter) is all Italian
+// text, so the rain reads as the same language rather than a generic
+// "Matrix" lift.
+const LATIN = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÀÈÉÌÒÙ';
 const DIGITS = '0123456789';
-const GLYPHS = KATAKANA + LATIN + DIGITS;
+const GLYPHS = LATIN + DIGITS;
 const FONT_SIZE = 18;
 const RAIN_COLOR = '#4ade80';
 // setInterval, not requestAnimationFrame: rAF is suspended while the tab is
