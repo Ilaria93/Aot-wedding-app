@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { DecryptText } from '@/components/EnvelopeInvite/DecryptText';
+import { FallingText } from '@/components/EnvelopeInvite/FallingText';
 import { MatrixRain } from '@/components/EnvelopeInvite/MatrixRain';
 import { WEDDING_CITY, WEDDING_VENUE_AREA, WEDDING_VENUE_NAME, formatWeddingDateDisplay } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
@@ -157,6 +158,12 @@ const TITLE_HOLD_MS = 2000;
 const TITLE_FADE_MS = 300;
 // How long the matrix-rain transition runs before the letter opens.
 const MATRIX_RAIN_MS = 4000;
+// The rain's own fade-trail leaves its canvas nearly solid black by the
+// time it stops — kept mounted (frozen on that last frame) behind the
+// letter instead of unmounting instantly, so the letter's own opacity fade
+// reads as "black slowly lightening into the parchment" rather than a cut.
+// Matches .envelope-invite__letter's own transition duration.
+const LETTER_OPEN_FADE_MS = 2500;
 // Vertical placement within the video's own rendered (contain-fit) box, not
 // the screen — keeps the title on the blank upper parchment above the
 // crest regardless of how much the viewport's aspect ratio letterboxes the
@@ -207,8 +214,8 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   );
   const { revealed, activeIndex, done: typingDone } = useTypewriterLines(letterLines, isOpen);
   // Same schedule that drives activeIndex/revealed above — reused here only
-  // to size each line's DecryptText stagger to its own budgeted window, so
-  // the decrypt reveal keeps roughly the same per-line pacing typing did.
+  // to size each line's FallingText stagger to its own budgeted window, so
+  // the falling reveal keeps roughly the same per-line pacing typing did.
   const schedule = useMemo(() => buildTypeSchedule(letterLines), [letterLines]);
   // A line "has started" once computeTypeReveal stops returning '' for it
   // (or everything's done, e.g. reduced motion) — reusing that instead of
@@ -261,6 +268,18 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
     const fadeTimeoutId = setTimeout(() => setShowMatrixRain(true), TITLE_FADE_MS);
     return () => clearTimeout(fadeTimeoutId);
   }, [nameRevealed, showTitle]);
+
+  // The rain canvas stays mounted (frozen on its last, near-black frame)
+  // through the letter's own slow opacity fade, so that fade has a black
+  // backdrop to lighten out of — only removed once fully hidden behind the
+  // now-opaque letter.
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined;
+    }
+    const cleanupTimeoutId = setTimeout(() => setShowMatrixRain(false), LETTER_OPEN_FADE_MS);
+    return () => clearTimeout(cleanupTimeoutId);
+  }, [isOpen]);
 
   return (
     <div className={`envelope-invite${isOpen ? ' envelope-invite--open' : ''}`}>
@@ -339,14 +358,7 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
             <DecryptText text={VIDEO_TITLE} active={showTitle} onComplete={() => setNameRevealed(true)} />
           </p>
         </div>
-        <MatrixRain
-          active={showMatrixRain}
-          durationMs={MATRIX_RAIN_MS}
-          onComplete={() => {
-            setShowMatrixRain(false);
-            setIsOpen(true);
-          }}
-        />
+        <MatrixRain active={showMatrixRain} durationMs={MATRIX_RAIN_MS} onComplete={() => setIsOpen(true)} />
       </div>
 
       {!isOpen && !isVideoPlaying ? <p className="envelope-invite__hint">{t('invite.tapHint')}</p> : null}
@@ -357,25 +369,25 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
         <div className="envelope-invite__letter-content">
           <p
             className={`envelope-invite__personal-greeting${activeIndex === 0 ? ' is-typing' : ''}${lineActive(0) ? ' is-revealed' : ''}`}>
-            <DecryptText text={letterLines[0]} active={lineActive(0)} stagger={lineStagger(0)} />
+            <FallingText text={letterLines[0]} active={lineActive(0)} stagger={lineStagger(0)} />
           </p>
           <h1
             ref={letterHeadingRef}
             tabIndex={-1}
             className={`obw-display obw-display--sm envelope-invite__greeting${activeIndex === 1 ? ' is-typing' : ''}${lineActive(1) ? ' is-revealed' : ''}`}>
-            <DecryptText text={letterLines[1]} active={lineActive(1)} stagger={lineStagger(1)} />
+            <FallingText text={letterLines[1]} active={lineActive(1)} stagger={lineStagger(1)} />
           </h1>
           <p className={`envelope-invite__couple-names${activeIndex === 2 ? ' is-typing' : ''}${lineActive(2) ? ' is-revealed' : ''}`}>
-            <DecryptText text={letterLines[2]} active={lineActive(2)} stagger={lineStagger(2)} />
+            <FallingText text={letterLines[2]} active={lineActive(2)} stagger={lineStagger(2)} />
           </p>
           <p className={`envelope-invite__details${activeIndex === 3 ? ' is-typing' : ''}${lineActive(3) ? ' is-revealed' : ''}`}>
-            <DecryptText text={letterLines[3]} active={lineActive(3)} stagger={lineStagger(3)} />
+            <FallingText text={letterLines[3]} active={lineActive(3)} stagger={lineStagger(3)} />
           </p>
           <p className={`envelope-invite__ceremony-start${activeIndex === 4 ? ' is-typing' : ''}${lineActive(4) ? ' is-revealed' : ''}`}>
-            <DecryptText text={letterLines[4]} active={lineActive(4)} stagger={lineStagger(4)} />
+            <FallingText text={letterLines[4]} active={lineActive(4)} stagger={lineStagger(4)} />
           </p>
           <p className={`obw-body envelope-invite__body-text${activeIndex === 5 ? ' is-typing' : ''}${lineActive(5) ? ' is-revealed' : ''}`}>
-            <DecryptText text={letterLines[5]} active={lineActive(5)} stagger={lineStagger(5)} />
+            <FallingText text={letterLines[5]} active={lineActive(5)} stagger={lineStagger(5)} />
           </p>
         </div>
 

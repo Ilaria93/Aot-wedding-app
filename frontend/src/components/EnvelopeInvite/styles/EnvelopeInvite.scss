@@ -145,10 +145,6 @@
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
-  /* Exact same green and monospace font as the video's own name/countdown
-     card (see .envelope-invite__intro-name) — the letter reads as that
-     same terminal-styled text continuing, literally, not just a matching
-     palette. */
   --envelope-letter-green: var(--envelope-mono-green);
   --envelope-letter-font: var(--envelope-mono-font);
   color: var(--envelope-letter-green);
@@ -157,7 +153,11 @@
   pointer-events: none;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  transition: opacity 600ms var(--obw-ease-out);
+  /* Slow on purpose (matches EnvelopeInvite.tsx's LETTER_OPEN_FADE_MS) —
+     the matrix-rain canvas behind this stays mounted, frozen nearly black,
+     through this whole fade, so it reads as the screen slowly lightening
+     into the parchment rather than a straight cut. */
+  transition: opacity 2500ms var(--obw-ease-out);
 }
 
 .envelope-invite--open .envelope-invite__letter {
