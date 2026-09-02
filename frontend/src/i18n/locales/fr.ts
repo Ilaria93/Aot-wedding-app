@@ -580,7 +580,6 @@ export const fr = {
     },
     openAria: "Ouvrir l'invitation",
     tapHint: "Touchez le sceau pour l'ouvrir",
-    countdownAria: "Il reste {{days}} jours, {{hours}} heures, {{minutes}} minutes et {{seconds}} secondes avant le mariage.",
     notFoundTitle: 'Invitation introuvable.',
     notFoundBody: "Ce lien a peut-être expiré ou est incorrect.",
     notFoundBackHome: 'Aller au site du mariage',

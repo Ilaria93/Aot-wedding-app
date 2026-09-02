@@ -3,13 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { DecryptText } from '@/components/EnvelopeInvite/DecryptText';
 import { MatrixRain } from '@/components/EnvelopeInvite/MatrixRain';
-import {
-  WEDDING_CITY,
-  WEDDING_VENUE_AREA,
-  WEDDING_VENUE_NAME,
-  formatWeddingDateDisplay,
-  getCountdownParts,
-} from '@/constants/weddingEvent';
+import { WEDDING_CITY, WEDDING_VENUE_AREA, WEDDING_VENUE_NAME, formatWeddingDateDisplay } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
 import './styles/EnvelopeInvite.scss';
 
@@ -23,27 +17,6 @@ const CONTACT_EMAIL = 'davide.ilaria@esempio.it';
 // this branch) — this title card wants the couple's own English nickname
 // for the wedding, independent of the site-wide constant.
 const VIDEO_TITLE = "Pirulini's Wedding";
-
-/** Ticks a live days/hours/minutes/seconds countdown to the wedding while
- * `active`. Stays frozen at the initial value until then. */
-function useCountdown(active: boolean) {
-  const [parts, setParts] = useState(() => getCountdownParts());
-
-  useEffect(() => {
-    if (!active) {
-      return undefined;
-    }
-    setParts(getCountdownParts());
-    const intervalId = setInterval(() => setParts(getCountdownParts()), 1000);
-    return () => clearInterval(intervalId);
-  }, [active]);
-
-  return parts;
-}
-
-function pad2(value: number) {
-  return String(value).padStart(2, '0');
-}
 
 // Typewriter pacing for the letter's opening lines: each line's own type
 // duration scales with its length but is clamped so a long paragraph
@@ -168,7 +141,7 @@ const ZOOM_START_SECONDS = 3.3;
 const TITLE_START_SECONDS = 3.0;
 // The title reveal shares this stretch of *footage* with the zoom into the
 // letter. At normal speed that's well under a second of real time —
-// nowhere near enough to read "Pirulini's Wedding" and the countdown.
+// nowhere near enough to read "Pirulini's Wedding".
 // Slowing playback here (not just stretching the reveal via CSS) is what
 // actually buys real reading time. Not too slow, though — much below this
 // and the gap between the footage settling and the letter opening (the
@@ -183,7 +156,7 @@ const TITLE_HOLD_MS = 2000;
 // group must finish fading out before the rain starts, or the two overlap.
 const TITLE_FADE_MS = 300;
 // How long the matrix-rain transition runs before the letter opens.
-const MATRIX_RAIN_MS = 1300;
+const MATRIX_RAIN_MS = 4000;
 // Vertical placement within the video's own rendered (contain-fit) box, not
 // the screen — keeps the title on the blank upper parchment above the
 // crest regardless of how much the viewport's aspect ratio letterboxes the
@@ -192,10 +165,10 @@ const TITLE_TOP_FRACTION = 0.3;
 
 /**
  * Personalized envelope for the WhatsApp invite link. Closed by default —
- * tapping anywhere starts the opening video; the name + live countdown
- * reveal partway through, hold for TITLE_HOLD_MS, fade out, hand off to a
- * matrix-rain transition, and only then does the letter (background, then
- * its own typed lines) open.
+ * tapping anywhere starts the opening video; the name reveals partway
+ * through, holds for TITLE_HOLD_MS, fades out, hands off to a matrix-rain
+ * transition, and only then does the letter (background, then its own
+ * typed lines) open.
  */
 export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   const { locale, t } = useI18n();
@@ -206,7 +179,6 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   const [nameRevealed, setNameRevealed] = useState(false);
   const [showMatrixRain, setShowMatrixRain] = useState(false);
   const [sectionsVisible, setSectionsVisible] = useState(false);
-  const countdown = useCountdown(showTitle);
   const letterHeadingRef = useRef<HTMLHeadingElement>(null);
   const openerVideoRef = useRef<HTMLVideoElement>(null);
   const hasSlowedRef = useRef(false);
@@ -365,12 +337,6 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
           aria-hidden={!showTitle}>
           <p className="envelope-invite__intro-name">
             <DecryptText text={VIDEO_TITLE} active={showTitle} onComplete={() => setNameRevealed(true)} />
-          </p>
-          <p className="envelope-invite__intro-countdown">
-            <span aria-hidden="true">
-              {countdown.days}g {pad2(countdown.hours)}:{pad2(countdown.minutes)}:{pad2(countdown.seconds)}
-            </span>
-            <span className="sr-only">{t('invite.countdownAria', countdown)}</span>
           </p>
         </div>
         <MatrixRain

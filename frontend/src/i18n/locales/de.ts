@@ -581,7 +581,6 @@ export const de = {
     },
     openAria: 'Einladung öffnen',
     tapHint: 'Zum Öffnen auf das Siegel tippen',
-    countdownAria: 'Noch {{days}} Tage, {{hours}} Stunden, {{minutes}} Minuten und {{seconds}} Sekunden bis zur Hochzeit.',
     notFoundTitle: 'Einladung nicht gefunden.',
     notFoundBody: 'Dieser Link ist möglicherweise abgelaufen oder falsch geschrieben.',
     notFoundBackHome: 'Zur Hochzeitsseite',

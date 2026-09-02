@@ -578,7 +578,6 @@ export const it = {
     },
     openAria: 'Apri l’invito',
     tapHint: 'Tocca il sigillo per aprire',
-    countdownAria: 'Mancano {{days}} giorni, {{hours}} ore, {{minutes}} minuti e {{seconds}} secondi al matrimonio.',
     notFoundTitle: 'Invito non trovato.',
     notFoundBody: 'Il link potrebbe essere scaduto o scritto in modo scorretto.',
     notFoundBackHome: 'Vai al sito del matrimonio',
