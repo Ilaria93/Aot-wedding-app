@@ -109,8 +109,10 @@
   opacity: 1;
   /* Same titan-transformation beat as the letter's own quake, just lighter
      — this is a floating text box, not a full-bleed card, so no scale
-     compensation is needed to avoid uncovering anything behind it. */
-  animation: envelope-invite-title-quake 400ms ease-out;
+     compensation is needed to avoid uncovering anything behind it. Max
+     offset at 0%, same as the letter's — the hit lands at full force
+     immediately, then rings out. */
+  animation: envelope-invite-title-quake 300ms ease-out;
 }
 
 .envelope-invite__intro-name {
@@ -123,32 +125,33 @@
 }
 
 .envelope-invite__title-group--visible .envelope-invite__intro-name {
-  animation: envelope-invite-glitch-appear 260ms steps(2, jump-none) forwards;
+  animation: envelope-invite-glitch-appear 200ms steps(4, jump-none) forwards;
+  animation-delay: 120ms;
 }
 
 @keyframes envelope-invite-title-quake {
   0% {
-    transform: translate(0, 0);
+    transform: translate(-9px, 6px);
   }
 
-  15% {
-    transform: translate(-5px, 3px);
+  12% {
+    transform: translate(8px, -6px);
   }
 
-  30% {
-    transform: translate(5px, -3px);
+  26% {
+    transform: translate(-6px, 4px);
   }
 
-  45% {
-    transform: translate(-3px, -2px);
+  42% {
+    transform: translate(4px, -3px);
   }
 
   60% {
-    transform: translate(3px, 2px);
+    transform: translate(-2px, 1px);
   }
 
   80% {
-    transform: translate(-1px, 1px);
+    transform: translate(1px, -1px);
   }
 
   100% {
@@ -209,12 +212,14 @@
 .envelope-invite--open .envelope-invite__letter {
   opacity: 1;
   pointer-events: auto;
-  /* The titan-transformation lightning strike: the whole card shakes as it
-     lands. Scale never drops below 1 through the shake (see the keyframes)
-     so the translate offsets stay inside that overscan margin — this is a
-     full-bleed fixed element, not a small card, so dipping under 100% scale
-     would flash the dark stage behind it at the shake's edges. */
-  animation: envelope-invite-letter-quake 450ms ease-out;
+  /* The titan-transformation lightning strike: the whole card takes the
+     hit at full force immediately (see the keyframes — max offset sits at
+     0%, not built up to), then rings out. Scale never drops below 1
+     through the shake so the translate offsets stay inside that overscan
+     margin — this is a full-bleed fixed element, not a small card, so
+     dipping under 100% scale would flash the dark stage behind it at the
+     shake's edges. */
+  animation: envelope-invite-letter-quake 350ms ease-out;
 }
 
 /* The flash itself — a warm burst that washes over the whole card the
@@ -254,43 +259,45 @@
   opacity: 0;
 }
 
-/* The text doesn't appear until the shake/flash above have mostly settled
-   (animation-delay), then locks in with a brief double-exposure glitch —
-   like the message was seared into the parchment by the same jolt, not
-   just faded in. steps() instead of an eased curve keeps it feeling like a
-   jolt of current, not a smooth animation. */
+/* The text hits at the same instant as the flash (a short delay, not the
+   shake settling first) and locks in with a hard double-exposure glitch —
+   like the blow itself seared the message into the parchment, not a fade
+   that happens to follow it. steps() instead of an eased curve keeps every
+   pose change a snap, not a smooth animation. */
 .envelope-invite__letter-content.is-revealed {
-  animation: envelope-invite-glitch-appear 260ms steps(2, jump-none) forwards;
-  animation-delay: 350ms;
+  animation: envelope-invite-glitch-appear 200ms steps(4, jump-none) forwards;
+  animation-delay: 140ms;
 }
 
+/* Max offset lands at 0% — the hit is already at full force the instant
+   this starts, not built up to — then rings out to nothing by 100%. */
 @keyframes envelope-invite-letter-quake {
   0% {
-    transform: scale(1.04) translate(0, 0);
+    transform: scale(1.06) translate(-12px, 8px);
   }
 
   10% {
-    transform: scale(1.04) translate(-6px, 4px);
+    transform: scale(1.05) translate(11px, -9px);
   }
 
   20% {
-    transform: scale(1.04) translate(6px, -4px);
+    transform: scale(1.04) translate(-9px, 7px);
   }
 
-  30% {
-    transform: scale(1.03) translate(-4px, -3px);
+  32% {
+    transform: scale(1.03) translate(7px, -5px);
   }
 
-  40% {
-    transform: scale(1.03) translate(4px, 3px);
+  46% {
+    transform: scale(1.02) translate(-4px, 3px);
   }
 
-  60% {
-    transform: scale(1.02) translate(-2px, 2px);
+  62% {
+    transform: scale(1.02) translate(2px, -2px);
   }
 
   80% {
-    transform: scale(1.01) translate(1px, -1px);
+    transform: scale(1.01) translate(-1px, 1px);
   }
 
   100% {
@@ -303,12 +310,12 @@
     opacity: 0;
   }
 
-  10% {
+  6% {
     opacity: 1;
   }
 
-  35% {
-    opacity: 0.65;
+  30% {
+    opacity: 0.6;
   }
 
   100% {
@@ -316,21 +323,28 @@
   }
 }
 
+/* No fade-in: opacity is already 1 at 0%, the same instant the hit lands
+   — this is what actually reads as "struck" instead of "faded in".
+   scaleY compresses under the blow before rebounding past 1 and settling,
+   the way a hit frame in the source material squashes on impact. */
 @keyframes envelope-invite-glitch-appear {
   0% {
-    opacity: 0;
-  }
-
-  35% {
     opacity: 1;
-    transform: skewX(-6deg);
+    transform: skewX(-14deg) scaleY(0.78);
     filter:
-      drop-shadow(2px 0 color-mix(in srgb, #8b0000 70%, transparent))
-      drop-shadow(-2px 0 color-mix(in srgb, var(--obw-gold-bright) 70%, transparent));
+      drop-shadow(4px 0 color-mix(in srgb, #8b0000 80%, transparent))
+      drop-shadow(-4px 0 color-mix(in srgb, var(--obw-gold-bright) 80%, transparent));
   }
 
-  65% {
-    transform: skewX(5deg);
+  25% {
+    transform: skewX(9deg) scaleY(1.08);
+    filter:
+      drop-shadow(2px 0 color-mix(in srgb, #8b0000 55%, transparent))
+      drop-shadow(-2px 0 color-mix(in srgb, var(--obw-gold-bright) 55%, transparent));
+  }
+
+  55% {
+    transform: skewX(-4deg) scaleY(0.97);
     filter: none;
   }
 
