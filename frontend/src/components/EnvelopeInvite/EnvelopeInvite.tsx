@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { RedactionReveal } from '@/components/EnvelopeInvite/RedactionReveal';
 import { WEDDING_CITY, WEDDING_VENUE_AREA, WEDDING_VENUE_NAME, formatWeddingDateDisplay } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
 import './styles/EnvelopeInvite.scss';
@@ -148,8 +147,8 @@ const TITLE_START_SECONDS = 3.0;
 // starts to feel like the video itself is dragging.
 const SLOW_PLAYBACK_RATE = 0.6;
 // How long the fully-revealed title stays up, on its own, before it fades
-// and the letter opens — timed from the name's own bar-reveal finishing
-// (RedactionReveal's onComplete), not from the video.
+// and the letter opens — timed from the name's own fade-in finishing
+// (TITLE_FADE_MS after showTitle flips true), not from the video.
 const TITLE_HOLD_MS = 2000;
 // Matches .envelope-invite__title-group's own opacity transition — the
 // group must finish fading out before the letter opens, or the two overlap.
@@ -162,10 +161,9 @@ const TITLE_TOP_FRACTION = 0.3;
 
 /**
  * Personalized envelope for the WhatsApp invite link. Closed by default —
- * tapping anywhere starts the opening video; the name reveals partway
- * through (a redaction bar sliding away), holds for TITLE_HOLD_MS, fades
- * out, and only then does the letter open, each of its own lines revealing
- * the same way, one after another.
+ * tapping anywhere starts the opening video; the name fades in partway
+ * through, holds for TITLE_HOLD_MS, fades out, and only then does the
+ * letter open, each of its own lines fading in one after another.
  */
 export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   const { locale, t } = useI18n();
@@ -203,8 +201,8 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   );
   // useTypewriterLines still supplies the per-line pacing (each line's
   // reveal starts once the previous one's budgeted window ends) even
-  // though nothing actually types a substring out anymore — RedactionReveal
-  // just needs to know when to flip from covered to revealed.
+  // though nothing actually types a substring out anymore — each line just
+  // needs to know when to fade in.
   const { revealed, done: typingDone } = useTypewriterLines(letterLines, isOpen);
   // A line "has started" once computeTypeReveal stops returning '' for it
   // (or everything's done, e.g. reduced motion) — reusing that instead of
@@ -228,6 +226,17 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
     const timeoutId = setTimeout(() => setSectionsVisible(true), TYPE_SECTIONS_GAP_MS);
     return () => clearTimeout(timeoutId);
   }, [typingDone]);
+
+  // Marks the name "revealed" once its own fade-in has finished, so the
+  // hold below starts counting from a fully-visible title, not the instant
+  // showTitle flips true.
+  useEffect(() => {
+    if (!showTitle) {
+      return undefined;
+    }
+    const revealTimeoutId = setTimeout(() => setNameRevealed(true), TITLE_FADE_MS);
+    return () => clearTimeout(revealTimeoutId);
+  }, [showTitle]);
 
   // Once the name has held the screen on its own for TITLE_HOLD_MS (not
   // tied to the much shorter video runtime), it fades out, and once that
@@ -323,9 +332,7 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
         <div
           className={`envelope-invite__title-group${showTitle ? ' envelope-invite__title-group--visible' : ''}`}
           aria-hidden={!showTitle}>
-          <p className="envelope-invite__intro-name">
-            <RedactionReveal text={VIDEO_TITLE} active={showTitle} onComplete={() => setNameRevealed(true)} />
-          </p>
+          <p className="envelope-invite__intro-name">{VIDEO_TITLE}</p>
         </div>
       </div>
 
@@ -336,25 +343,21 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
       <article className="envelope-invite__letter" aria-hidden={!isOpen}>
         <div className="envelope-invite__letter-content">
           <p className={`envelope-invite__personal-greeting${lineActive(0) ? ' is-revealed' : ''}`}>
-            <RedactionReveal text={letterLines[0]} active={lineActive(0)} />
+            {letterLines[0]}
           </p>
           <h1
             ref={letterHeadingRef}
             tabIndex={-1}
             className={`obw-display obw-display--sm envelope-invite__greeting${lineActive(1) ? ' is-revealed' : ''}`}>
-            <RedactionReveal text={letterLines[1]} active={lineActive(1)} />
+            {letterLines[1]}
           </h1>
-          <p className={`envelope-invite__couple-names${lineActive(2) ? ' is-revealed' : ''}`}>
-            <RedactionReveal text={letterLines[2]} active={lineActive(2)} />
-          </p>
-          <p className={`envelope-invite__details${lineActive(3) ? ' is-revealed' : ''}`}>
-            <RedactionReveal text={letterLines[3]} active={lineActive(3)} />
-          </p>
+          <p className={`envelope-invite__couple-names${lineActive(2) ? ' is-revealed' : ''}`}>{letterLines[2]}</p>
+          <p className={`envelope-invite__details${lineActive(3) ? ' is-revealed' : ''}`}>{letterLines[3]}</p>
           <p className={`envelope-invite__ceremony-start${lineActive(4) ? ' is-revealed' : ''}`}>
-            <RedactionReveal text={letterLines[4]} active={lineActive(4)} />
+            {letterLines[4]}
           </p>
           <p className={`obw-body envelope-invite__body-text${lineActive(5) ? ' is-revealed' : ''}`}>
-            <RedactionReveal text={letterLines[5]} active={lineActive(5)} />
+            {letterLines[5]}
           </p>
         </div>
 

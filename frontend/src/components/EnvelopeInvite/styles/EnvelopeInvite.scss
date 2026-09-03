@@ -158,17 +158,14 @@
   padding-top: clamp(1rem, 6vh, 3rem);
 }
 
-/* Lines reveal one at a time via RedactionReveal (EnvelopeInvite.tsx
-   computes `lineActive`/`is-revealed` from the typewriter schedule, now
-   just used to gate when each line's bar starts sliding away). A line not
-   yet up sits fully transparent — RedactionReveal renders its real text
-   plainly, with its own bar covering it, until `active` flips true, so
-   without this a not-yet-started line would show its bar with no
-   surrounding line height at all, and the `min-height` keeps it from
-   collapsing to zero height while hidden. */
+/* Lines fade in one at a time (EnvelopeInvite.tsx computes `lineActive`/
+   `is-revealed` from the typewriter schedule, gating when each line's own
+   fade starts). The `min-height` keeps a not-yet-revealed line from
+   collapsing to zero height. */
 .envelope-invite__letter-content > * {
   min-height: 1.4em;
   opacity: 0;
+  transition: opacity 500ms var(--obw-ease-out);
 }
 
 .envelope-invite__letter-content > .is-revealed {
