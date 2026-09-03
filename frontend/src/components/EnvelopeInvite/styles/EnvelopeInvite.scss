@@ -146,9 +146,41 @@
 .envelope-invite--open .envelope-invite__letter {
   opacity: 1;
   pointer-events: auto;
+  /* The titan-transformation lightning strike: the whole card shakes as it
+     lands. Scale never drops below 1 through the shake (see the keyframes)
+     so the translate offsets stay inside that overscan margin — this is a
+     full-bleed fixed element, not a small card, so dipping under 100% scale
+     would flash the dark stage behind it at the shake's edges. */
+  animation: envelope-invite-letter-quake 450ms ease-out;
+}
+
+/* The flash itself — a warm burst that washes over the whole card the
+   instant it lands, like the lightning bolt that precedes a titan
+   transformation. A pseudo-element rather than another DOM node: purely
+   decorative, and .envelope-invite__letter is already position: fixed so
+   it's a ready-made containing block. */
+.envelope-invite__letter::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--obw-gold-bright) 90%, transparent) 0%,
+    color-mix(in srgb, #ff5a00 40%, transparent) 60%,
+    transparent 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+
+.envelope-invite--open .envelope-invite__letter::before {
+  animation: envelope-invite-lightning 550ms ease-out;
 }
 
 .envelope-invite__letter-content {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -156,20 +188,94 @@
   gap: 14px;
   max-width: 32rem;
   padding-top: clamp(1rem, 6vh, 3rem);
-}
-
-/* Lines fade in one at a time (EnvelopeInvite.tsx computes `lineActive`/
-   `is-revealed` from the typewriter schedule, gating when each line's own
-   fade starts). The `min-height` keeps a not-yet-revealed line from
-   collapsing to zero height. */
-.envelope-invite__letter-content > * {
-  min-height: 1.4em;
   opacity: 0;
-  transition: opacity 500ms var(--obw-ease-out);
 }
 
-.envelope-invite__letter-content > .is-revealed {
-  opacity: 1;
+/* The text doesn't appear until the shake/flash above have mostly settled
+   (animation-delay), then locks in with a brief double-exposure glitch —
+   like the message was seared into the parchment by the same jolt, not
+   just faded in. steps() instead of an eased curve keeps it feeling like a
+   jolt of current, not a smooth animation. */
+.envelope-invite__letter-content.is-revealed {
+  animation: envelope-invite-letter-glitch 260ms steps(2, jump-none) forwards;
+  animation-delay: 350ms;
+}
+
+@keyframes envelope-invite-letter-quake {
+  0% {
+    transform: scale(1.04) translate(0, 0);
+  }
+
+  10% {
+    transform: scale(1.04) translate(-6px, 4px);
+  }
+
+  20% {
+    transform: scale(1.04) translate(6px, -4px);
+  }
+
+  30% {
+    transform: scale(1.03) translate(-4px, -3px);
+  }
+
+  40% {
+    transform: scale(1.03) translate(4px, 3px);
+  }
+
+  60% {
+    transform: scale(1.02) translate(-2px, 2px);
+  }
+
+  80% {
+    transform: scale(1.01) translate(1px, -1px);
+  }
+
+  100% {
+    transform: scale(1) translate(0, 0);
+  }
+}
+
+@keyframes envelope-invite-lightning {
+  0% {
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  35% {
+    opacity: 0.65;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes envelope-invite-letter-glitch {
+  0% {
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 1;
+    transform: skewX(-6deg);
+    filter:
+      drop-shadow(2px 0 color-mix(in srgb, #8b0000 70%, transparent))
+      drop-shadow(-2px 0 color-mix(in srgb, var(--obw-gold-bright) 70%, transparent));
+  }
+
+  65% {
+    transform: skewX(5deg);
+    filter: none;
+  }
+
+  100% {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
 }
 
 /* Everything below the header fold reveals as one block once the letter has
@@ -331,5 +437,17 @@
   .envelope-invite__opener-video,
   .envelope-invite__title-group {
     transition: none;
+  }
+
+  .envelope-invite--open .envelope-invite__letter,
+  .envelope-invite--open .envelope-invite__letter::before {
+    animation: none;
+  }
+
+  .envelope-invite__letter-content.is-revealed {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
   }
 }

@@ -16,93 +16,10 @@ const CONTACT_EMAIL = 'davide.ilaria@esempio.it';
 // for the wedding, independent of the site-wide constant.
 const VIDEO_TITLE = "Pirulini's Wedding";
 
-// Typewriter pacing for the letter's opening lines: each line's own type
-// duration scales with its length but is clamped so a long paragraph
-// doesn't drag on forever, and lines run one after another (never two
-// typing at once).
-const TYPE_START_DELAY_MS = 200;
-const TYPE_MS_PER_CHAR = 38;
-const TYPE_MIN_LINE_MS = 320;
-// High enough that the short identity lines (greeting, headline, names,
-// date/venue, ceremony time) never hit it and all type at the same
-// TYPE_MS_PER_CHAR pace — only the long intro paragraph gets compressed,
-// and only mildly, instead of every line past it visibly speeding up.
-const TYPE_MAX_LINE_MS = 1900;
-const TYPE_LINE_GAP_MS = 180;
-const TYPE_SECTIONS_GAP_MS = 400;
-
-export type TypedLine = { text: string; startMs: number; endMs: number };
-
-export function buildTypeSchedule(lines: string[]): TypedLine[] {
-  let cursor = TYPE_START_DELAY_MS;
-  return lines.map((text) => {
-    const duration = Math.min(TYPE_MAX_LINE_MS, Math.max(TYPE_MIN_LINE_MS, text.length * TYPE_MS_PER_CHAR));
-    const startMs = cursor;
-    const endMs = startMs + duration;
-    cursor = endMs + TYPE_LINE_GAP_MS;
-    return { text, startMs, endMs };
-  });
-}
-
-/** Pure reveal math, kept separate from the rAF/state plumbing below so it
- * can be unit-tested without a DOM or a fake clock. */
-export function computeTypeReveal(schedule: TypedLine[], elapsed: number, done: boolean) {
-  const revealed = schedule.map(({ text, startMs, endMs }) => {
-    if (done || elapsed >= endMs) {
-      return text;
-    }
-    if (elapsed <= startMs) {
-      return '';
-    }
-    const progress = (elapsed - startMs) / (endMs - startMs);
-    return text.slice(0, Math.round(text.length * progress));
-  });
-  const activeIndex = done ? -1 : schedule.findIndex(({ startMs, endMs }) => elapsed > startMs && elapsed < endMs);
-  return { revealed, activeIndex };
-}
-
-/** Types `lines` out one at a time while `active`; skips straight to the
- * full text for prefers-reduced-motion. Returns the revealed substrings
- * plus the index of the line currently mid-type (-1 once all are done).
- * `lines` must be a referentially stable array (e.g. via useMemo) — a new
- * array every render would retrigger the effect below on every animation
- * frame and the text would never advance past empty. */
-function useTypewriterLines(lines: string[], active: boolean) {
-  const schedule = useMemo(() => buildTypeSchedule(lines), [lines]);
-  const [elapsed, setElapsed] = useState(0);
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    if (!active) {
-      setElapsed(0);
-      setDone(false);
-      return;
-    }
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setDone(true);
-      return;
-    }
-    let raf = 0;
-    const start = performance.now();
-    const totalEnd = schedule[schedule.length - 1]?.endMs ?? 0;
-    const tick = (now: number) => {
-      const e = now - start;
-      if (e >= totalEnd) {
-        setElapsed(totalEnd);
-        setDone(true);
-        return;
-      }
-      setElapsed(e);
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [active, schedule]);
-
-  const { revealed, activeIndex } = computeTypeReveal(schedule, elapsed, done);
-
-  return { revealed, activeIndex, done };
-}
+// How long the RSVP sections wait after the letter opens before fading in
+// — after the quake/lightning/glitch reveal (see EnvelopeInvite.scss) has
+// fully played out.
+const SECTIONS_REVEAL_DELAY_MS = 1200;
 
 // Real footage: seal breaks, flap opens, the parchment note slides out and
 // fills the frame — its last frame already matches the letter's own
@@ -183,11 +100,6 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   const hasShownTitleRef = useRef(false);
   const stageRef = useRef<HTMLDivElement>(null);
 
-  // Memoized so the array keeps the same reference across re-renders
-  // (including the ones the typing animation itself triggers) — otherwise
-  // useTypewriterLines' effect sees a "new" lines array on every tick, tears
-  // down and restarts the animation loop before it can accumulate any
-  // elapsed time, and the text never advances past empty.
   const letterLines = useMemo(
     () => [
       t('invite.greeting', { firstName }),
@@ -199,16 +111,6 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
     ],
     [t, firstName, locale],
   );
-  // useTypewriterLines still supplies the per-line pacing (each line's
-  // reveal starts once the previous one's budgeted window ends) even
-  // though nothing actually types a substring out anymore — each line just
-  // needs to know when to fade in.
-  const { revealed, done: typingDone } = useTypewriterLines(letterLines, isOpen);
-  // A line "has started" once computeTypeReveal stops returning '' for it
-  // (or everything's done, e.g. reduced motion) — reusing that instead of
-  // exposing a separate boolean from useTypewriterLines.
-  const lineActive = (index: number) => typingDone || revealed[index].length > 0;
-
   useEffect(() => {
     if (isOpen) {
       // Sends keyboard/screen-reader focus into the revealed letter — the
@@ -219,13 +121,13 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   }, [isOpen]);
 
   useEffect(() => {
-    if (!typingDone) {
+    if (!isOpen) {
       setSectionsVisible(false);
-      return;
+      return undefined;
     }
-    const timeoutId = setTimeout(() => setSectionsVisible(true), TYPE_SECTIONS_GAP_MS);
+    const timeoutId = setTimeout(() => setSectionsVisible(true), SECTIONS_REVEAL_DELAY_MS);
     return () => clearTimeout(timeoutId);
-  }, [typingDone]);
+  }, [isOpen]);
 
   // Marks the name "revealed" once its own fade-in has finished, so the
   // hold below starts counting from a fully-visible title, not the instant
@@ -341,24 +243,15 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
       {/* Sibling of the (perspective:) stage, not a child — position: fixed
           needs to cover the real viewport, not the stage's containing block. */}
       <article className="envelope-invite__letter" aria-hidden={!isOpen}>
-        <div className="envelope-invite__letter-content">
-          <p className={`envelope-invite__personal-greeting${lineActive(0) ? ' is-revealed' : ''}`}>
-            {letterLines[0]}
-          </p>
-          <h1
-            ref={letterHeadingRef}
-            tabIndex={-1}
-            className={`obw-display obw-display--sm envelope-invite__greeting${lineActive(1) ? ' is-revealed' : ''}`}>
+        <div className={`envelope-invite__letter-content${isOpen ? ' is-revealed' : ''}`}>
+          <p className="envelope-invite__personal-greeting">{letterLines[0]}</p>
+          <h1 ref={letterHeadingRef} tabIndex={-1} className="obw-display obw-display--sm envelope-invite__greeting">
             {letterLines[1]}
           </h1>
-          <p className={`envelope-invite__couple-names${lineActive(2) ? ' is-revealed' : ''}`}>{letterLines[2]}</p>
-          <p className={`envelope-invite__details${lineActive(3) ? ' is-revealed' : ''}`}>{letterLines[3]}</p>
-          <p className={`envelope-invite__ceremony-start${lineActive(4) ? ' is-revealed' : ''}`}>
-            {letterLines[4]}
-          </p>
-          <p className={`obw-body envelope-invite__body-text${lineActive(5) ? ' is-revealed' : ''}`}>
-            {letterLines[5]}
-          </p>
+          <p className="envelope-invite__couple-names">{letterLines[2]}</p>
+          <p className="envelope-invite__details">{letterLines[3]}</p>
+          <p className="envelope-invite__ceremony-start">{letterLines[4]}</p>
+          <p className="obw-body envelope-invite__body-text">{letterLines[5]}</p>
         </div>
 
         <div className={`envelope-invite__sections${sectionsVisible ? ' envelope-invite__sections--visible' : ''}`}>
