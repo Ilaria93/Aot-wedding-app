@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { DecryptText } from '@/components/EnvelopeInvite/DecryptText';
-import { FallingText } from '@/components/EnvelopeInvite/FallingText';
-import { MatrixRain } from '@/components/EnvelopeInvite/MatrixRain';
+import { RedactionReveal } from '@/components/EnvelopeInvite/RedactionReveal';
 import { WEDDING_CITY, WEDDING_VENUE_AREA, WEDDING_VENUE_NAME, formatWeddingDateDisplay } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
 import './styles/EnvelopeInvite.scss';
@@ -136,9 +134,9 @@ const ZOOM_START_SECONDS = 3.3;
 // is still a narrow wedge with dark envelope on both sides, and dark text
 // loses all contrast sitting on dark green. Once shown it stays up — see
 // hasShownTitleRef below — through the zoom and past the video's own
-// natural end (frozen on its last frame), then fades out, hands off to the
-// matrix-rain transition, and only then does the letter open (see the
-// nameRevealed effect), so the title is never yanked away mid-read.
+// natural end (frozen on its last frame), then fades out and the letter
+// opens (see the nameRevealed effect), so the title is never yanked away
+// mid-read.
 const TITLE_START_SECONDS = 3.0;
 // The title reveal shares this stretch of *footage* with the zoom into the
 // letter. At normal speed that's well under a second of real time —
@@ -150,20 +148,12 @@ const TITLE_START_SECONDS = 3.0;
 // starts to feel like the video itself is dragging.
 const SLOW_PLAYBACK_RATE = 0.6;
 // How long the fully-revealed title stays up, on its own, before it fades
-// and hands off to the matrix rain — timed from the name's own last
-// character locking in (DecryptText's onComplete), not from the video.
+// and the letter opens — timed from the name's own bar-reveal finishing
+// (RedactionReveal's onComplete), not from the video.
 const TITLE_HOLD_MS = 2000;
 // Matches .envelope-invite__title-group's own opacity transition — the
-// group must finish fading out before the rain starts, or the two overlap.
+// group must finish fading out before the letter opens, or the two overlap.
 const TITLE_FADE_MS = 300;
-// How long the matrix-rain transition runs before the letter opens.
-const MATRIX_RAIN_MS = 4000;
-// The rain's own fade-trail leaves its canvas nearly solid black by the
-// time it stops — kept mounted (frozen on that last frame) behind the
-// letter instead of unmounting instantly, so the letter's own opacity fade
-// reads as "black slowly lightening into the parchment" rather than a cut.
-// Matches .envelope-invite__letter's own transition duration.
-const LETTER_OPEN_FADE_MS = 2500;
 // Vertical placement within the video's own rendered (contain-fit) box, not
 // the screen — keeps the title on the blank upper parchment above the
 // crest regardless of how much the viewport's aspect ratio letterboxes the
@@ -173,9 +163,9 @@ const TITLE_TOP_FRACTION = 0.3;
 /**
  * Personalized envelope for the WhatsApp invite link. Closed by default —
  * tapping anywhere starts the opening video; the name reveals partway
- * through, holds for TITLE_HOLD_MS, fades out, hands off to a matrix-rain
- * transition, and only then does the letter (background, then its own
- * typed lines) open.
+ * through (a redaction bar sliding away), holds for TITLE_HOLD_MS, fades
+ * out, and only then does the letter open, each of its own lines revealing
+ * the same way, one after another.
  */
 export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   const { locale, t } = useI18n();
@@ -184,7 +174,6 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
   const [isZooming, setIsZooming] = useState(false);
   const [showTitle, setShowTitle] = useState(false);
   const [nameRevealed, setNameRevealed] = useState(false);
-  const [showMatrixRain, setShowMatrixRain] = useState(false);
   const [sectionsVisible, setSectionsVisible] = useState(false);
   const letterHeadingRef = useRef<HTMLHeadingElement>(null);
   const openerVideoRef = useRef<HTMLVideoElement>(null);
@@ -212,22 +201,15 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
     ],
     [t, firstName, locale],
   );
-  const { revealed, activeIndex, done: typingDone } = useTypewriterLines(letterLines, isOpen);
-  // Same schedule that drives activeIndex/revealed above — reused here only
-  // to size each line's FallingText stagger to its own budgeted window, so
-  // the falling reveal keeps roughly the same per-line pacing typing did.
-  const schedule = useMemo(() => buildTypeSchedule(letterLines), [letterLines]);
+  // useTypewriterLines still supplies the per-line pacing (each line's
+  // reveal starts once the previous one's budgeted window ends) even
+  // though nothing actually types a substring out anymore — RedactionReveal
+  // just needs to know when to flip from covered to revealed.
+  const { revealed, done: typingDone } = useTypewriterLines(letterLines, isOpen);
   // A line "has started" once computeTypeReveal stops returning '' for it
   // (or everything's done, e.g. reduced motion) — reusing that instead of
   // exposing a separate boolean from useTypewriterLines.
   const lineActive = (index: number) => typingDone || revealed[index].length > 0;
-  // Spreads each line's own decrypt reveal across roughly the same window
-  // the typewriter budgeted it (schedule[index]), so the overall pacing
-  // between lines doesn't change just because the per-character effect did.
-  const lineStagger = (index: number) => {
-    const { startMs, endMs } = schedule[index];
-    return Math.max(6, (endMs - startMs) / Math.max(letterLines[index].length, 1));
-  };
 
   useEffect(() => {
     if (isOpen) {
@@ -249,8 +231,7 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
 
   // Once the name has held the screen on its own for TITLE_HOLD_MS (not
   // tied to the much shorter video runtime), it fades out, and once that
-  // fade finishes the matrix rain takes over — see the MatrixRain
-  // onComplete below for the final handoff into the letter opening.
+  // fade finishes the letter opens.
   useEffect(() => {
     if (!nameRevealed) {
       return undefined;
@@ -265,21 +246,9 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
     if (!nameRevealed || showTitle) {
       return undefined;
     }
-    const fadeTimeoutId = setTimeout(() => setShowMatrixRain(true), TITLE_FADE_MS);
-    return () => clearTimeout(fadeTimeoutId);
+    const openTimeoutId = setTimeout(() => setIsOpen(true), TITLE_FADE_MS);
+    return () => clearTimeout(openTimeoutId);
   }, [nameRevealed, showTitle]);
-
-  // The rain canvas stays mounted (frozen on its last, near-black frame)
-  // through the letter's own slow opacity fade, so that fade has a black
-  // backdrop to lighten out of — only removed once fully hidden behind the
-  // now-opaque letter.
-  useEffect(() => {
-    if (!isOpen) {
-      return undefined;
-    }
-    const cleanupTimeoutId = setTimeout(() => setShowMatrixRain(false), LETTER_OPEN_FADE_MS);
-    return () => clearTimeout(cleanupTimeoutId);
-  }, [isOpen]);
 
   return (
     <div className={`envelope-invite${isOpen ? ' envelope-invite--open' : ''}`}>
@@ -355,10 +324,9 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
           className={`envelope-invite__title-group${showTitle ? ' envelope-invite__title-group--visible' : ''}`}
           aria-hidden={!showTitle}>
           <p className="envelope-invite__intro-name">
-            <DecryptText text={VIDEO_TITLE} active={showTitle} onComplete={() => setNameRevealed(true)} />
+            <RedactionReveal text={VIDEO_TITLE} active={showTitle} onComplete={() => setNameRevealed(true)} />
           </p>
         </div>
-        <MatrixRain active={showMatrixRain} durationMs={MATRIX_RAIN_MS} onComplete={() => setIsOpen(true)} />
       </div>
 
       {!isOpen && !isVideoPlaying ? <p className="envelope-invite__hint">{t('invite.tapHint')}</p> : null}
@@ -367,27 +335,26 @@ export function EnvelopeInvite({ firstName, lastName }: EnvelopeInviteProps) {
           needs to cover the real viewport, not the stage's containing block. */}
       <article className="envelope-invite__letter" aria-hidden={!isOpen}>
         <div className="envelope-invite__letter-content">
-          <p
-            className={`envelope-invite__personal-greeting${activeIndex === 0 ? ' is-typing' : ''}${lineActive(0) ? ' is-revealed' : ''}`}>
-            <FallingText text={letterLines[0]} active={lineActive(0)} stagger={lineStagger(0)} />
+          <p className={`envelope-invite__personal-greeting${lineActive(0) ? ' is-revealed' : ''}`}>
+            <RedactionReveal text={letterLines[0]} active={lineActive(0)} />
           </p>
           <h1
             ref={letterHeadingRef}
             tabIndex={-1}
-            className={`obw-display obw-display--sm envelope-invite__greeting${activeIndex === 1 ? ' is-typing' : ''}${lineActive(1) ? ' is-revealed' : ''}`}>
-            <FallingText text={letterLines[1]} active={lineActive(1)} stagger={lineStagger(1)} />
+            className={`obw-display obw-display--sm envelope-invite__greeting${lineActive(1) ? ' is-revealed' : ''}`}>
+            <RedactionReveal text={letterLines[1]} active={lineActive(1)} />
           </h1>
-          <p className={`envelope-invite__couple-names${activeIndex === 2 ? ' is-typing' : ''}${lineActive(2) ? ' is-revealed' : ''}`}>
-            <FallingText text={letterLines[2]} active={lineActive(2)} stagger={lineStagger(2)} />
+          <p className={`envelope-invite__couple-names${lineActive(2) ? ' is-revealed' : ''}`}>
+            <RedactionReveal text={letterLines[2]} active={lineActive(2)} />
           </p>
-          <p className={`envelope-invite__details${activeIndex === 3 ? ' is-typing' : ''}${lineActive(3) ? ' is-revealed' : ''}`}>
-            <FallingText text={letterLines[3]} active={lineActive(3)} stagger={lineStagger(3)} />
+          <p className={`envelope-invite__details${lineActive(3) ? ' is-revealed' : ''}`}>
+            <RedactionReveal text={letterLines[3]} active={lineActive(3)} />
           </p>
-          <p className={`envelope-invite__ceremony-start${activeIndex === 4 ? ' is-typing' : ''}${lineActive(4) ? ' is-revealed' : ''}`}>
-            <FallingText text={letterLines[4]} active={lineActive(4)} stagger={lineStagger(4)} />
+          <p className={`envelope-invite__ceremony-start${lineActive(4) ? ' is-revealed' : ''}`}>
+            <RedactionReveal text={letterLines[4]} active={lineActive(4)} />
           </p>
-          <p className={`obw-body envelope-invite__body-text${activeIndex === 5 ? ' is-typing' : ''}${lineActive(5) ? ' is-revealed' : ''}`}>
-            <FallingText text={letterLines[5]} active={lineActive(5)} stagger={lineStagger(5)} />
+          <p className={`obw-body envelope-invite__body-text${lineActive(5) ? ' is-revealed' : ''}`}>
+            <RedactionReveal text={letterLines[5]} active={lineActive(5)} />
           </p>
         </div>
 

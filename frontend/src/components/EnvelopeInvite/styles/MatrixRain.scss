@@ -1,9 +1,0 @@
-/* Sits above the video stage (z-index 1) and below the letter (z-index 20)
-   — it plays in the gap between the name card fading out and the letter
-   fading in. */
-.matrix-rain {
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  pointer-events: none;
-}

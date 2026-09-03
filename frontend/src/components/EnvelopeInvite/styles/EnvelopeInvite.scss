@@ -12,11 +12,6 @@
   gap: var(--obw-space-md);
   padding: var(--obw-space-lg) var(--obw-space-md);
   text-align: center;
-  /* Shared "terminal" text treatment — the video's name/countdown and the
-     letter's own body both read as the same session continuing, in the
-     same green and the same font. */
-  --envelope-mono-font: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
-  --envelope-mono-green: #4ade80;
 }
 
 /* Full-screen opening video — the seal-break/flap/parchment-slide-out is
@@ -59,14 +54,11 @@
   transform: scale(var(--zoom-scale, 1));
 }
 
-/* Name + live countdown, sovraimposto on the video's own blank parchment
-   (see EnvelopeInvite.tsx for the timing window and the contain-fit math
-   that keeps --title-left/top/width registered on the visible video frame
+/* Couple-names title, sovraimposto on the video's own blank parchment (see
+   EnvelopeInvite.tsx for the timing window and the contain-fit math that
+   keeps --title-left/top/width registered on the visible video frame
    across different viewport aspect ratios). Fallbacks match the video's own
-   default box before the first onTimeUpdate tick sets the real values.
-   Same green/monospace as the letter itself (see --envelope-letter-green
-   below) — this is the same "terminal" text continuing, just without the
-   bordered CLI-window chrome the earlier version wrapped it in. */
+   default box before the first onTimeUpdate tick sets the real values. */
 .envelope-invite__title-group {
   position: absolute;
   left: var(--title-left, 0);
@@ -93,15 +85,12 @@
   opacity: 1;
 }
 
-/* Dark, not the terminal green — this sits on the video's own light
-   parchment background where the bright green (fine on the letter's aged
-   paper) doesn't hold enough contrast to read. */
 .envelope-invite__intro-name {
   margin: 0;
   text-align: center;
-  font-family: var(--envelope-mono-font);
-  font-size: clamp(1.4rem, 5.5vw, 2.2rem);
-  color: var(--obw-charcoal-deep);
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 6.5vw, 2.8rem);
+  color: var(--obw-gold);
 }
 
 .envelope-invite__video-trigger {
@@ -145,19 +134,13 @@
   background-size: cover;
   background-position: center top;
   background-repeat: no-repeat;
-  --envelope-letter-green: var(--envelope-mono-green);
-  --envelope-letter-font: var(--envelope-mono-font);
-  color: var(--envelope-letter-green);
-  font-family: var(--envelope-letter-font);
+  color: var(--obw-charcoal-deep);
+  font-family: var(--font-editorial);
   opacity: 0;
   pointer-events: none;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  /* Slow on purpose (matches EnvelopeInvite.tsx's LETTER_OPEN_FADE_MS) —
-     the matrix-rain canvas behind this stays mounted, frozen nearly black,
-     through this whole fade, so it reads as the screen slowly lightening
-     into the parchment rather than a straight cut. */
-  transition: opacity 2500ms var(--obw-ease-out);
+  transition: opacity 600ms var(--obw-ease-out);
 }
 
 .envelope-invite--open .envelope-invite__letter {
@@ -175,13 +158,14 @@
   padding-top: clamp(1rem, 6vh, 3rem);
 }
 
-/* Lines reveal one at a time via DecryptText (EnvelopeInvite.tsx computes
-   `lineActive`/`is-revealed` from the same typewriter schedule that used to
-   drive a per-character CSS fade). A line not yet up sits fully transparent
-   — DecryptText renders its real characters plainly until `active` flips
-   true, so without this a not-yet-started line would just show its final
-   text with no reveal at all, and the `min-height` keeps it from collapsing
-   to zero height while hidden. */
+/* Lines reveal one at a time via RedactionReveal (EnvelopeInvite.tsx
+   computes `lineActive`/`is-revealed` from the typewriter schedule, now
+   just used to gate when each line's bar starts sliding away). A line not
+   yet up sits fully transparent — RedactionReveal renders its real text
+   plainly, with its own bar covering it, until `active` flips true, so
+   without this a not-yet-started line would show its bar with no
+   surrounding line height at all, and the `min-height` keeps it from
+   collapsing to zero height while hidden. */
 .envelope-invite__letter-content > * {
   min-height: 1.4em;
   opacity: 0;
@@ -189,25 +173,6 @@
 
 .envelope-invite__letter-content > .is-revealed {
   opacity: 1;
-}
-
-/* Blinking caret on whichever line is currently mid-type, removed once that
-   line finishes and moves to the next. */
-.envelope-invite__letter-content > .is-typing::after {
-  content: '';
-  display: inline-block;
-  width: 2px;
-  height: 0.9em;
-  margin-left: 2px;
-  vertical-align: -0.1em;
-  background: currentColor;
-  animation: envelope-invite-caret-blink 0.85s steps(2, jump-none) infinite;
-}
-
-@keyframes envelope-invite-caret-blink {
-  50% {
-    opacity: 0;
-  }
 }
 
 /* Everything below the header fold reveals as one block once the letter has
@@ -238,16 +203,16 @@
   align-items: center;
   gap: 16px;
   padding-top: var(--obw-space-lg);
-  border-top: 1px solid color-mix(in srgb, var(--envelope-letter-green) 20%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--obw-gold) 30%, transparent);
   text-align: center;
 }
 
 .envelope-invite__section-title {
   margin: 0;
-  font-family: var(--envelope-letter-font);
+  font-family: var(--font-display);
   font-weight: 500;
   font-size: clamp(1.4rem, 4vw, 1.9rem);
-  color: var(--envelope-letter-green);
+  color: var(--obw-gold);
 }
 
 /* Scoped under the letter, not just the bare class — .obw-display/.obw-body
@@ -256,61 +221,59 @@
    wrong font on this card's cream background. */
 .envelope-invite__letter .envelope-invite__greeting {
   margin: 0;
-  color: var(--envelope-letter-green);
-  /* Same terminal font as the video's CLI card — the whole letter reads
-     as that session continuing. */
-  font-family: var(--envelope-letter-font);
+  color: var(--obw-gold);
+  font-family: var(--font-display);
   text-shadow: none;
 }
 
 .envelope-invite__letter .envelope-invite__body-text {
   margin: 0;
-  color: color-mix(in srgb, var(--envelope-letter-green) 82%, transparent);
-  font-family: var(--envelope-letter-font);
+  color: color-mix(in srgb, var(--obw-charcoal-deep) 88%, transparent);
+  font-family: var(--font-editorial);
   font-size: clamp(0.95rem, 2vw, 1.1rem);
 }
 
 .envelope-invite__personal-greeting {
   margin: 0;
-  font-family: var(--envelope-letter-font);
+  font-family: var(--font-sans);
   font-size: 0.8rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--envelope-letter-green) 70%, transparent);
+  color: color-mix(in srgb, var(--obw-charcoal-deep) 65%, transparent);
 }
 
 .envelope-invite__couple-names {
   margin: 0;
-  font-family: var(--envelope-letter-font);
-  font-size: clamp(1.5rem, 5vw, 2.1rem);
-  color: var(--envelope-letter-green);
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 5.5vw, 2.4rem);
+  color: var(--obw-gold);
 }
 
 .envelope-invite__details {
   margin: 0;
-  font-family: var(--envelope-letter-font);
+  font-family: var(--font-editorial);
   font-size: clamp(0.85rem, 1.8vw, 1rem);
   line-height: 1.6;
-  color: color-mix(in srgb, var(--envelope-letter-green) 78%, transparent);
+  color: color-mix(in srgb, var(--obw-charcoal-deep) 82%, transparent);
   white-space: pre-line;
 }
 
 .envelope-invite__ceremony-start {
   margin: 0;
-  font-family: var(--envelope-letter-font);
-  font-size: 0.85rem;
+  font-family: var(--font-editorial);
+  font-size: 0.9rem;
   letter-spacing: 0.02em;
-  color: var(--envelope-letter-green);
+  color: var(--obw-charcoal-deep);
 }
 
 /* ─── RSVP ───────────────────────────────────────────────── */
 
 .envelope-invite__rsvp-note {
   margin: 0;
-  font-family: var(--envelope-letter-font);
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-  color: color-mix(in srgb, var(--envelope-letter-green) 72%, transparent);
+  font-family: var(--font-editorial);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--obw-charcoal-deep) 78%, transparent);
 }
 
 .envelope-invite__rsvp-actions {
@@ -329,23 +292,23 @@
 
 .envelope-invite__more-info-text {
   margin: 0;
-  font-family: var(--envelope-letter-font);
-  font-size: 0.8rem;
-  color: color-mix(in srgb, var(--envelope-letter-green) 72%, transparent);
+  font-family: var(--font-editorial);
+  font-size: 0.85rem;
+  color: color-mix(in srgb, var(--obw-charcoal-deep) 78%, transparent);
 }
 
 /* `.obw-btn--secondary` is styled for the site's dark surfaces (light border,
    light text) — same specificity trap as .obw-display/.obw-body above, so it
    needs the same letter-scoped override to read on this cream card. */
 .envelope-invite__letter .obw-btn--secondary {
-  border-color: color-mix(in srgb, var(--envelope-letter-green) 40%, transparent);
-  color: var(--envelope-letter-green);
+  border-color: color-mix(in srgb, var(--obw-gold) 55%, transparent);
+  color: var(--obw-gold-dim);
 }
 
 .envelope-invite__letter .obw-btn--secondary:hover {
-  border-color: var(--envelope-letter-green);
-  background: color-mix(in srgb, var(--envelope-letter-green) 8%, transparent);
-  color: var(--envelope-letter-green);
+  border-color: var(--obw-gold);
+  background: color-mix(in srgb, var(--obw-gold) 8%, transparent);
+  color: var(--obw-gold-dim);
 }
 
 /* Fixed above the full-screen stage (z-index 1) — a static sibling would
@@ -371,9 +334,5 @@
   .envelope-invite__opener-video,
   .envelope-invite__title-group {
     transition: none;
-  }
-
-  .envelope-invite__letter-content > .is-typing::after {
-    animation: none;
   }
 }
