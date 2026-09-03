@@ -32,6 +32,29 @@
   background: var(--obw-charcoal-deep);
 }
 
+/* Same lightning-strike flash as the letter's own (see ::before further
+   down and envelope-invite-lightning) but full-screen here, behind the
+   title-group — :has() picks it up the instant the title's own class
+   appears, no extra JS state needed. */
+.envelope-invite__stage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--obw-gold-bright) 90%, transparent) 0%,
+    color-mix(in srgb, #ff5a00 40%, transparent) 60%,
+    transparent 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+
+.envelope-invite__stage:has(.envelope-invite__title-group--visible)::before {
+  animation: envelope-invite-lightning 550ms ease-out;
+}
+
 /* Whole sealed envelope visible, nothing cropped, while it's actually an
    envelope on screen — object-fit stays `contain` for the video's whole
    life, it's never switched (browsers snap object-fit changes instantly,
@@ -64,6 +87,7 @@
   left: var(--title-left, 0);
   top: var(--title-top, 30%);
   width: var(--title-width, 100%);
+  z-index: 6;
   box-sizing: border-box;
   /* On portrait/narrow viewports the video is width-constrained under
      object-fit: contain, so --title-width lands on the exact screen width
@@ -83,6 +107,10 @@
 
 .envelope-invite__title-group--visible {
   opacity: 1;
+  /* Same titan-transformation beat as the letter's own quake, just lighter
+     — this is a floating text box, not a full-bleed card, so no scale
+     compensation is needed to avoid uncovering anything behind it. */
+  animation: envelope-invite-title-quake 400ms ease-out;
 }
 
 .envelope-invite__intro-name {
@@ -91,6 +119,41 @@
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 6.5vw, 2.8rem);
   color: var(--obw-gold);
+  opacity: 0;
+}
+
+.envelope-invite__title-group--visible .envelope-invite__intro-name {
+  animation: envelope-invite-glitch-appear 260ms steps(2, jump-none) forwards;
+}
+
+@keyframes envelope-invite-title-quake {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  15% {
+    transform: translate(-5px, 3px);
+  }
+
+  30% {
+    transform: translate(5px, -3px);
+  }
+
+  45% {
+    transform: translate(-3px, -2px);
+  }
+
+  60% {
+    transform: translate(3px, 2px);
+  }
+
+  80% {
+    transform: translate(-1px, 1px);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
 }
 
 .envelope-invite__video-trigger {
@@ -197,7 +260,7 @@
    just faded in. steps() instead of an eased curve keeps it feeling like a
    jolt of current, not a smooth animation. */
 .envelope-invite__letter-content.is-revealed {
-  animation: envelope-invite-letter-glitch 260ms steps(2, jump-none) forwards;
+  animation: envelope-invite-glitch-appear 260ms steps(2, jump-none) forwards;
   animation-delay: 350ms;
 }
 
@@ -253,7 +316,7 @@
   }
 }
 
-@keyframes envelope-invite-letter-glitch {
+@keyframes envelope-invite-glitch-appear {
   0% {
     opacity: 0;
   }
@@ -440,11 +503,14 @@
   }
 
   .envelope-invite--open .envelope-invite__letter,
-  .envelope-invite--open .envelope-invite__letter::before {
+  .envelope-invite--open .envelope-invite__letter::before,
+  .envelope-invite__title-group--visible,
+  .envelope-invite__stage:has(.envelope-invite__title-group--visible)::before {
     animation: none;
   }
 
-  .envelope-invite__letter-content.is-revealed {
+  .envelope-invite__letter-content.is-revealed,
+  .envelope-invite__title-group--visible .envelope-invite__intro-name {
     animation: none;
     opacity: 1;
     transform: none;
