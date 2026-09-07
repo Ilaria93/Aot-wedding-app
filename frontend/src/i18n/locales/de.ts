@@ -16,8 +16,6 @@ export const de = {
     },
     userMenu: {
       openLabel: 'Kontomenü',
-      guestTitle: 'Gast',
-      guestHint: 'Die RSVP wird über den WhatsApp-Einladungslink bestätigt',
       sectionAccount: 'Konto',
       sectionPreferences: 'Einstellungen',
     },

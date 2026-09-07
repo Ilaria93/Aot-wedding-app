@@ -16,8 +16,6 @@ export const en = {
     },
     userMenu: {
       openLabel: 'Account menu',
-      guestTitle: 'Guest',
-      guestHint: 'RSVP is confirmed from your WhatsApp invite link',
       sectionAccount: 'Account',
       sectionPreferences: 'Preferences',
     },

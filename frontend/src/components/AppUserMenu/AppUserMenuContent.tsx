@@ -25,43 +25,40 @@ export function AppUserMenuContent({ onNavigate }: AppUserMenuContentProps) {
 
   return (
     <>
-      <div className="app-user-menu__section">
-        {isHome ? (
-          <a
-            href="#rsvp"
-            role="menuitem"
-            className="app-user-menu__action app-user-menu__action--rsvp"
-            onClick={onNavigate}>
-            <CalendarCheck size={15} aria-hidden />
-            {t('navigation.stack.rsvp')}
-          </a>
-        ) : (
-          <Link
-            to={isAuthenticated ? '/rsvp' : '/auth/login'}
-            role="menuitem"
-            className="app-user-menu__action app-user-menu__action--rsvp"
-            onClick={onNavigate}>
-            <CalendarCheck size={15} aria-hidden />
-            {t('navigation.stack.rsvp')}
-          </Link>
-        )}
-      </div>
+      {isAuthenticated ? (
+        <>
+          <div className="app-user-menu__section">
+            {isHome ? (
+              <a
+                href="#rsvp"
+                role="menuitem"
+                className="app-user-menu__action app-user-menu__action--rsvp"
+                onClick={onNavigate}>
+                <CalendarCheck size={15} aria-hidden />
+                {t('navigation.stack.rsvp')}
+              </a>
+            ) : (
+              <Link
+                to="/rsvp"
+                role="menuitem"
+                className="app-user-menu__action app-user-menu__action--rsvp"
+                onClick={onNavigate}>
+                <CalendarCheck size={15} aria-hidden />
+                {t('navigation.stack.rsvp')}
+              </Link>
+            )}
+          </div>
 
-      <div className="app-user-menu__header">
-        {isAuthenticated && user ? (
-          <>
-            <p className="app-user-menu__name">
-              {user.first_name} {user.last_name}
-            </p>
-            <p className="app-user-menu__meta">{user.email}</p>
-          </>
-        ) : (
-          <>
-            <p className="app-user-menu__name">{t('navigation.userMenu.guestTitle')}</p>
-            <p className="app-user-menu__meta">{t('navigation.userMenu.guestHint')}</p>
-          </>
-        )}
-      </div>
+          {user ? (
+            <div className="app-user-menu__header">
+              <p className="app-user-menu__name">
+                {user.first_name} {user.last_name}
+              </p>
+              <p className="app-user-menu__meta">{user.email}</p>
+            </div>
+          ) : null}
+        </>
+      ) : null}
 
       <div className="app-user-menu__section">
         <p className="app-user-menu__section-label">{t('navigation.userMenu.sectionAccount')}</p>
@@ -96,10 +93,12 @@ export function AppUserMenuContent({ onNavigate }: AppUserMenuContentProps) {
         </div>
       </div>
 
-      <div className="app-user-menu__section">
-        <p className="app-user-menu__section-label">{t('navigation.userMenu.sectionPreferences')}</p>
-        <LanguageSwitcher embedded onLocaleChange={onNavigate} />
-      </div>
+      {isAuthenticated ? (
+        <div className="app-user-menu__section">
+          <p className="app-user-menu__section-label">{t('navigation.userMenu.sectionPreferences')}</p>
+          <LanguageSwitcher embedded onLocaleChange={onNavigate} />
+        </div>
+      ) : null}
     </>
   );
 }
