@@ -35,6 +35,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from database.base import SessionLocal  # noqa: E402
 from models.invite_link_model import InviteLink  # noqa: E402
+# InviteLink.user relationship resolves "User" by name at query time — this
+# import is required so SQLAlchemy's mapper registry knows the class exists,
+# even though nothing here calls User directly.
+from models.user_model import User  # noqa: E402,F401
 
 DEFAULT_BASE_URL = "http://localhost:5173"
 TOKEN_BYTES = 12  # secrets.token_urlsafe(12) -> 16 chars, 96 bits of entropy
