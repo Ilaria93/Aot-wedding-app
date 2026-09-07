@@ -1,6 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom';
 
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ScreenBackButton } from '@/components/ScreenBackButton';
 import { useI18n } from '@/contexts/I18nContext';
 import './styles/AuthStackLayout.scss';
@@ -31,7 +30,6 @@ export function AuthStackLayout() {
           <ScreenBackButton fallback="/" />
           <h1 className="obw-auth-header__title">{t(`navigation.stack.${titleKey}`)}</h1>
         </div>
-        <LanguageSwitcher compact />
       </header>
       <Outlet />
     </>

@@ -93,12 +93,10 @@ export function AppUserMenuContent({ onNavigate }: AppUserMenuContentProps) {
         </div>
       </div>
 
-      {isAuthenticated ? (
-        <div className="app-user-menu__section">
-          <p className="app-user-menu__section-label">{t('navigation.userMenu.sectionPreferences')}</p>
-          <LanguageSwitcher embedded onLocaleChange={onNavigate} />
-        </div>
-      ) : null}
+      <div className="app-user-menu__section">
+        <p className="app-user-menu__section-label">{t('navigation.userMenu.sectionPreferences')}</p>
+        <LanguageSwitcher embedded onLocaleChange={onNavigate} />
+      </div>
     </>
   );
 }
