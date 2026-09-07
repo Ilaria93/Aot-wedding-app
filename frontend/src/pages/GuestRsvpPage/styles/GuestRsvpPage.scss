@@ -1,0 +1,23 @@
+.guest-rsvp-page--centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  gap: var(--obw-space-sm);
+}
+
+.guest-rsvp-page__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--obw-space-lg);
+}
+
+.guest-rsvp-page__header {
+  text-align: center;
+}
+
+.guest-rsvp-page__email {
+  max-width: 28rem;
+}

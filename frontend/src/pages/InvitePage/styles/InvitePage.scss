@@ -1,0 +1,17 @@
+.invite-page--centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  padding: var(--obw-space-lg) var(--obw-space-md);
+  text-align: center;
+}
+
+.invite-page__error-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--obw-space-sm);
+  max-width: 26rem;
+  padding: var(--obw-space-lg);
+}

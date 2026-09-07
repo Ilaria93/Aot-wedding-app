@@ -7,11 +7,12 @@ import { AppLayout } from '@/layouts/AppLayout/index';
 import { AuthStackLayout } from '@/layouts/AuthStackLayout/index';
 import { AdminPage } from '@/pages/AdminPage/index';
 import { AlbumPage } from '@/pages/AlbumPage/index';
+import { GuestRsvpPage } from '@/pages/GuestRsvpPage/index';
 import { HomePage } from '@/pages/HomePage/index';
+import { InvitePage } from '@/pages/InvitePage/index';
 import { LoginPage } from '@/pages/LoginPage/index';
 import { NotFoundPage } from '@/pages/NotFoundPage/index';
 import { ProfilePage } from '@/pages/ProfilePage/index';
-import { RegisterPage } from '@/pages/RegisterPage/index';
 import { RsvpPage } from '@/pages/RsvpPage/index';
 import { TemaPage } from '@/pages/TemaPage/index';
 import { TravelPage } from '@/pages/TravelPage/index';
@@ -26,7 +27,6 @@ export function App() {
             <Route element={<AuthGuard />}>
               <Route element={<AuthStackLayout />}>
                 <Route path="/auth/login" element={<LoginPage />} />
-                <Route path="/auth/register" element={<RegisterPage />} />
               </Route>
 
               <Route element={<AppLayout />}>
@@ -38,6 +38,10 @@ export function App() {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/admin" element={<AdminPage />} />
               </Route>
+
+              {/* Standalone, no topbar/back-button chrome — same reasoning as NotFoundPage below. */}
+              <Route path="/invito/:token" element={<InvitePage />} />
+              <Route path="/invito/:token/rsvp" element={<GuestRsvpPage />} />
 
               <Route path="/home" element={<Navigate to="/" replace />} />
               <Route path="*" element={<NotFoundPage />} />
