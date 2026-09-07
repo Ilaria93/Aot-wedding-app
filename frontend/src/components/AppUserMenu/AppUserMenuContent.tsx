@@ -87,7 +87,7 @@ export function AppUserMenuContent({ onNavigate }: AppUserMenuContentProps) {
           ) : (
             <Link to="/auth/login" role="menuitem" className="app-user-menu__action" onClick={onNavigate}>
               <LogIn size={15} aria-hidden />
-              {t('navigation.stack.login')}
+              {t('navigation.userMenu.coupleLogin')}
             </Link>
           )}
         </div>

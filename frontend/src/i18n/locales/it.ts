@@ -5,7 +5,7 @@ export const it = {
   navigation: {
     stack: {
       rsvp: 'RSVP',
-      login: 'Sei sposo/a? Accedi qui',
+      login: 'Accesso sposi',
       register: 'Registrati',
       notFound: 'Pagina non trovata',
     },
@@ -16,6 +16,7 @@ export const it = {
     },
     userMenu: {
       openLabel: 'Menu account',
+      coupleLogin: 'Sei sposo/a? Accedi qui',
       sectionAccount: 'Account',
       sectionPreferences: 'Preferenze',
     },

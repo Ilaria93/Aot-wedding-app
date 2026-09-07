@@ -5,7 +5,7 @@ export const de = {
   navigation: {
     stack: {
       rsvp: 'RSVP',
-      login: 'Braut oder Bräutigam? Hier anmelden',
+      login: 'Zugang Brautpaar',
       register: 'Registrieren',
       notFound: 'Seite nicht gefunden',
     },
@@ -16,6 +16,7 @@ export const de = {
     },
     userMenu: {
       openLabel: 'Kontomenü',
+      coupleLogin: 'Braut oder Bräutigam? Hier anmelden',
       sectionAccount: 'Konto',
       sectionPreferences: 'Einstellungen',
     },

@@ -5,7 +5,7 @@ export const fr = {
   navigation: {
     stack: {
       rsvp: 'RSVP',
-      login: 'Marié·e ? Connecte-toi ici',
+      login: 'Accès mariés',
       register: 'Inscription',
       notFound: 'Page introuvable',
     },
@@ -16,6 +16,7 @@ export const fr = {
     },
     userMenu: {
       openLabel: 'Menu compte',
+      coupleLogin: 'Marié·e ? Connecte-toi ici',
       sectionAccount: 'Compte',
       sectionPreferences: 'Préférences',
     },
