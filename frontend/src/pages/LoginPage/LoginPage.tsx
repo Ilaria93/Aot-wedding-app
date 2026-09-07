@@ -1,13 +1,13 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-import { AuthPageShell } from '@/components/AuthExperience';
 import { RememberMeToggle } from '@/components/RememberMeToggle';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
 import type { LoginLocationState } from '@/pages/LoginPage/types/LoginPage.types';
+import './styles/LoginPage.scss';
 
-/** Login screen that restores the user session and role. */
+/** Admin-only login screen — the couple's account, seeded server-side. */
 export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,19 +35,17 @@ export function LoginPage() {
   }
 
   return (
-    <AuthPageShell>
-      <form className="auth-form" onSubmit={(event) => void handleLogin(event)}>
-        <header className="auth-form__header">
-          <h2 className="obw-display obw-display--sm">{t('login.title')}</h2>
-          <p className="obw-body">{t('login.subtitle')}</p>
-        </header>
+    <div className="login-page">
+      <div className="login-card">
+        <span className="login-card__kicker">{t('auth.experience.login.seriesTitle')}</span>
+        <p className="login-card__brand">{t('login.title')}</p>
+        <p className="login-card__sub">{t('login.subtitle')}</p>
 
-        <div className="auth-form__fields">
-          <label className="obw-field auth-form__field--stagger" htmlFor="login-email">
-            <span className="obw-field-label">{t('common.fields.email')}</span>
+        <form onSubmit={(event) => void handleLogin(event)}>
+          <label className="login-field" htmlFor="login-email">
+            <span className="login-field__label">{t('common.fields.email')}</span>
             <input
               id="login-email"
-              className="obw-input"
               type="email"
               autoComplete="email"
               value={email}
@@ -55,36 +53,28 @@ export function LoginPage() {
             />
           </label>
 
-          <label className="obw-field auth-form__field--stagger" htmlFor="login-password">
-            <span className="obw-field-label">{t('common.fields.password')}</span>
+          <label className="login-field" htmlFor="login-password">
+            <span className="login-field__label">{t('common.fields.password')}</span>
             <input
               id="login-password"
-              className="obw-input"
               type="password"
               autoComplete="current-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
           </label>
-        </div>
 
-        <div className="auth-form__remember">
-          <RememberMeToggle
-            checked={rememberMe}
-            label={t('login.rememberMe')}
-            onChange={setRememberMe}
-          />
-        </div>
+          <div className="login-remember">
+            <RememberMeToggle checked={rememberMe} label={t('login.rememberMe')} onChange={setRememberMe} />
+          </div>
 
-        {error ? <p className="auth-form__error">{error}</p> : null}
+          {error ? <p className="login-error">{error}</p> : null}
 
-        <button
-          type="submit"
-          className="obw-btn obw-btn--primary obw-btn--block auth-form__submit"
-          disabled={submitting}>
-          {submitting ? t('login.submitLoading') : t('login.submitLabel')}
-        </button>
-      </form>
-    </AuthPageShell>
+          <button className="login-btn" type="submit" disabled={submitting}>
+            {submitting ? t('login.submitLoading') : t('login.submitLabel')}
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }

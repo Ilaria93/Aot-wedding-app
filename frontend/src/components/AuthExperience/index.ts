@@ -1,1 +1,0 @@
-export { AuthPageShell } from './AuthPageShell';
