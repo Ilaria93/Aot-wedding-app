@@ -5,7 +5,7 @@ export const de = {
   navigation: {
     stack: {
       rsvp: 'RSVP',
-      login: 'Anmelden',
+      login: 'Braut oder Bräutigam? Hier anmelden',
       register: 'Registrieren',
       notFound: 'Seite nicht gefunden',
     },
@@ -17,7 +17,7 @@ export const de = {
     userMenu: {
       openLabel: 'Kontomenü',
       guestTitle: 'Gast',
-      guestHint: 'Melde dich an, um RSVP und Profil zu verwalten',
+      guestHint: 'Die RSVP wird über den WhatsApp-Einladungslink bestätigt',
       sectionAccount: 'Konto',
       sectionPreferences: 'Einstellungen',
     },
