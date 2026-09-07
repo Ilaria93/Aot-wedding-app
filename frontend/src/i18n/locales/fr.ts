@@ -237,17 +237,6 @@ export const fr = {
         featureThree: 'Publiez vos photos dans l’album après la cérémonie',
         missionCode: 'OP · RAVENNA · HQ',
       },
-      register: {
-        seriesTitle: 'OPERATION BEYOND THE WALLS',
-        stampLabel: 'ENLIST',
-        eyebrow: 'Nouvelle recrue',
-        headline: 'Rejoignez la mission.',
-        lead: 'Créez votre compte en quelques secondes. Les mariés peuvent saisir le code admin.',
-        featureOne: 'Profil personnel avec nom et e-mail',
-        featureTwo: 'RSVP pour vous et vos accompagnants',
-        featureThree: 'Accès sécurisé avec session persistante',
-        missionCode: 'OP · ENLIST · 01',
-      },
     },
   },
   login: {
@@ -268,9 +257,6 @@ export const fr = {
     unauthorizedAdminError:
       'Cet accès est réservé à la mariée et au marié. Utilisez un compte autorisé.',
     roleMismatchError: 'Vous avez sélectionné {{selected}}, mais ce compte a un rôle différent.',
-    registerGuestLink: "Vous n'avez pas encore de compte ? Inscrivez-vous",
-    registerAdminLink: "Première connexion ? Inscrivez-vous avec l'e-mail autorisé",
-    registerLink: "Vous n'avez pas encore de compte ? Inscrivez-vous",
     identities: {
       bride: {
         label: 'Mariée',
@@ -295,29 +281,6 @@ export const fr = {
         helperText: 'Si c’est votre première visite, vous pouvez aussi créer un compte personnel.',
         submitLabel: 'Entrer en tant qu’invité',
       },
-    },
-  },
-  register: {
-    eyebrow: 'Inscription',
-    title: 'Créez votre compte personnel.',
-    subtitle: 'Remplissez les champs ci-dessous pour créer votre compte.',
-    roleLabel: 'Rôle',
-    roleSecretLabel: 'Code admin (optionnel)',
-    roleSecretHint: 'Laissez vide pour un compte invité. Les mariés peuvent saisir le code admin ici.',
-    rememberMe: 'Rester connecté',
-    submitLabel: "S'inscrire",
-    submitLoading: 'Inscription en cours...',
-    genericError: "L'inscription a échoué.",
-    loginLink: 'Vous avez déjà un compte ? Connectez-vous',
-    validation: {
-      firstNameRequired: 'Saisissez votre prénom.',
-      lastNameRequired: 'Saisissez votre nom.',
-      emailRequired: 'Saisissez votre e-mail.',
-      emailInvalid: 'Saisissez une adresse e-mail valide.',
-      emailTaken: 'Un compte existe déjà avec cet e-mail.',
-      passwordRequired: 'Saisissez votre mot de passe.',
-      passwordMinLength: 'Le mot de passe doit contenir au moins 8 caractères.',
-      invalidRoleSecret: 'Code admin invalide.',
     },
   },
   profile: {
@@ -584,5 +547,33 @@ export const fr = {
     title: "Cette page n'existe pas.",
     body: "Le lien peut être incomplet ou la page n'a pas encore été créée.",
     backHome: "Retour à l'accueil",
+  },
+  invite: {
+    greeting: 'Chère/cher {{firstName}},',
+    headline: 'Avec joie, nous vous invitons',
+    coupleNames: 'Ilaria & Davide',
+    ceremonyStart: 'Nous vous attendons pour 17h00, début de la cérémonie.',
+    intro:
+      "Votre présence à nos côtés compterait beaucoup pour nous. Venez comme vous êtes, avec l'envie de danser jusqu'au bout de la nuit.",
+    rsvpSection: {
+      title: 'Faites-le nous savoir',
+      note: 'Merci de confirmer votre présence avant le 6 mai 2027.',
+      yes: 'Nous serons là',
+      contact: 'Écrivez-nous',
+    },
+    moreInfo: {
+      text: 'Pour plus d’informations, retrouvez tout ici :',
+      cta: 'Aller sur le site',
+    },
+    openAria: "Ouvrir l'invitation",
+    tapHint: "Touchez le sceau pour l'ouvrir",
+    notFoundTitle: 'Invitation introuvable.',
+    notFoundBody: "Ce lien a peut-être expiré ou est incorrect.",
+    notFoundBackHome: 'Aller au site du mariage',
+  },
+  guestRsvp: {
+    intro: 'Confirmez votre présence et celle de votre groupe.',
+    confirmedTitle: "Merci, c'est noté.",
+    confirmedBody: 'Votre confirmation est enregistrée. Rouvrez ce même lien à tout moment pour revenir ici.',
   },
 } as const;

@@ -237,17 +237,6 @@ export const de = {
         featureThree: 'Fotos nach der Zeremonie ins Album laden',
         missionCode: 'OP · RAVENNA · HQ',
       },
-      register: {
-        seriesTitle: 'OPERATION BEYOND THE WALLS',
-        stampLabel: 'ENLIST',
-        eyebrow: 'Neuer Rekrut',
-        headline: 'Schließe dich der Mission an.',
-        lead: 'Erstelle dein Konto in Sekunden. Brautleute können den Admin-Code eingeben.',
-        featureOne: 'Persönliches Profil mit Name und E-Mail',
-        featureTwo: 'RSVP für dich und Begleitpersonen',
-        featureThree: 'Sicherer Zugang mit persistenter Session',
-        missionCode: 'OP · ENLIST · 01',
-      },
     },
   },
   login: {
@@ -268,9 +257,6 @@ export const de = {
     unauthorizedAdminError:
       'Dieser Zugang ist nur für Braut und Bräutigam. Verwende ein autorisiertes Konto.',
     roleMismatchError: 'Du hast {{selected}} gewählt, aber dieses Konto hat eine andere Rolle.',
-    registerGuestLink: 'Noch kein Konto? Registriere dich',
-    registerAdminLink: 'Erster Zugang? Mit autorisierter E-Mail registrieren',
-    registerLink: 'Noch kein Konto? Registriere dich',
     identities: {
       bride: {
         label: 'Braut',
@@ -296,29 +282,6 @@ export const de = {
         helperText: 'Wenn dies dein erster Zugang ist, kannst du auch ein persönliches Konto erstellen.',
         submitLabel: 'Als Gast eintreten',
       },
-    },
-  },
-  register: {
-    eyebrow: 'Registrierung',
-    title: 'Erstelle dein persönliches Konto.',
-    subtitle: 'Fülle die folgenden Felder aus, um dein Konto zu erstellen.',
-    roleLabel: 'Rolle',
-    roleSecretLabel: 'Admin-Code (optional)',
-    roleSecretHint: 'Leer lassen für ein Gastkonto. Die Brautleute können hier den Admin-Code eingeben.',
-    rememberMe: 'Angemeldet bleiben',
-    submitLabel: 'Registrieren',
-    submitLoading: 'Registrierung läuft...',
-    genericError: 'Registrierung fehlgeschlagen.',
-    loginLink: 'Du hast bereits ein Konto? Anmelden',
-    validation: {
-      firstNameRequired: 'Gib deinen Vornamen ein.',
-      lastNameRequired: 'Gib deinen Nachnamen ein.',
-      emailRequired: 'Gib deine E-Mail ein.',
-      emailInvalid: 'Gib eine gültige E-Mail-Adresse ein.',
-      emailTaken: 'Ein Konto mit dieser E-Mail existiert bereits.',
-      passwordRequired: 'Gib dein Passwort ein.',
-      passwordMinLength: 'Das Passwort muss mindestens 8 Zeichen lang sein.',
-      invalidRoleSecret: 'Ungültiger Admin-Code.',
     },
   },
   profile: {
@@ -585,5 +548,33 @@ export const de = {
     title: 'Diese Seite existiert nicht.',
     body: 'Der Link ist möglicherweise unvollständig oder die Seite wurde noch nicht erstellt.',
     backHome: 'Zur Startseite',
+  },
+  invite: {
+    greeting: 'Liebe/r {{firstName}},',
+    headline: 'Mit Freude laden wir euch ein',
+    coupleNames: 'Ilaria & Davide',
+    ceremonyStart: 'Wir erwarten euch um 17:00 Uhr, Beginn der Trauung.',
+    intro:
+      'Es würde uns sehr freuen, euch an unserer Seite zu haben. Bringt nur euch selbst mit und die Lust, bis spät zu tanzen.',
+    rsvpSection: {
+      title: 'Sagt uns Bescheid',
+      note: 'Bitte bestätigt eure Teilnahme bis zum 6. Mai 2027.',
+      yes: 'Wir kommen',
+      contact: 'Schreibt uns',
+    },
+    moreInfo: {
+      text: 'Weitere Informationen findet ihr hier:',
+      cta: 'Zur Webseite',
+    },
+    openAria: 'Einladung öffnen',
+    tapHint: 'Zum Öffnen auf das Siegel tippen',
+    notFoundTitle: 'Einladung nicht gefunden.',
+    notFoundBody: 'Dieser Link ist möglicherweise abgelaufen oder falsch geschrieben.',
+    notFoundBackHome: 'Zur Hochzeitsseite',
+  },
+  guestRsvp: {
+    intro: 'Bestätige deine Teilnahme und die deiner Gruppe.',
+    confirmedTitle: 'Danke, alles eingetragen.',
+    confirmedBody: 'Deine Bestätigung ist gespeichert. Öffne jederzeit denselben Link, um hierher zurückzukehren.',
   },
 } as const;
