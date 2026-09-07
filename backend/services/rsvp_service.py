@@ -13,10 +13,6 @@ from services.rsvp_faction_service import pick_balanced_faction
 from settings import is_rsvp_editable
 
 
-class RsvpValidationError(Exception):
-    """Raised when RSVP payload or state is invalid."""
-
-
 class RsvpConflictError(Exception):
     """Raised when the user already submitted an RSVP on create."""
 
