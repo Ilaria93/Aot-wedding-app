@@ -248,6 +248,7 @@ export const de = {
     submitLabel: 'Anmelden',
     submitLoading: 'Anmeldung läuft...',
     genericError: 'Anmeldung fehlgeschlagen.',
+    forgotPasswordLink: 'Passwort vergessen?',
     validation: {
       emailInvalid: 'Gib eine gültige E-Mail-Adresse ein.',
       passwordRequired: 'Gib dein Passwort ein.',
@@ -282,6 +283,25 @@ export const de = {
         submitLabel: 'Als Gast eintreten',
       },
     },
+  },
+  forgotPassword: {
+    title: 'Passwort vergessen',
+    subtitle: 'Gib deine E-Mail ein: wenn sie zu einem Konto passt, schicken wir dir einen Link zum Festlegen des Passworts.',
+    submitLabel: 'Link senden',
+    submitLoading: 'Wird gesendet...',
+    successMessage: 'Wenn diese Adresse zu einem Konto passt, schau in dein Postfach: der Link ist eine Stunde gültig.',
+    backToLogin: 'Zurück zur Anmeldung',
+    genericError: 'Senden fehlgeschlagen. Versuch es erneut.',
+  },
+  resetPassword: {
+    title: 'Passwort festlegen',
+    subtitle: 'Wähle ein neues Passwort für dein Konto.',
+    passwordLabel: 'Neues Passwort',
+    submitLabel: 'Passwort speichern',
+    submitLoading: 'Wird gespeichert...',
+    successMessage: 'Passwort festgelegt. Du kannst dich jetzt mit deinem neuen Passwort anmelden.',
+    invalidTokenError: 'Dieser Link ist ungültig oder abgelaufen. Fordere einen neuen an.',
+    backToLogin: 'Zurück zur Anmeldung',
   },
   profile: {
     eyebrow: 'Profil',

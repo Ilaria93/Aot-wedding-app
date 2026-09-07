@@ -7,12 +7,14 @@ import { AppLayout } from '@/layouts/AppLayout/index';
 import { AuthStackLayout } from '@/layouts/AuthStackLayout/index';
 import { AdminPage } from '@/pages/AdminPage/index';
 import { AlbumPage } from '@/pages/AlbumPage/index';
+import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage/index';
 import { GuestRsvpPage } from '@/pages/GuestRsvpPage/index';
 import { HomePage } from '@/pages/HomePage/index';
 import { InvitePage } from '@/pages/InvitePage/index';
 import { LoginPage } from '@/pages/LoginPage/index';
 import { NotFoundPage } from '@/pages/NotFoundPage/index';
 import { ProfilePage } from '@/pages/ProfilePage/index';
+import { ResetPasswordPage } from '@/pages/ResetPasswordPage/index';
 import { RsvpPage } from '@/pages/RsvpPage/index';
 import { TemaPage } from '@/pages/TemaPage/index';
 import { TravelPage } from '@/pages/TravelPage/index';
@@ -27,6 +29,8 @@ export function App() {
             <Route element={<AuthGuard />}>
               <Route element={<AuthStackLayout />}>
                 <Route path="/auth/login" element={<LoginPage />} />
+                <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
               </Route>
 
               <Route element={<AppLayout />}>

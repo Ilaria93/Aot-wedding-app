@@ -1,6 +1,14 @@
 const DEV_PUBLIC_PATHS = import.meta.env.DEV ? ['/dev/titan-preview'] : [];
 
-const PUBLIC_PATHS = new Set(['/', '/album', '/tema', '/auth/login', ...DEV_PUBLIC_PATHS]);
+const PUBLIC_PATHS = new Set([
+  '/',
+  '/album',
+  '/tema',
+  '/auth/login',
+  '/auth/forgot-password',
+  '/auth/reset-password',
+  ...DEV_PUBLIC_PATHS,
+]);
 // Prefix, not exact match: the token segment is different for every guest link.
 const PUBLIC_PATH_PREFIXES = ['/invito/'];
 const ALWAYS_PROTECTED_PATHS = new Set(['/profile', '/admin', '/rsvp', '/travel']);

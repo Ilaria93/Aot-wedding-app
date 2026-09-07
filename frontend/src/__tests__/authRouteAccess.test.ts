@@ -8,6 +8,8 @@ describe('authRouteAccess', () => {
     expect(isPublicPath('/album')).toBe(true);
     expect(isPublicPath('/tema')).toBe(true);
     expect(isPublicPath('/auth/login')).toBe(true);
+    expect(isPublicPath('/auth/forgot-password')).toBe(true);
+    expect(isPublicPath('/auth/reset-password')).toBe(true);
   });
 
   it('always protects profile, admin and travel even in dev unlock mode', () => {

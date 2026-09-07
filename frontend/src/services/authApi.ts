@@ -66,3 +66,14 @@ export async function updateCurrentUserProfile(payload: UpdateProfilePayload): P
   const { data } = await apiClient.patch<AuthUser>('/auth/me', payload);
   return data;
 }
+
+// Requests a set/reset-password email. Always resolves — the backend never
+// reveals whether the address matched an account.
+export async function requestPasswordReset(email: string): Promise<void> {
+  await apiClient.post('/auth/password-reset/request', { email });
+}
+
+// Sets a new password from a valid reset-link token.
+export async function confirmPasswordReset(token: string, newPassword: string): Promise<void> {
+  await apiClient.post('/auth/password-reset/confirm', { token, new_password: newPassword });
+}

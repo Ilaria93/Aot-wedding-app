@@ -249,6 +249,7 @@ export const it = {
     submitLabel: 'Accedi',
     submitLoading: 'Accesso in corso...',
     genericError: 'Accesso non riuscito.',
+    forgotPasswordLink: 'Password dimenticata?',
     validation: {
       emailInvalid: 'Inserisci un indirizzo email valido.',
       passwordRequired: 'Inserisci la password.',
@@ -282,6 +283,25 @@ export const it = {
         submitLabel: 'Entra come invitato',
       },
     },
+  },
+  forgotPassword: {
+    title: 'Password dimenticata',
+    subtitle: 'Scrivi la tua email: se corrisponde a un account, ti mandiamo un link per impostare la password.',
+    submitLabel: 'Invia il link',
+    submitLoading: 'Invio in corso...',
+    successMessage: 'Se l’indirizzo corrisponde a un account, controlla la posta: il link resta valido un’ora.',
+    backToLogin: 'Torna al login',
+    genericError: 'Invio non riuscito. Riprova.',
+  },
+  resetPassword: {
+    title: 'Imposta la password',
+    subtitle: 'Scegli una nuova password per il tuo account.',
+    passwordLabel: 'Nuova password',
+    submitLabel: 'Salva password',
+    submitLoading: 'Salvataggio...',
+    successMessage: 'Password impostata. Ora puoi accedere con la nuova password.',
+    invalidTokenError: 'Questo link non è valido o è scaduto. Richiedine uno nuovo.',
+    backToLogin: 'Torna al login',
   },
   profile: {
     eyebrow: 'Profilo',

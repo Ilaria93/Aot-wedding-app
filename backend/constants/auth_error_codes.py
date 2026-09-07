@@ -7,3 +7,4 @@ frontend/src/services/authErrorCodes.ts.
 """
 
 INVALID_CREDENTIALS = "INVALID_CREDENTIALS"
+INVALID_RESET_TOKEN = "INVALID_RESET_TOKEN"

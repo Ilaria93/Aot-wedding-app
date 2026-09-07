@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 import { RememberMeToggle } from '@/components/RememberMeToggle';
@@ -74,6 +74,10 @@ export function LoginPage() {
             {submitting ? t('login.submitLoading') : t('login.submitLabel')}
           </button>
         </form>
+
+        <p className="login-card__sub" style={{ marginTop: '1.5rem', marginBottom: 0 }}>
+          <Link to="/auth/forgot-password">{t('login.forgotPasswordLink')}</Link>
+        </p>
       </div>
     </div>
   );

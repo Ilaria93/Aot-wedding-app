@@ -248,6 +248,7 @@ export const fr = {
     submitLabel: 'Se connecter',
     submitLoading: 'Connexion en cours...',
     genericError: 'Connexion impossible.',
+    forgotPasswordLink: 'Mot de passe oublié ?',
     validation: {
       emailInvalid: 'Saisissez une adresse e-mail valide.',
       passwordRequired: 'Saisissez votre mot de passe.',
@@ -281,6 +282,25 @@ export const fr = {
         submitLabel: 'Entrer en tant qu’invité',
       },
     },
+  },
+  forgotPassword: {
+    title: 'Mot de passe oublié',
+    subtitle: 'Indique ton email : si un compte correspond, on t’envoie un lien pour définir ton mot de passe.',
+    submitLabel: 'Envoyer le lien',
+    submitLoading: 'Envoi en cours...',
+    successMessage: 'Si cette adresse correspond à un compte, vérifie ta boîte mail : le lien reste valable une heure.',
+    backToLogin: 'Retour à la connexion',
+    genericError: 'Envoi impossible. Réessaie.',
+  },
+  resetPassword: {
+    title: 'Définis ton mot de passe',
+    subtitle: 'Choisis un nouveau mot de passe pour ton compte.',
+    passwordLabel: 'Nouveau mot de passe',
+    submitLabel: 'Enregistrer',
+    submitLoading: 'Enregistrement...',
+    successMessage: 'Mot de passe défini. Tu peux maintenant te connecter avec ton nouveau mot de passe.',
+    invalidTokenError: 'Ce lien est invalide ou a expiré. Demandes-en un nouveau.',
+    backToLogin: 'Retour à la connexion',
   },
   profile: {
     eyebrow: 'Profil',

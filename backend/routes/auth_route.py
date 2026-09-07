@@ -12,6 +12,12 @@ from schemas.auth_schema import (
     AuthUserResponse,
     ProfileUpdateRequest,
 )
+from schemas.password_reset_schema import (
+    PasswordResetConfirmRequest,
+    PasswordResetConfirmResponse,
+    PasswordResetRequestRequest,
+    PasswordResetRequestResponse,
+)
 from services.auth_service import (
     AuthValidationError,
     authenticate_user,
@@ -20,6 +26,7 @@ from services.auth_service import (
     serialize_user,
     update_user_profile,
 )
+from services.password_reset_service import confirm_password_reset, request_password_reset
 
 router = APIRouter(prefix="/auth")
 
@@ -75,3 +82,21 @@ def logout_auth_user(payload: AuthRefreshRequest, db: Session = Depends(get_db))
         # Logout should stay idempotent even if the client sends a stale token.
         return AuthLogoutResponse(ok=True)
     return AuthLogoutResponse(ok=True)
+
+
+# Sends a set/reset-password email if the address belongs to an admin account.
+# Always returns ok — never reveals whether the email matched.
+@router.post("/password-reset/request", response_model=PasswordResetRequestResponse)
+def request_password_reset_route(payload: PasswordResetRequestRequest, db: Session = Depends(get_db)):
+    request_password_reset(db, payload.email)
+    return PasswordResetRequestResponse(ok=True)
+
+
+# Sets a new password from a valid reset link.
+@router.post("/password-reset/confirm", response_model=PasswordResetConfirmResponse)
+def confirm_password_reset_route(payload: PasswordResetConfirmRequest, db: Session = Depends(get_db)):
+    try:
+        confirm_password_reset(db, payload.token, payload.new_password)
+    except AuthValidationError as error:
+        raise HTTPException(status_code=400, detail=_auth_error_detail(error)) from error
+    return PasswordResetConfirmResponse(ok=True)

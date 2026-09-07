@@ -247,6 +247,7 @@ export const en = {
     submitLabel: 'Log in',
     submitLoading: 'Logging in...',
     genericError: 'Login failed.',
+    forgotPasswordLink: 'Forgot your password?',
     validation: {
       emailInvalid: 'Enter a valid email address.',
       passwordRequired: 'Enter your password.',
@@ -280,6 +281,25 @@ export const en = {
         submitLabel: 'Enter as guest',
       },
     },
+  },
+  forgotPassword: {
+    title: 'Forgot password',
+    subtitle: "Enter your email — if it matches an account, we'll send a link to set your password.",
+    submitLabel: 'Send the link',
+    submitLoading: 'Sending...',
+    successMessage: 'If that address matches an account, check your inbox: the link stays valid for one hour.',
+    backToLogin: 'Back to login',
+    genericError: 'Could not send it. Try again.',
+  },
+  resetPassword: {
+    title: 'Set your password',
+    subtitle: 'Choose a new password for your account.',
+    passwordLabel: 'New password',
+    submitLabel: 'Save password',
+    submitLoading: 'Saving...',
+    successMessage: 'Password set. You can now log in with your new password.',
+    invalidTokenError: 'This link is invalid or has expired. Request a new one.',
+    backToLogin: 'Back to login',
   },
   profile: {
     eyebrow: 'Profile',

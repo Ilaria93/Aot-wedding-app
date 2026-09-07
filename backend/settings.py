@@ -115,6 +115,30 @@ def read_photo_max_upload_bytes() -> int:
         return 10 * 1024 * 1024
 
 
+def read_resend_api_key() -> str:
+    """API key for the Resend transactional email service (admin password reset)."""
+    return os.getenv("RESEND_API_KEY", "").strip()
+
+
+def read_email_from_address() -> str:
+    """From-address used for outbound transactional emails."""
+    return os.getenv("EMAIL_FROM_ADDRESS", "accesso@resend.dev").strip()
+
+
+def read_frontend_base_url() -> str:
+    """Public URL of the deployed frontend — used to build the reset-password link."""
+    return os.getenv("FRONTEND_BASE_URL", "http://localhost:5173").strip().rstrip("/")
+
+
+def read_password_reset_expires_minutes() -> int:
+    """Lifetime of a password-reset link in minutes."""
+    raw_value = os.getenv("PASSWORD_RESET_EXPIRES_MINUTES", "60").strip()
+    try:
+        return max(5, int(raw_value))
+    except ValueError:
+        return 60
+
+
 def read_rsvp_edit_deadline() -> datetime:
     """Last moment (exclusive) when RSVP edits are allowed — end of 6 May 2027 Europe/Rome."""
     raw_value = os.getenv("RSVP_EDIT_DEADLINE", "2027-05-07T00:00:00+02:00").strip()
