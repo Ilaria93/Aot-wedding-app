@@ -6,8 +6,6 @@
  * other. Keep this list mirrored in backend/constants/auth_error_codes.py.
  */
 export const AUTH_ERROR_CODES = {
-  invalidRoleSecret: 'INVALID_ROLE_SECRET',
-  emailTaken: 'EMAIL_TAKEN',
   invalidCredentials: 'INVALID_CREDENTIALS',
 } as const;
 

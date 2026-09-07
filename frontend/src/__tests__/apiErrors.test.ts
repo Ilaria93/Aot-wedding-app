@@ -50,26 +50,17 @@ describe('apiErrors', () => {
 });
 
 describe('authApiErrors', () => {
-  it('maps register password validation to localized key', () => {
+  it('maps login credential errors to localized key', () => {
     const error = new AxiosError('Request failed', 'ERR', undefined, undefined, {
-      status: 422,
-      statusText: 'Unprocessable Entity',
+      status: 401,
+      statusText: 'Unauthorized',
       headers: {},
       config: {} as never,
-      data: {
-        detail: [
-          {
-            type: 'value_error',
-            loc: ['body', 'password'],
-            msg: 'Value error, Password must be at least 8 characters long.',
-            input: 'test',
-          },
-        ],
-      },
+      data: { detail: { code: 'INVALID_CREDENTIALS', message: 'Invalid email or password.' } },
     });
 
-    expect(getAuthApiErrorMessage(error, translate, 'register', 'fallback')).toBe(
-      'register.validation.passwordMinLength',
+    expect(getAuthApiErrorMessage(error, translate, 'login', 'fallback')).toBe(
+      'login.validation.invalidCredentials',
     );
   });
 });
