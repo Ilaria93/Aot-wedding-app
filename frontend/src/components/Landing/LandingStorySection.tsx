@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import { MissionDocumentSeal } from '@/components/MissionDocumentHero/MissionDocumentSeal';
 import { useI18n } from '@/contexts/I18nContext';
 import './styles/LandingStorySection.scss';
@@ -18,6 +20,9 @@ export function LandingStorySection() {
           <MissionDocumentSeal />
           <h2 className="obw-display obw-display--lg">{t('landing.story.heading')}</h2>
           <span className="obw-rule obw-rule--center" aria-hidden="true" />
+          <Link to="/tema" className="obw-btn obw-btn--ghost">
+            {t('landing.story.temaLink')}
+          </Link>
         </header>
 
         <div className="landing-story__portraits">

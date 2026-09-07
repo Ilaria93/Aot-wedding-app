@@ -727,7 +727,7 @@
   z-index: 50;
   border-bottom: 1px solid var(--obw-border-dark);
   /* Same translucent pine veil as the reference's floating nav, not a solid bar. */
-  background: var(--obw-veil-strong);
+  background:rgba(30, 44, 40, 0.32);
   color: var(--obw-bone);
   backdrop-filter: blur(8px) saturate(1.05);
 }

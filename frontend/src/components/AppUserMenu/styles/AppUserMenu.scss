@@ -140,6 +140,16 @@
   outline: none;
 }
 
+.app-user-menu__action--rsvp {
+  color: var(--obw-gold-deep, var(--obw-text));
+  font-weight: 600;
+}
+
+.app-user-menu__action--rsvp:hover,
+.app-user-menu__action--rsvp:focus-visible {
+  background: color-mix(in srgb, var(--obw-gold) 12%, var(--obw-paper));
+}
+
 .app-user-menu__action--danger {
   color: var(--obw-burgundy);
 }

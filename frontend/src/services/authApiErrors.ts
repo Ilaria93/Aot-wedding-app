@@ -4,8 +4,7 @@ import {
   type ApiValidationErrorItem,
 } from '@/services/apiErrors';
 import { AUTH_ERROR_CODES } from '@/services/authErrorCodes';
-
-type TranslateFn = (key: string) => string;
+import type { TranslateFn } from '@/i18n/translations';
 
 function validationField(item: ApiValidationErrorItem): string {
   const location = item.loc ?? [];

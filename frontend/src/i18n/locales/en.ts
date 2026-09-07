@@ -26,6 +26,7 @@ export const en = {
       admin: 'Admin',
       album: 'Album',
       travel: 'Contacts',
+      tema: 'The Theme',
       profile: 'Profile',
     },
   },
@@ -122,6 +123,7 @@ export const en = {
         'Ilaria and Davide are building a page that tells the story of their day in a more intimate, elegant, and personal way.',
       paragraphTwo:
         'The idea is to blend the language of an editorial wedding site with modern navigation, digital RSVP, and organized details in one place.',
+      temaLink: 'Discover the theme →',
     },
     ceremony: {
       heading: 'Join their intimate ceremony',
@@ -441,6 +443,28 @@ export const en = {
     emptyTitle: 'No contacts available',
     emptyBody: 'When the admin adds logistics services, you will find them here grouped by category.',
     contactPerson: 'Contact person: {{value}}',
+  },
+  tema: {
+    eyebrow: 'Operation Pirulini',
+    title: 'The theme of our wedding',
+    subtitle:
+      'Wings of freedom, a mission logbook, and two cockatiels who won our hearts — that is why everything here speaks Attack on Titan.',
+    crestTitle: 'The crest',
+    crestBody:
+      'The Survey Corps wings wrap around our two cockatiels: our own small expedition beyond the walls, from our first date to the altar.',
+    styleTitle: 'The style',
+    styleBody:
+      'Every page on this site reads like a mission document — badges, military jargon, and maps instead of the usual wedding phrasing — because Attack on Titan is the show that made us fall for this too.',
+    missionTitle: 'The mission',
+    missionBody:
+      'The name "Pirulini" comes from Pirulì, a creator we used to watch together: our cockatiels got the nickname "Pirù" from that, and "Operation Pirulini" became the code name for the big day — one battle to win together, surrounded by the people we love.',
+    watchTitle: 'Where to watch it',
+    watchIntro:
+      'If you want to discover (or rewatch) the series before the wedding, here is where to find it legally.',
+    watchAnimeLabel: 'Anime — streaming',
+    watchMangaLabel: 'Manga — official free chapters',
+    watchNote:
+      'The free chapters are limited: they are the cheapest way to sample the story, not to read all of it.',
   },
   admin: {
     photoStatuses: {

@@ -26,6 +26,7 @@ export const de = {
       admin: 'Admin',
       album: 'Album',
       travel: 'Kontakte',
+      tema: 'Das Thema',
       profile: 'Profil',
     },
   },
@@ -122,6 +123,7 @@ export const de = {
         'Ilaria und Davide gestalten eine Seite, die ihren Tag auf intimere, elegantere und persönlichere Weise erzählt.',
       paragraphTwo:
         'Die Idee ist, die Sprache einer redaktionellen Hochzeitsseite mit moderner Navigation, digitalem RSVP und organisierten Informationen an einem Ort zu verbinden.',
+      temaLink: 'Entdecke das Thema →',
     },
     ceremony: {
       heading: 'Nehmt an ihrer intimen Zeremonie teil',
@@ -447,6 +449,28 @@ export const de = {
     emptyBody:
       'Sobald der Admin logistische Services einträgt, findest du sie hier nach Kategorien sortiert.',
     contactPerson: 'Ansprechperson: {{value}}',
+  },
+  tema: {
+    eyebrow: 'Operation Pirulini',
+    title: 'Das Thema unserer Hochzeit',
+    subtitle:
+      'Flügel der Freiheit, ein Missionsprotokoll und zwei Nymphensittiche, die unsere Herzen erobert haben — deshalb spricht hier alles von Attack on Titan.',
+    crestTitle: 'Das Wappen',
+    crestBody:
+      'Die Flügel des Aufklärungstrupps umschließen unsere beiden Nymphensittiche: unsere kleine Expedition jenseits der Mauern, vom ersten Date bis zum Altar.',
+    styleTitle: 'Der Stil',
+    styleBody:
+      'Jede Seite dieser Website liest sich wie ein Missionsdokument — Abzeichen, militärischer Jargon und Karten statt der üblichen Hochzeitsformulierungen — denn Attack on Titan ist die Serie, die uns auch dafür begeistert hat.',
+    missionTitle: 'Die Mission',
+    missionBody:
+      'Der Name "Pirulini" stammt von Pirulì, einem Creator, den wir gemeinsam geschaut haben: daher der Spitzname "Pirù" für unsere Nymphensittiche, und "Operation Pirulini" wurde zum Codenamen für den großen Tag — eine einzige Schlacht, die wir gemeinsam gewinnen, umgeben von den Menschen, die wir lieben.',
+    watchTitle: 'Wo man sie sehen kann',
+    watchIntro:
+      'Wenn du die Serie vor der Hochzeit entdecken (oder noch einmal ansehen) möchtest, findest du sie hier auf legalem Weg.',
+    watchAnimeLabel: 'Anime — im Stream',
+    watchMangaLabel: 'Manga — offizielle kostenlose Kapitel',
+    watchNote:
+      'Die kostenlosen Kapitel sind begrenzt: Sie sind der günstigste Weg, in die Geschichte hineinzuschnuppern, nicht sie ganz zu lesen.',
   },
   admin: {
     photoStatuses: {

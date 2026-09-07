@@ -26,6 +26,7 @@ export const fr = {
       admin: 'Admin',
       album: 'Album',
       travel: 'Contacts',
+      tema: 'Le Thème',
       profile: 'Profil',
     },
   },
@@ -122,6 +123,7 @@ export const fr = {
         'Ilaria et Davide créent une page qui raconte leur journée de manière plus intime, élégante et personnelle.',
       paragraphTwo:
         'L’idée est de réunir le langage d’un site de mariage éditorial avec une navigation moderne, un RSVP numérique et des informations organisées au même endroit.',
+      temaLink: 'Découvrir le thème →',
     },
     ceremony: {
       heading: 'Participez à leur cérémonie intime',
@@ -446,6 +448,28 @@ export const fr = {
     emptyBody:
       'Quand l’admin ajoutera les services logistiques, vous les trouverez ici classés par catégorie.',
     contactPerson: 'Contact : {{value}}',
+  },
+  tema: {
+    eyebrow: 'Opération Pirulini',
+    title: 'Le thème de notre mariage',
+    subtitle:
+      'Des ailes de la liberté, un carnet de mission et deux calopsittes qui ont conquis nos cœurs : voilà pourquoi tout ici parle d’Attack on Titan.',
+    crestTitle: 'Le blason',
+    crestBody:
+      'Les ailes du Bataillon d’Exploration entourent nos deux calopsittes : notre petite expédition au-delà des murs, du premier rendez-vous à l’autel.',
+    styleTitle: 'Le style',
+    styleBody:
+      'Chaque page de ce site se lit comme un document de mission — badges, jargon militaire et cartes plutôt que les formules habituelles de mariage — car Attack on Titan est la série qui nous a fait aimer aussi cela.',
+    missionTitle: 'La mission',
+    missionBody:
+      'Le nom « Pirulini » vient de Pirulì, un créateur que nous regardions ensemble : nos calopsittes en ont tiré le surnom « Pirù », et « Opération Pirulini » est devenu le nom de code du jour du oui — une seule bataille à gagner ensemble, entourés des personnes que nous aimons.',
+    watchTitle: 'Où la regarder',
+    watchIntro:
+      'Si vous voulez découvrir (ou revoir) la série avant le mariage, voici où la trouver légalement.',
+    watchAnimeLabel: 'Anime — en streaming',
+    watchMangaLabel: 'Manga — chapitres officiels gratuits',
+    watchNote:
+      'Les chapitres gratuits sont limités : c’est le moyen le plus économique de découvrir l’histoire, pas de la lire en entier.',
   },
   admin: {
     photoStatuses: {
