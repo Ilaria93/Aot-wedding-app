@@ -115,11 +115,6 @@ def read_photo_max_upload_bytes() -> int:
         return 10 * 1024 * 1024
 
 
-def read_wedding_role_secret() -> str:
-    """Secret required to register as bride or groom. Empty string disables those roles."""
-    return os.getenv("WEDDING_ROLE_SECRET", "").strip()
-
-
 def read_rsvp_edit_deadline() -> datetime:
     """Last moment (exclusive) when RSVP edits are allowed — end of 6 May 2027 Europe/Rome."""
     raw_value = os.getenv("RSVP_EDIT_DEADLINE", "2027-05-07T00:00:00+02:00").strip()

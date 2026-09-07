@@ -8,7 +8,6 @@ from schemas.auth_schema import (
     AuthLoginRequest,
     AuthLogoutResponse,
     AuthRefreshRequest,
-    AuthRegisterRequest,
     AuthSessionResponse,
     AuthUserResponse,
     ProfileUpdateRequest,
@@ -17,7 +16,6 @@ from services.auth_service import (
     AuthValidationError,
     authenticate_user,
     logout_refresh_session,
-    register_user,
     refresh_auth_session,
     serialize_user,
     update_user_profile,
@@ -32,16 +30,8 @@ def _auth_error_detail(error: AuthValidationError) -> dict[str, str]:
     return {"code": error.code, "message": str(error)}
 
 
-# Registers a new account and immediately returns an authenticated session.
-@router.post("/register", response_model=AuthSessionResponse)
-def register_auth_user(payload: AuthRegisterRequest, db: Session = Depends(get_db)):
-    try:
-        return register_user(db, payload)
-    except AuthValidationError as error:
-        raise HTTPException(status_code=400, detail=_auth_error_detail(error)) from error
-
-
-# Logs in an existing account and returns fresh access and refresh tokens.
+# Admin-only login — accounts are seeded directly via scripts/seed_admin_users.py,
+# there is no public registration endpoint.
 @router.post("/login", response_model=AuthSessionResponse)
 def login_auth_user(payload: AuthLoginRequest, db: Session = Depends(get_db)):
     try:

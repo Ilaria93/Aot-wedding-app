@@ -1,16 +1,30 @@
 from __future__ import annotations
 
+from datetime import datetime
+
+from database.base import SessionLocal
+from models.user_model import User
+from services.auth_credentials_service import hash_password
+
 
 def _register_user(api_client, email: str, first_name: str, last_name: str):
+    db = SessionLocal()
+    db.add(
+        User(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            password_hash=hash_password("strong-password"),
+            role="user",
+            created_at=datetime.utcnow(),
+        )
+    )
+    db.commit()
+    db.close()
+
     response = api_client.post(
-        "/auth/register",
-        json={
-            "first_name": first_name,
-            "last_name": last_name,
-            "email": email,
-            "password": "strong-password",
-            "remember_me": True,
-        },
+        "/auth/login",
+        json={"email": email, "password": "strong-password", "remember_me": True},
     )
     return {"Authorization": f"Bearer {response.json()['access_token']}"}
 

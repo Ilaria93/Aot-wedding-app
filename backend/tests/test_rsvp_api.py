@@ -101,15 +101,29 @@ def test_rsvp_confirm_assigns_faction_automatically(api_client, user_headers):
 
 def test_rsvp_confirm_balances_factions_by_guest_headcount(api_client):
     def register(email: str):
+        from datetime import datetime
+
+        from database.base import SessionLocal
+        from models.user_model import User
+        from services.auth_credentials_service import hash_password
+
+        db = SessionLocal()
+        db.add(
+            User(
+                first_name="Test",
+                last_name="User",
+                email=email,
+                password_hash=hash_password("strong-password"),
+                role="user",
+                created_at=datetime.utcnow(),
+            )
+        )
+        db.commit()
+        db.close()
+
         reg = api_client.post(
-            "/auth/register",
-            json={
-                "first_name": "Test",
-                "last_name": "User",
-                "email": email,
-                "password": "strong-password",
-                "remember_me": True,
-            },
+            "/auth/login",
+            json={"email": email, "password": "strong-password", "remember_me": True},
         )
         return {"Authorization": f"Bearer {reg.json()['access_token']}"}
 

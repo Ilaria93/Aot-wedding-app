@@ -13,7 +13,7 @@ def test_admin_user_list_shows_registered_users(api_client, admin_headers, user_
 
     users = response.json()
     assert len(users) == 2
-    user_row = next(user for user in users if user["email"] == "user@test.app")
+    user_row = next(user for user in users if user["role"] != "admin")
     assert user_row["has_rsvp"] is False
 
 
@@ -36,7 +36,7 @@ def test_admin_user_list_shows_user_with_confirmed_rsvp(api_client, admin_header
 
     response = api_client.get("/admin/users", headers=admin_headers)
     users = response.json()
-    user_row = next(user for user in users if user["email"] == "user@test.app")
+    user_row = next(user for user in users if user["role"] != "admin")
     assert user_row["has_rsvp"] is True
     assert user_row["attending"] is True
     assert user_row["faction"] == "scout_regiment"

@@ -1,18 +1,11 @@
 from datetime import datetime
-import hmac
 
 from sqlalchemy.orm import Session
 
-from constants.auth_error_codes import EMAIL_TAKEN, INVALID_CREDENTIALS, INVALID_ROLE_SECRET
+from constants.auth_error_codes import INVALID_CREDENTIALS
 from models.user_model import User
-from schemas.auth_schema import (
-    AuthLoginRequest,
-    AuthRegisterRequest,
-    AuthSessionResponse,
-    ProfileUpdateRequest,
-    UserRoleEnum,
-)
-from services.auth_credentials_service import hash_password, normalize_email, verify_password
+from schemas.auth_schema import AuthLoginRequest, AuthSessionResponse, ProfileUpdateRequest, UserRoleEnum
+from services.auth_credentials_service import normalize_email, verify_password
 from services.auth_errors import AuthConfigError, AuthPermissionError, AuthValidationError
 from services.auth_token_service import (
     decode_token,
@@ -23,7 +16,6 @@ from services.auth_token_service import (
     refresh_auth_session,
     serialize_user,
 )
-from settings import read_wedding_role_secret
 
 __all__ = [
     "AuthConfigError",
@@ -35,7 +27,6 @@ __all__ = [
     "issue_auth_session",
     "logout_refresh_session",
     "refresh_auth_session",
-    "register_user",
     "require_admin_role",
     "serialize_user",
     "update_user_profile",
@@ -44,44 +35,14 @@ __all__ = [
 PRIVILEGED_USER_ROLES = {UserRoleEnum.admin.value}
 
 
-def _resolve_registration_role(payload: AuthRegisterRequest) -> str:
-    provided_secret = (payload.role_secret or "").strip()
-    if not provided_secret:
-        return UserRoleEnum.user.value
-
-    expected_secret = read_wedding_role_secret()
-    if not expected_secret or not hmac.compare_digest(provided_secret, expected_secret):
-        raise AuthValidationError("Invalid role secret.", code=INVALID_ROLE_SECRET)
-    return UserRoleEnum.admin.value
-
-
-def register_user(db: Session, payload: AuthRegisterRequest) -> AuthSessionResponse:
-    ensure_auth_configuration()
-    normalized_email = normalize_email(payload.email)
-    existing_user = db.query(User).filter(User.email == normalized_email).first()
-    if existing_user:
-        raise AuthValidationError("An account with this email already exists.", code=EMAIL_TAKEN)
-
-    created_user = User(
-        first_name=payload.first_name.strip(),
-        last_name=payload.last_name.strip(),
-        email=normalized_email,
-        password_hash=hash_password(payload.password),
-        role=_resolve_registration_role(payload),
-        created_at=datetime.utcnow(),
-        last_login_at=datetime.utcnow(),
-    )
-    db.add(created_user)
-    db.commit()
-    db.refresh(created_user)
-    return issue_auth_session(db, created_user, payload.remember_me)
-
-
+# Admin-only: accounts are seeded directly in the database (see
+# scripts/seed_admin_users.py), never created through this endpoint. Guests
+# never have a password at all — see services/guest_access_service.py.
 def authenticate_user(db: Session, payload: AuthLoginRequest) -> AuthSessionResponse:
     ensure_auth_configuration()
     normalized_email = normalize_email(payload.email)
     user = db.query(User).filter(User.email == normalized_email).first()
-    if not user or not verify_password(payload.password, user.password_hash):
+    if not user or not user.password_hash or not verify_password(payload.password, user.password_hash):
         raise AuthValidationError("Invalid email or password.", code=INVALID_CREDENTIALS)
 
     user.last_login_at = datetime.utcnow()

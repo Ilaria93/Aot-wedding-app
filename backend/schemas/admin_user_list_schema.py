@@ -11,7 +11,8 @@ class AdminUserListItem(BaseModel):
     id: int
     first_name: str
     last_name: str
-    email: str
+    # Optional: passwordless guest accounts from an invite link have no email.
+    email: Optional[str] = None
     role: str
     has_rsvp: bool
     attending: Optional[bool] = None
