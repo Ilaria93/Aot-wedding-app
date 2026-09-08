@@ -8,7 +8,6 @@ from settings import read_database_url
 from models import (  # noqa: F401
     invite_link_model,
     logistics_contact_model,
-    password_reset_token_model,
     photo_album_item_model,
     refresh_token_session_model,
     rsvp_guest_model,
