@@ -15,12 +15,8 @@ function mapLoginValidationError(item: ApiValidationErrorItem, translate: Transl
   const field = validationField(item);
   const message = item.msg ?? '';
 
-  if (field === 'email' && message.includes('format is invalid')) {
-    return translate('login.validation.emailInvalid');
-  }
-
-  if (field === 'password' && message.includes('cannot be empty')) {
-    return translate('login.validation.passwordRequired');
+  if (field === 'secret' && message.includes('cannot be empty')) {
+    return translate('login.validation.secretRequired');
   }
 
   return null;

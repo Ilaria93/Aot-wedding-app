@@ -241,17 +241,16 @@ export const en = {
   login: {
     eyebrow: 'Login',
     title: 'Sign in to the site.',
-    subtitle: 'Enter your account email and password. Your role will be recognized automatically.',
+    subtitle: 'Enter the secret code to sign in as the couple.',
     sectionLabel: 'Who are you?',
+    secretLabel: 'Secret code',
     rememberMe: 'Keep me signed in',
     submitLabel: 'Log in',
     submitLoading: 'Logging in...',
     genericError: 'Login failed.',
-    forgotPasswordLink: 'Forgot your password?',
     validation: {
-      emailInvalid: 'Enter a valid email address.',
-      passwordRequired: 'Enter your password.',
-      invalidCredentials: 'Incorrect email or password.',
+      secretRequired: 'Enter the secret code.',
+      invalidCredentials: 'Incorrect code.',
     },
     unauthorizedAdminError:
       'This access is reserved for the bride and groom. Use an authorized account.',
@@ -314,7 +313,6 @@ export const en = {
     updateError: 'Update failed.',
     updateButton: 'Update profile',
     updateLoading: 'Saving...',
-    emailLabel: 'Email',
     roleLabel: 'Role',
     signOut: 'Log out',
   },
@@ -449,6 +447,15 @@ export const en = {
       'The free chapters are limited: they are the cheapest way to sample the story, not to read all of it.',
   },
   admin: {
+    nav: {
+      label: 'Admin sections',
+      rsvp: 'RSVP',
+      contacts: 'Contacts',
+      gallery: 'Gallery',
+    },
+    placeholder: {
+      comingSoon: 'This section is coming soon.',
+    },
     photoStatuses: {
       approved: 'Approved',
       rejected: 'Rejected',

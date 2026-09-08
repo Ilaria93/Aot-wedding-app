@@ -11,36 +11,15 @@ class UserRoleEnum(str, Enum):
 
 
 class AuthLoginRequest(BaseModel):
-    email: str
-    password: str
+    secret: str
     remember_me: bool = True
 
-    @field_validator("email")
+    @field_validator("secret")
     @classmethod
-    def validate_login_email(cls, value: str) -> str:
-        normalized = value.strip().lower()
-        if "@" not in normalized or "." not in normalized.split("@")[-1]:
-            raise ValueError("Email format is invalid.")
-        return normalized
-
-    @field_validator("password")
-    @classmethod
-    def validate_login_password(cls, value: str) -> str:
+    def validate_login_secret(cls, value: str) -> str:
         if not value.strip():
-            raise ValueError("Password cannot be empty.")
+            raise ValueError("Secret cannot be empty.")
         return value
-
-
-class AuthRefreshRequest(BaseModel):
-    refresh_token: str
-
-    @field_validator("refresh_token")
-    @classmethod
-    def validate_refresh_token(cls, value: str) -> str:
-        normalized = value.strip()
-        if not normalized:
-            raise ValueError("refresh_token cannot be empty.")
-        return normalized
 
 
 class ProfileUpdateRequest(BaseModel):
@@ -60,9 +39,9 @@ class AuthUserResponse(BaseModel):
     id: int
     first_name: str
     last_name: str
-    # Optional: passwordless guest accounts created via an invite link have
-    # no email at all — only admin accounts (seeded via
-    # scripts/seed_admin_users.py) set one.
+    # Optional: no account sets an email anymore — guests come from a
+    # WhatsApp invite link, and the single shared admin account is unlocked
+    # by a passcode, not a per-person login.
     email: Optional[str] = None
     role: UserRoleEnum
     created_at: datetime

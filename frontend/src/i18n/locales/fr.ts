@@ -241,18 +241,16 @@ export const fr = {
   login: {
     eyebrow: 'Connexion',
     title: 'Connectez-vous au site.',
-    subtitle:
-      'Saisissez l’e-mail et le mot de passe de votre compte. Votre rôle sera reconnu automatiquement.',
+    subtitle: 'Saisissez le code secret pour accéder en tant que mariés.',
     sectionLabel: 'Qui êtes-vous ?',
+    secretLabel: 'Code secret',
     rememberMe: 'Rester connecté',
     submitLabel: 'Se connecter',
     submitLoading: 'Connexion en cours...',
     genericError: 'Connexion impossible.',
-    forgotPasswordLink: 'Mot de passe oublié ?',
     validation: {
-      emailInvalid: 'Saisissez une adresse e-mail valide.',
-      passwordRequired: 'Saisissez votre mot de passe.',
-      invalidCredentials: 'E-mail ou mot de passe incorrect.',
+      secretRequired: 'Saisissez le code secret.',
+      invalidCredentials: 'Code incorrect.',
     },
     unauthorizedAdminError:
       'Cet accès est réservé à la mariée et au marié. Utilisez un compte autorisé.',
@@ -315,7 +313,6 @@ export const fr = {
     updateError: 'Mise à jour impossible.',
     updateButton: 'Mettre à jour le profil',
     updateLoading: 'Enregistrement...',
-    emailLabel: 'E-mail',
     roleLabel: 'Rôle',
     signOut: 'Se déconnecter',
   },
@@ -454,6 +451,15 @@ export const fr = {
       'Les chapitres gratuits sont limités : c’est le moyen le plus économique de découvrir l’histoire, pas de la lire en entier.',
   },
   admin: {
+    nav: {
+      label: 'Sections admin',
+      rsvp: 'RSVP',
+      contacts: 'Contacts',
+      gallery: 'Galerie',
+    },
+    placeholder: {
+      comingSoon: 'Section bientôt disponible.',
+    },
     photoStatuses: {
       approved: 'Approuvée',
       rejected: 'Refusée',

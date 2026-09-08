@@ -81,7 +81,7 @@ export function useGuestRsvpDraft(
         guests: attending ? draftsToGuestPayload(guests) : [],
       });
 
-      await applySession(result.session);
+      await applySession(result.user);
       setConfirmedFaction(isFactionId(result.rsvp.faction) ? result.rsvp.faction : null);
       setConfirmed(true);
     } catch (caughtError) {

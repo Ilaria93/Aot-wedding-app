@@ -73,14 +73,14 @@ def test_guest_rsvp_confirms_and_returns_session(api_client, invite_token):
         json={"attending": True, "guests": [_guest_line()]},
     )
     assert response.status_code == 200
+    assert response.cookies.get("access_token")
     body = response.json()
-    assert body["session"]["access_token"]
-    assert body["session"]["remember_me"] is False
+    assert body["user"]["id"]
     assert body["rsvp"]["ok"] is True
 
-    # The returned session actually works against the existing authenticated RSVP endpoint.
-    access_token = body["session"]["access_token"]
-    me_response = api_client.get("/rsvp/me", headers={"Authorization": f"Bearer {access_token}"})
+    # The session cookie set on confirm actually works against the existing
+    # authenticated RSVP endpoint (the shared client's jar carries it along).
+    me_response = api_client.get("/rsvp/me")
     assert me_response.status_code == 200
     assert me_response.json()["has_rsvp"] is True
 

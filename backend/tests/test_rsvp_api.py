@@ -103,47 +103,53 @@ def test_rsvp_confirm_balances_factions_by_guest_headcount(api_client):
     def register(email: str):
         from datetime import datetime
 
+        from fastapi.testclient import TestClient
+
         from database.base import SessionLocal
+        from main import app
         from models.user_model import User
         from services.auth_credentials_service import hash_password
+        from services.auth_token_service import issue_auth_session
 
         db = SessionLocal()
-        db.add(
-            User(
-                first_name="Test",
-                last_name="User",
-                email=email,
-                password_hash=hash_password("strong-password"),
-                role="user",
-                created_at=datetime.utcnow(),
-            )
+        user = User(
+            first_name="Test",
+            last_name="User",
+            email=email,
+            password_hash=hash_password("strong-password"),
+            role="user",
+            created_at=datetime.utcnow(),
         )
+        db.add(user)
         db.commit()
+        db.refresh(user)
         db.close()
 
-        reg = api_client.post(
-            "/auth/login",
-            json={"email": email, "password": "strong-password", "remember_me": True},
-        )
-        return {"Authorization": f"Bearer {reg.json()['access_token']}"}
+        db = SessionLocal()
+        db_user = db.query(User).filter(User.id == user.id).first()
+        session = issue_auth_session(db, db_user, remember_me=False)
+        db.close()
 
-    headers_a = register("a@example.com")
-    headers_b = register("b@example.com")
-    headers_c = register("c@example.com")
+        # A cookie-jar identity is per-client — this test needs three
+        # simultaneous identities, so give each its own isolated client.
+        client = TestClient(app)
+        client.cookies.set("access_token", session.access_token)
+        return client
 
-    api_client.post(
+    client_a = register("a@example.com")
+    client_b = register("b@example.com")
+    client_c = register("c@example.com")
+
+    client_a.post(
         "/rsvp/confirm",
-        headers=headers_a,
         json=_attending_payload([_guest_line(), _guest_line(first_name="Luigi")]),
     )
-    api_client.post(
+    client_b.post(
         "/rsvp/confirm",
-        headers=headers_b,
         json=_attending_payload([_guest_line(first_name="Anna")]),
     )
-    response_c = api_client.post(
+    response_c = client_c.post(
         "/rsvp/confirm",
-        headers=headers_c,
         json=_attending_payload([_guest_line(first_name="Eren")]),
     )
     assert response_c.json()["faction"] == "military_police"

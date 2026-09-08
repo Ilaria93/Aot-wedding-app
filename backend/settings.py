@@ -27,6 +27,11 @@ def read_jwt_secret_key() -> str:
     return os.getenv("JWT_SECRET_KEY", "").strip()
 
 
+def read_wedding_admin_secret() -> str:
+    """Shared passcode that logs either spouse into the single admin account."""
+    return os.getenv("WEDDING_ADMIN_SECRET", "").strip()
+
+
 def read_access_token_expiration_minutes() -> int:
     """Short-lived access token lifetime in minutes."""
     raw_value = os.getenv("ACCESS_TOKEN_EXPIRES_MINUTES", "30").strip()
@@ -65,6 +70,11 @@ def read_cors_allow_origins() -> list[str]:
         "http://localhost:5173",
         "http://127.0.0.1:5173",
     ]
+
+
+def read_cookie_secure() -> bool:
+    """Whether auth cookies require HTTPS. Set to true in production (Render)."""
+    return os.getenv("COOKIE_SECURE", "false").strip().lower() == "true"
 
 
 def read_s3_bucket_name() -> str:
@@ -113,30 +123,6 @@ def read_photo_max_upload_bytes() -> int:
         return max(1024, int(raw_value))
     except ValueError:
         return 10 * 1024 * 1024
-
-
-def read_resend_api_key() -> str:
-    """API key for the Resend transactional email service (admin password reset)."""
-    return os.getenv("RESEND_API_KEY", "").strip()
-
-
-def read_email_from_address() -> str:
-    """From-address used for outbound transactional emails."""
-    return os.getenv("EMAIL_FROM_ADDRESS", "accesso@resend.dev").strip()
-
-
-def read_frontend_base_url() -> str:
-    """Public URL of the deployed frontend — used to build the reset-password link."""
-    return os.getenv("FRONTEND_BASE_URL", "http://localhost:5173").strip().rstrip("/")
-
-
-def read_password_reset_expires_minutes() -> int:
-    """Lifetime of a password-reset link in minutes."""
-    raw_value = os.getenv("PASSWORD_RESET_EXPIRES_MINUTES", "60").strip()
-    try:
-        return max(5, int(raw_value))
-    except ValueError:
-        return 60
 
 
 def read_rsvp_edit_deadline() -> datetime:

@@ -5,19 +5,11 @@ import {
   fetchCurrentUserProfile,
   loginAccount,
   updateCurrentUserProfile,
-  type AuthSessionResponse,
   type AuthUser,
   type LoginPayload,
   type UpdateProfilePayload,
 } from '@/services/authApi';
-import {
-  clearCurrentSession,
-  getAccessToken,
-  logoutCurrentSession,
-  restoreRememberedSession,
-  setCurrentSession,
-  subscribeToSessionChanges,
-} from '@/services/authSession';
+import { logoutCurrentSession } from '@/services/authSession';
 import { translate } from '@/contexts/I18nContext';
 import { getAuthApiErrorMessage } from '@/services/authApiErrors';
 
@@ -30,16 +22,17 @@ type AuthContextValue = {
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   saveProfile: (payload: UpdateProfilePayload) => Promise<void>;
-  applySession: (session: AuthSessionResponse) => Promise<AuthUser>;
+  applySession: (user: AuthUser) => Promise<AuthUser>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-async function loadCurrentUserOrClearSession() {
+// The httpOnly access-token cookie, if any, is sent automatically — a 200
+// here means it was valid, a 401 means there's no session to restore.
+async function loadCurrentUserOrNull() {
   try {
     return await fetchCurrentUserProfile();
   } catch {
-    await clearCurrentSession();
     return null;
   }
 }
@@ -49,40 +42,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isBootstrapping, setIsBootstrapping] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = subscribeToSessionChanges((session) => {
-      if (!session) {
-        setUser(null);
-      }
-    });
-
     async function bootstrapAuth() {
-      await restoreRememberedSession();
-      const restoredUser = getAccessToken()
-        ? await loadCurrentUserOrClearSession()
-        : null;
-      setUser(restoredUser);
+      setUser(await loadCurrentUserOrNull());
       setIsBootstrapping(false);
     }
 
     bootstrapAuth();
-
-    return unsubscribe;
   }, []);
 
-  async function applySession(sessionResponse: AuthSessionResponse) {
-    await setCurrentSession({
-      accessToken: sessionResponse.access_token,
-      refreshToken: sessionResponse.refresh_token,
-      rememberMe: sessionResponse.remember_me,
-    });
-    setUser(sessionResponse.user);
-    return sessionResponse.user;
+  async function applySession(loggedInUser: AuthUser) {
+    setUser(loggedInUser);
+    return loggedInUser;
   }
 
   async function signIn(payload: LoginPayload) {
     try {
-      const sessionResponse = await loginAccount(payload);
-      return await applySession(sessionResponse);
+      const loggedInUser = await loginAccount(payload);
+      return await applySession(loggedInUser);
     } catch (caughtError) {
       throw new Error(
         getAuthApiErrorMessage(caughtError, translate, 'login', translate('login.genericError')),
@@ -96,8 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function refreshProfile() {
-    const refreshedUser = await loadCurrentUserOrClearSession();
-    setUser(refreshedUser);
+    setUser(await loadCurrentUserOrNull());
   }
 
   async function saveProfile(payload: UpdateProfilePayload) {

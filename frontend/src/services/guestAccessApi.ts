@@ -1,5 +1,5 @@
 import { apiClient } from '@/services/apiClient';
-import type { AuthSessionResponse } from '@/services/authApi';
+import type { AuthUser } from '@/services/authApi';
 import type { RsvpGuestLine, RsvpSubmitResponse } from '@/services/rsvpApi';
 
 export type GuestRsvpConfirmPayload = {
@@ -8,7 +8,7 @@ export type GuestRsvpConfirmPayload = {
 };
 
 export type GuestRsvpConfirmResult = {
-  session: AuthSessionResponse;
+  user: AuthUser;
   rsvp: RsvpSubmitResponse;
 };
 

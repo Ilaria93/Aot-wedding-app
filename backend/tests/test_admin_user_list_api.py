@@ -17,10 +17,35 @@ def test_admin_user_list_shows_registered_users(api_client, admin_headers, user_
     assert user_row["has_rsvp"] is False
 
 
-def test_admin_user_list_shows_user_with_confirmed_rsvp(api_client, admin_headers, user_headers):
-    api_client.post(
+def test_admin_user_list_shows_user_with_confirmed_rsvp(api_client, admin_headers):
+    # A shared client can only hold one cookie-based identity at a time, and
+    # this test needs the guest and the admin logged in simultaneously — give
+    # the guest its own isolated client instead of reusing user_headers here.
+    from datetime import datetime
+
+    from fastapi.testclient import TestClient
+
+    from database.base import SessionLocal
+    from main import app
+    from models.user_model import User
+    from services.auth_token_service import issue_auth_session
+
+    db = SessionLocal()
+    guest = User(first_name="Guest", last_name="Tester", email=None, password_hash=None, role="user", created_at=datetime.utcnow())
+    db.add(guest)
+    db.commit()
+    db.refresh(guest)
+    db.close()
+
+    db = SessionLocal()
+    db_guest = db.query(User).filter(User.id == guest.id).first()
+    session = issue_auth_session(db, db_guest, remember_me=False)
+    db.close()
+
+    guest_client = TestClient(app)
+    guest_client.cookies.set("access_token", session.access_token)
+    guest_client.post(
         "/rsvp/confirm",
-        headers=user_headers,
         json={
             "attending": True,
             "guests": [

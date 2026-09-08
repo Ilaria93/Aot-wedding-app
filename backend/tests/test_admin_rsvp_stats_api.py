@@ -2,31 +2,41 @@ from __future__ import annotations
 
 from datetime import datetime
 
+from fastapi.testclient import TestClient
+
 from database.base import SessionLocal
+from main import app
 from models.user_model import User
 from services.auth_credentials_service import hash_password
+from services.auth_token_service import issue_auth_session
 
 
-def _register_user(api_client, email: str, first_name: str, last_name: str):
+def _register_user(email: str, first_name: str, last_name: str):
     db = SessionLocal()
-    db.add(
-        User(
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password_hash=hash_password("strong-password"),
-            role="user",
-            created_at=datetime.utcnow(),
-        )
+    user = User(
+        first_name=first_name,
+        last_name=last_name,
+        email=email,
+        password_hash=hash_password("strong-password"),
+        role="user",
+        created_at=datetime.utcnow(),
     )
+    db.add(user)
     db.commit()
+    db.refresh(user)
     db.close()
 
-    response = api_client.post(
-        "/auth/login",
-        json={"email": email, "password": "strong-password", "remember_me": True},
-    )
-    return {"Authorization": f"Bearer {response.json()['access_token']}"}
+    db = SessionLocal()
+    db_user = db.query(User).filter(User.id == user.id).first()
+    session = issue_auth_session(db, db_user, remember_me=False)
+    db.close()
+
+    # A cookie-jar identity is per-client — give this user its own isolated
+    # client so it can act alongside the admin_headers session on api_client
+    # without either clobbering the other.
+    client = TestClient(app)
+    client.cookies.set("access_token", session.access_token)
+    return client
 
 
 def _attending_payload(guests: list | None = None):
@@ -55,12 +65,8 @@ def test_rsvp_stats_with_empty_db(api_client, admin_headers):
 
 
 def test_rsvp_stats_with_one_attending_user(api_client, admin_headers):
-    user_headers = _register_user(api_client, "levi@example.com", "Levi", "Ackerman")
-    api_client.post(
-        "/rsvp/confirm",
-        headers=user_headers,
-        json=_attending_payload(),
-    )
+    user_client = _register_user("levi@example.com", "Levi", "Ackerman")
+    user_client.post("/rsvp/confirm", json=_attending_payload())
 
     response = api_client.get("/admin/rsvp-stats", headers=admin_headers)
     data = response.json()
@@ -72,12 +78,8 @@ def test_rsvp_stats_with_one_attending_user(api_client, admin_headers):
 
 
 def test_rsvp_stats_with_not_attending_user(api_client, admin_headers):
-    user_headers = _register_user(api_client, "zeke@example.com", "Zeke", "Yeager")
-    api_client.post(
-        "/rsvp/confirm",
-        headers=user_headers,
-        json={"attending": False, "guests": []},
-    )
+    user_client = _register_user("zeke@example.com", "Zeke", "Yeager")
+    user_client.post("/rsvp/confirm", json={"attending": False, "guests": []})
 
     response = api_client.get("/admin/rsvp-stats", headers=admin_headers)
     data = response.json()
@@ -94,7 +96,7 @@ def test_rsvp_stats_counts_guests_per_faction(api_client, admin_headers):
         ("armin@example.com", "Armin", "Arlert", 1),
     ]
     for email, first_name, last_name, guest_count in users:
-        headers = _register_user(api_client, email, first_name, last_name)
+        user_client = _register_user(email, first_name, last_name)
         guests = [
             {
                 "first_name": f"{first_name}{index}",
@@ -104,11 +106,7 @@ def test_rsvp_stats_counts_guests_per_faction(api_client, admin_headers):
             }
             for index in range(guest_count)
         ]
-        api_client.post(
-            "/rsvp/confirm",
-            headers=headers,
-            json=_attending_payload(guests),
-        )
+        user_client.post("/rsvp/confirm", json=_attending_payload(guests))
 
     response = api_client.get("/admin/rsvp-stats", headers=admin_headers)
     data = response.json()

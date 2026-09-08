@@ -10,10 +10,10 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     first_name = Column(String(80), nullable=False)
     last_name = Column(String(80), nullable=False)
-    # Nullable: guest accounts created via the WhatsApp invite flow have
-    # neither an email nor a password (see services/guest_access_service.py)
-    # — the invite token is their only credential. Only admin accounts,
-    # seeded directly via scripts/seed_admin_users.py, set both.
+    # Nullable: guests (via a WhatsApp invite link, see
+    # services/guest_access_service.py) and the single shared admin account
+    # (unlocked by a passcode, see services/auth_service.py) neither have
+    # nor need one.
     email = Column(String(160), unique=True, index=True, nullable=True)
     phone = Column(String(30), nullable=True)
     password_hash = Column(String(255), nullable=True)

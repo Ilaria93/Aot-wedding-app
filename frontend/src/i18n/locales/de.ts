@@ -241,18 +241,16 @@ export const de = {
   login: {
     eyebrow: 'Anmeldung',
     title: 'Melde dich auf der Website an.',
-    subtitle:
-      'Gib die E-Mail und das Passwort deines Kontos ein. Deine Rolle wird automatisch erkannt.',
+    subtitle: 'Gib den geheimen Code ein, um euch als Brautpaar anzumelden.',
     sectionLabel: 'Wer bist du?',
+    secretLabel: 'Geheimer Code',
     rememberMe: 'Angemeldet bleiben',
     submitLabel: 'Anmelden',
     submitLoading: 'Anmeldung läuft...',
     genericError: 'Anmeldung fehlgeschlagen.',
-    forgotPasswordLink: 'Passwort vergessen?',
     validation: {
-      emailInvalid: 'Gib eine gültige E-Mail-Adresse ein.',
-      passwordRequired: 'Gib dein Passwort ein.',
-      invalidCredentials: 'E-Mail oder Passwort ist falsch.',
+      secretRequired: 'Gib den geheimen Code ein.',
+      invalidCredentials: 'Code ist falsch.',
     },
     unauthorizedAdminError:
       'Dieser Zugang ist nur für Braut und Bräutigam. Verwende ein autorisiertes Konto.',
@@ -316,7 +314,6 @@ export const de = {
     updateError: 'Aktualisierung fehlgeschlagen.',
     updateButton: 'Profil aktualisieren',
     updateLoading: 'Wird gespeichert...',
-    emailLabel: 'E-Mail',
     roleLabel: 'Rolle',
     signOut: 'Abmelden',
   },
@@ -455,6 +452,15 @@ export const de = {
       'Die kostenlosen Kapitel sind begrenzt: Sie sind der günstigste Weg, in die Geschichte hineinzuschnuppern, nicht sie ganz zu lesen.',
   },
   admin: {
+    nav: {
+      label: 'Admin-Bereiche',
+      rsvp: 'RSVP',
+      contacts: 'Kontakte',
+      gallery: 'Galerie',
+    },
+    placeholder: {
+      comingSoon: 'Dieser Bereich kommt bald.',
+    },
     photoStatuses: {
       approved: 'Freigegeben',
       rejected: 'Abgelehnt',

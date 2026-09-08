@@ -242,18 +242,16 @@ export const it = {
   login: {
     eyebrow: 'Accesso',
     title: 'Accedi al sito.',
-    subtitle:
-      'Inserisci email e password del tuo account. Il ruolo verra riconosciuto automaticamente.',
+    subtitle: 'Inserisci il codice segreto per accedere come sposi.',
     sectionLabel: 'Chi sei?',
+    secretLabel: 'Codice segreto',
     rememberMe: 'Resta connesso',
     submitLabel: 'Accedi',
     submitLoading: 'Accesso in corso...',
     genericError: 'Accesso non riuscito.',
-    forgotPasswordLink: 'Password dimenticata?',
     validation: {
-      emailInvalid: 'Inserisci un indirizzo email valido.',
-      passwordRequired: 'Inserisci la password.',
-      invalidCredentials: 'Email o password non corretti.',
+      secretRequired: 'Inserisci il codice segreto.',
+      invalidCredentials: 'Codice non valido.',
     },
     unauthorizedAdminError:
       'Questo accesso è riservato a sposo e sposa. Usa un account autorizzato.',
@@ -316,7 +314,6 @@ export const it = {
     updateError: 'Aggiornamento non riuscito.',
     updateButton: 'Aggiorna profilo',
     updateLoading: 'Salvataggio...',
-    emailLabel: 'Email',
     roleLabel: 'Ruolo',
     signOut: 'Esci',
   },
@@ -453,6 +450,15 @@ export const it = {
       'I capitoli gratuiti sono limitati: sono il modo più economico per assaggiare la storia, non per leggerla tutta.',
   },
   admin: {
+    nav: {
+      label: 'Sezioni admin',
+      rsvp: 'RSVP',
+      contacts: 'Contatti',
+      gallery: 'Galleria',
+    },
+    placeholder: {
+      comingSoon: 'Sezione in arrivo.',
+    },
     photoStatuses: {
       approved: 'Approvata',
       rejected: 'Rifiutata',
