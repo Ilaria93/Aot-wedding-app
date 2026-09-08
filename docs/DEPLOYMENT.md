@@ -63,6 +63,20 @@ inserire a mano nella dashboard Render — non sono committati.
    `/invito/<token>` generato con
    `backend/scripts/generate_invite_links.py` puntato al DB Neon.
 
+## Dare accesso a un'altra persona
+
+- **Neon** → non serve un piano a pagamento né un'organizzazione. Console →
+  apri il progetto → **Settings → Collaborators → Invite**. La persona
+  invitata deve avere (o crearsi) un account Neon, va bene anche il piano
+  gratuito.
+- **Render** → i membri del team richiedono il piano **Pro (25$/mese)** o
+  superiore — il piano free "Hobby" non permette di invitare nessuno.
+  In alternativa, dato che il deploy parte da un push su GitHub, spesso
+  basta dare accesso al **repository GitHub**: chi deve intervenire lavora
+  lì, senza bisogno di entrare nella dashboard Render.
+- **Cloudflare** → è a livello di account, non del singolo bucket R2:
+  **Manage Account → Members → Invite**.
+
 ## Dominio personalizzato
 
 Non necessario per il weekend — si può partire con i sottodomini

@@ -1,6 +1,7 @@
 import hashlib
 import hmac
 import secrets
+from typing import Optional
 
 PASSWORD_HASH_ITERATIONS = 390000
 
@@ -20,7 +21,12 @@ def hash_password(password: str) -> str:
     return f"pbkdf2_sha256${PASSWORD_HASH_ITERATIONS}${salt}${digest}"
 
 
-def verify_password(password: str, stored_password_hash: str) -> bool:
+def verify_password(password: str, stored_password_hash: Optional[str]) -> bool:
+    # Passwordless guest accounts (WhatsApp invite flow) store NULL here — they
+    # can never authenticate by password, but must fail as plain bad credentials
+    # rather than crashing, or the 500-vs-401 split leaks which emails are guests.
+    if not stored_password_hash:
+        return False
     try:
         algorithm, iterations, salt, digest = stored_password_hash.split("$", 3)
         if algorithm != "pbkdf2_sha256":

@@ -60,3 +60,8 @@ export async function completePhotoUpload(
   const { data } = await apiClient.post<PhotoUploadCompleteResponse>('/photos/complete-upload', payload);
   return data;
 }
+
+// Removes a photo from the album and its storage — admin only.
+export async function deleteAdminPhoto(photoId: number): Promise<void> {
+  await apiClient.delete(`/admin/photos/${photoId}`);
+}

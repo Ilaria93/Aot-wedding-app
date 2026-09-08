@@ -1,11 +1,9 @@
-from typing import Annotated, Optional
-
-from fastapi import Depends, HTTPException, Security, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastapi import Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from database.base import get_db
 from models.user_model import User
+from services.auth_cookie_service import ACCESS_TOKEN_COOKIE
 from services.auth_service import (
     AuthPermissionError,
     AuthValidationError,
@@ -13,22 +11,18 @@ from services.auth_service import (
     require_admin_role,
 )
 
-bearer_scheme = HTTPBearer(auto_error=False, description="Bearer access token returned by /auth/login.")
 
-
-# Resolves the currently authenticated user from the bearer access token.
-def require_current_user(
-    credentials: Annotated[Optional[HTTPAuthorizationCredentials], Security(bearer_scheme)],
-    db: Session = Depends(get_db),
-) -> User:
-    if credentials is None or credentials.scheme.lower() != "bearer":
+# Resolves the currently authenticated user from the httpOnly access-token cookie.
+def require_current_user(request: Request, db: Session = Depends(get_db)) -> User:
+    access_token = request.cookies.get(ACCESS_TOKEN_COOKIE)
+    if not access_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Missing bearer access token.",
+            detail="Missing access token.",
         )
 
     try:
-        return get_user_by_access_token(db, credentials.credentials)
+        return get_user_by_access_token(db, access_token)
     except AuthValidationError as error:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

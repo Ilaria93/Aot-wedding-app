@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from pathlib import Path
 
 TEST_DATABASE_URL = os.environ.setdefault(
@@ -7,7 +8,6 @@ TEST_DATABASE_URL = os.environ.setdefault(
 )
 os.environ["DATABASE_URL"] = TEST_DATABASE_URL
 os.environ["JWT_SECRET_KEY"] = "test-jwt-secret-key-for-local-tests"
-os.environ["WEDDING_ROLE_SECRET"] = "test-wedding-role-secret"
 os.environ["S3_BUCKET_NAME"] = "test-wedding-album"
 os.environ["S3_REGION"] = "eu-central-1"
 os.environ["S3_ACCESS_KEY_ID"] = "test-access-key"
@@ -23,8 +23,9 @@ from database.postgres_admin import ensure_database_exists
 
 ensure_database_exists(TEST_DATABASE_URL)
 
-from database.base import engine
+from database.base import engine, SessionLocal
 from main import app
+from models.user_model import User
 from sqlalchemy import text
 
 ALEMBIC_INI_PATH = Path(__file__).resolve().parents[1] / "alembic.ini"
@@ -47,6 +48,7 @@ def truncate_test_tables():
             text(
                 """
                 TRUNCATE TABLE
+                    invite_links,
                     refresh_token_sessions,
                     photo_album_items,
                     rsvp_guests,
@@ -77,35 +79,52 @@ def api_client():
 
 
 @pytest.fixture
-def admin_headers(api_client):
+def admin_headers(api_client, monkeypatch):
+    # The single admin account is unlocked by a shared passcode
+    # (WEDDING_ADMIN_SECRET) and provisioned on first login — nothing to
+    # insert into the DB beforehand.
+    monkeypatch.setattr("services.auth_service.read_wedding_admin_secret", lambda: "test-wedding-secret")
+
+    # Logging in via the shared api_client stores the session in its cookie
+    # jar — every later request made with that same client is authenticated
+    # automatically, no header needed. Callers still pass `headers=admin_headers`
+    # for symmetry with the old Bearer-header days; it's just empty now.
     response = api_client.post(
-        "/auth/register",
-        json={
-            "first_name": "Ilaria",
-            "last_name": "Admin",
-            "email": "admin@test.app",
-            "password": "super-secure-password",
-            "role_secret": "test-wedding-role-secret",
-            "remember_me": True,
-        },
+        "/auth/login",
+        json={"secret": "test-wedding-secret", "remember_me": True},
     )
     assert response.status_code == 200, response.text
-    access_token = response.json()["access_token"]
-    return {"Authorization": f"Bearer {access_token}"}
+    return {}
 
 
 @pytest.fixture
 def user_headers(api_client):
-    response = api_client.post(
-        "/auth/register",
-        json={
-            "first_name": "Guest",
-            "last_name": "Tester",
-            "email": "user@test.app",
-            "password": "super-secure-password",
-            "remember_me": False,
-        },
+    # A plain (non-admin) authenticated user for tests that don't care how
+    # the session was created — guest accounts normally come from an invite
+    # link, not from a direct DB insert, but tests only need a valid session.
+    db = SessionLocal()
+    user = User(
+        first_name="Guest",
+        last_name="Tester",
+        email=None,
+        password_hash=None,
+        role="user",
+        created_at=datetime.utcnow(),
     )
-    assert response.status_code == 200, response.text
-    access_token = response.json()["access_token"]
-    return {"Authorization": f"Bearer {access_token}"}
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    db.close()
+
+    from services.auth_token_service import issue_auth_session
+
+    db = SessionLocal()
+    db_user = db.query(User).filter(User.id == user.id).first()
+    session = issue_auth_session(db, db_user, remember_me=False)
+    db.close()
+
+    # No login endpoint for guests to call — set the cookie directly on the
+    # shared client's cookie jar instead of going through a request.
+    api_client.cookies.set("access_token", session.access_token)
+    api_client.cookies.set("refresh_token", session.refresh_token)
+    return {}

@@ -16,6 +16,12 @@ describe('authRouteAccess', () => {
     expect(requiresAuthentication('/travel', true)).toBe(true);
   });
 
+  it('always protects every admin sub-route even in dev unlock mode', () => {
+    expect(requiresAuthentication('/admin/rsvp', true)).toBe(true);
+    expect(requiresAuthentication('/admin/contacts', true)).toBe(true);
+    expect(requiresAuthentication('/admin/gallery', true)).toBe(true);
+  });
+
   it('allows public routes when dev unlock is enabled', () => {
     expect(requiresAuthentication('/album', true)).toBe(false);
     expect(requiresAuthentication('/tema', true)).toBe(false);

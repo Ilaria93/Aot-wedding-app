@@ -1,22 +1,17 @@
 import axios from 'axios';
 
 import { apiBaseUrl } from '@/constants/apiConfig';
-import { getAccessToken, refreshAccessToken } from '@/services/authSession';
+import { refreshAccessToken } from '@/services/authSession';
 
-// Shared HTTP client for all backend calls.
+// Shared HTTP client for all backend calls. Auth tokens ride in httpOnly
+// cookies (withCredentials sends/receives them automatically) — no header to
+// attach here.
 export const apiClient = axios.create({
   baseURL: apiBaseUrl,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
-});
-
-apiClient.interceptors.request.use((config) => {
-  const accessToken = getAccessToken();
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
-  return config;
 });
 
 apiClient.interceptors.response.use(
@@ -27,7 +22,6 @@ apiClient.interceptors.response.use(
 
     const isAuthEndpoint =
       requestUrl.includes('/auth/login') ||
-      requestUrl.includes('/auth/register') ||
       requestUrl.includes('/auth/refresh') ||
       requestUrl.includes('/auth/logout');
 
@@ -40,13 +34,12 @@ apiClient.interceptors.response.use(
     }
 
     originalRequest._retry = true;
-    const refreshedAccessToken = await refreshAccessToken();
+    const refreshed = await refreshAccessToken();
 
-    if (!refreshedAccessToken) {
+    if (!refreshed) {
       return Promise.reject(error);
     }
 
-    originalRequest.headers.Authorization = `Bearer ${refreshedAccessToken}`;
     return apiClient(originalRequest);
   },
 );

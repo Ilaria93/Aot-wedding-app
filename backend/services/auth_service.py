@@ -1,18 +1,11 @@
-from datetime import datetime
 import hmac
+from datetime import datetime
 
 from sqlalchemy.orm import Session
 
-from constants.auth_error_codes import EMAIL_TAKEN, INVALID_CREDENTIALS, INVALID_ROLE_SECRET
+from constants.auth_error_codes import INVALID_CREDENTIALS
 from models.user_model import User
-from schemas.auth_schema import (
-    AuthLoginRequest,
-    AuthRegisterRequest,
-    AuthSessionResponse,
-    ProfileUpdateRequest,
-    UserRoleEnum,
-)
-from services.auth_credentials_service import hash_password, normalize_email, verify_password
+from schemas.auth_schema import AuthLoginRequest, AuthSessionResponse, ProfileUpdateRequest, UserRoleEnum
 from services.auth_errors import AuthConfigError, AuthPermissionError, AuthValidationError
 from services.auth_token_service import (
     decode_token,
@@ -23,19 +16,18 @@ from services.auth_token_service import (
     refresh_auth_session,
     serialize_user,
 )
-from settings import read_wedding_role_secret
+from settings import read_wedding_admin_secret
 
 __all__ = [
     "AuthConfigError",
     "AuthPermissionError",
     "AuthValidationError",
-    "authenticate_user",
+    "authenticate_admin",
     "decode_token",
     "get_user_by_access_token",
     "issue_auth_session",
     "logout_refresh_session",
     "refresh_auth_session",
-    "register_user",
     "require_admin_role",
     "serialize_user",
     "update_user_profile",
@@ -44,46 +36,38 @@ __all__ = [
 PRIVILEGED_USER_ROLES = {UserRoleEnum.admin.value}
 
 
-def _resolve_registration_role(payload: AuthRegisterRequest) -> str:
-    provided_secret = (payload.role_secret or "").strip()
-    if not provided_secret:
-        return UserRoleEnum.user.value
+def _get_or_create_admin_user(db: Session) -> User:
+    """There is exactly one admin identity, shared by both spouses — get it,
+    or provision it on the very first successful login."""
+    user = db.query(User).filter(User.role == UserRoleEnum.admin.value).first()
+    if user:
+        return user
 
-    expected_secret = read_wedding_role_secret()
-    if not expected_secret or not hmac.compare_digest(provided_secret, expected_secret):
-        raise AuthValidationError("Invalid role secret.", code=INVALID_ROLE_SECRET)
-    return UserRoleEnum.admin.value
-
-
-def register_user(db: Session, payload: AuthRegisterRequest) -> AuthSessionResponse:
-    ensure_auth_configuration()
-    normalized_email = normalize_email(payload.email)
-    existing_user = db.query(User).filter(User.email == normalized_email).first()
-    if existing_user:
-        raise AuthValidationError("An account with this email already exists.", code=EMAIL_TAKEN)
-
-    created_user = User(
-        first_name=payload.first_name.strip(),
-        last_name=payload.last_name.strip(),
-        email=normalized_email,
-        password_hash=hash_password(payload.password),
-        role=_resolve_registration_role(payload),
+    user = User(
+        first_name="Sposi",
+        last_name="",
+        email=None,
+        password_hash=None,
+        role=UserRoleEnum.admin.value,
         created_at=datetime.utcnow(),
-        last_login_at=datetime.utcnow(),
     )
-    db.add(created_user)
+    db.add(user)
     db.commit()
-    db.refresh(created_user)
-    return issue_auth_session(db, created_user, payload.remember_me)
+    db.refresh(user)
+    return user
 
 
-def authenticate_user(db: Session, payload: AuthLoginRequest) -> AuthSessionResponse:
+# Unlocks the single shared admin account with a passcode set via the
+# WEDDING_ADMIN_SECRET env var — there is no per-person credential, and both
+# spouses use the same one. Guests never have a password at all — see
+# services/guest_access_service.py.
+def authenticate_admin(db: Session, payload: AuthLoginRequest) -> AuthSessionResponse:
     ensure_auth_configuration()
-    normalized_email = normalize_email(payload.email)
-    user = db.query(User).filter(User.email == normalized_email).first()
-    if not user or not verify_password(payload.password, user.password_hash):
-        raise AuthValidationError("Invalid email or password.", code=INVALID_CREDENTIALS)
+    configured_secret = read_wedding_admin_secret()
+    if not configured_secret or not hmac.compare_digest(payload.secret, configured_secret):
+        raise AuthValidationError("Invalid secret.", code=INVALID_CREDENTIALS)
 
+    user = _get_or_create_admin_user(db)
     user.last_login_at = datetime.utcnow()
     db.commit()
     db.refresh(user)

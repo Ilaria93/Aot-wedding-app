@@ -1,21 +1,20 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-import { AuthPageShell } from '@/components/AuthExperience';
 import { RememberMeToggle } from '@/components/RememberMeToggle';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
 import type { LoginLocationState } from '@/pages/LoginPage/types/LoginPage.types';
+import './styles/LoginPage.scss';
 
-/** Login screen that restores the user session and role. */
+/** Admin-only login screen — one shared passcode unlocks the couple's account. */
 export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const redirectTarget = (location.state as LoginLocationState | null)?.from ?? '/';
   const { signIn } = useAuth();
   const { t } = useI18n();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [secret, setSecret] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +24,7 @@ export function LoginPage() {
     try {
       setSubmitting(true);
       setError(null);
-      await signIn({ email: email.trim(), password, remember_me: rememberMe });
+      await signIn({ secret, remember_me: rememberMe });
       navigate(redirectTarget, { replace: true });
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : t('login.genericError'));
@@ -35,62 +34,35 @@ export function LoginPage() {
   }
 
   return (
-    <AuthPageShell variant="login">
-      <form className="auth-form" onSubmit={(event) => void handleLogin(event)}>
-        <header className="auth-form__header">
-          <h2 className="obw-display obw-display--sm">{t('login.title')}</h2>
-          <p className="obw-body">{t('login.subtitle')}</p>
-        </header>
+    <div className="login-page">
+      <div className="login-card">
+        <span className="login-card__kicker">{t('auth.experience.login.seriesTitle')}</span>
+        <p className="login-card__brand">{t('login.title')}</p>
+        <p className="login-card__sub">{t('login.subtitle')}</p>
 
-        <div className="auth-form__fields">
-          <label className="obw-field auth-form__field--stagger" htmlFor="login-email">
-            <span className="obw-field-label">{t('common.fields.email')}</span>
+        <form onSubmit={(event) => void handleLogin(event)}>
+          <label className="login-field" htmlFor="login-secret">
+            <span className="login-field__label">{t('login.secretLabel')}</span>
             <input
-              id="login-email"
-              className="obw-input"
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-            />
-          </label>
-
-          <label className="obw-field auth-form__field--stagger" htmlFor="login-password">
-            <span className="obw-field-label">{t('common.fields.password')}</span>
-            <input
-              id="login-password"
-              className="obw-input"
+              id="login-secret"
               type="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
+              autoComplete="off"
+              value={secret}
+              onChange={(event) => setSecret(event.target.value)}
             />
           </label>
-        </div>
 
-        <div className="auth-form__remember">
-          <RememberMeToggle
-            checked={rememberMe}
-            label={t('login.rememberMe')}
-            onChange={setRememberMe}
-          />
-        </div>
+          <div className="login-remember">
+            <RememberMeToggle checked={rememberMe} label={t('login.rememberMe')} onChange={setRememberMe} />
+          </div>
 
-        {error ? <p className="auth-form__error">{error}</p> : null}
+          {error ? <p className="login-error">{error}</p> : null}
 
-        <button
-          type="submit"
-          className="obw-btn obw-btn--primary obw-btn--block auth-form__submit"
-          disabled={submitting}>
-          {submitting ? t('login.submitLoading') : t('login.submitLabel')}
-        </button>
-
-        <p className="auth-form__footer">
-          <Link className="auth-form__footer-link" to="/auth/register" state={{ from: redirectTarget }}>
-            {t('login.registerLink')}
-          </Link>
-        </p>
-      </form>
-    </AuthPageShell>
+          <button className="login-btn" type="submit" disabled={submitting}>
+            {submitting ? t('login.submitLoading') : t('login.submitLabel')}
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }

@@ -1,0 +1,308 @@
+/* Envelope invite — pure CSS. One class toggle (.envelope-invite--open) drives
+   every step below through transition-delay chaining; no JS timers, no
+   animation library. Sits over the global sunset artwork (body::before in
+   index.css) on purpose — no background of its own. */
+
+.envelope-invite {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--obw-space-md);
+  padding: var(--obw-space-lg) var(--obw-space-md);
+  text-align: center;
+}
+
+/* Full-screen opening video — the seal-break/flap/parchment-slide-out is
+   baked into the footage, not built from CSS layers.
+   Stays fully opaque forever, even after the letter opens — it never fades
+   itself. Its last frame is the same parchment art as the letter's own
+   background, so it works as a solid backstop underneath the letter's own
+   fade-in. (Fading both layers at once, video-out and letter-in on the same
+   clock, sounds symmetric but isn't: at the midpoint neither is fully
+   opaque, and the page's own hero background bleeds through both — this
+   avoids that by never letting the video become anything less than 100%
+   covering.) */
+.envelope-invite__stage {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  background: var(--obw-charcoal-deep);
+}
+
+/* Whole sealed envelope visible, nothing cropped, while it's actually an
+   envelope on screen — object-fit stays `contain` for the video's whole
+   life, it's never switched (browsers snap object-fit changes instantly,
+   which read as a jump cut no matter how well-timed). Filling the screen
+   like `cover` at the end is done below with an animated transform
+   instead, which *does* interpolate smoothly. */
+.envelope-invite__opener-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1);
+  transition: transform 4000ms var(--obw-ease-out);
+}
+
+/* EnvelopeInvite.tsx sets --zoom-scale (contain→cover ratio for the actual
+   screen) and adds this class once playback passes ZOOM_START_SECONDS —
+   the video grows smoothly to fill the viewport, landing exactly at the
+   letter's own `cover` scale by the time the clip ends. */
+.envelope-invite__opener-video--zoomed {
+  transform: scale(var(--zoom-scale, 1));
+}
+
+.envelope-invite__video-trigger {
+  position: absolute;
+  inset: 0;
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* ─── The letter (revealed) ─────────────────────────────── */
+
+/* Breaks out of the small envelope stage to take over the whole screen —
+   the letter should dominate, not sit in the same 380px box the envelope
+   was folded into. */
+.envelope-invite__letter {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--obw-space-xl);
+  padding: clamp(1.5rem, 6vw, 3rem) clamp(1.25rem, 6vw, 2.5rem) clamp(2.5rem, 10vh, 4.5rem);
+  /* Aged-paper texture behind the text, with a bone-tinted veil on top —
+     the raw photo's stains/burnt edges kill contrast on their own, the veil
+     evens it out while still letting the grain show through.
+     background-attachment stays at its default (scroll, i.e. fixed to this
+     box) — the box itself is the viewport-sized fixed container, not the
+     scrolled content, so the parchment stays put as a backdrop while the
+     letter scrolls over it. */
+  background-color: var(--obw-bone);
+  background-image:
+    linear-gradient(
+      color-mix(in srgb, var(--obw-bone) 72%, transparent),
+      color-mix(in srgb, var(--obw-bone) 72%, transparent)
+    ),
+    url('/assets/wedding/letter.webp');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  color: var(--obw-charcoal-deep);
+  opacity: 0;
+  pointer-events: none;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  transition: opacity 600ms var(--obw-ease-out);
+}
+
+.envelope-invite--open .envelope-invite__letter {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.envelope-invite__letter-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 14px;
+  max-width: 32rem;
+  padding-top: clamp(1rem, 6vh, 3rem);
+}
+
+/* Text is revealed character-by-character in EnvelopeInvite.tsx (each line
+   typed in turn), not faded in — these elements just need to not collapse
+   to zero height while empty. */
+.envelope-invite__letter-content > * {
+  min-height: 1.4em;
+}
+
+/* Blinking caret on whichever line is currently mid-type, removed once that
+   line finishes and moves to the next. */
+.envelope-invite__letter-content > .is-typing::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 0.9em;
+  margin-left: 2px;
+  vertical-align: -0.1em;
+  background: currentColor;
+  animation: envelope-invite-caret-blink 0.85s steps(2, jump-none) infinite;
+}
+
+@keyframes envelope-invite-caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Everything below the header fold reveals as one block once the letter has
+   finished typing — staggering every line of a full-day schedule would drag
+   the reveal out for content the guest has to scroll to see anyway. */
+.envelope-invite__sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--obw-space-xl);
+  width: 100%;
+  max-width: 26rem;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 500ms var(--obw-ease-out),
+    transform 500ms var(--obw-ease-out);
+}
+
+.envelope-invite__sections--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.envelope-invite__section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-top: var(--obw-space-lg);
+  border-top: 1px solid color-mix(in srgb, var(--obw-charcoal-deep) 14%, transparent);
+  text-align: center;
+}
+
+.envelope-invite__section-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.4rem, 4vw, 1.9rem);
+  color: var(--obw-charcoal-deep);
+}
+
+/* Scoped under the letter, not just the bare class — .obw-display/.obw-body
+   set light theme colors at the same specificity, and import order let them
+   win, leaving cream text on this card's cream background. */
+.envelope-invite__letter .envelope-invite__greeting {
+  margin: 0;
+  color: var(--obw-charcoal-deep);
+  text-shadow: none;
+}
+
+.envelope-invite__letter .envelope-invite__body-text {
+  margin: 0;
+  color: color-mix(in srgb, var(--obw-charcoal-deep) 78%, transparent);
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+}
+
+.envelope-invite__personal-greeting {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--obw-charcoal-deep) 55%, transparent);
+}
+
+.envelope-invite__couple-names {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 5vw, 2.1rem);
+  color: var(--obw-charcoal-deep);
+}
+
+.envelope-invite__details {
+  margin: 0;
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-size: clamp(0.85rem, 1.8vw, 1rem);
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--obw-charcoal-deep) 70%, transparent);
+  white-space: pre-line;
+}
+
+.envelope-invite__ceremony-start {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  color: var(--obw-gold-dim);
+}
+
+/* ─── RSVP ───────────────────────────────────────────────── */
+
+.envelope-invite__rsvp-note {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--obw-charcoal-deep) 62%, transparent);
+}
+
+.envelope-invite__rsvp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* ─── Footer: link back to the full site ────────────────────── */
+
+.envelope-invite__section--more-info {
+  gap: 10px;
+}
+
+.envelope-invite__more-info-text {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: color-mix(in srgb, var(--obw-charcoal-deep) 62%, transparent);
+}
+
+/* `.obw-btn--secondary` is styled for the site's dark surfaces (light border,
+   light text) — same specificity trap as .obw-display/.obw-body above, so it
+   needs the same letter-scoped override to read on this cream card. */
+.envelope-invite__letter .obw-btn--secondary {
+  border-color: color-mix(in srgb, var(--obw-charcoal-deep) 35%, transparent);
+  color: var(--obw-charcoal-deep);
+}
+
+.envelope-invite__letter .obw-btn--secondary:hover {
+  border-color: var(--obw-charcoal-deep);
+  background: color-mix(in srgb, var(--obw-charcoal-deep) 6%, transparent);
+  color: var(--obw-charcoal-deep);
+}
+
+/* Fixed above the full-screen stage (z-index 1) — a static sibling would
+   otherwise paint underneath it. */
+.envelope-invite__hint {
+  position: fixed;
+  left: 50%;
+  bottom: clamp(1.5rem, 6vh, 3rem);
+  z-index: 10;
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--obw-text-muted);
+  text-shadow: 0 1px 12px rgba(28, 14, 13, 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .envelope-invite__letter,
+  .envelope-invite__sections,
+  .envelope-invite__opener-video {
+    transition: none;
+  }
+
+  .envelope-invite__letter-content > .is-typing::after {
+    animation: none;
+  }
+}

@@ -1,23 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 
 from database.base import get_db
 from dependencies.auth_user_dependency import require_current_user
 from models.user_model import User
-from schemas.auth_schema import (
-    AuthLoginRequest,
-    AuthLogoutResponse,
-    AuthRefreshRequest,
-    AuthRegisterRequest,
-    AuthSessionResponse,
-    AuthUserResponse,
-    ProfileUpdateRequest,
-)
+from schemas.auth_schema import AuthLoginRequest, AuthLogoutResponse, AuthUserResponse, ProfileUpdateRequest
+from services.auth_cookie_service import REFRESH_TOKEN_COOKIE, clear_auth_cookies, set_auth_cookies
 from services.auth_service import (
     AuthValidationError,
-    authenticate_user,
+    authenticate_admin,
     logout_refresh_session,
-    register_user,
     refresh_auth_session,
     serialize_user,
     update_user_profile,
@@ -32,31 +24,31 @@ def _auth_error_detail(error: AuthValidationError) -> dict[str, str]:
     return {"code": error.code, "message": str(error)}
 
 
-# Registers a new account and immediately returns an authenticated session.
-@router.post("/register", response_model=AuthSessionResponse)
-def register_auth_user(payload: AuthRegisterRequest, db: Session = Depends(get_db)):
+# Unlocks the single shared admin account with the WEDDING_ADMIN_SECRET
+# passcode — no per-person credential, no public registration endpoint.
+# Tokens go in httpOnly cookies, never in the response body.
+@router.post("/login", response_model=AuthUserResponse)
+def login_auth_user(payload: AuthLoginRequest, response: Response, db: Session = Depends(get_db)):
     try:
-        return register_user(db, payload)
-    except AuthValidationError as error:
-        raise HTTPException(status_code=400, detail=_auth_error_detail(error)) from error
-
-
-# Logs in an existing account and returns fresh access and refresh tokens.
-@router.post("/login", response_model=AuthSessionResponse)
-def login_auth_user(payload: AuthLoginRequest, db: Session = Depends(get_db)):
-    try:
-        return authenticate_user(db, payload)
+        session = authenticate_admin(db, payload)
     except AuthValidationError as error:
         raise HTTPException(status_code=401, detail=_auth_error_detail(error)) from error
+    set_auth_cookies(response, session)
+    return session.user
 
 
-# Rotates the refresh session and returns a new token pair.
-@router.post("/refresh", response_model=AuthSessionResponse)
-def refresh_auth_tokens(payload: AuthRefreshRequest, db: Session = Depends(get_db)):
+# Rotates the refresh session using the refresh-token cookie, and sets fresh cookies.
+@router.post("/refresh", response_model=AuthUserResponse)
+def refresh_auth_tokens(request: Request, response: Response, db: Session = Depends(get_db)):
+    refresh_token = request.cookies.get(REFRESH_TOKEN_COOKIE)
+    if not refresh_token:
+        raise HTTPException(status_code=401, detail={"code": "INVALID_CREDENTIALS", "message": "Missing refresh token."})
     try:
-        return refresh_auth_session(db, payload.refresh_token)
+        session = refresh_auth_session(db, refresh_token)
     except AuthValidationError as error:
         raise HTTPException(status_code=401, detail=_auth_error_detail(error)) from error
+    set_auth_cookies(response, session)
+    return session.user
 
 
 # Returns the profile of the currently authenticated user.
@@ -76,12 +68,14 @@ def update_current_profile(
     return serialize_user(updated_user)
 
 
-# Revokes the current refresh token session on logout.
+# Revokes the current refresh token session and clears both cookies.
 @router.post("/logout", response_model=AuthLogoutResponse)
-def logout_auth_user(payload: AuthRefreshRequest, db: Session = Depends(get_db)):
-    try:
-        logout_refresh_session(db, payload.refresh_token)
-    except AuthValidationError:
-        # Logout should stay idempotent even if the client sends a stale token.
-        return AuthLogoutResponse(ok=True)
+def logout_auth_user(request: Request, response: Response, db: Session = Depends(get_db)):
+    refresh_token = request.cookies.get(REFRESH_TOKEN_COOKIE)
+    if refresh_token:
+        try:
+            logout_refresh_session(db, refresh_token)
+        except AuthValidationError:
+            pass  # Logout stays idempotent even if the cookie holds a stale token.
+    clear_auth_cookies(response)
     return AuthLogoutResponse(ok=True)

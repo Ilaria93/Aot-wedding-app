@@ -5,18 +5,24 @@ const PUBLIC_PATHS = new Set([
   '/album',
   '/tema',
   '/auth/login',
-  '/auth/register',
   ...DEV_PUBLIC_PATHS,
 ]);
-const ALWAYS_PROTECTED_PATHS = new Set(['/profile', '/admin', '/rsvp', '/travel']);
+// Prefix, not exact match: the token segment is different for every guest link.
+const PUBLIC_PATH_PREFIXES = ['/invito/'];
+const ALWAYS_PROTECTED_PATHS = new Set(['/profile', '/rsvp', '/travel']);
+// Prefix: /admin has sub-routes (rsvp/contacts/gallery) that must stay just as protected.
+const ALWAYS_PROTECTED_PATH_PREFIXES = ['/admin'];
 
 export function isPublicPath(pathname: string) {
-  return PUBLIC_PATHS.has(pathname);
+  return PUBLIC_PATHS.has(pathname) || PUBLIC_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 }
 
 /** Whether an unauthenticated user must be sent to login for this path. */
 export function requiresAuthentication(pathname: string, devUnlockAllRoutes: boolean) {
-  if (ALWAYS_PROTECTED_PATHS.has(pathname)) {
+  if (
+    ALWAYS_PROTECTED_PATHS.has(pathname) ||
+    ALWAYS_PROTECTED_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix))
+  ) {
     return true;
   }
 

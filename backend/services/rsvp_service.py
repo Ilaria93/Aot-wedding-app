@@ -33,7 +33,7 @@ def format_user_full_name(user: User) -> str:
     return f"{user.first_name} {user.last_name}".strip()
 
 
-def _assert_editable_window() -> None:
+def assert_rsvp_editable_window() -> None:
     if not is_rsvp_editable(datetime.now(tz=ZoneInfo("Europe/Rome"))):
         raise RsvpDeadlineError("RSVP can no longer be modified.")
 
@@ -109,7 +109,7 @@ def get_rsvp_for_user(db: Session, user: User) -> RsvpMeResponse:
 
 
 def confirm_rsvp_for_user(db: Session, user: User, payload: RSVPSubmitRequest) -> RsvpSubmitResponse:
-    _assert_editable_window()
+    assert_rsvp_editable_window()
 
     existing = db.query(RSVP).filter(RSVP.user_id == user.id).first()
     if existing:
@@ -124,7 +124,7 @@ def confirm_rsvp_for_user(db: Session, user: User, payload: RSVPSubmitRequest) -
 
 
 def update_rsvp_for_user(db: Session, user: User, payload: RSVPSubmitRequest) -> RsvpSubmitResponse:
-    _assert_editable_window()
+    assert_rsvp_editable_window()
 
     rsvp = db.query(RSVP).filter(RSVP.user_id == user.id).first()
     if not rsvp:

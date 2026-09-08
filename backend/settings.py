@@ -27,6 +27,11 @@ def read_jwt_secret_key() -> str:
     return os.getenv("JWT_SECRET_KEY", "").strip()
 
 
+def read_wedding_admin_secret() -> str:
+    """Shared passcode that logs either spouse into the single admin account."""
+    return os.getenv("WEDDING_ADMIN_SECRET", "").strip()
+
+
 def read_access_token_expiration_minutes() -> int:
     """Short-lived access token lifetime in minutes."""
     raw_value = os.getenv("ACCESS_TOKEN_EXPIRES_MINUTES", "30").strip()
@@ -65,6 +70,11 @@ def read_cors_allow_origins() -> list[str]:
         "http://localhost:5173",
         "http://127.0.0.1:5173",
     ]
+
+
+def read_cookie_secure() -> bool:
+    """Whether auth cookies require HTTPS. Set to true in production (Render)."""
+    return os.getenv("COOKIE_SECURE", "false").strip().lower() == "true"
 
 
 def read_s3_bucket_name() -> str:
@@ -113,11 +123,6 @@ def read_photo_max_upload_bytes() -> int:
         return max(1024, int(raw_value))
     except ValueError:
         return 10 * 1024 * 1024
-
-
-def read_wedding_role_secret() -> str:
-    """Secret required to register as bride or groom. Empty string disables those roles."""
-    return os.getenv("WEDDING_ROLE_SECRET", "").strip()
 
 
 def read_rsvp_edit_deadline() -> datetime:

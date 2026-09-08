@@ -127,12 +127,159 @@
 }
 
 .obw-page-hero {
+  position: relative;
   padding: clamp(1.75rem, 4.5vw, 2.75rem);
   border: 1px solid var(--obw-border-dark);
   border-radius: var(--obw-radius);
   background: color-mix(in srgb, var(--obw-void) 68%, transparent);
   box-shadow: var(--obw-shadow-dark);
   color: var(--obw-bone);
+}
+
+/* ─── Portal (login-card look-alike) ──────────────────────
+   Ported from LoginPage.scss's .login-card family so any other screen —
+   the admin section, for now — can share the exact same rounded, gilded,
+   "sealed portal" shape language (14px/8px corners, gradient charcoal fill,
+   gold corner brackets) instead of the sharper 2-3px default cards/buttons.
+   LoginPage.scss is left untouched; this is a separate, reusable copy. */
+.obw-portal-card {
+  position: relative;
+  padding: 2rem 1.75rem;
+  border-radius: 14px;
+  border: 1px solid var(--obw-border);
+  background: linear-gradient(160deg, var(--obw-veil), rgba(18, 10, 9, 0.55)), var(--obw-charcoal);
+  box-shadow: var(--obw-shadow-dark);
+  color: var(--obw-bone);
+}
+
+.obw-portal-card::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  pointer-events: none;
+  border-radius: 6px;
+  opacity: 0.45;
+  background:
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 16px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 1px 16px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right top / 16px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right top / 1px 16px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left bottom / 16px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left bottom / 1px 16px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 16px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 1px 16px no-repeat;
+}
+
+.obw-portal-kicker {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--obw-gold) 75%, var(--obw-bone));
+  margin: 0 0 14px;
+}
+
+.obw-portal-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  margin: 0 0 4px;
+  color: var(--obw-gold-bright);
+  line-height: 1.15;
+}
+
+.obw-portal-subtitle {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: color-mix(in srgb, var(--obw-bone) 78%, transparent);
+  margin: 0 0 1.5rem;
+}
+
+.obw-portal-field {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.obw-portal-field__label {
+  display: block;
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: color-mix(in srgb, var(--obw-bone) 80%, transparent);
+  margin-bottom: 6px;
+}
+
+.obw-portal-field input,
+.obw-portal-field select,
+.obw-portal-field textarea {
+  width: 100%;
+  padding: 13px 15px;
+  border-radius: 8px;
+  border: 1px solid var(--obw-border);
+  background: color-mix(in srgb, var(--obw-bone) 8%, transparent);
+  color: var(--obw-bone);
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.obw-portal-field textarea {
+  min-height: 96px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.obw-portal-field input:focus,
+.obw-portal-field select:focus,
+.obw-portal-field textarea:focus {
+  outline: none;
+  border-color: var(--obw-gold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--obw-gold) 20%, transparent);
+}
+
+.obw-portal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 28px;
+  border-radius: 8px;
+  border: 1px solid var(--obw-gold);
+  background: var(--obw-gold);
+  color: var(--obw-void);
+  font-weight: 500;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--obw-duration-fast) ease, border-color var(--obw-duration-fast) ease;
+}
+
+.obw-portal-btn:hover:not(:disabled) {
+  background: var(--obw-gold-bright);
+  border-color: var(--obw-gold-bright);
+}
+
+.obw-portal-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.obw-portal-btn--secondary {
+  background: transparent;
+  color: var(--obw-bone);
+  border-color: color-mix(in srgb, var(--obw-bone) 24%, transparent);
+}
+
+.obw-portal-btn--secondary:hover:not(:disabled) {
+  border-color: var(--obw-gold);
+  color: var(--obw-gold-bright);
+  background: color-mix(in srgb, var(--obw-bone) 10%, transparent);
+}
+
+.obw-portal-btn--block {
+  display: flex;
+  width: 100%;
 }
 
 .obw-page-hero .obw-display,
@@ -670,7 +817,7 @@
 .obw-data-row {
   padding: var(--obw-space-md);
   border: 1px solid var(--obw-border);
-  border-radius: var(--obw-radius);
+  border-radius: 8px;
   background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
   box-shadow: var(--obw-shadow-soft);
 }
