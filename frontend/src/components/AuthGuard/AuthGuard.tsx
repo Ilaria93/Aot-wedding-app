@@ -7,7 +7,7 @@ import './styles/AuthGuard.scss';
 
 /** Redirects unauthenticated users away from protected routes. */
 export function AuthGuard() {
-  const { isAuthenticated, isBootstrapping } = useAuth();
+  const { isAuthenticated, canManageWedding, isBootstrapping } = useAuth();
   const location = useLocation();
 
   if (isBootstrapping) {
@@ -20,6 +20,12 @@ export function AuthGuard() {
 
   if (!DEV_UNLOCK_ALL_ROUTES && isAuthenticated && location.pathname.startsWith('/auth/')) {
     return <Navigate to="/" replace />;
+  }
+
+  // The couple's account skips the public landing page entirely — it lands
+  // straight on their control panel instead.
+  if (canManageWedding && location.pathname === '/') {
+    return <Navigate to="/admin/rsvp" replace />;
   }
 
   return <Outlet />;

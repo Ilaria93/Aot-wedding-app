@@ -14,12 +14,16 @@ import type { TranslateFn } from '@/i18n/translations';
 import './styles/AppTopBar.scss';
 
 const APP_ROUTES = [
-  { to: '/album', labelKey: 'album' as const },
-  { to: '/travel', labelKey: 'travel' as const },
-  { to: '/tema', labelKey: 'tema' as const },
+  { to: '/album', i18nKey: 'navigation.tabs.album' as const },
+  { to: '/travel', i18nKey: 'navigation.tabs.travel' as const },
+  { to: '/tema', i18nKey: 'navigation.tabs.tema' as const },
 ] as const;
 
-const ADMIN_ROUTE = { to: '/admin', labelKey: 'admin' as const } as const;
+const ADMIN_ROUTES = [
+  { to: '/admin/rsvp', i18nKey: 'admin.nav.rsvp' as const },
+  { to: '/admin/contacts', i18nKey: 'admin.nav.contacts' as const },
+  { to: '/admin/gallery', i18nKey: 'admin.nav.gallery' as const },
+] as const;
 
 const HOME_ANCHORS = [
   { href: '#story', labelKey: 'story' as const },
@@ -53,10 +57,12 @@ function getNavItems(isHome: boolean, canManageWedding: boolean, t: TranslateFn)
     }));
   }
 
-  const routes = canManageWedding ? [...APP_ROUTES, ADMIN_ROUTE] : APP_ROUTES;
+  // The couple only ever manages the wedding, never browses it as a guest —
+  // no Album/Contatti/Tema, just their three control-panel sections.
+  const routes = canManageWedding ? ADMIN_ROUTES : APP_ROUTES;
   return routes.map((route) => ({
     key: route.to,
-    label: t(`navigation.tabs.${route.labelKey}`),
+    label: t(route.i18nKey),
     target: route.to,
     isAnchor: false,
   }));

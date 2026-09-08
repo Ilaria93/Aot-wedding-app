@@ -1,4 +1,4 @@
-import { CalendarCheck, LogIn, LogOut, Settings, Shield } from 'lucide-react';
+import { CalendarCheck, LogIn, LogOut, Settings } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
@@ -25,7 +25,7 @@ export function AppUserMenuContent({ onNavigate }: AppUserMenuContentProps) {
 
   return (
     <>
-      {isAuthenticated ? (
+      {isAuthenticated && !canManageWedding ? (
         <>
           <div className="app-user-menu__section">
             {isHome ? (
@@ -65,14 +65,10 @@ export function AppUserMenuContent({ onNavigate }: AppUserMenuContentProps) {
         <div className="app-user-menu__actions">
           {isAuthenticated ? (
             <>
-              <Link to="/profile" role="menuitem" className="app-user-menu__action" onClick={onNavigate}>
-                <Settings size={15} aria-hidden />
-                {t('navigation.tabs.profile')}
-              </Link>
-              {canManageWedding ? (
-                <Link to="/admin" role="menuitem" className="app-user-menu__action" onClick={onNavigate}>
-                  <Shield size={15} aria-hidden />
-                  {t('navigation.tabs.admin')}
+              {!canManageWedding ? (
+                <Link to="/profile" role="menuitem" className="app-user-menu__action" onClick={onNavigate}>
+                  <Settings size={15} aria-hidden />
+                  {t('navigation.tabs.profile')}
                 </Link>
               ) : null}
               <button
@@ -93,10 +89,12 @@ export function AppUserMenuContent({ onNavigate }: AppUserMenuContentProps) {
         </div>
       </div>
 
-      <div className="app-user-menu__section">
-        <p className="app-user-menu__section-label">{t('navigation.userMenu.sectionPreferences')}</p>
-        <LanguageSwitcher embedded onLocaleChange={onNavigate} />
-      </div>
+      {!canManageWedding ? (
+        <div className="app-user-menu__section">
+          <p className="app-user-menu__section-label">{t('navigation.userMenu.sectionPreferences')}</p>
+          <LanguageSwitcher embedded onLocaleChange={onNavigate} />
+        </div>
+      ) : null}
     </>
   );
 }
