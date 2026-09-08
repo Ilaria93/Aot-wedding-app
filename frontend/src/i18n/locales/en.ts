@@ -448,7 +448,6 @@ export const en = {
   },
   admin: {
     nav: {
-      label: 'Admin sections',
       rsvp: 'RSVP',
       contacts: 'Contacts',
       gallery: 'Gallery',
@@ -475,6 +474,7 @@ export const en = {
       contactUpdateFailed: 'Contact could not be updated.',
       contactDeleteFailed: 'Contact could not be deleted.',
       photoUpdateFailed: 'Photo could not be updated.',
+      photoDeleteFailed: 'Photo could not be deleted.',
     },
     auth: {
       loginFromProfile: 'Log in from the profile tab to use the admin dashboard.',
@@ -500,15 +500,21 @@ export const en = {
       empty: 'No faction assigned yet.',
     },
     photos: {
-      title: 'Photo moderation',
+      title: 'Gallery',
       empty: 'No photos uploaded by guests.',
+      loadFailed: 'Could not load the gallery.',
       uploadedAt: 'Uploaded on {{value}}',
       approvedAt: 'Approved on {{value}}',
       approve: 'Approve',
       backToPending: 'Set back to pending',
       reject: 'Reject',
+      delete: 'Delete',
+      deleting: 'Deleting...',
+      confirmDelete: 'Delete this photo? This cannot be undone.',
     },
     contacts: {
+      categoryLabel: 'Category',
+      confirmDelete: 'Delete this contact? This cannot be undone.',
       newTitle: 'New logistics contact',
       editTitle: 'Edit logistics contact',
       description:

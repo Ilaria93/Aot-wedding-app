@@ -59,22 +59,22 @@ export function AdminRsvpPage() {
         <>
           {stats ? (
             <div className="obw-stat-grid">
-              <div className="obw-stat-card">
-                <p className="obw-kicker">{t('admin.stats.users')}</p>
+              <div className="obw-portal-card obw-stat-card">
+                <p className="obw-portal-kicker">{t('admin.stats.users')}</p>
                 <p className="obw-stat-card__value">{stats.total_users}</p>
               </div>
-              <div className="obw-stat-card">
-                <p className="obw-kicker">{t('admin.stats.confirmed')}</p>
+              <div className="obw-portal-card obw-stat-card">
+                <p className="obw-portal-kicker">{t('admin.stats.confirmed')}</p>
                 <p className="obw-stat-card__value">{stats.total_confirmed}</p>
               </div>
-              <div className="obw-stat-card">
-                <p className="obw-kicker">{t('admin.stats.attending')}</p>
+              <div className="obw-portal-card obw-stat-card">
+                <p className="obw-portal-kicker">{t('admin.stats.attending')}</p>
                 <p className="obw-stat-card__value">{stats.total_attending}</p>
               </div>
             </div>
           ) : null}
 
-          <section className="obw-card">
+          <section className="obw-portal-card">
             <h2 className="obw-display obw-display--sm">{t('admin.users.title')}</h2>
             <div className="obw-data-list">
               {users.map((user) => (

@@ -189,6 +189,20 @@ def register_completed_photo_upload(
     return photo_item
 
 
+def delete_photo_album_item(db: Session, photo_id: int) -> bool:
+    """Removes a photo from the album and its S3 object. Returns False if it never existed."""
+    photo_item = db.query(PhotoAlbumItem).filter(PhotoAlbumItem.id == photo_id).first()
+    if not photo_item:
+        return False
+
+    _ensure_storage_configuration()
+    _build_s3_client().delete_object(Bucket=read_s3_bucket_name(), Key=photo_item.storage_key)
+
+    db.delete(photo_item)
+    db.commit()
+    return True
+
+
 def list_public_photo_album_items(db: Session) -> list[dict[str, Any]]:
     photo_rows = (
         db.query(PhotoAlbumItem, User)

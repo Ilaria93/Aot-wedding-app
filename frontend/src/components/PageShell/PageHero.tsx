@@ -5,13 +5,14 @@ type PageHeroProps = {
   title: string;
   subtitle?: string;
   subtitleFlush?: boolean;
+  className?: string;
   children?: ReactNode;
 };
 
 /** Dark hero band for stack pages (album, travel, admin). */
-export function PageHero({ eyebrow, title, subtitle, subtitleFlush = false, children }: PageHeroProps) {
+export function PageHero({ eyebrow, title, subtitle, subtitleFlush = false, className, children }: PageHeroProps) {
   return (
-    <div className="obw-page-hero">
+    <div className={`obw-page-hero${className ? ` ${className}` : ''}`}>
       <p className="obw-kicker obw-kicker--light">{eyebrow}</p>
       <h1 className="obw-display obw-display--light">{title}</h1>
       {subtitle ? (

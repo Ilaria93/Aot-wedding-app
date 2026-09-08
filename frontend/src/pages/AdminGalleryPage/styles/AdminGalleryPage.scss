@@ -1,0 +1,48 @@
+.admin-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.admin-gallery__card {
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+  border: 1px solid var(--obw-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
+}
+
+.admin-gallery__image {
+  display: block;
+  width: 100%;
+  height: 200px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: var(--obw-paper-muted);
+}
+
+.admin-gallery__guest {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.admin-gallery__meta {
+  margin: 0;
+  color: var(--obw-stone);
+  font-size: 0.8125rem;
+}
+
+.admin-gallery__caption {
+  margin: 6px 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.admin-gallery__card .obw-portal-btn {
+  margin-top: 12px;
+}

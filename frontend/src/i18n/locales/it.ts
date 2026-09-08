@@ -451,7 +451,6 @@ export const it = {
   },
   admin: {
     nav: {
-      label: 'Sezioni admin',
       rsvp: 'RSVP',
       contacts: 'Contatti',
       gallery: 'Galleria',
@@ -478,6 +477,7 @@ export const it = {
       contactUpdateFailed: 'Aggiornamento contatto non riuscito.',
       contactDeleteFailed: 'Eliminazione contatto non riuscita.',
       photoUpdateFailed: 'Aggiornamento foto non riuscito.',
+      photoDeleteFailed: 'Eliminazione foto non riuscita.',
     },
     auth: {
       loginFromProfile: 'Accedi dal profilo per usare la dashboard admin.',
@@ -503,15 +503,21 @@ export const it = {
       empty: 'Nessuna fazione assegnata al momento.',
     },
     photos: {
-      title: 'Moderazione foto',
+      title: 'Galleria',
       empty: 'Nessuna foto caricata dagli invitati.',
+      loadFailed: 'Impossibile caricare la galleria.',
       uploadedAt: 'Caricata il {{value}}',
       approvedAt: 'Approvata il {{value}}',
       approve: 'Approva',
       backToPending: 'Rimetti in attesa',
       reject: 'Rifiuta',
+      delete: 'Elimina',
+      deleting: 'Eliminazione...',
+      confirmDelete: 'Eliminare questa foto? L’operazione non si può annullare.',
     },
     contacts: {
+      categoryLabel: 'Categoria',
+      confirmDelete: 'Eliminare questo contatto? L’operazione non si può annullare.',
       newTitle: 'Nuovo contatto logistico',
       editTitle: 'Modifica contatto logistico',
       description:

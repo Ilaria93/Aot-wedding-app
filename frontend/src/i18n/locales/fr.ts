@@ -452,7 +452,6 @@ export const fr = {
   },
   admin: {
     nav: {
-      label: 'Sections admin',
       rsvp: 'RSVP',
       contacts: 'Contacts',
       gallery: 'Galerie',
@@ -479,6 +478,7 @@ export const fr = {
       contactUpdateFailed: 'Mise à jour du contact impossible.',
       contactDeleteFailed: 'Suppression du contact impossible.',
       photoUpdateFailed: 'Mise à jour de la photo impossible.',
+      photoDeleteFailed: 'Suppression de la photo impossible.',
     },
     auth: {
       loginFromProfile: 'Connectez-vous depuis le profil pour utiliser le tableau de bord admin.',
@@ -504,15 +504,21 @@ export const fr = {
       empty: 'Aucune faction attribuée pour le moment.',
     },
     photos: {
-      title: 'Modération des photos',
+      title: 'Galerie',
       empty: 'Aucune photo envoyée par les invités.',
+      loadFailed: 'Impossible de charger la galerie.',
       uploadedAt: 'Envoyée le {{value}}',
       approvedAt: 'Approuvée le {{value}}',
       approve: 'Approuver',
       backToPending: 'Remettre en attente',
       reject: 'Refuser',
+      delete: 'Supprimer',
+      deleting: 'Suppression...',
+      confirmDelete: 'Supprimer cette photo ? Cette action est irréversible.',
     },
     contacts: {
+      categoryLabel: 'Catégorie',
+      confirmDelete: 'Supprimer ce contact ? Cette action est irréversible.',
       newTitle: 'Nouveau contact logistique',
       editTitle: 'Modifier le contact logistique',
       description:

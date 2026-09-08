@@ -453,7 +453,6 @@ export const de = {
   },
   admin: {
     nav: {
-      label: 'Admin-Bereiche',
       rsvp: 'RSVP',
       contacts: 'Kontakte',
       gallery: 'Galerie',
@@ -480,6 +479,7 @@ export const de = {
       contactUpdateFailed: 'Kontakt konnte nicht aktualisiert werden.',
       contactDeleteFailed: 'Kontakt konnte nicht gelöscht werden.',
       photoUpdateFailed: 'Foto konnte nicht aktualisiert werden.',
+      photoDeleteFailed: 'Foto konnte nicht gelöscht werden.',
     },
     auth: {
       loginFromProfile: 'Melde dich im Profil an, um das Admin-Dashboard zu nutzen.',
@@ -505,15 +505,21 @@ export const de = {
       empty: 'Noch keine Fraktion zugewiesen.',
     },
     photos: {
-      title: 'Fotomoderation',
+      title: 'Galerie',
       empty: 'Keine von Gästen hochgeladenen Fotos.',
+      loadFailed: 'Galerie konnte nicht geladen werden.',
       uploadedAt: 'Hochgeladen am {{value}}',
       approvedAt: 'Freigegeben am {{value}}',
       approve: 'Freigeben',
       backToPending: 'Wieder auf ausstehend setzen',
       reject: 'Ablehnen',
+      delete: 'Löschen',
+      deleting: 'Wird gelöscht...',
+      confirmDelete: 'Dieses Foto löschen? Das kann nicht rückgängig gemacht werden.',
     },
     contacts: {
+      categoryLabel: 'Kategorie',
+      confirmDelete: 'Diesen Kontakt löschen? Das kann nicht rückgängig gemacht werden.',
       newTitle: 'Neuer Logistik-Kontakt',
       editTitle: 'Logistik-Kontakt bearbeiten',
       description:
