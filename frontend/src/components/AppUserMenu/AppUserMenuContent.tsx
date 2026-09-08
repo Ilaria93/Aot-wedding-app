@@ -54,7 +54,7 @@ export function AppUserMenuContent({ onNavigate }: AppUserMenuContentProps) {
               <p className="app-user-menu__name">
                 {user.first_name} {user.last_name}
               </p>
-              <p className="app-user-menu__meta">{user.email}</p>
+              {user.email ? <p className="app-user-menu__meta">{user.email}</p> : null}
             </div>
           ) : null}
         </>

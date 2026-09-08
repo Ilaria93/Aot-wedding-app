@@ -1,0 +1,1 @@
+export { AdminGalleryPage } from './AdminGalleryPage';

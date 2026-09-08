@@ -8,6 +8,7 @@ import { AppUserMenu } from '@/components/AppUserMenu';
 import { AppUserMenuContent } from '@/components/AppUserMenu/AppUserMenuContent';
 import { ScreenBackButton } from '@/components/ScreenBackButton';
 import { WEDDING_COUPLE_NAMES, WEDDING_OPERATION_NAME } from '@/constants/weddingEvent';
+import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
 import type { TranslateFn } from '@/i18n/translations';
 import './styles/AppTopBar.scss';
@@ -17,6 +18,8 @@ const APP_ROUTES = [
   { to: '/travel', labelKey: 'travel' as const },
   { to: '/tema', labelKey: 'tema' as const },
 ] as const;
+
+const ADMIN_ROUTE = { to: '/admin', labelKey: 'admin' as const } as const;
 
 const HOME_ANCHORS = [
   { href: '#story', labelKey: 'story' as const },
@@ -40,20 +43,23 @@ type NavItem = {
  * Which links belong in the nav — the one place that answers "what shows on
  * this screen", so the desktop bar and the mobile panel can't drift apart.
  */
-function getNavItems(isHome: boolean, t: TranslateFn): NavItem[] {
-  return isHome
-    ? HOME_ANCHORS.map((anchor) => ({
-        key: anchor.href,
-        label: t(`landing.nav.${anchor.labelKey}`),
-        target: anchor.href,
-        isAnchor: true,
-      }))
-    : APP_ROUTES.map((route) => ({
-        key: route.to,
-        label: t(`navigation.tabs.${route.labelKey}`),
-        target: route.to,
-        isAnchor: false,
-      }));
+function getNavItems(isHome: boolean, canManageWedding: boolean, t: TranslateFn): NavItem[] {
+  if (isHome) {
+    return HOME_ANCHORS.map((anchor) => ({
+      key: anchor.href,
+      label: t(`landing.nav.${anchor.labelKey}`),
+      target: anchor.href,
+      isAnchor: true,
+    }));
+  }
+
+  const routes = canManageWedding ? [...APP_ROUTES, ADMIN_ROUTE] : APP_ROUTES;
+  return routes.map((route) => ({
+    key: route.to,
+    label: t(`navigation.tabs.${route.labelKey}`),
+    target: route.to,
+    isAnchor: false,
+  }));
 }
 
 type NavItemLinkProps = {
@@ -87,13 +93,14 @@ function NavItemLink({ item, className, activeClassName, onNavigate }: NavItemLi
 export function AppTopBar() {
   const location = useLocation();
   const { t } = useI18n();
+  const { canManageWedding } = useAuth();
   const isHome = location.pathname === '/';
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   /* Only the home page hides the bar: there it would cover the hero cover art.
      Every other screen needs its navigation from the first pixel. */
   const isVisible = !isHome || isScrolled;
-  const navItems = getNavItems(isHome, t);
+  const navItems = getNavItems(isHome, canManageWedding, t);
   const closeMobileNav = () => setMobileNavOpen(false);
 
   useEffect(() => {

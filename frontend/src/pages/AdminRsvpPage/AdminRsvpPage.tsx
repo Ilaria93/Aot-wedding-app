@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
-import { PageAlert, PageHero, PageShell } from '@/components/PageShell';
+import { PageAlert } from '@/components/PageShell';
 import {
   type AdminUserListItem,
   type AdminRsvpStats,
@@ -10,15 +9,14 @@ import {
   fetchAdminRsvpStats,
 } from '@/services/adminDashboardApi';
 import { getApiErrorMessage } from '@/services/apiErrors';
-import './styles/AdminPage.scss';
+import './styles/AdminRsvpPage.scss';
 
 function formatUserName(user: AdminUserListItem): string {
   return `${user.first_name} ${user.last_name}`.trim();
 }
 
-/** Admin dashboard — RSVP stats and user list. */
-export function AdminPage() {
-  const { canManageWedding, isAuthenticated, isBootstrapping } = useAuth();
+/** Admin section — RSVP stats and the list of who has responded. */
+export function AdminRsvpPage() {
   const { t } = useI18n();
   const [stats, setStats] = useState<AdminRsvpStats | null>(null);
   const [users, setUsers] = useState<AdminUserListItem[]>([]);
@@ -26,17 +24,6 @@ export function AdminPage() {
   const [error, setError] = useState<string | null>(null);
 
   const loadAdminDashboard = useCallback(async () => {
-    if (!isAuthenticated) {
-      setError(t('admin.errors.loginRequired'));
-      setLoading(false);
-      return;
-    }
-    if (!canManageWedding) {
-      setError(t('admin.errors.notAuthorized'));
-      setLoading(false);
-      return;
-    }
-
     try {
       setError(null);
       const [statsResponse, userListResponse] = await Promise.all([
@@ -50,27 +37,26 @@ export function AdminPage() {
     } finally {
       setLoading(false);
     }
-  }, [canManageWedding, isAuthenticated, t]);
+  }, [t]);
 
   useEffect(() => {
-    if (!isBootstrapping) {
-      void loadAdminDashboard();
-    }
-  }, [isBootstrapping, loadAdminDashboard]);
+    void loadAdminDashboard();
+  }, [loadAdminDashboard]);
+
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <span className="loading-text">{t('common.loading')}</span>
+      </div>
+    );
+  }
 
   return (
-    <PageShell loading={isBootstrapping || loading}>
+    <>
       {error ? (
         <PageAlert message={error} />
       ) : (
         <>
-          <PageHero
-            eyebrow={t('admin.hero.eyebrow')}
-            title={t('admin.hero.title')}
-            subtitle={t('admin.hero.subtitle')}
-            subtitleFlush
-          />
-
           {stats ? (
             <div className="obw-stat-grid">
               <div className="obw-stat-card">
@@ -109,6 +95,6 @@ export function AdminPage() {
           </section>
         </>
       )}
-    </PageShell>
+    </>
   );
 }
