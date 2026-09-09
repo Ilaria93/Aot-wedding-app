@@ -1,0 +1,38 @@
+.admin-mobile-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .admin-mobile-nav {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 30;
+    display: flex;
+    justify-content: space-around;
+    padding: 8px max(8px, env(safe-area-inset-left)) max(8px, env(safe-area-inset-bottom));
+    border-top: 1px solid var(--obw-border-dark);
+    background: color-mix(in srgb, var(--obw-void) 92%, transparent);
+    backdrop-filter: blur(14px);
+  }
+}
+
+.admin-mobile-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: none;
+  background: none;
+  color: color-mix(in srgb, var(--obw-bone) 60%, var(--obw-stone));
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.admin-mobile-nav__item.is-active {
+  color: var(--obw-gold-bright);
+}
