@@ -1,12 +1,6 @@
 import { apiClient } from '@/services/apiClient';
 
-export type LogisticsContactCategory =
-  | 'hair'
-  | 'makeup'
-  | 'laundry'
-  | 'hotel'
-  | 'transfer'
-  | 'car_rental';
+export type LogisticsContactCategory = 'location' | 'beauty' | 'transfer' | 'catering' | 'laundry';
 
 export type LogisticsContactItem = {
   id: number;

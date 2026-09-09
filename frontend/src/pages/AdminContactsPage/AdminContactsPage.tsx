@@ -1,11 +1,13 @@
+import { Clock, Globe, IdCard, Mail, Phone, Save, Search, Store, UserPlus } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { PageAlert } from '@/components/PageShell';
-import { RememberMeToggle } from '@/components/RememberMeToggle';
 import { LOGISTICS_CONTACT_CATEGORY_IDS, getLogisticsContactCategoryLabel } from '@/constants/logistics';
 import { useI18n } from '@/contexts/I18nContext';
+import type { TranslateFn } from '@/i18n/translations';
 import { useAdminHeroStatsSlot } from '@/layouts/AdminLayout/AdminHeroStatsSlotContext';
+import { buildContactActions } from '@/pages/TravelPage/travelContactActions';
 import { getApiErrorMessage } from '@/services/apiErrors';
 import {
   createAdminLogisticsContact,
@@ -16,40 +18,48 @@ import {
   type LogisticsContactItem,
   type LogisticsContactPayload,
 } from '@/services/logisticsContactsApi';
+import { SupplierCard, type SupplierCardInfoItem, type SupplierCardTone } from './SupplierCard';
 import './styles/AdminContactsPage.scss';
+
+// Card fields that vary with the booking rather than the form data itself.
+function supplierStatus(contact: LogisticsContactItem, t: TranslateFn): { label: string; tone: SupplierCardTone } {
+  if (!contact.is_active) return { label: t('admin.contacts.inactiveToggle'), tone: 'rose' };
+  if (contact.confirmed) return { label: t('admin.contacts.confirmedPill'), tone: 'green' };
+  return { label: t('admin.contacts.unconfirmedPill'), tone: 'amber' };
+}
+
+function supplierRoleLabel(contact: LogisticsContactItem, t: TranslateFn): string {
+  return contact.category === 'transfer'
+    ? t('admin.contacts.supplierRoleTransfer')
+    : t('admin.contacts.supplierRoleDefault');
+}
+
+function supplierInfoItems(contact: LogisticsContactItem): SupplierCardInfoItem[] {
+  const items: SupplierCardInfoItem[] = [];
+  if (contact.address) items.push({ icon: Clock, text: contact.address });
+  if (contact.website) items.push({ icon: Globe, text: contact.website });
+  else if (contact.email) items.push({ icon: Mail, text: contact.email });
+  return items;
+}
 
 type ContactFormState = {
   category: LogisticsContactCategory;
   label: string;
   contact_person: string;
   phone: string;
-  whatsapp_phone: string;
-  email: string;
-  website: string;
-  instagram_url: string;
-  facebook_url: string;
-  tiktok_url: string;
   address: string;
   notes: string;
-  sort_order: string;
   is_active: boolean;
   confirmed: boolean;
 };
 
 const EMPTY_FORM: ContactFormState = {
-  category: 'hotel',
+  category: 'location',
   label: '',
   contact_person: '',
   phone: '',
-  whatsapp_phone: '',
-  email: '',
-  website: '',
-  instagram_url: '',
-  facebook_url: '',
-  tiktok_url: '',
   address: '',
   notes: '',
-  sort_order: '0',
   is_active: true,
   confirmed: false,
 };
@@ -60,15 +70,8 @@ function contactToFormState(contact: LogisticsContactItem): ContactFormState {
     label: contact.label,
     contact_person: contact.contact_person ?? '',
     phone: contact.phone ?? '',
-    whatsapp_phone: contact.whatsapp_phone ?? '',
-    email: contact.email ?? '',
-    website: contact.website ?? '',
-    instagram_url: contact.instagram_url ?? '',
-    facebook_url: contact.facebook_url ?? '',
-    tiktok_url: contact.tiktok_url ?? '',
     address: contact.address ?? '',
     notes: contact.notes ?? '',
-    sort_order: String(contact.sort_order),
     is_active: contact.is_active,
     confirmed: contact.confirmed,
   };
@@ -80,15 +83,8 @@ function formStateToPayload(form: ContactFormState): LogisticsContactPayload {
     label: form.label.trim(),
     contact_person: form.contact_person.trim() || undefined,
     phone: form.phone.trim() || undefined,
-    whatsapp_phone: form.whatsapp_phone.trim() || undefined,
-    email: form.email.trim() || undefined,
-    website: form.website.trim() || undefined,
-    instagram_url: form.instagram_url.trim() || undefined,
-    facebook_url: form.facebook_url.trim() || undefined,
-    tiktok_url: form.tiktok_url.trim() || undefined,
     address: form.address.trim() || undefined,
     notes: form.notes.trim() || undefined,
-    sort_order: Number(form.sort_order) || 0,
     is_active: form.is_active,
     confirmed: form.confirmed,
   };
@@ -101,6 +97,9 @@ export function AdminContactsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const [search, setSearch] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<'all' | LogisticsContactCategory>('all');
 
   const [form, setForm] = useState<ContactFormState>(EMPTY_FORM);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -202,6 +201,18 @@ export function AdminContactsPage() {
     }
   }
 
+  const filteredContacts = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return contacts.filter((contact) => {
+      if (categoryFilter !== 'all' && contact.category !== categoryFilter) return false;
+      if (!query) return true;
+      return (
+        contact.label.toLowerCase().includes(query) ||
+        (contact.contact_person ?? '').toLowerCase().includes(query)
+      );
+    });
+  }, [contacts, search, categoryFilter]);
+
   const activeContacts = useMemo(() => contacts.filter((contact) => contact.is_active), [contacts]);
   const stats = {
     active: activeContacts.length,
@@ -245,16 +256,21 @@ export function AdminContactsPage() {
 
       {error ? <PageAlert message={error} /> : null}
 
-      <section className="obw-portal-card">
-        <h2 className="obw-display obw-display--sm">
-          {editingId ? t('admin.contacts.editTitle') : t('admin.contacts.newTitle')}
-        </h2>
-        <p className="obw-body obw-body--flush">{t('admin.contacts.description')}</p>
+      <div className="admin-contacts__layout">
+        <section className="obw-portal-card admin-contacts__form-card">
+          <span className="admin-contacts__form-eyebrow">
+            <UserPlus size={14} aria-hidden />
+            {t('admin.contacts.formEyebrow')}
+          </span>
+          <h2 className="admin-contacts__form-title">
+            {editingId ? t('admin.contacts.editTitle') : t('admin.contacts.newTitle')}
+          </h2>
+          <p className="admin-contacts__form-subtitle">{t('admin.contacts.description')}</p>
+          <hr className="admin-contacts__form-divider" />
 
-        <form className="admin-contacts__form" onSubmit={(event) => void handleSubmit(event)}>
-          <div className="admin-contacts__grid">
-            <label className="obw-portal-field" htmlFor="contact-category">
-              <span className="obw-portal-field__label">{t('admin.contacts.categoryLabel')}</span>
+          <form className="admin-contacts__form" onSubmit={(event) => void handleSubmit(event)}>
+            <label className="admin-contacts__field" htmlFor="contact-category">
+              <span className="admin-contacts__field-label">{t('admin.contacts.categoryLabel')}</span>
               <select
                 id="contact-category"
                 value={form.category}
@@ -267,206 +283,177 @@ export function AdminContactsPage() {
               </select>
             </label>
 
-            <label className="obw-portal-field" htmlFor="contact-label">
-              <span className="obw-portal-field__label">{t('admin.contacts.placeholders.label')}</span>
-              <input
-                id="contact-label"
-                value={form.label}
-                onChange={(event) => updateField('label', event.target.value)}
-              />
+            <label className="admin-contacts__field" htmlFor="contact-label">
+              <span className="admin-contacts__field-label">{t('admin.contacts.fields.supplierName')}</span>
+              <span className="admin-contacts__field-input">
+                <input
+                  id="contact-label"
+                  placeholder={t('admin.contacts.placeholders.supplierName')}
+                  value={form.label}
+                  onChange={(event) => updateField('label', event.target.value)}
+                />
+                <Store size={16} aria-hidden />
+              </span>
             </label>
 
-            <label className="obw-portal-field" htmlFor="contact-person">
-              <span className="obw-portal-field__label">{t('admin.contacts.placeholders.contactPerson')}</span>
-              <input
-                id="contact-person"
-                value={form.contact_person}
-                onChange={(event) => updateField('contact_person', event.target.value)}
-              />
+            <div className="admin-contacts__field-row">
+              <label className="admin-contacts__field" htmlFor="contact-person">
+                <span className="admin-contacts__field-label">{t('admin.contacts.fields.contactPerson')}</span>
+                <span className="admin-contacts__field-input">
+                  <input
+                    id="contact-person"
+                    placeholder={t('admin.contacts.placeholders.contactPerson')}
+                    value={form.contact_person}
+                    onChange={(event) => updateField('contact_person', event.target.value)}
+                  />
+                  <IdCard size={16} aria-hidden />
+                </span>
+              </label>
+
+              <label className="admin-contacts__field" htmlFor="contact-phone">
+                <span className="admin-contacts__field-label">{t('admin.contacts.fields.phone')}</span>
+                <span className="admin-contacts__field-input">
+                  <input
+                    id="contact-phone"
+                    placeholder={t('admin.contacts.placeholders.phone')}
+                    value={form.phone}
+                    onChange={(event) => updateField('phone', event.target.value)}
+                  />
+                  <Phone size={16} aria-hidden />
+                </span>
+              </label>
+            </div>
+
+            <label className="admin-contacts__field" htmlFor="contact-address">
+              <span className="admin-contacts__field-label">{t('admin.contacts.fields.arrival')}</span>
+              <span className="admin-contacts__field-input">
+                <input
+                  id="contact-address"
+                  placeholder={t('admin.contacts.placeholders.arrival')}
+                  value={form.address}
+                  onChange={(event) => updateField('address', event.target.value)}
+                />
+                <Clock size={16} aria-hidden />
+              </span>
             </label>
 
-            <label className="obw-portal-field" htmlFor="contact-phone">
-              <span className="obw-portal-field__label">{t('admin.contacts.placeholders.phone')}</span>
-              <input
-                id="contact-phone"
-                value={form.phone}
-                onChange={(event) => updateField('phone', event.target.value)}
-              />
-            </label>
-
-            <label className="obw-portal-field" htmlFor="contact-whatsapp">
-              <span className="obw-portal-field__label">{t('admin.contacts.placeholders.whatsapp')}</span>
-              <input
-                id="contact-whatsapp"
-                value={form.whatsapp_phone}
-                onChange={(event) => updateField('whatsapp_phone', event.target.value)}
-              />
-            </label>
-
-            <label className="obw-portal-field" htmlFor="contact-email">
-              <span className="obw-portal-field__label">{t('admin.contacts.placeholders.email')}</span>
-              <input
-                id="contact-email"
-                type="email"
-                value={form.email}
-                onChange={(event) => updateField('email', event.target.value)}
-              />
-            </label>
-
-            <label className="obw-portal-field" htmlFor="contact-website">
-              <span className="obw-portal-field__label">{t('admin.contacts.placeholders.website')}</span>
-              <input
-                id="contact-website"
-                value={form.website}
-                onChange={(event) => updateField('website', event.target.value)}
-              />
-            </label>
-
-            <label className="obw-portal-field" htmlFor="contact-instagram">
-              <span className="obw-portal-field__label">{t('admin.contacts.placeholders.instagram')}</span>
-              <input
-                id="contact-instagram"
-                value={form.instagram_url}
-                onChange={(event) => updateField('instagram_url', event.target.value)}
-              />
-            </label>
-
-            <label className="obw-portal-field" htmlFor="contact-facebook">
-              <span className="obw-portal-field__label">{t('admin.contacts.placeholders.facebook')}</span>
-              <input
-                id="contact-facebook"
-                value={form.facebook_url}
-                onChange={(event) => updateField('facebook_url', event.target.value)}
-              />
-            </label>
-
-            <label className="obw-portal-field" htmlFor="contact-tiktok">
-              <span className="obw-portal-field__label">{t('admin.contacts.placeholders.tiktok')}</span>
-              <input
-                id="contact-tiktok"
-                value={form.tiktok_url}
-                onChange={(event) => updateField('tiktok_url', event.target.value)}
-              />
-            </label>
-
-            <label className="obw-portal-field" htmlFor="contact-address">
-              <span className="obw-portal-field__label">{t('admin.contacts.placeholders.address')}</span>
-              <input
-                id="contact-address"
-                value={form.address}
-                onChange={(event) => updateField('address', event.target.value)}
-              />
-            </label>
-
-            <label className="obw-portal-field" htmlFor="contact-sort-order">
-              <span className="obw-portal-field__label">{t('admin.contacts.placeholders.sortOrder')}</span>
-              <input
-                id="contact-sort-order"
-                type="number"
-                value={form.sort_order}
-                onChange={(event) => updateField('sort_order', event.target.value)}
-              />
-            </label>
-
-            <label className="obw-portal-field admin-contacts__notes" htmlFor="contact-notes">
-              <span className="obw-portal-field__label">{t('admin.contacts.placeholders.notes')}</span>
+            <label className="admin-contacts__field" htmlFor="contact-notes">
+              <span className="admin-contacts__field-label">{t('admin.contacts.fields.notes')}</span>
               <textarea
                 id="contact-notes"
+                placeholder={t('admin.contacts.placeholders.notes')}
                 value={form.notes}
                 onChange={(event) => updateField('notes', event.target.value)}
               />
             </label>
-          </div>
 
-          <RememberMeToggle
-            checked={form.is_active}
-            label={form.is_active ? t('admin.contacts.activeToggle') : t('admin.contacts.inactiveToggle')}
-            onChange={(checked) => updateField('is_active', checked)}
-          />
-
-          <RememberMeToggle
-            checked={form.confirmed}
-            label={form.confirmed ? t('admin.contacts.confirmedPill') : t('admin.contacts.unconfirmedPill')}
-            onChange={(checked) => updateField('confirmed', checked)}
-          />
-
-          {formError ? <p className="admin-contacts__feedback admin-contacts__feedback--error">{formError}</p> : null}
-          {successMessage ? (
-            <p className="admin-contacts__feedback admin-contacts__feedback--success">{successMessage}</p>
-          ) : null}
-
-          <div className="admin-contacts__form-actions">
-            <button className="obw-portal-btn" type="submit" disabled={submitting}>
-              {submitting
-                ? t('admin.contacts.saveLoading')
-                : editingId
-                  ? t('admin.contacts.updateButton')
-                  : t('admin.contacts.createButton')}
-            </button>
-            {editingId ? (
-              <button type="button" className="obw-portal-btn obw-portal-btn--secondary" onClick={cancelEdit}>
-                {t('admin.contacts.cancelEdit')}
-              </button>
+            {formError ? <p className="admin-contacts__feedback admin-contacts__feedback--error">{formError}</p> : null}
+            {successMessage ? (
+              <p className="admin-contacts__feedback admin-contacts__feedback--success">{successMessage}</p>
             ) : null}
-          </div>
-        </form>
-      </section>
 
-      <section className="obw-portal-card">
-        <h2 className="obw-display obw-display--sm">{t('admin.contacts.publishedTitle')}</h2>
-        {contacts.length === 0 ? (
+            <div className="admin-contacts__form-actions">
+              <button className="admin-contacts__submit-btn" type="submit" disabled={submitting}>
+                <Save size={16} aria-hidden />
+                {submitting
+                  ? t('admin.contacts.saveLoading')
+                  : editingId
+                    ? t('admin.contacts.updateButton')
+                    : t('admin.contacts.createButton')}
+              </button>
+              {editingId ? (
+                <button type="button" className="admin-contacts__cancel-link" onClick={cancelEdit}>
+                  {t('admin.contacts.cancelEdit')}
+                </button>
+              ) : null}
+            </div>
+          </form>
+        </section>
+
+        <div className="admin-contacts__list-col">
+        <div className="admin-contacts__toolbar">
+          <div className="admin-contacts__search-wrap">
+            <Search size={16} className="admin-contacts__search-icon" aria-hidden />
+            <input
+              className="admin-contacts__search"
+              type="search"
+              placeholder={t('admin.contacts.searchPlaceholder')}
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+          </div>
+          <div className="admin-contacts__filters">
+            <button
+              type="button"
+              className={`admin-contacts__filter${categoryFilter === 'all' ? ' is-active' : ''}`}
+              onClick={() => setCategoryFilter('all')}>
+              {t('admin.contacts.filterAll', { count: contacts.length })}
+            </button>
+            {LOGISTICS_CONTACT_CATEGORY_IDS.map((categoryId) => (
+              <button
+                key={categoryId}
+                type="button"
+                className={`admin-contacts__filter${categoryFilter === categoryId ? ' is-active' : ''}`}
+                onClick={() => setCategoryFilter(categoryId)}>
+                {getLogisticsContactCategoryLabel(categoryId, t)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {filteredContacts.length === 0 ? (
           <p className="obw-body obw-body--flush">{t('admin.contacts.empty')}</p>
         ) : (
-          <div className="obw-data-list">
-            {contacts.map((contact) => (
-              <article key={contact.id} className="admin-contacts__row">
-                <div className="admin-contacts__row-main">
-                  <span className="obw-data-row__title">{contact.label}</span>
-                  <p className="obw-data-row__meta obw-data-row__meta--flush">
-                    {t('admin.contacts.category', { value: getLogisticsContactCategoryLabel(contact.category, t) })}
-                  </p>
-                  <span
-                    className={`obw-status-pill ${
-                      contact.is_active ? 'obw-status-pill--active' : 'obw-status-pill--pending'
-                    }`}>
-                    {contact.is_active ? t('admin.contacts.activeToggle') : t('admin.contacts.inactiveToggle')}
-                  </span>
-                  {contact.is_active ? (
-                    <span
-                      className={`obw-status-pill ${
-                        contact.confirmed ? 'obw-status-pill--active' : 'obw-status-pill--pending'
-                      }`}>
-                      {contact.confirmed ? t('admin.contacts.confirmedPill') : t('admin.contacts.unconfirmedPill')}
-                    </span>
-                  ) : null}
-                </div>
-                <div className="admin-contacts__row-actions">
-                  <button type="button" className="obw-portal-btn obw-portal-btn--secondary" onClick={() => startEdit(contact)}>
-                    {t('admin.contacts.edit')}
-                  </button>
-                  <button
-                    type="button"
-                    className="obw-portal-btn obw-portal-btn--secondary"
-                    onClick={() => void handleToggleActive(contact)}>
-                    {contact.is_active ? t('admin.contacts.hide') : t('admin.contacts.activate')}
-                  </button>
-                  {contact.is_active ? (
+          <div className="admin-contacts__supplier-grid">
+            {filteredContacts.map((contact) => {
+              const status = supplierStatus(contact, t);
+              const actions = buildContactActions(contact, t);
+              const callAction = actions.find((action) => action.id === 'phone');
+              const messageAction = actions.find((action) => action.id === 'whatsapp');
+
+              return (
+                <div key={contact.id} className="admin-contacts__supplier-card-wrap">
+                  <SupplierCard
+                    categoryLabel={getLogisticsContactCategoryLabel(contact.category, t)}
+                    statusLabel={status.label}
+                    statusTone={status.tone}
+                    title={contact.label}
+                    roleLabel={supplierRoleLabel(contact, t)}
+                    roleName={contact.contact_person || '—'}
+                    infoItems={supplierInfoItems(contact)}
+                    note={contact.notes}
+                    callAction={callAction}
+                    messageAction={messageAction}
+                  />
+                  <div className="admin-contacts__supplier-card-actions">
+                    <button type="button" className="obw-portal-btn obw-portal-btn--secondary" onClick={() => startEdit(contact)}>
+                      {t('admin.contacts.edit')}
+                    </button>
                     <button
                       type="button"
                       className="obw-portal-btn obw-portal-btn--secondary"
-                      onClick={() => void handleToggleConfirmed(contact)}>
-                      {contact.confirmed ? t('admin.contacts.unconfirm') : t('admin.contacts.confirm')}
+                      onClick={() => void handleToggleActive(contact)}>
+                      {contact.is_active ? t('admin.contacts.hide') : t('admin.contacts.activate')}
                     </button>
-                  ) : null}
-                  <button type="button" className="obw-portal-btn obw-portal-btn--secondary" onClick={() => void handleDelete(contact)}>
-                    {t('admin.contacts.delete')}
-                  </button>
+                    {contact.is_active ? (
+                      <button
+                        type="button"
+                        className="obw-portal-btn obw-portal-btn--secondary"
+                        onClick={() => void handleToggleConfirmed(contact)}>
+                        {contact.confirmed ? t('admin.contacts.unconfirm') : t('admin.contacts.confirm')}
+                      </button>
+                    ) : null}
+                    <button type="button" className="obw-portal-btn obw-portal-btn--secondary" onClick={() => void handleDelete(contact)}>
+                      {t('admin.contacts.delete')}
+                    </button>
+                  </div>
                 </div>
-              </article>
-            ))}
+              );
+            })}
           </div>
         )}
-      </section>
+        </div>
+      </div>
     </>
   );
 }

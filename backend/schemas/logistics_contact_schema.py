@@ -5,12 +5,11 @@ from pydantic import BaseModel, ConfigDict, field_validator
 
 
 class LogisticsContactCategoryEnum(str, Enum):
-    hair = "hair"
-    makeup = "makeup"
-    laundry = "laundry"
-    hotel = "hotel"
+    location = "location"
+    beauty = "beauty"
     transfer = "transfer"
-    car_rental = "car_rental"
+    catering = "catering"
+    laundry = "laundry"
 
 
 class LogisticsContactBase(BaseModel):

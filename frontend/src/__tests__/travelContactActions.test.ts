@@ -7,7 +7,7 @@ const translate = ((key: string) => key) as never;
 
 const baseContact: LogisticsContactItem = {
   id: 1,
-  category: 'hotel',
+  category: 'location',
   label: 'Hotel Ravenna',
   contact_person: null,
   phone: null,
