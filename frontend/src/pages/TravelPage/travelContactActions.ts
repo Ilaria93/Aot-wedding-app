@@ -36,11 +36,14 @@ export function buildContactActions(contact: LogisticsContactItem, t: TranslateF
     });
   }
 
-  if (contact.whatsapp_phone) {
+  // Falls back to the plain phone number when no separate WhatsApp number
+  // was given — most vendors use the same line for both.
+  const whatsappPhone = contact.whatsapp_phone || contact.phone;
+  if (whatsappPhone) {
     actions.push({
       id: 'whatsapp',
       label: t('contactActions.whatsapp'),
-      url: buildWhatsappUrl(contact.whatsapp_phone),
+      url: buildWhatsappUrl(whatsappPhone),
       accentColor: SOCIAL_BRAND_COLORS.whatsapp,
     });
   }

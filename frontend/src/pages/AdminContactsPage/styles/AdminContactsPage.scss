@@ -1,41 +1,3 @@
-.admin-contacts__stats {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.admin-contacts__stat-card {
-  padding: 1.1rem 1rem;
-  text-align: center;
-}
-
-.admin-contacts__stat-value {
-  margin: 0 0 4px;
-  font-family: var(--font-display);
-  font-size: 2rem;
-  line-height: 1;
-}
-
-.admin-contacts__stat-card--gold .admin-contacts__stat-value {
-  color: var(--obw-gold-bright);
-}
-
-.admin-contacts__stat-card--rose .admin-contacts__stat-value {
-  color: color-mix(in srgb, var(--obw-burgundy) 55%, var(--obw-bone));
-}
-
-.admin-contacts__stat-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--obw-bone) 75%, transparent);
-}
-
 /* Two-column layout: the create/edit form stays put on the left while the
    supplier directory scrolls on the right — same split as the mockup. */
 .admin-contacts__layout {
@@ -47,11 +9,6 @@
 @media (min-width: 1000px) {
   .admin-contacts__layout {
     grid-template-columns: minmax(320px, 400px) 1fr;
-  }
-
-  .admin-contacts__form-card {
-    position: sticky;
-    top: var(--obw-space-md);
   }
 }
 
@@ -234,32 +191,41 @@
   margin-top: 1.5rem;
 }
 
-/* Search + category filter, same visual language as AdminRsvpPage's
-   toolbar — one row here instead of stacked since there's no extra label. */
+/* Search + category filter — identical layout/pill style to
+   AdminRsvpPage's toolbar (.admin-rsvp__toolbar/__filter): a bordered
+   obw-portal-panel with a kicker label, filter pills, then the search bar. */
+/* padding-top matches .admin-contacts__form-card's (.obw-portal-card: 2rem)
+   instead of .obw-portal-panel's own 1.1rem, so "Filtra per fornitore" lines
+   up with "Registro Strategico" in the column beside it. */
 .admin-contacts__toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin: 1rem 0;
+  padding-top: 2rem;
+  margin-bottom: var(--obw-space-md);
+}
+
+.admin-contacts__toolbar-label {
+  margin-bottom: 8px;
 }
 
 .admin-contacts__filters {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  margin-bottom: 12px;
 }
 
 .admin-contacts__filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 8px 16px;
   border: 1px solid transparent;
   border-radius: 8px;
-  background: color-mix(in srgb, var(--obw-bone) 6%, transparent);
+  background: transparent;
   color: color-mix(in srgb, var(--obw-bone) 75%, transparent);
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   cursor: pointer;
 }
 
@@ -364,13 +330,32 @@
   justify-content: center;
   width: 32px;
   height: 32px;
+  border: none;
   border-radius: 9px;
   background: color-mix(in srgb, #eee5dc 8%, transparent);
   color: var(--obw-gold-bright);
+  cursor: pointer;
 }
 
 .admin-contacts__supplier-icon-btn:hover {
   background: color-mix(in srgb, #eee5dc 14%, transparent);
+}
+
+.admin-contacts__supplier-icon-btn--danger {
+  color: color-mix(in srgb, var(--obw-burgundy) 70%, white);
+}
+
+.admin-contacts__supplier-icon-btn--danger:hover {
+  background: color-mix(in srgb, var(--obw-burgundy) 25%, transparent);
+}
+
+.admin-contacts__supplier-manage-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid color-mix(in srgb, #eee5dc 14%, transparent);
 }
 
 .admin-contacts__supplier-title {

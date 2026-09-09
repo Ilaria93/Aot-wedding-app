@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 
 import { PageAlert } from '@/components/PageShell';
 import { SearchBar } from '@/components/SearchBar';
+import { StatCards, type StatCardData } from '@/components/StatCards';
 import { LOGISTICS_CONTACT_CATEGORY_IDS, getLogisticsContactCategoryLabel } from '@/constants/logistics';
 import { useI18n } from '@/contexts/I18nContext';
 import type { TranslateFn } from '@/i18n/translations';
@@ -41,6 +42,32 @@ function supplierInfoItems(contact: LogisticsContactItem): SupplierCardInfoItem[
   if (contact.website) items.push({ icon: Globe, text: contact.website });
   else if (contact.email) items.push({ icon: Mail, text: contact.email });
   return items;
+}
+
+// Same card shape as AdminRsvpPage's buildStatCards — active/inactive out of
+// the full supplier list.
+function buildContactStatCards(contacts: LogisticsContactItem[], t: TranslateFn): StatCardData[] {
+  const total = contacts.length;
+  const percentOf = (value: number) => (total > 0 ? Math.round((value / total) * 100) : 0);
+  const active = contacts.filter((contact) => contact.is_active).length;
+  const inactive = total - active;
+
+  return [
+    {
+      id: 'active',
+      tone: 'gold',
+      label: t('admin.contacts.statsActive'),
+      value: active,
+      subtitle: t('admin.contacts.statsActiveSubtitle', { percent: percentOf(active) }),
+    },
+    {
+      id: 'inactive',
+      tone: 'stone',
+      label: t('admin.contacts.statsInactive'),
+      value: inactive,
+      subtitle: t('admin.contacts.statsInactiveSubtitle', { percent: percentOf(inactive) }),
+    },
+  ];
 }
 
 type ContactFormState = {
@@ -201,13 +228,7 @@ export function AdminContactsPage() {
     });
   }, [contacts, search, categoryFilter]);
 
-  const stats = useMemo(
-    () => ({
-      active: contacts.filter((contact) => contact.is_active).length,
-      inactive: contacts.filter((contact) => !contact.is_active).length,
-    }),
-    [contacts],
-  );
+  const statCards = useMemo(() => buildContactStatCards(contacts, t), [contacts, t]);
   const heroStatsSlot = useAdminHeroStatsSlot();
 
   if (loading) {
@@ -220,21 +241,7 @@ export function AdminContactsPage() {
 
   return (
     <>
-      {heroStatsSlot
-        ? createPortal(
-            <div className="admin-contacts__stats">
-              <div className="obw-portal-card admin-contacts__stat-card admin-contacts__stat-card--gold">
-                <p className="admin-contacts__stat-value">{stats.active}</p>
-                <span className="admin-contacts__stat-label">{t('admin.contacts.statsActive')}</span>
-              </div>
-              <div className="obw-portal-card admin-contacts__stat-card admin-contacts__stat-card--rose">
-                <p className="admin-contacts__stat-value">{stats.inactive}</p>
-                <span className="admin-contacts__stat-label">{t('admin.contacts.statsInactive')}</span>
-              </div>
-            </div>,
-            heroStatsSlot,
-          )
-        : null}
+      {heroStatsSlot ? createPortal(<StatCards cards={statCards} />, heroStatsSlot) : null}
 
       {error ? <PageAlert message={error} /> : null}
 
@@ -353,8 +360,8 @@ export function AdminContactsPage() {
         </section>
 
         <div className="admin-contacts__list-col">
-        <div className="admin-contacts__toolbar">
-          <SearchBar value={search} onChange={setSearch} placeholder={t('admin.contacts.searchPlaceholder')} />
+        <section className="obw-portal-panel admin-contacts__toolbar">
+          <span className="obw-portal-kicker admin-contacts__toolbar-label">{t('admin.contacts.searchLabel')}</span>
           <div className="admin-contacts__filters">
             <button
               type="button"
@@ -372,7 +379,8 @@ export function AdminContactsPage() {
               </button>
             ))}
           </div>
-        </div>
+          <SearchBar value={search} onChange={setSearch} placeholder={t('admin.contacts.searchPlaceholder')} />
+        </section>
 
         {filteredContacts.length === 0 ? (
           <p className="obw-body obw-body--flush">{t('admin.contacts.empty')}</p>
