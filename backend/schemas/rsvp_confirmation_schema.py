@@ -12,6 +12,7 @@ class RsvpGuestLineRequest(BaseModel):
     meal_choice: MealChoiceEnum
     intolerance: IntoleranceEnum
     dietary_notes: Optional[str] = Field(default=None, max_length=250)
+    is_child: bool = False
 
     @field_validator("first_name", "last_name")
     @classmethod

@@ -1,4 +1,5 @@
 import { INTOLERANCE_IDS, MEAL_CHOICE_IDS } from '@/constants/rsvpParty';
+import { RememberMeToggle } from '@/components/RememberMeToggle';
 import type { RsvpGuestDraft } from '@/components/Rsvp/types/RsvpGuestDraft';
 import type { RsvpGuestFieldError } from '@/components/Rsvp/validateRsvpGuestLines';
 import { useI18n } from '@/contexts/I18nContext';
@@ -138,6 +139,12 @@ export function RsvpGuestLineFields({
           ) : null}
         </label>
       </div>
+
+      <RememberMeToggle
+        checked={guest.is_child}
+        label={t('rsvp.isChildLabel')}
+        onChange={(checked) => onChange(guest.clientId, { is_child: checked })}
+      />
     </article>
   );
 }
