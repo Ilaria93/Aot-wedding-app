@@ -1,6 +1,7 @@
 import { useLocation } from 'react-router-dom';
 
 import { useI18n } from '@/contexts/I18nContext';
+import type { TranslationKey } from '@/i18n/translations';
 
 export type AdminHeroContent = {
   eyebrowSegments: string[];
@@ -10,12 +11,20 @@ export type AdminHeroContent = {
   subtitle: string;
 };
 
+type AdminHeroKeys = {
+  eyebrowSegments: TranslationKey[];
+  code?: TranslationKey;
+  titleLead: TranslationKey;
+  titleHighlight?: TranslationKey;
+  subtitle: TranslationKey;
+};
+
 // /admin/rsvp is the only section with its own hero copy so far — inline the
 // one override until a second route needs one too.
 export function useAdminHeroContent(): AdminHeroContent {
   const { pathname } = useLocation();
   const { t } = useI18n();
-  const hero =
+  const hero: AdminHeroKeys =
     pathname === '/admin/rsvp'
       ? {
           eyebrowSegments: ['landing.hero.operationTag', 'common.roles.admin', 'navigation.stack.rsvp'],
