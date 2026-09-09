@@ -53,6 +53,7 @@ def truncate_test_tables():
                     photo_album_items,
                     rsvp_guests,
                     rsvps,
+                    wedding_tables,
                     logistics_contacts,
                     users
                 RESTART IDENTITY CASCADE

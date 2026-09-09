@@ -114,3 +114,32 @@ def test_rsvp_stats_counts_guests_per_faction(api_client, admin_headers):
     assert data["total_attending"] == 2
     assert data["total_participants"] == 3
     assert sum(data["by_faction"].values()) == 3
+
+
+def test_rsvp_stats_counts_meal_choices_and_children(api_client, admin_headers):
+    user_client = _register_user("mikasa@example.com", "Mikasa", "Ackerman")
+    user_client.post(
+        "/rsvp/confirm",
+        json=_attending_payload(
+            [
+                {
+                    "first_name": "Mikasa",
+                    "last_name": "Ackerman",
+                    "meal_choice": "vegetarian",
+                    "intolerance": "none",
+                },
+                {
+                    "first_name": "Kid",
+                    "last_name": "Ackerman",
+                    "meal_choice": "baby",
+                    "intolerance": "none",
+                    "is_child": True,
+                },
+            ]
+        ),
+    )
+
+    response = api_client.get("/admin/rsvp-stats", headers=admin_headers)
+    data = response.json()
+    assert data["total_children"] == 1
+    assert data["by_meal_choice"] == {"vegetarian": 1, "baby": 1}
