@@ -1,14 +1,7 @@
 .admin-contacts__stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-}
-
-@media (max-width: 768px) {
-  .admin-contacts__stats {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-  }
 }
 
 .admin-contacts__stat-card {
@@ -27,10 +20,6 @@
   color: var(--obw-gold-bright);
 }
 
-.admin-contacts__stat-card--bone .admin-contacts__stat-value {
-  color: var(--obw-bone);
-}
-
 .admin-contacts__stat-card--rose .admin-contacts__stat-value {
   color: color-mix(in srgb, var(--obw-burgundy) 55%, var(--obw-bone));
 }
@@ -45,13 +34,6 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: color-mix(in srgb, var(--obw-bone) 75%, transparent);
-}
-
-.admin-contacts__stat-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: #7fb88f;
 }
 
 /* Two-column layout: the create/edit form stays put on the left while the
@@ -262,37 +244,6 @@
   margin: 1rem 0;
 }
 
-.admin-contacts__search-wrap {
-  position: relative;
-  flex: 1 1 220px;
-  min-width: 200px;
-}
-
-.admin-contacts__search-icon {
-  position: absolute;
-  top: 50%;
-  left: 14px;
-  transform: translateY(-50%);
-  color: color-mix(in srgb, var(--obw-bone) 55%, transparent);
-  pointer-events: none;
-}
-
-.admin-contacts__search {
-  width: 100%;
-  padding: 12px 14px 12px 40px;
-  border: 1px solid var(--obw-border);
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--obw-bone) 8%, transparent);
-  color: var(--obw-bone);
-  font: inherit;
-}
-
-.admin-contacts__search:focus {
-  outline: none;
-  border-color: var(--obw-gold);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--obw-gold) 20%, transparent);
-}
-
 .admin-contacts__filters {
   display: flex;
   flex-wrap: wrap;
@@ -323,25 +274,9 @@
    read as one system. See SupplierCard.tsx. */
 .admin-contacts__supplier-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: 1fr;
   gap: var(--obw-space-md);
   margin-top: 1rem;
-}
-
-.admin-contacts__supplier-card-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.admin-contacts__supplier-card-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.admin-contacts__supplier-card-actions .obw-portal-btn {
-  padding: 8px 14px;
 }
 
 .admin-contacts__supplier-card {
@@ -410,11 +345,6 @@
 .admin-contacts__supplier-pill--green {
   background: color-mix(in srgb, #4c8b5a 25%, transparent);
   color: #a9d9b4;
-}
-
-.admin-contacts__supplier-pill--amber {
-  background: color-mix(in srgb, var(--obw-gold) 25%, transparent);
-  color: var(--obw-gold-bright);
 }
 
 .admin-contacts__supplier-pill--rose {

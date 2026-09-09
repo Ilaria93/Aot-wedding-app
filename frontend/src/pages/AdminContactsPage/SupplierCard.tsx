@@ -1,7 +1,7 @@
 import { Info, MessageCircle, Phone } from 'lucide-react';
 import type { ComponentType } from 'react';
 
-export type SupplierCardTone = 'green' | 'amber' | 'rose';
+export type SupplierCardTone = 'green' | 'rose';
 
 type SupplierCardIcon = ComponentType<{ size?: number; 'aria-hidden'?: boolean }>;
 
@@ -15,6 +15,13 @@ export type SupplierCardAction = {
   url: string;
 };
 
+export type SupplierCardManageAction = {
+  icon: SupplierCardIcon;
+  label: string;
+  onClick: () => void;
+  danger?: boolean;
+};
+
 type SupplierCardProps = {
   categoryLabel: string;
   statusLabel: string;
@@ -26,6 +33,7 @@ type SupplierCardProps = {
   note?: string | null;
   callAction?: SupplierCardAction;
   messageAction?: SupplierCardAction;
+  manageActions?: SupplierCardManageAction[];
 };
 
 // Same dark-panel/gold-corner language as .admin-rsvp__table-panel — one
@@ -42,6 +50,7 @@ export function SupplierCard({
   note,
   callAction,
   messageAction,
+  manageActions,
 }: SupplierCardProps) {
   return (
     <article className="admin-contacts__supplier-card">
@@ -91,6 +100,21 @@ export function SupplierCard({
         <div className="admin-contacts__supplier-note">
           <Info size={14} aria-hidden />
           <span>{note}</span>
+        </div>
+      ) : null}
+
+      {manageActions && manageActions.length > 0 ? (
+        <div className="admin-contacts__supplier-manage-row">
+          {manageActions.map((action) => (
+            <button
+              type="button"
+              key={action.label}
+              className={`admin-contacts__supplier-icon-btn${action.danger ? ' admin-contacts__supplier-icon-btn--danger' : ''}`}
+              aria-label={action.label}
+              onClick={action.onClick}>
+              <action.icon size={16} aria-hidden />
+            </button>
+          ))}
         </div>
       ) : null}
     </article>

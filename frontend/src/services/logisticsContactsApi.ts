@@ -18,7 +18,6 @@ export type LogisticsContactItem = {
   notes?: string | null;
   sort_order: number;
   is_active: boolean;
-  confirmed: boolean;
 };
 
 export type LogisticsContactPayload = {
@@ -36,7 +35,6 @@ export type LogisticsContactPayload = {
   notes?: string;
   sort_order?: number;
   is_active?: boolean;
-  confirmed?: boolean;
 };
 
 export type LogisticsContactUpdatePayload = Partial<LogisticsContactPayload>;

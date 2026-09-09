@@ -21,7 +21,6 @@ const baseContact: LogisticsContactItem = {
   notes: null,
   sort_order: 0,
   is_active: true,
-  confirmed: false,
 };
 
 describe('buildContactActions', () => {

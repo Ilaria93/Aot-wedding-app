@@ -22,6 +22,3 @@ class LogisticsContact(Base):
     notes = Column(String(300), nullable=True)
     sort_order = Column(Integer, nullable=False, default=0)
     is_active = Column(Boolean, nullable=False, default=True, index=True)
-    # Whether the supplier has confirmed back (vs. still awaiting reply) — surfaced as
-    # "Confermati"/"In attesa" on the admin dashboard, independent from is_active.
-    confirmed = Column(Boolean, nullable=False, default=False)

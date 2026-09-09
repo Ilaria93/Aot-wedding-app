@@ -1,8 +1,9 @@
-import { Clock, Globe, IdCard, Mail, Phone, Save, Search, Store, UserPlus } from 'lucide-react';
+import { Clock, Eye, EyeOff, Globe, IdCard, Mail, Pencil, Phone, Save, Store, Trash2, UserPlus } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { PageAlert } from '@/components/PageShell';
+import { SearchBar } from '@/components/SearchBar';
 import { LOGISTICS_CONTACT_CATEGORY_IDS, getLogisticsContactCategoryLabel } from '@/constants/logistics';
 import { useI18n } from '@/contexts/I18nContext';
 import type { TranslateFn } from '@/i18n/translations';
@@ -23,9 +24,9 @@ import './styles/AdminContactsPage.scss';
 
 // Card fields that vary with the booking rather than the form data itself.
 function supplierStatus(contact: LogisticsContactItem, t: TranslateFn): { label: string; tone: SupplierCardTone } {
-  if (!contact.is_active) return { label: t('admin.contacts.inactiveToggle'), tone: 'rose' };
-  if (contact.confirmed) return { label: t('admin.contacts.confirmedPill'), tone: 'green' };
-  return { label: t('admin.contacts.unconfirmedPill'), tone: 'amber' };
+  return contact.is_active
+    ? { label: t('admin.contacts.activeToggle'), tone: 'green' }
+    : { label: t('admin.contacts.inactiveToggle'), tone: 'rose' };
 }
 
 function supplierRoleLabel(contact: LogisticsContactItem, t: TranslateFn): string {
@@ -50,7 +51,6 @@ type ContactFormState = {
   address: string;
   notes: string;
   is_active: boolean;
-  confirmed: boolean;
 };
 
 const EMPTY_FORM: ContactFormState = {
@@ -61,7 +61,6 @@ const EMPTY_FORM: ContactFormState = {
   address: '',
   notes: '',
   is_active: true,
-  confirmed: false,
 };
 
 function contactToFormState(contact: LogisticsContactItem): ContactFormState {
@@ -73,7 +72,6 @@ function contactToFormState(contact: LogisticsContactItem): ContactFormState {
     address: contact.address ?? '',
     notes: contact.notes ?? '',
     is_active: contact.is_active,
-    confirmed: contact.confirmed,
   };
 }
 
@@ -86,7 +84,6 @@ function formStateToPayload(form: ContactFormState): LogisticsContactPayload {
     address: form.address.trim() || undefined,
     notes: form.notes.trim() || undefined,
     is_active: form.is_active,
-    confirmed: form.confirmed,
   };
 }
 
@@ -180,15 +177,6 @@ export function AdminContactsPage() {
     }
   }
 
-  async function handleToggleConfirmed(contact: LogisticsContactItem) {
-    try {
-      await updateAdminLogisticsContact(contact.id, { confirmed: !contact.confirmed });
-      await loadContacts();
-    } catch (caughtError) {
-      setError(getApiErrorMessage(caughtError, t('admin.errors.contactUpdateFailed')));
-    }
-  }
-
   async function handleDelete(contact: LogisticsContactItem) {
     if (!window.confirm(t('admin.contacts.confirmDelete'))) {
       return;
@@ -213,12 +201,13 @@ export function AdminContactsPage() {
     });
   }, [contacts, search, categoryFilter]);
 
-  const activeContacts = useMemo(() => contacts.filter((contact) => contact.is_active), [contacts]);
-  const stats = {
-    active: activeContacts.length,
-    confirmed: activeContacts.filter((contact) => contact.confirmed).length,
-    pending: activeContacts.filter((contact) => !contact.confirmed).length,
-  };
+  const stats = useMemo(
+    () => ({
+      active: contacts.filter((contact) => contact.is_active).length,
+      inactive: contacts.filter((contact) => !contact.is_active).length,
+    }),
+    [contacts],
+  );
   const heroStatsSlot = useAdminHeroStatsSlot();
 
   if (loading) {
@@ -238,16 +227,9 @@ export function AdminContactsPage() {
                 <p className="admin-contacts__stat-value">{stats.active}</p>
                 <span className="admin-contacts__stat-label">{t('admin.contacts.statsActive')}</span>
               </div>
-              <div className="obw-portal-card admin-contacts__stat-card admin-contacts__stat-card--bone">
-                <p className="admin-contacts__stat-value">{stats.confirmed}</p>
-                <span className="admin-contacts__stat-label">
-                  <span className="admin-contacts__stat-dot" aria-hidden />
-                  {t('admin.contacts.statsConfirmed')}
-                </span>
-              </div>
               <div className="obw-portal-card admin-contacts__stat-card admin-contacts__stat-card--rose">
-                <p className="admin-contacts__stat-value">{stats.pending}</p>
-                <span className="admin-contacts__stat-label">{t('admin.contacts.statsPending')}</span>
+                <p className="admin-contacts__stat-value">{stats.inactive}</p>
+                <span className="admin-contacts__stat-label">{t('admin.contacts.statsInactive')}</span>
               </div>
             </div>,
             heroStatsSlot,
@@ -372,16 +354,7 @@ export function AdminContactsPage() {
 
         <div className="admin-contacts__list-col">
         <div className="admin-contacts__toolbar">
-          <div className="admin-contacts__search-wrap">
-            <Search size={16} className="admin-contacts__search-icon" aria-hidden />
-            <input
-              className="admin-contacts__search"
-              type="search"
-              placeholder={t('admin.contacts.searchPlaceholder')}
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-            />
-          </div>
+          <SearchBar value={search} onChange={setSearch} placeholder={t('admin.contacts.searchPlaceholder')} />
           <div className="admin-contacts__filters">
             <button
               type="button"
@@ -410,44 +383,36 @@ export function AdminContactsPage() {
               const actions = buildContactActions(contact, t);
               const callAction = actions.find((action) => action.id === 'phone');
               const messageAction = actions.find((action) => action.id === 'whatsapp');
+              const manageActions = [
+                { icon: Pencil, label: t('admin.contacts.edit'), onClick: () => startEdit(contact) },
+                {
+                  icon: contact.is_active ? EyeOff : Eye,
+                  label: contact.is_active ? t('admin.contacts.hide') : t('admin.contacts.activate'),
+                  onClick: () => void handleToggleActive(contact),
+                },
+                {
+                  icon: Trash2,
+                  label: t('admin.contacts.delete'),
+                  onClick: () => void handleDelete(contact),
+                  danger: true,
+                },
+              ];
 
               return (
-                <div key={contact.id} className="admin-contacts__supplier-card-wrap">
-                  <SupplierCard
-                    categoryLabel={getLogisticsContactCategoryLabel(contact.category, t)}
-                    statusLabel={status.label}
-                    statusTone={status.tone}
-                    title={contact.label}
-                    roleLabel={supplierRoleLabel(contact, t)}
-                    roleName={contact.contact_person || '—'}
-                    infoItems={supplierInfoItems(contact)}
-                    note={contact.notes}
-                    callAction={callAction}
-                    messageAction={messageAction}
-                  />
-                  <div className="admin-contacts__supplier-card-actions">
-                    <button type="button" className="obw-portal-btn obw-portal-btn--secondary" onClick={() => startEdit(contact)}>
-                      {t('admin.contacts.edit')}
-                    </button>
-                    <button
-                      type="button"
-                      className="obw-portal-btn obw-portal-btn--secondary"
-                      onClick={() => void handleToggleActive(contact)}>
-                      {contact.is_active ? t('admin.contacts.hide') : t('admin.contacts.activate')}
-                    </button>
-                    {contact.is_active ? (
-                      <button
-                        type="button"
-                        className="obw-portal-btn obw-portal-btn--secondary"
-                        onClick={() => void handleToggleConfirmed(contact)}>
-                        {contact.confirmed ? t('admin.contacts.unconfirm') : t('admin.contacts.confirm')}
-                      </button>
-                    ) : null}
-                    <button type="button" className="obw-portal-btn obw-portal-btn--secondary" onClick={() => void handleDelete(contact)}>
-                      {t('admin.contacts.delete')}
-                    </button>
-                  </div>
-                </div>
+                <SupplierCard
+                  key={contact.id}
+                  categoryLabel={getLogisticsContactCategoryLabel(contact.category, t)}
+                  statusLabel={status.label}
+                  statusTone={status.tone}
+                  title={contact.label}
+                  roleLabel={supplierRoleLabel(contact, t)}
+                  roleName={contact.contact_person || '—'}
+                  infoItems={supplierInfoItems(contact)}
+                  note={contact.notes}
+                  callAction={callAction}
+                  messageAction={messageAction}
+                  manageActions={manageActions}
+                />
               );
             })}
           </div>
