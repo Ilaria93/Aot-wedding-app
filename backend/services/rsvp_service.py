@@ -47,6 +47,7 @@ def _guest_models_from_payload(rsvp_id: int, payload: RSVPSubmitRequest) -> list
             meal_choice=line.meal_choice.value,
             intolerance=line.intolerance.value,
             dietary_notes=line.dietary_notes,
+            is_child=line.is_child,
             sort_order=index,
         )
         for index, line in enumerate(payload.guests)
@@ -61,6 +62,7 @@ def _guest_responses(guests: list[RsvpGuest]) -> list[RsvpGuestResponse]:
             meal_choice=MealChoiceEnum(guest.meal_choice),
             intolerance=IntoleranceEnum(guest.intolerance),
             dietary_notes=guest.dietary_notes,
+            is_child=guest.is_child,
         )
         for guest in guests
     ]

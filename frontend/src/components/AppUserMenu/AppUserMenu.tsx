@@ -1,9 +1,6 @@
-import { ChevronDown, User } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 
 import { AppUserMenuContent } from '@/components/AppUserMenu/AppUserMenuContent';
-import { getUserInitials } from '@/components/AppUserMenu/getUserInitials';
-import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
 import './styles/AppUserMenu.scss';
 
@@ -16,7 +13,6 @@ export function AppUserMenu() {
   const menuId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const { user, isAuthenticated } = useAuth();
   const { t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -53,9 +49,6 @@ export function AppUserMenu() {
     setIsOpen(false);
   }
 
-  const initials =
-    isAuthenticated && user ? getUserInitials(user.first_name, user.last_name) : null;
-
   return (
     <div className="app-user-menu">
       <button
@@ -69,13 +62,8 @@ export function AppUserMenu() {
         aria-label={t('navigation.userMenu.openLabel')}
         onClick={() => setIsOpen((current) => !current)}>
         <span className="app-user-menu__avatar" aria-hidden>
-          {initials ?? <User size={16} strokeWidth={1.75} />}
+          <img src="/assets/wedding/stemma.webp" alt="" className="app-user-menu__crest" />
         </span>
-        <ChevronDown
-          size={14}
-          className={`app-user-menu__chevron${isOpen ? ' is-open' : ''}`}
-          aria-hidden
-        />
       </button>
 
       {isOpen ? (

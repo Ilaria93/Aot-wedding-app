@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from database.base import Base
@@ -15,6 +15,7 @@ class RsvpGuest(Base):
     meal_choice = Column(String(30), nullable=False)
     intolerance = Column(String(30), nullable=False)
     dietary_notes = Column(String(250), nullable=True)
+    is_child = Column(Boolean, nullable=False, default=False)
     sort_order = Column(Integer, nullable=False, default=0)
 
     rsvp = relationship("RSVP", back_populates="guests")

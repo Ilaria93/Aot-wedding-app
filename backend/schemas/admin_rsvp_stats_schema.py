@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from schemas.rsvp_enums import FactionEnum
+from schemas.rsvp_enums import FactionEnum, MealChoiceEnum
 
 
 class AdminRsvpStatsResponse(BaseModel):
@@ -9,4 +9,6 @@ class AdminRsvpStatsResponse(BaseModel):
     total_attending: int
     total_not_attending: int
     total_participants: int
+    total_children: int
     by_faction: dict[FactionEnum, int]
+    by_meal_choice: dict[MealChoiceEnum, int]

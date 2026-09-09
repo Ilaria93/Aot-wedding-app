@@ -54,6 +54,7 @@ describe('draftsToGuestPayload', () => {
         meal_choice: 'standard',
         intolerance: 'none',
         dietary_notes: '   ',
+        is_child: false,
         isAccountHolder: true,
       },
     ]);
@@ -64,6 +65,7 @@ describe('draftsToGuestPayload', () => {
         last_name: 'Rossi',
         meal_choice: 'standard',
         intolerance: 'none',
+        is_child: false,
       },
     ]);
   });
@@ -80,6 +82,7 @@ describe('validateRsvpGuestLines', () => {
         meal_choice: 'standard',
         intolerance: 'none',
         dietary_notes: '',
+        is_child: false,
         isAccountHolder: false,
       },
     ]);

@@ -8,5 +8,6 @@ export type RsvpGuestDraft = {
   meal_choice: MealChoiceId;
   intolerance: IntoleranceId;
   dietary_notes: string;
+  is_child: boolean;
   isAccountHolder: boolean;
 };

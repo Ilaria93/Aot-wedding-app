@@ -22,6 +22,7 @@ export function buildAccountHolderGuestLine(profile: AccountProfile): RsvpGuestD
     meal_choice: 'standard',
     intolerance: 'none',
     dietary_notes: '',
+    is_child: false,
     isAccountHolder: true,
   };
 }
@@ -42,6 +43,7 @@ export function guestLinesToDrafts(
     meal_choice: guest.meal_choice,
     intolerance: guest.intolerance,
     dietary_notes: guest.dietary_notes ?? '',
+    is_child: guest.is_child ?? false,
     isAccountHolder: index === 0,
   }));
 }
@@ -55,6 +57,7 @@ export function buildEmptyGuestLine(): RsvpGuestDraft {
     meal_choice: 'standard',
     intolerance: 'none',
     dietary_notes: '',
+    is_child: false,
     isAccountHolder: false,
   };
 }
@@ -67,5 +70,6 @@ export function draftsToGuestPayload(guests: RsvpGuestDraft[]) {
     meal_choice: guest.meal_choice,
     intolerance: guest.intolerance,
     dietary_notes: guest.dietary_notes.trim() || undefined,
+    is_child: guest.is_child,
   }));
 }
