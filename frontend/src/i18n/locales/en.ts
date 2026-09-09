@@ -493,6 +493,11 @@ export const en = {
       rsvpTitleHighlight: 'Attendance',
       rsvpSubtitle:
         "Real-time attendance tracking, table management, plus-ones, and dietary requirements for Davide & Ilaria's wedding banquet.",
+      contactsCode: 'Logistics 24h',
+      contactsTitleLead: 'Suppliers',
+      contactsTitleHighlight: '& Logistics Directory',
+      contactsSubtitle:
+        'Strategic coordination, confirmed suppliers, delivery access points, and priority contacts for Davide & Ilaria\'s wedding.',
     },
     stats: {
       invited: 'Registered guests',
@@ -597,9 +602,16 @@ export const en = {
       cancelEdit: 'Cancel edit',
       activeToggle: 'Active item',
       inactiveToggle: 'Inactive item',
+      confirm: 'Confirm',
+      unconfirm: 'Remove confirmation',
+      confirmedPill: 'Confirmed',
+      unconfirmedPill: 'Pending',
       createdMessage: 'Contact created.',
       updatedMessage: 'Contact updated.',
       publishedTitle: 'Published contacts',
+      statsActive: 'Active',
+      statsConfirmed: 'Confirmed',
+      statsPending: 'Pending',
       empty: 'No contact created yet.',
       category: 'Category: {{value}}',
       contactPerson: 'Contact person: {{value}}',

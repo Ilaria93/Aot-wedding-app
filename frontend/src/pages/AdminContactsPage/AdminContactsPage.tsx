@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import { PageAlert } from '@/components/PageShell';
 import { RememberMeToggle } from '@/components/RememberMeToggle';
 import { LOGISTICS_CONTACT_CATEGORY_IDS, getLogisticsContactCategoryLabel } from '@/constants/logistics';
 import { useI18n } from '@/contexts/I18nContext';
+import { useAdminHeroStatsSlot } from '@/layouts/AdminLayout/AdminHeroStatsSlotContext';
 import { getApiErrorMessage } from '@/services/apiErrors';
 import {
   createAdminLogisticsContact,
@@ -31,6 +33,7 @@ type ContactFormState = {
   notes: string;
   sort_order: string;
   is_active: boolean;
+  confirmed: boolean;
 };
 
 const EMPTY_FORM: ContactFormState = {
@@ -48,6 +51,7 @@ const EMPTY_FORM: ContactFormState = {
   notes: '',
   sort_order: '0',
   is_active: true,
+  confirmed: false,
 };
 
 function contactToFormState(contact: LogisticsContactItem): ContactFormState {
@@ -66,6 +70,7 @@ function contactToFormState(contact: LogisticsContactItem): ContactFormState {
     notes: contact.notes ?? '',
     sort_order: String(contact.sort_order),
     is_active: contact.is_active,
+    confirmed: contact.confirmed,
   };
 }
 
@@ -85,6 +90,7 @@ function formStateToPayload(form: ContactFormState): LogisticsContactPayload {
     notes: form.notes.trim() || undefined,
     sort_order: Number(form.sort_order) || 0,
     is_active: form.is_active,
+    confirmed: form.confirmed,
   };
 }
 
@@ -175,6 +181,15 @@ export function AdminContactsPage() {
     }
   }
 
+  async function handleToggleConfirmed(contact: LogisticsContactItem) {
+    try {
+      await updateAdminLogisticsContact(contact.id, { confirmed: !contact.confirmed });
+      await loadContacts();
+    } catch (caughtError) {
+      setError(getApiErrorMessage(caughtError, t('admin.errors.contactUpdateFailed')));
+    }
+  }
+
   async function handleDelete(contact: LogisticsContactItem) {
     if (!window.confirm(t('admin.contacts.confirmDelete'))) {
       return;
@@ -187,6 +202,14 @@ export function AdminContactsPage() {
     }
   }
 
+  const activeContacts = useMemo(() => contacts.filter((contact) => contact.is_active), [contacts]);
+  const stats = {
+    active: activeContacts.length,
+    confirmed: activeContacts.filter((contact) => contact.confirmed).length,
+    pending: activeContacts.filter((contact) => !contact.confirmed).length,
+  };
+  const heroStatsSlot = useAdminHeroStatsSlot();
+
   if (loading) {
     return (
       <div className="loading-screen">
@@ -197,6 +220,29 @@ export function AdminContactsPage() {
 
   return (
     <>
+      {heroStatsSlot
+        ? createPortal(
+            <div className="admin-contacts__stats">
+              <div className="obw-portal-card admin-contacts__stat-card admin-contacts__stat-card--gold">
+                <p className="admin-contacts__stat-value">{stats.active}</p>
+                <span className="admin-contacts__stat-label">{t('admin.contacts.statsActive')}</span>
+              </div>
+              <div className="obw-portal-card admin-contacts__stat-card admin-contacts__stat-card--bone">
+                <p className="admin-contacts__stat-value">{stats.confirmed}</p>
+                <span className="admin-contacts__stat-label">
+                  <span className="admin-contacts__stat-dot" aria-hidden />
+                  {t('admin.contacts.statsConfirmed')}
+                </span>
+              </div>
+              <div className="obw-portal-card admin-contacts__stat-card admin-contacts__stat-card--rose">
+                <p className="admin-contacts__stat-value">{stats.pending}</p>
+                <span className="admin-contacts__stat-label">{t('admin.contacts.statsPending')}</span>
+              </div>
+            </div>,
+            heroStatsSlot,
+          )
+        : null}
+
       {error ? <PageAlert message={error} /> : null}
 
       <section className="obw-portal-card">
@@ -338,6 +384,12 @@ export function AdminContactsPage() {
             onChange={(checked) => updateField('is_active', checked)}
           />
 
+          <RememberMeToggle
+            checked={form.confirmed}
+            label={form.confirmed ? t('admin.contacts.confirmedPill') : t('admin.contacts.unconfirmedPill')}
+            onChange={(checked) => updateField('confirmed', checked)}
+          />
+
           {formError ? <p className="admin-contacts__feedback admin-contacts__feedback--error">{formError}</p> : null}
           {successMessage ? (
             <p className="admin-contacts__feedback admin-contacts__feedback--success">{successMessage}</p>
@@ -379,6 +431,14 @@ export function AdminContactsPage() {
                     }`}>
                     {contact.is_active ? t('admin.contacts.activeToggle') : t('admin.contacts.inactiveToggle')}
                   </span>
+                  {contact.is_active ? (
+                    <span
+                      className={`obw-status-pill ${
+                        contact.confirmed ? 'obw-status-pill--active' : 'obw-status-pill--pending'
+                      }`}>
+                      {contact.confirmed ? t('admin.contacts.confirmedPill') : t('admin.contacts.unconfirmedPill')}
+                    </span>
+                  ) : null}
                 </div>
                 <div className="admin-contacts__row-actions">
                   <button type="button" className="obw-portal-btn obw-portal-btn--secondary" onClick={() => startEdit(contact)}>
@@ -390,6 +450,14 @@ export function AdminContactsPage() {
                     onClick={() => void handleToggleActive(contact)}>
                     {contact.is_active ? t('admin.contacts.hide') : t('admin.contacts.activate')}
                   </button>
+                  {contact.is_active ? (
+                    <button
+                      type="button"
+                      className="obw-portal-btn obw-portal-btn--secondary"
+                      onClick={() => void handleToggleConfirmed(contact)}>
+                      {contact.confirmed ? t('admin.contacts.unconfirm') : t('admin.contacts.confirm')}
+                    </button>
+                  ) : null}
                   <button type="button" className="obw-portal-btn obw-portal-btn--secondary" onClick={() => void handleDelete(contact)}>
                     {t('admin.contacts.delete')}
                   </button>

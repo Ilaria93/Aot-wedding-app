@@ -19,25 +19,34 @@ type AdminHeroKeys = {
   subtitle: TranslationKey;
 };
 
-// /admin/rsvp is the only section with its own hero copy so far — inline the
-// one override until a second route needs one too.
+const DEFAULT_HERO: AdminHeroKeys = {
+  eyebrowSegments: ['landing.hero.operationTag', 'common.roles.admin'],
+  titleLead: 'admin.hero.title',
+  subtitle: 'admin.hero.subtitle',
+};
+
+// Per-route hero overrides — add a route here when it needs its own copy.
+const ROUTE_HERO: Record<string, AdminHeroKeys> = {
+  '/admin/rsvp': {
+    eyebrowSegments: ['landing.hero.operationTag', 'common.roles.admin', 'navigation.stack.rsvp'],
+    code: 'admin.hero.rsvpCode',
+    titleLead: 'admin.hero.rsvpTitleLead',
+    titleHighlight: 'admin.hero.rsvpTitleHighlight',
+    subtitle: 'admin.hero.rsvpSubtitle',
+  },
+  '/admin/contacts': {
+    eyebrowSegments: ['landing.hero.operationTag', 'common.roles.admin'],
+    code: 'admin.hero.contactsCode',
+    titleLead: 'admin.hero.contactsTitleLead',
+    titleHighlight: 'admin.hero.contactsTitleHighlight',
+    subtitle: 'admin.hero.contactsSubtitle',
+  },
+};
+
 export function useAdminHeroContent(): AdminHeroContent {
   const { pathname } = useLocation();
   const { t } = useI18n();
-  const hero: AdminHeroKeys =
-    pathname === '/admin/rsvp'
-      ? {
-          eyebrowSegments: ['landing.hero.operationTag', 'common.roles.admin', 'navigation.stack.rsvp'],
-          code: 'admin.hero.rsvpCode',
-          titleLead: 'admin.hero.rsvpTitleLead',
-          titleHighlight: 'admin.hero.rsvpTitleHighlight',
-          subtitle: 'admin.hero.rsvpSubtitle',
-        }
-      : {
-          eyebrowSegments: ['landing.hero.operationTag', 'common.roles.admin'],
-          titleLead: 'admin.hero.title',
-          subtitle: 'admin.hero.subtitle',
-        };
+  const hero: AdminHeroKeys = ROUTE_HERO[pathname] ?? DEFAULT_HERO;
 
   return {
     eyebrowSegments: hero.eyebrowSegments.map((s) => t(s)),

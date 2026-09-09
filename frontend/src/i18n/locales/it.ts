@@ -496,6 +496,11 @@ export const it = {
       rsvpTitleHighlight: 'Presenze',
       rsvpSubtitle:
         "Monitoraggio presenze in tempo reale, gestione tavoli, accompagnatori e requisiti dietetici per il banchetto d'onore di Davide & Ilaria.",
+      contactsCode: 'Logistica 24h',
+      contactsTitleLead: 'Rubrica Fornitori',
+      contactsTitleHighlight: '& Logistica',
+      contactsSubtitle:
+        'Coordinamento strategico, fornitori confermati, varchi di scarico e contatti prioritari per le nozze di Davide & Ilaria.',
     },
     stats: {
       invited: 'Utenti registrati',
@@ -600,9 +605,16 @@ export const it = {
       cancelEdit: 'Annulla modifica',
       activeToggle: 'Voce attiva',
       inactiveToggle: 'Voce disattivata',
+      confirm: 'Conferma',
+      unconfirm: 'Rimuovi conferma',
+      confirmedPill: 'Confermato',
+      unconfirmedPill: 'In attesa',
       createdMessage: 'Contatto creato.',
       updatedMessage: 'Contatto aggiornato.',
       publishedTitle: 'Contatti pubblicati',
+      statsActive: 'Attivi',
+      statsConfirmed: 'Confermati',
+      statsPending: 'In attesa',
       empty: 'Nessun contatto creato ancora.',
       category: 'Categoria: {{value}}',
       contactPerson: 'Referente: {{value}}',

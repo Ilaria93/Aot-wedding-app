@@ -28,6 +28,7 @@ class LogisticsContactBase(BaseModel):
     notes: Optional[str] = None
     sort_order: int = 0
     is_active: bool = True
+    confirmed: bool = False
 
     @field_validator(
         "label",
@@ -77,6 +78,7 @@ class LogisticsContactUpdateRequest(BaseModel):
     notes: Optional[str] = None
     sort_order: Optional[int] = None
     is_active: Optional[bool] = None
+    confirmed: Optional[bool] = None
 
     @field_validator(
         "label",

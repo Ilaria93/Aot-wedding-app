@@ -1,3 +1,59 @@
+.admin-contacts__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .admin-contacts__stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+}
+
+.admin-contacts__stat-card {
+  padding: 1.1rem 1rem;
+  text-align: center;
+}
+
+.admin-contacts__stat-value {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.admin-contacts__stat-card--gold .admin-contacts__stat-value {
+  color: var(--obw-gold-bright);
+}
+
+.admin-contacts__stat-card--bone .admin-contacts__stat-value {
+  color: var(--obw-bone);
+}
+
+.admin-contacts__stat-card--rose .admin-contacts__stat-value {
+  color: color-mix(in srgb, var(--obw-burgundy) 55%, var(--obw-bone));
+}
+
+.admin-contacts__stat-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--obw-bone) 75%, transparent);
+}
+
+.admin-contacts__stat-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #7fb88f;
+}
+
 .admin-contacts__form {
   margin-top: 1rem;
 }
