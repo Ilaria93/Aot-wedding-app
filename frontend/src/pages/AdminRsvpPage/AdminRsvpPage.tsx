@@ -16,13 +16,15 @@ import type { ComponentType, FormEvent } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { AdminModal } from '@/components/AdminModal';
+import { FilterPills, type FilterPillOption } from '@/components/FilterPills';
 import { PageAlert } from '@/components/PageShell';
+import { Pagination } from '@/components/Pagination';
 import { GuestList } from '@/components/Rsvp/GuestList';
 import { SearchBar } from '@/components/SearchBar';
 import { StatCards, type StatCardData } from '@/components/StatCards';
 import { useI18n } from '@/contexts/I18nContext';
 import { useAdminHeroStatsSlot } from '@/layouts/AdminLayout/AdminHeroStatsSlotContext';
-import { AdminModal } from './AdminModal';
 import type { TranslateFn } from '@/i18n/translations';
 import { getApiErrorMessage } from '@/services/apiErrors';
 import {
@@ -336,35 +338,19 @@ export function AdminRsvpPage() {
   const statCards = useMemo(() => (stats ? buildStatCards(stats, pendingCount, t) : []), [stats, pendingCount, t]);
   const heroStatsSlot = useAdminHeroStatsSlot();
 
+  const filterOptions: FilterPillOption<AdminRsvpEntryFilter>[] = [
+    { id: 'all', label: t('admin.rsvpEntries.filterAll', { count: counts.all }), icon: Users },
+    { id: 'special_diet', label: t('admin.rsvpEntries.filterSpecialDiet', { count: counts.special_diet }), icon: Utensils },
+    { id: 'children', label: t('admin.rsvpEntries.filterChildren', { count: counts.children }), icon: Baby },
+  ];
+
   return (
     <>
       {statCards.length > 0 && heroStatsSlot ? createPortal(<StatCards cards={statCards} />, heroStatsSlot) : null}
 
       <section className="obw-portal-panel admin-rsvp__toolbar">
         <span className="obw-portal-kicker admin-rsvp__toolbar-label">{t('admin.rsvpEntries.searchLabel')}</span>
-        <div className="admin-rsvp__filters">
-          <button
-            type="button"
-            className={`admin-rsvp__filter${filter === 'all' ? ' is-active' : ''}`}
-            onClick={() => handleFilterChange('all')}>
-            <Users size={14} aria-hidden />
-            {t('admin.rsvpEntries.filterAll', { count: counts.all })}
-          </button>
-          <button
-            type="button"
-            className={`admin-rsvp__filter${filter === 'special_diet' ? ' is-active' : ''}`}
-            onClick={() => handleFilterChange('special_diet')}>
-            <Utensils size={14} aria-hidden />
-            {t('admin.rsvpEntries.filterSpecialDiet', { count: counts.special_diet })}
-          </button>
-          <button
-            type="button"
-            className={`admin-rsvp__filter${filter === 'children' ? ' is-active' : ''}`}
-            onClick={() => handleFilterChange('children')}>
-            <Baby size={14} aria-hidden />
-            {t('admin.rsvpEntries.filterChildren', { count: counts.children })}
-          </button>
-        </div>
+        <FilterPills options={filterOptions} active={filter} onChange={handleFilterChange} />
         <SearchBar value={search} onChange={handleSearchChange} placeholder={t('admin.rsvpEntries.searchPlaceholder')} />
       </section>
 
@@ -396,25 +382,14 @@ export function AdminRsvpPage() {
                   t={t}
                 />
 
-                <div className="admin-rsvp__pagination">
-                  <button
-                    type="button"
-                    className="admin-rsvp__pagination-btn"
-                    disabled={page <= 1}
-                    onClick={() => setPage((current) => current - 1)}>
-                    {t('admin.rsvpEntries.prevPage')}
-                  </button>
-                  <span className="admin-rsvp__pagination-label">
-                    {t('admin.rsvpEntries.pageOf', { page, totalPages })}
-                  </span>
-                  <button
-                    type="button"
-                    className="admin-rsvp__pagination-btn"
-                    disabled={page >= totalPages}
-                    onClick={() => setPage((current) => current + 1)}>
-                    {t('admin.rsvpEntries.nextPage')}
-                  </button>
-                </div>
+                <Pagination
+                  page={page}
+                  totalPages={totalPages}
+                  label={t('admin.rsvpEntries.pageOf', { page, totalPages })}
+                  prevLabel={t('admin.rsvpEntries.prevPage')}
+                  nextLabel={t('admin.rsvpEntries.nextPage')}
+                  onChange={setPage}
+                />
               </>
             )}
         </section>
@@ -610,7 +585,7 @@ export function AdminRsvpPage() {
               value={newTable.note}
               onChange={(event) => setNewTable((prev) => ({ ...prev, note: event.target.value }))}
             />
-            <div className="admin-rsvp__modal-actions">
+            <div className="admin-modal__actions">
               <button type="submit" className="admin-rsvp__new-table-submit" disabled={creatingTable}>
                 <Plus size={14} aria-hidden />
                 {t('admin.rsvpEntries.newTableSubmit')}
@@ -630,10 +605,10 @@ export function AdminRsvpPage() {
           role="alertdialog"
           onClose={cancelDeleteTable}
           t={t}>
-          <p className="admin-rsvp__modal-body">
+          <p className="admin-modal__body">
             {t('admin.rsvpEntries.deleteTableConfirmBody', { label: deleteTarget.label })}
           </p>
-          <div className="admin-rsvp__modal-actions">
+          <div className="admin-modal__actions">
             <button
               type="button"
               className="admin-rsvp__table-edit-delete"

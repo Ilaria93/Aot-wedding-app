@@ -1,20 +1,22 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 
+import { getPhotoTagLabel, PHOTO_TAG_IDS } from '@/constants/photoTags';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
 import {
   completePhotoUpload,
   createPhotoUploadIntent,
+  type PhotoTagId,
 } from '@/services/photoAlbumApi';
-import { getApiErrorMessage, getApiStatusCode } from '@/services/apiErrors';
+import { getApiStatusCode } from '@/services/apiErrors';
 import { formatBytes } from '@/types/formatters';
 
 type AlbumUploadPanelProps = {
   onUploadSuccess: () => Promise<void>;
 };
 
-/** Authenticated photo upload form with caption and file picker. */
+/** Authenticated photo/video upload form with caption, moment tag, and multi-file picker. */
 export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -22,16 +24,14 @@ export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [uploadMessage, setUploadMessage] = useState<string | null>(null);
   const [caption, setCaption] = useState('');
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [tag, setTag] = useState<PhotoTagId | ''>('');
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    if (!previewUrl) {
-      return;
-    }
-    return () => URL.revokeObjectURL(previewUrl);
-  }, [previewUrl]);
+    return () => previewUrls.forEach((url) => URL.revokeObjectURL(url));
+  }, [previewUrls]);
 
   function handlePickImage() {
     if (!isAuthenticated) {
@@ -41,64 +41,87 @@ export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
     fileInputRef.current?.click();
   }
 
+  function resetSelection() {
+    setSelectedFiles([]);
+    setPreviewUrls([]);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }
+
+  async function uploadOneFile(file: File) {
+    const mimeType = file.type || 'image/jpeg';
+    const fileSizeBytes = file.size || 1;
+    const uploadIntent = await createPhotoUploadIntent({
+      original_filename: file.name,
+      mime_type: mimeType,
+      file_size_bytes: fileSizeBytes,
+    });
+
+    const uploadResponse = await fetch(uploadIntent.upload_url, {
+      method: uploadIntent.upload_method,
+      headers: uploadIntent.upload_headers,
+      body: file,
+    });
+    if (!uploadResponse.ok) {
+      throw new Error('upload-failed');
+    }
+
+    await completePhotoUpload({
+      storage_key: uploadIntent.storage_key,
+      original_filename: file.name,
+      mime_type: mimeType,
+      file_size_bytes: fileSizeBytes,
+      caption: caption.trim() || undefined,
+      tag: tag || undefined,
+    });
+  }
+
   async function handleUpload() {
     if (!isAuthenticated) {
       navigate('/auth/login', { state: { from: '/album' } });
       return;
     }
-    if (!selectedFile) {
+    if (selectedFiles.length === 0) {
       setUploadMessage(t('album.missingPhotoError'));
       return;
     }
+
+    const total = selectedFiles.length;
+    let succeeded = 0;
 
     try {
       setUploading(true);
       setUploadMessage(null);
 
-      const mimeType = selectedFile.type || 'image/jpeg';
-      const fileSizeBytes = selectedFile.size || 1;
-      const uploadIntent = await createPhotoUploadIntent({
-        original_filename: selectedFile.name,
-        mime_type: mimeType,
-        file_size_bytes: fileSizeBytes,
-      });
-
-      const uploadResponse = await fetch(uploadIntent.upload_url, {
-        method: uploadIntent.upload_method,
-        headers: uploadIntent.upload_headers,
-        body: selectedFile,
-      });
-
-      if (!uploadResponse.ok) {
-        setUploadMessage(t('album.uploadError'));
-        return;
+      for (const file of selectedFiles) {
+        setUploadMessage(t('album.uploadProgress', { done: succeeded, total }));
+        try {
+          await uploadOneFile(file);
+          succeeded += 1;
+        } catch (caughtError) {
+          if (getApiStatusCode(caughtError) === 401) {
+            navigate('/auth/login', { state: { from: '/album' } });
+            return;
+          }
+        }
       }
-
-      await completePhotoUpload({
-        storage_key: uploadIntent.storage_key,
-        original_filename: selectedFile.name,
-        mime_type: mimeType,
-        file_size_bytes: fileSizeBytes,
-        caption: caption.trim() || undefined,
-      });
 
       setCaption('');
-      setSelectedFile(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-      setUploadMessage(t('album.uploadSuccess'));
+      setTag('');
+      resetSelection();
+      setUploadMessage(
+        succeeded === total
+          ? t('album.uploadSuccessMultiple', { count: succeeded })
+          : t('album.uploadPartialError', { done: succeeded, total }),
+      );
       await onUploadSuccess();
-    } catch (caughtError) {
-      if (getApiStatusCode(caughtError) === 401) {
-        navigate('/auth/login', { state: { from: '/album' } });
-        return;
-      }
-      setUploadMessage(getApiErrorMessage(caughtError, t('album.uploadError')));
     } finally {
       setUploading(false);
     }
   }
+
+  const totalBytes = selectedFiles.reduce((sum, file) => sum + file.size, 0);
 
   return (
     <div className="obw-card">
@@ -112,20 +135,29 @@ export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
         onChange={(event) => setCaption(event.target.value)}
         disabled={!isAuthenticated}
       />
+      <select
+        className="obw-select album-upload-panel__field"
+        value={tag}
+        onChange={(event) => setTag(event.target.value as PhotoTagId | '')}
+        disabled={!isAuthenticated}>
+        <option value="">{t('album.tagPlaceholder')}</option>
+        {PHOTO_TAG_IDS.map((tagId) => (
+          <option key={tagId} value={tagId}>
+            {getPhotoTagLabel(tagId, t)}
+          </option>
+        ))}
+      </select>
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
+        accept="image/*,video/*"
+        multiple
         hidden
         onChange={(event) => {
-          const file = event.target.files?.[0] ?? null;
-          setSelectedFile(file);
-          if (!file) {
-            setPreviewUrl(null);
-            return;
-          }
-          const objectUrl = URL.createObjectURL(file);
-          setPreviewUrl(objectUrl);
+          const files = Array.from(event.target.files ?? []);
+          previewUrls.forEach((url) => URL.revokeObjectURL(url));
+          setSelectedFiles(files);
+          setPreviewUrls(files.map((file) => URL.createObjectURL(file)));
         }}
       />
       <button
@@ -133,19 +165,27 @@ export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
         className="obw-btn obw-btn--secondary album-upload-panel__choose"
         onClick={handlePickImage}>
         {isAuthenticated
-          ? selectedFile
+          ? selectedFiles.length > 0
             ? t('album.changePhoto')
             : t('album.choosePhoto')
           : t('album.loginChoosePhoto')}
       </button>
-      {selectedFile && previewUrl ? (
+      {selectedFiles.length > 0 ? (
         <div className="preview-card">
-          <img className="preview-card__image" src={previewUrl} alt={selectedFile.name} />
-          <p className="preview-card__meta">{selectedFile.name}</p>
           <p className="preview-card__meta">
-            {formatBytes(selectedFile.size)}
-            {selectedFile.type ? ` • ${selectedFile.type}` : ''}
+            {t('album.filesSelectedCount', { count: selectedFiles.length })} · {formatBytes(totalBytes)}
           </p>
+          <div className="album-upload-panel__preview-grid">
+            {selectedFiles.map((file, index) => (
+              <div className="album-upload-panel__preview-item" key={`${file.name}-${index}`}>
+                {file.type.startsWith('video/') ? (
+                  <video className="album-upload-panel__preview-thumb" src={previewUrls[index]} muted />
+                ) : (
+                  <img className="album-upload-panel__preview-thumb" src={previewUrls[index]} alt={file.name} />
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       ) : null}
       <button
@@ -156,7 +196,9 @@ export function AlbumUploadPanel({ onUploadSuccess }: AlbumUploadPanelProps) {
         {isAuthenticated
           ? uploading
             ? t('album.uploadLoading')
-            : t('album.uploadButton')
+            : selectedFiles.length > 1
+              ? t('album.uploadButtonMultiple', { count: selectedFiles.length })
+              : t('album.uploadButton')
           : t('album.loginUploadButton')}
       </button>
       {uploadMessage ? <p className="helper-text">{uploadMessage}</p> : null}

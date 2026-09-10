@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from fastapi.testclient import TestClient
 
@@ -33,21 +34,21 @@ def _guest_client() -> TestClient:
     return client
 
 
-def _upload_and_complete_photo(client: TestClient, filename: str = "party.jpg") -> int:
+def _upload_and_complete_photo(client: TestClient, filename: str = "party.jpg", tag: Optional[str] = None) -> int:
     intent = client.post(
         "/photos/upload-intent",
         json={"original_filename": filename, "mime_type": "image/jpeg", "file_size_bytes": 2048},
     )
     storage_key = intent.json()["storage_key"]
-    complete = client.post(
-        "/photos/complete-upload",
-        json={
-            "storage_key": storage_key,
-            "original_filename": filename,
-            "mime_type": "image/jpeg",
-            "file_size_bytes": 2048,
-        },
-    )
+    payload = {
+        "storage_key": storage_key,
+        "original_filename": filename,
+        "mime_type": "image/jpeg",
+        "file_size_bytes": 2048,
+    }
+    if tag:
+        payload["tag"] = tag
+    complete = client.post("/photos/complete-upload", json=payload)
     return complete.json()["photo_id"]
 
 
@@ -90,3 +91,108 @@ def test_admin_delete_photo_removes_it_from_the_public_album(api_client, admin_h
 def test_admin_delete_photo_404_for_unknown_id(api_client, admin_headers):
     response = api_client.delete("/admin/photos/999999", headers=admin_headers)
     assert response.status_code == 404
+
+
+def test_admin_gallery_stats_requires_admin(api_client, user_headers):
+    response = api_client.get("/admin/photos/stats", headers=user_headers)
+    assert response.status_code == 403
+
+
+def test_admin_gallery_stats_counts_photos_videos_and_storage(api_client, admin_headers):
+    guest_client = _guest_client()
+    _upload_and_complete_photo(guest_client, filename="one.jpg")
+    _upload_and_complete_photo(guest_client, filename="two.jpg")
+
+    intent = guest_client.post(
+        "/photos/upload-intent",
+        json={"original_filename": "clip.mp4", "mime_type": "video/mp4", "file_size_bytes": 4096},
+    )
+    guest_client.post(
+        "/photos/complete-upload",
+        json={
+            "storage_key": intent.json()["storage_key"],
+            "original_filename": "clip.mp4",
+            "mime_type": "video/mp4",
+            "file_size_bytes": 4096,
+        },
+    )
+
+    response = api_client.get("/admin/photos/stats", headers=admin_headers)
+    assert response.status_code == 200
+    assert response.json() == {
+        "total_photos": 2,
+        "total_videos": 1,
+        "storage_used_bytes": 2048 + 2048 + 4096,
+        "tag_counts": {},
+    }
+
+
+def test_admin_photo_list_filters_by_tag(api_client, admin_headers):
+    guest_client = _guest_client()
+    _upload_and_complete_photo(guest_client, filename="a.jpg", tag="ceremony")
+    _upload_and_complete_photo(guest_client, filename="b.jpg", tag="cake")
+
+    response = api_client.get("/admin/photos", headers=admin_headers, params={"tag": "ceremony"})
+    assert response.status_code == 200
+    body = response.json()
+    assert body["total"] == 1
+    assert body["items"][0]["tag"] == "ceremony"
+
+
+def test_admin_photo_list_is_paginated(api_client, admin_headers):
+    guest_client = _guest_client()
+    for index in range(3):
+        _upload_and_complete_photo(guest_client, filename=f"p{index}.jpg")
+
+    response = api_client.get("/admin/photos", headers=admin_headers, params={"page": 1, "page_size": 2})
+    body = response.json()
+    assert body["total"] == 3
+    assert len(body["items"]) == 2
+
+
+def test_admin_photo_favorite_toggle(api_client, admin_headers):
+    guest_client = _guest_client()
+    photo_id = _upload_and_complete_photo(guest_client)
+
+    response = api_client.patch(f"/admin/photos/{photo_id}", headers=admin_headers, json={"is_favorite": True})
+    assert response.status_code == 200
+    assert response.json()["is_favorite"] is True
+
+    public_album = api_client.get("/photos")
+    assert public_album.json()[0]["is_favorite"] is True
+
+
+def test_admin_photo_favorite_toggle_requires_admin(api_client, user_headers):
+    guest_client = _guest_client()
+    photo_id = _upload_and_complete_photo(guest_client)
+
+    response = api_client.patch(f"/admin/photos/{photo_id}", headers=user_headers, json={"is_favorite": True})
+    assert response.status_code == 403
+
+
+def test_admin_photo_edit_caption_and_tag(api_client, admin_headers):
+    guest_client = _guest_client()
+    photo_id = _upload_and_complete_photo(guest_client, tag="cake")
+
+    response = api_client.patch(
+        f"/admin/photos/{photo_id}",
+        headers=admin_headers,
+        json={"caption": "Edited caption", "tag": "party"},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["caption"] == "Edited caption"
+    assert body["tag"] == "party"
+
+
+def test_admin_photo_edit_does_not_touch_unset_fields(api_client, admin_headers):
+    guest_client = _guest_client()
+    photo_id = _upload_and_complete_photo(guest_client, tag="cake")
+    api_client.patch(f"/admin/photos/{photo_id}", headers=admin_headers, json={"is_favorite": True})
+
+    response = api_client.patch(f"/admin/photos/{photo_id}", headers=admin_headers, json={"caption": "New caption"})
+    assert response.status_code == 200
+    body = response.json()
+    assert body["caption"] == "New caption"
+    assert body["tag"] == "cake"
+    assert body["is_favorite"] is True

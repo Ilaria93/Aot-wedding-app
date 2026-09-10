@@ -27,7 +27,7 @@ export function AuthStackLayout() {
     <>
       <header className={`obw-auth-header${isPortalAuth ? ' obw-auth-header--portal' : ''}`}>
         <div className="obw-auth-header__start">
-          <ScreenBackButton fallback="/" />
+          <ScreenBackButton fallback="/" alwaysFallback={isPortalAuth} />
           <h1 className="obw-auth-header__title">{t(`navigation.stack.${titleKey}`)}</h1>
         </div>
       </header>

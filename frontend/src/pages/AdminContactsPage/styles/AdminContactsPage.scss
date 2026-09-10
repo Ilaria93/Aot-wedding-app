@@ -191,48 +191,20 @@
   margin-top: 1.5rem;
 }
 
-/* Search + category filter — identical layout/pill style to
-   AdminRsvpPage's toolbar (.admin-rsvp__toolbar/__filter): a bordered
-   obw-portal-panel with a kicker label, filter pills, then the search bar. */
+/* Search + category filter — pills (FilterPills) and search box
+   (SearchBar) are shared components; this page just stacks them. */
 /* padding-top matches .admin-contacts__form-card's (.obw-portal-card: 2rem)
    instead of .obw-portal-panel's own 1.1rem, so "Filtra per fornitore" lines
    up with "Registro Strategico" in the column beside it. */
 .admin-contacts__toolbar {
+  display: grid;
+  gap: 12px;
   padding-top: 2rem;
   margin-bottom: var(--obw-space-md);
 }
 
 .admin-contacts__toolbar-label {
-  margin-bottom: 8px;
-}
-
-.admin-contacts__filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.admin-contacts__filter {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  background: transparent;
-  color: color-mix(in srgb, var(--obw-bone) 75%, transparent);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.admin-contacts__filter.is-active {
-  border-color: var(--obw-gold);
-  background: var(--obw-gold);
-  color: var(--obw-void);
+  margin-bottom: -4px;
 }
 
 /* Supplier cards — same dark-panel/gold-corner language as

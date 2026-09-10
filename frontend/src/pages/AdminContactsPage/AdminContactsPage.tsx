@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { PageAlert } from '@/components/PageShell';
+import { FilterPills } from '@/components/FilterPills';
 import { SearchBar } from '@/components/SearchBar';
 import { StatCards, type StatCardData } from '@/components/StatCards';
 import { LOGISTICS_CONTACT_CATEGORY_IDS, getLogisticsContactCategoryLabel } from '@/constants/logistics';
@@ -362,23 +363,17 @@ export function AdminContactsPage() {
         <div className="admin-contacts__list-col">
         <section className="obw-portal-panel admin-contacts__toolbar">
           <span className="obw-portal-kicker admin-contacts__toolbar-label">{t('admin.contacts.searchLabel')}</span>
-          <div className="admin-contacts__filters">
-            <button
-              type="button"
-              className={`admin-contacts__filter${categoryFilter === 'all' ? ' is-active' : ''}`}
-              onClick={() => setCategoryFilter('all')}>
-              {t('admin.contacts.filterAll', { count: contacts.length })}
-            </button>
-            {LOGISTICS_CONTACT_CATEGORY_IDS.map((categoryId) => (
-              <button
-                key={categoryId}
-                type="button"
-                className={`admin-contacts__filter${categoryFilter === categoryId ? ' is-active' : ''}`}
-                onClick={() => setCategoryFilter(categoryId)}>
-                {getLogisticsContactCategoryLabel(categoryId, t)}
-              </button>
-            ))}
-          </div>
+          <FilterPills
+            options={[
+              { id: 'all' as const, label: t('admin.contacts.filterAll', { count: contacts.length }) },
+              ...LOGISTICS_CONTACT_CATEGORY_IDS.map((categoryId) => ({
+                id: categoryId as 'all' | LogisticsContactCategory,
+                label: getLogisticsContactCategoryLabel(categoryId, t),
+              })),
+            ]}
+            active={categoryFilter}
+            onChange={setCategoryFilter}
+          />
           <SearchBar value={search} onChange={setSearch} placeholder={t('admin.contacts.searchPlaceholder')} />
         </section>
 

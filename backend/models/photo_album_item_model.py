@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String
 
 from database.base import Base
 
@@ -13,6 +13,12 @@ class PhotoAlbumItem(Base):
     original_filename = Column(String(255), nullable=False)
     mime_type = Column(String(80), nullable=False)
     caption = Column(String(250), nullable=True)
+    # Wedding-moment label the uploader picks (ceremony, cake, ...) — powers
+    # the admin gallery's tag filter. Free text, not every upload sets one.
+    tag = Column(String(30), nullable=True, index=True)
+    # Admin-only "keep this one" flag — separate from status, which stays
+    # approved for everyone (no moderation queue, see admin_photo_album_route.py).
+    is_favorite = Column(Boolean, nullable=False, default=False)
     status = Column(String(20), nullable=False, default="approved", index=True)
     file_size_bytes = Column(Integer, nullable=False)
     uploaded_at = Column(DateTime, nullable=False)
