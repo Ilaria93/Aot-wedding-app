@@ -167,6 +167,32 @@ def test_photo_complete_upload_rejects_unsupported_mime_type(api_client, user_he
     assert response.status_code == 400
 
 
+def test_video_upload_intent_is_accepted(api_client, user_headers):
+    response = api_client.post(
+        "/photos/upload-intent",
+        headers=user_headers,
+        json={
+            "original_filename": "first-dance.mp4",
+            "mime_type": "video/mp4",
+            "file_size_bytes": 50 * 1024 * 1024,
+        },
+    )
+    assert response.status_code == 200
+
+
+def test_video_upload_intent_rejects_oversized_file(api_client, user_headers):
+    response = api_client.post(
+        "/photos/upload-intent",
+        headers=user_headers,
+        json={
+            "original_filename": "too-long.mp4",
+            "mime_type": "video/mp4",
+            "file_size_bytes": 200 * 1024 * 1024 + 1,
+        },
+    )
+    assert response.status_code == 400
+
+
 def test_photo_complete_upload_requires_login(api_client):
     response = api_client.post(
         "/photos/complete-upload",

@@ -1,0 +1,113 @@
+/* Plain hero — no card/box/background. Two columns: title block on the
+   left, page-specific stat cards on the right; stacked below 768px. */
+.admin-layout__hero-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--obw-space-md);
+  margin-bottom: var(--obw-space-md);
+}
+
+.admin-layout__hero {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+/* Portal target for page-specific stat cards (see AdminHeroStatsSlotContext)
+   — empty on pages without stats, so it takes no space there. */
+.admin-layout__hero-stats-slot {
+  flex: 1 1 420px;
+  min-width: 0;
+}
+
+.admin-layout__hero-stats-slot:empty {
+  display: none;
+}
+
+.admin-layout__hero-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.admin-layout__hero-meta .admin-layout__hero-eyebrow {
+  margin: 0;
+}
+
+.admin-layout__hero-eyebrow-sep {
+  margin: 0 6px;
+  opacity: 0.6;
+}
+
+.admin-layout__hero-code {
+  flex-shrink: 0;
+  padding: 3px 10px;
+  border: 1px solid var(--obw-border);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--obw-bone) 8%, transparent);
+  color: color-mix(in srgb, var(--obw-bone) 70%, transparent);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  /* Mobile only: the whole admin page sits inside one bordered, dark card
+     with gold corner brackets — same motif as .obw-portal-card. Desktop
+     stays plain/borderless (see .admin-layout__hero-row reset above). */
+  .admin-layout__content {
+    position: relative;
+    margin: 12px;
+    padding: 1.5rem 1.25rem calc(72px + 1.5rem);
+    border: 1px solid var(--obw-border);
+    border-radius: 14px;
+    background: linear-gradient(160deg, var(--obw-veil), rgba(18, 10, 9, 0.55)), var(--obw-charcoal);
+    box-shadow: var(--obw-shadow-dark);
+  }
+
+  .admin-layout__content::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    pointer-events: none;
+    border-radius: 6px;
+    opacity: 0.45;
+    background:
+      linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 16px 1px no-repeat,
+      linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 1px 16px no-repeat,
+      linear-gradient(var(--obw-gold), var(--obw-gold)) right top / 16px 1px no-repeat,
+      linear-gradient(var(--obw-gold), var(--obw-gold)) right top / 1px 16px no-repeat,
+      linear-gradient(var(--obw-gold), var(--obw-gold)) left bottom / 16px 1px no-repeat,
+      linear-gradient(var(--obw-gold), var(--obw-gold)) left bottom / 1px 16px no-repeat,
+      linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 16px 1px no-repeat,
+      linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 1px 16px no-repeat;
+  }
+
+  /* Mockup centers the hero text on mobile only — desktop keeps it left-aligned.
+     Reset flex-basis here: the 320px/420px basis values above size each
+     column's WIDTH in row direction, but column direction reinterprets
+     flex-basis as a MIN-HEIGHT — without this reset each item would be
+     forced that tall and leave a large empty gap. */
+  .admin-layout__hero-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .admin-layout__hero {
+    flex: 0 1 auto;
+    text-align: center;
+  }
+
+  .admin-layout__hero-stats-slot {
+    flex: 0 1 auto;
+    width: 100%;
+  }
+
+  .admin-layout__hero-meta {
+    justify-content: center;
+  }
+}

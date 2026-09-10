@@ -7,6 +7,8 @@ const photo = (id: number): PublicPhotoAlbumItem => ({
   id,
   uploader_name: 'Test Guest',
   image_url: `https://example.com/${id}.jpg`,
+  mime_type: 'image/jpeg',
+  is_favorite: false,
   uploaded_at: '2027-05-31T12:00:00Z',
 });
 

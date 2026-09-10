@@ -1,0 +1,28 @@
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Inactive: no border/background, just text (+ optional icon). Active: filled gold pill. */
+.filter-pills__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: color-mix(in srgb, var(--obw-bone) 75%, transparent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.filter-pills__item.is-active {
+  border-color: var(--obw-gold);
+  background: var(--obw-gold);
+  color: var(--obw-void);
+}

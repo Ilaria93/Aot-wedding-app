@@ -19,6 +19,7 @@ export type RsvpGuestLine = {
   meal_choice: MealChoiceId;
   intolerance: IntoleranceId;
   dietary_notes?: string | null;
+  is_child?: boolean;
 };
 
 export type RsvpMe = {

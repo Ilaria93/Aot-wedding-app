@@ -17,20 +17,15 @@ import { buildContactActions } from '@/pages/TravelPage/travelContactActions';
 import './styles/TravelPage.scss';
 
 function buildGroupedContacts(contacts: LogisticsContactItem[]) {
-  return contacts.reduce<Record<LogisticsContactCategory, LogisticsContactItem[]>>(
-    (accumulator, contact) => {
-      accumulator[contact.category].push(contact);
-      return accumulator;
-    },
-    {
-      hair: [],
-      makeup: [],
-      laundry: [],
-      hotel: [],
-      transfer: [],
-      car_rental: [],
-    },
-  );
+  const empty = {} as Record<LogisticsContactCategory, LogisticsContactItem[]>;
+  for (const categoryId of LOGISTICS_CONTACT_CATEGORY_IDS) {
+    empty[categoryId] = [];
+  }
+
+  return contacts.reduce((accumulator, contact) => {
+    accumulator[contact.category].push(contact);
+    return accumulator;
+  }, empty);
 }
 
 const ACTION_ICONS = {

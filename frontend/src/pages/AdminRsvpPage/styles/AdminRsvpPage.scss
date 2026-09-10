@@ -1,0 +1,649 @@
+/* Search + filters toolbar — pills (FilterPills) and search box
+   (SearchBar) are shared components; this page just stacks them. */
+.admin-rsvp__toolbar {
+  display: grid;
+  gap: 12px;
+  margin-bottom: var(--obw-space-md);
+}
+
+.admin-rsvp__toolbar-label {
+  margin-bottom: -4px;
+}
+
+/* Guest list layout — 3/4 list, 1/4 sidebar */
+.admin-rsvp__layout {
+  display: grid;
+  gap: var(--obw-space-md);
+}
+
+@media (min-width: 900px) {
+  .admin-rsvp__layout {
+    grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+    /* Stretch (grid default) instead of "start": the list column matches
+       the sidebar's height, so the pagination bar (pushed down via
+       margin-top: auto on .admin-rsvp__list, a flex column) lands flush
+       with the bottom of Riepilogo Menù instead of sitting mid-page right
+       under a short guest list. */
+  }
+}
+
+.admin-rsvp__section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.admin-rsvp__section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--obw-bone);
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .admin-rsvp__section-title {
+    font-size: 0.95rem;
+  }
+}
+
+.admin-rsvp__section-count {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: color-mix(in srgb, var(--obw-bone) 60%, transparent);
+}
+
+.admin-rsvp__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-rsvp__empty {
+  margin: 0;
+}
+
+.admin-rsvp__guest-card {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.admin-rsvp__guest-card::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  pointer-events: none;
+  border-radius: 6px;
+  opacity: 0.45;
+  background:
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 14px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 1px 14px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 14px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 1px 14px no-repeat;
+}
+
+.admin-rsvp__guest-main {
+  flex: 1 1 240px;
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.admin-rsvp__guest-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.admin-rsvp__guest-name-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.admin-rsvp__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--obw-gold);
+  color: var(--obw-void);
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.admin-rsvp__guest-name {
+  font-family: var(--font-editorial);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--obw-bone);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-rsvp__confirmed-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, #4c8b5a 25%, transparent);
+  color: #a9d9b4;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-rsvp__confirmed-dot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentcolor;
+}
+
+.admin-rsvp__guest-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+}
+
+.admin-rsvp__guest-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--obw-bone) 55%, transparent);
+}
+
+.admin-rsvp__guest-meta--gold {
+  color: var(--obw-gold-bright);
+}
+
+.admin-rsvp__guest-meta--green {
+  color: #a9d9b4;
+}
+
+.admin-rsvp__guest-meta--blue {
+  color: #a9cbe8;
+}
+
+/* Custom listbox (see GuestList.tsx) instead of a native <select> — a real
+   <select>'s open list can't be restyled (radius, colors, hover) in any
+   browser, so this is a plain button + absolutely-positioned <ul>. */
+.admin-rsvp__table-field {
+  position: relative;
+  color: var(--obw-gold-bright);
+}
+
+.admin-rsvp__table-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  border: none;
+  background: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-rsvp__table-display:hover {
+  text-decoration: underline;
+}
+
+.admin-rsvp__table-display:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.admin-rsvp__table-chevron {
+  transition: transform var(--obw-duration-fast, 0.15s) ease;
+}
+
+.admin-rsvp__table-field.is-open .admin-rsvp__table-chevron {
+  transform: rotate(180deg);
+}
+
+.admin-rsvp__table-menu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  left: 0;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  min-width: 160px;
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--obw-border);
+  border-radius: 10px;
+  background: linear-gradient(160deg, var(--obw-veil), rgba(18, 10, 9, 0.55)), var(--obw-charcoal);
+  box-shadow: var(--obw-shadow-lift, 0 12px 24px rgba(0, 0, 0, 0.4));
+}
+
+.admin-rsvp__table-menu-item {
+  padding: 8px 10px;
+  border-radius: 7px;
+  color: color-mix(in srgb, var(--obw-bone) 85%, transparent);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.admin-rsvp__table-menu-item:hover {
+  background: color-mix(in srgb, var(--obw-bone) 10%, transparent);
+}
+
+.admin-rsvp__table-menu-item.is-selected {
+  background: var(--obw-gold);
+  color: var(--obw-void);
+  font-weight: 700;
+}
+
+/* Shared Pagination component (see components/Pagination) — pushed to the
+   bottom of .admin-rsvp__list (a flex column stretched to the sidebar's
+   height) so it lands flush with Riepilogo Menù instead of sitting right
+   under a short guest list. */
+.admin-rsvp__list .pagination {
+  margin-top: auto;
+}
+
+/* Below 900px .admin-rsvp__layout is a single column, so this simply
+   stacks after .admin-rsvp__list in source order — guest table first,
+   table/menu panels underneath. */
+.admin-rsvp__sidebar {
+  display: grid;
+  gap: var(--obw-space-md);
+}
+
+/* Ripartizione Tavoli / Riepilogo Menù — exact colors/corners/spacing from
+   the provided mockup components (TableDistributionCard / MenuSummaryCard),
+   wired to real data instead of their sample arrays. */
+.admin-rsvp__table-panel,
+.admin-rsvp__menu-panel {
+  position: relative;
+  padding: 26px 22px 22px;
+  border: 1px solid var(--obw-border);
+  border-radius: 21px;
+  background: linear-gradient(160deg, var(--obw-veil), rgba(18, 10, 9, 0.55)), var(--obw-charcoal);
+  color: #eee5dc;
+  overflow: hidden;
+}
+
+/* Same corner-bracket technique as .admin-rsvp__guest-card::before, so both
+   read as one visual language. */
+.admin-rsvp__table-panel::before,
+.admin-rsvp__menu-panel::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  pointer-events: none;
+  border-radius: 6px;
+  opacity: 0.45;
+  background:
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 14px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 1px 14px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 14px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 1px 14px no-repeat;
+}
+
+.admin-rsvp__menu-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+
+/* Same kicker-above-title order as everywhere else in the page (toolbar
+   label, hero eyebrow) — unlike .admin-rsvp__menu-panel-head, which keeps
+   its kicker beside the title. */
+.admin-rsvp__table-panel-head {
+  margin-bottom: 20px;
+}
+
+.admin-rsvp__table-panel-title-wrap,
+.admin-rsvp__menu-panel-title-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.admin-rsvp__table-panel-icon,
+.admin-rsvp__menu-panel-icon {
+  width: 22px;
+  height: 22px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  color: #dfb32e;
+}
+
+/* Same font as the guest-list section title ("Conferme e assegnazione
+   tavoli") — --font-sans, inherited there via no override — for a
+   consistent voice across every card heading on the page. */
+.admin-rsvp__menu-panel-head h2,
+.admin-rsvp__table-panel-head h2 {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.admin-rsvp__kitchen-label {
+  flex-shrink: 0;
+  max-width: 100px;
+  padding-top: 4px;
+  color: #e3b32d;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  line-height: 1.35;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: right;
+}
+
+.admin-rsvp__table-panel-kicker {
+  display: block;
+  margin-bottom: 8px;
+  color: #e3b32d;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.admin-rsvp__tables-list {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-rsvp__table-row-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.admin-rsvp__table-name {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  gap: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-rsvp__table-counter {
+  flex-shrink: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #e5b631;
+  white-space: nowrap;
+}
+
+.admin-rsvp__progress-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-rsvp__progress-track {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #423c3a;
+}
+
+.admin-rsvp__progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: #f1c53e;
+  transition: width 0.2s ease;
+}
+
+.admin-rsvp__table-row.is-full .admin-rsvp__progress-fill {
+  background: #9bd47d;
+}
+
+.admin-rsvp__table-row.is-full .admin-rsvp__table-counter {
+  color: #9bd47d;
+}
+
+.admin-rsvp__table-edit-btn {
+  display: inline-flex;
+  flex-shrink: 0;
+  padding: 3px;
+  border: none;
+  background: transparent;
+  color: color-mix(in srgb, #eee5dc 50%, transparent);
+  cursor: pointer;
+}
+
+.admin-rsvp__table-edit-btn:hover {
+  color: #dfb32e;
+}
+
+.admin-rsvp__map-button {
+  width: 100%;
+  height: 42px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 14px;
+  background: #282220;
+  color: #ddd5cf;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.admin-rsvp__map-button:hover {
+  background: color-mix(in srgb, #282220 80%, var(--obw-gold));
+  color: var(--obw-gold-bright);
+}
+
+.admin-rsvp__map-button:hover svg {
+  color: var(--obw-gold-bright);
+}
+
+/* "Aggiungi tavolo" / delete-confirm modals use the shared AdminModal shell
+   (see components/AdminModal) — only the button layout inside is page-specific. */
+.admin-modal__actions .admin-rsvp__new-table-submit,
+.admin-modal__actions .admin-rsvp__table-edit-delete {
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+.admin-rsvp__map-button svg {
+  color: #ddd5cf;
+}
+
+.admin-rsvp__menu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.admin-rsvp__menu-item {
+  min-height: 84px;
+  box-sizing: border-box;
+  padding: 14px 13px;
+  border-radius: 14px;
+  background: #241f1e;
+}
+
+.admin-rsvp__menu-item-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #ddd3ca;
+  font-size: 0.8125rem;
+  line-height: 1.15;
+}
+
+.admin-rsvp__menu-item-label svg {
+  flex-shrink: 0;
+  color: #e1b32d;
+}
+
+.admin-rsvp__menu-item strong {
+  display: block;
+  margin-top: 12px;
+  color: #eee6df;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.admin-rsvp__children-row {
+  min-height: 54px;
+  box-sizing: border-box;
+  margin-top: 10px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 14px;
+  background: #241f1e;
+}
+
+.admin-rsvp__children-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ddd3ca;
+  font-size: 0.8125rem;
+}
+
+.admin-rsvp__children-label svg {
+  color: #dfb32e;
+}
+
+.admin-rsvp__children-row strong {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #eee6df;
+}
+
+/* Ripartizione Tavoli — create-table form, one row per table with a
+   capacity progress bar, edit/delete actions, and the (inert) map button. */
+.admin-rsvp__new-table-form {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px dashed var(--obw-border);
+  border-radius: 8px;
+}
+
+.admin-rsvp__new-table-input {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--obw-border);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--obw-bone) 8%, transparent);
+  color: var(--obw-bone);
+  font: inherit;
+  font-size: 0.75rem;
+}
+
+.admin-rsvp__new-table-input:focus {
+  outline: none;
+  border-color: var(--obw-gold);
+}
+
+.admin-rsvp__new-table-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border: 1px solid var(--obw-gold);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--obw-gold-bright);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.admin-rsvp__table-edit-row {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.admin-rsvp__table-edit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+/* .obw-portal-btn's own padding (15px 28px) is sized for a full-width CTA —
+   too big for this compact sidebar card, so it overflows. Shrink it here
+   and let all three buttons wrap onto their own line if they don't fit. */
+.admin-rsvp__table-edit-actions .obw-portal-btn {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 8px 10px;
+  font-size: 0.75rem;
+}
+
+.admin-rsvp__table-edit-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--obw-burgundy) 60%, transparent);
+  border-radius: 6px;
+  background: transparent;
+  color: color-mix(in srgb, var(--obw-burgundy) 70%, white);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-rsvp__table-edit-delete:hover {
+  background: color-mix(in srgb, var(--obw-burgundy) 20%, transparent);
+}
+

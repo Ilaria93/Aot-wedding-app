@@ -121,6 +121,8 @@ Regole dettagliate per Cursor: `.cursor/rules/` (sempre attive).
 
 ## Contribuire
 
+**Branch:** `develop` è il branch di sviluppo — parti sempre da lì per i nuovi branch di feature e apri la PR verso `develop`. `main` riflette la produzione e riceve merge solo da `develop`.
+
 1. `./scripts/run-dev.sh` per verificare in locale
 2. `pytest` verde se tocchi il backend
 3. Nuove stringhe UI in tutte e 4 le lingue

@@ -1,3 +1,11 @@
+.site-header__crest {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
 .site-header__menu-btn {
   display: none;
   align-items: center;
@@ -43,6 +51,12 @@
   color: var(--obw-gold);
 }
 
+.site-header__mobile-link--icon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .site-header__start {
   display: flex;
   align-items: center;
@@ -74,19 +88,13 @@
 }
 
 .site-header .app-user-menu__trigger {
-  border-color: var(--obw-border-dark);
   background: color-mix(in srgb, var(--obw-bone) 6%, transparent);
   color: var(--obw-bone);
 }
 
 .site-header .app-user-menu__trigger:hover,
 .site-header .app-user-menu__trigger.is-open {
-  border-color: color-mix(in srgb, var(--obw-gold) 45%, transparent);
   background: color-mix(in srgb, var(--obw-gold) 10%, transparent);
-}
-
-.site-header .app-user-menu__chevron {
-  color: color-mix(in srgb, var(--obw-bone) 55%, var(--obw-stone));
 }
 
 .site-header .language-switcher__trigger {

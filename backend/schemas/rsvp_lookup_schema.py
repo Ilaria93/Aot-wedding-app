@@ -12,6 +12,7 @@ class RsvpGuestResponse(BaseModel):
     meal_choice: MealChoiceEnum
     intolerance: IntoleranceEnum
     dietary_notes: Optional[str] = None
+    is_child: bool = False
 
 
 # Response returned when the logged-in user checks their RSVP status.

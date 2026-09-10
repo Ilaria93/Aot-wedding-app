@@ -170,6 +170,17 @@
     linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 1px 16px no-repeat;
 }
 
+/* Same dark portal fill, no corner brackets — for content that sits inside
+   the portal (search bar, list rows, summary panels) rather than being the
+   portal's own "sealed" frame, which only the top hero card should have. */
+.obw-portal-panel {
+  padding: 1.1rem 1.25rem;
+  border-radius: 14px;
+  border: 1px solid var(--obw-border);
+  background: linear-gradient(160deg, var(--obw-veil), rgba(18, 10, 9, 0.55)), var(--obw-charcoal);
+  color: var(--obw-bone);
+}
+
 .obw-portal-kicker {
   display: block;
   font-family: var(--font-sans);
@@ -317,6 +328,13 @@
    that float directly on the section veil instead of sitting in a card. */
 .obw-container--narrow {
   max-width: 780px;
+}
+
+@media (max-width: 768px) {
+  .obw-page--app,
+  .obw-container {
+    padding-inline: 0;
+  }
 }
 
 .obw-stack-center {
@@ -899,7 +917,6 @@
 .obw-nav__brand-title {
   font-family: var(--font-display);
   font-size: 24px;
-  font-style: italic;
   font-weight: 400;
   letter-spacing: 0.02em;
   padding-left: 0.02em;
@@ -907,12 +924,12 @@
 }
 
 .obw-nav__brand-sub {
-  color: color-mix(in srgb, var(--obw-bone) 50%, var(--obw-stone));
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
+  color: color-mix(in srgb, var(--obw-gold) 75%, var(--obw-bone));
 }
 
 .obw-nav__links {
@@ -960,6 +977,31 @@
 .obw-nav__link--animated:hover::after,
 .obw-nav__link--animated.is-active::after {
   transform: scaleX(1);
+}
+
+.obw-nav__links--pill {
+  gap: 2px;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--obw-void);
+}
+
+.obw-nav__link--pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: #d0c5af;
+  transition:
+    background var(--obw-duration-fast) ease,
+    color var(--obw-duration-fast) ease;
+}
+
+.obw-nav__link--pill:hover,
+.obw-nav__link--pill.is-active {
+  background: #f2ca50;
+  color: #000;
 }
 
 .obw-nav__cta.obw-btn {

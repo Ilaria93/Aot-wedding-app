@@ -33,11 +33,32 @@ def compute_rsvp_stats(db: Session) -> dict:
     for faction, count in faction_rows:
         by_faction[faction] = int(count)
 
+    by_meal_choice: dict[str, int] = {}
+    meal_choice_rows = (
+        db.query(RsvpGuest.meal_choice, func.count(RsvpGuest.id))
+        .join(RSVP, RsvpGuest.rsvp_id == RSVP.id)
+        .filter(RSVP.attending.is_(True))
+        .group_by(RsvpGuest.meal_choice)
+        .all()
+    )
+    for meal_choice, count in meal_choice_rows:
+        by_meal_choice[meal_choice] = int(count)
+
+    total_children = (
+        db.query(func.count(RsvpGuest.id))
+        .join(RSVP, RsvpGuest.rsvp_id == RSVP.id)
+        .filter(RSVP.attending.is_(True), RsvpGuest.is_child.is_(True))
+        .scalar()
+        or 0
+    )
+
     return {
         "total_users": total_users,
         "total_confirmed": total_confirmed,
         "total_attending": total_attending,
         "total_not_attending": total_not_attending,
         "total_participants": int(total_participants),
+        "total_children": int(total_children),
         "by_faction": by_faction,
+        "by_meal_choice": by_meal_choice,
     }
