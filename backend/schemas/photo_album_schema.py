@@ -9,6 +9,17 @@ class PhotoAlbumStatusEnum(str, Enum):
     approved = "approved"
 
 
+# Wedding-moment label the uploader picks — powers the admin gallery's tag filter.
+class PhotoTagEnum(str, Enum):
+    ceremony = "ceremony"
+    cake = "cake"
+    party = "party"
+    toast = "toast"
+    banquet = "banquet"
+    speech = "speech"
+    other = "other"
+
+
 class PhotoUploadIntentRequest(BaseModel):
     original_filename: str
     mime_type: str
@@ -45,6 +56,7 @@ class PhotoUploadCompleteRequest(BaseModel):
     mime_type: str
     file_size_bytes: int
     caption: Optional[str] = None
+    tag: Optional[PhotoTagEnum] = None
 
     @field_validator("storage_key", "original_filename", "mime_type")
     @classmethod
@@ -81,4 +93,35 @@ class PublicPhotoAlbumItem(BaseModel):
     uploader_name: str
     caption: Optional[str] = None
     image_url: str
+    mime_type: str
+    tag: Optional[PhotoTagEnum] = None
+    is_favorite: bool = False
     uploaded_at: datetime
+
+
+class AdminGalleryStatsResponse(BaseModel):
+    total_photos: int
+    total_videos: int
+    storage_used_bytes: int
+    tag_counts: dict[str, int]
+
+
+class AdminPhotoListResponse(BaseModel):
+    items: list[PublicPhotoAlbumItem]
+    total: int
+    page: int
+    page_size: int
+
+
+class AdminPhotoUpdateRequest(BaseModel):
+    is_favorite: Optional[bool] = None
+    caption: Optional[str] = None
+    tag: Optional[PhotoTagEnum] = None
+
+    @field_validator("caption")
+    @classmethod
+    def normalize_caption(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+        normalized = value.strip()
+        return normalized or None
