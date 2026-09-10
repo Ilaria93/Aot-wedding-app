@@ -1,48 +1,476 @@
-.admin-gallery__grid {
+/* Filter pills (FilterPills) + search box (SearchBar) — same shared
+   components/layout as AdminRsvpPage and AdminContactsPage's toolbars,
+   plus gallery-only controls (live approval, ZIP export, live slide,
+   quick-upload shortcut) in their own row underneath. */
+.admin-gallery__toolbar {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
+  gap: 12px;
   margin-top: 16px;
 }
 
-.admin-gallery__card {
-  display: flex;
-  flex-direction: column;
-  padding: 14px;
-  border: 1px solid var(--obw-border);
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
+.admin-gallery__toolbar-label {
+  margin-bottom: -4px;
 }
 
-.admin-gallery__image {
-  display: block;
-  width: 100%;
-  height: 200px;
-  margin-bottom: 10px;
+.admin-gallery__extra-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--obw-border);
+}
+
+.admin-gallery__live-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: auto;
+  padding: 4px 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.admin-gallery__live-toggle-box {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--obw-border);
+  border-radius: 5px;
+  color: var(--obw-void);
+}
+
+.admin-gallery__live-toggle-box.is-active {
+  border-color: var(--obw-gold);
+  background: var(--obw-gold);
+}
+
+.admin-gallery__live-toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  text-align: left;
+}
+
+.admin-gallery__live-toggle-text strong {
+  font-size: 0.8125rem;
+  color: var(--obw-gold-bright);
+}
+
+.admin-gallery__live-toggle-text span:last-child {
+  font-size: 0.6875rem;
+  color: color-mix(in srgb, var(--obw-bone) 60%, transparent);
+}
+
+.admin-gallery__control-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--obw-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--obw-bone) 6%, transparent);
+  color: color-mix(in srgb, var(--obw-bone) 80%, transparent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.admin-gallery__control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-gallery__control-btn--primary {
+  border-color: var(--obw-gold);
+  background: var(--obw-gold);
+  color: var(--obw-void);
+}
+
+/* Live-status strip — standalone, sits between the upload panel and the
+   gallery card rather than inside either one (not part of the toolbar). */
+.admin-gallery__live-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 14px 18px;
+  border: 1px solid var(--obw-border);
+  border-radius: 10px;
+  background: linear-gradient(160deg, var(--obw-veil), rgba(18, 10, 9, 0.55)), var(--obw-charcoal);
+}
+
+.admin-gallery__live-banner-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--obw-gold) 18%, transparent);
+  color: var(--obw-gold-bright);
+}
+
+.admin-gallery__live-banner-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--obw-bone) 82%, transparent);
+}
+
+.admin-gallery__live-banner-text strong {
+  color: var(--obw-bone);
+}
+
+.admin-gallery__live-banner-tag {
+  flex-shrink: 0;
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--obw-gold-bright);
+}
+
+@media (max-width: 640px) {
+  .admin-gallery__live-banner {
+    flex-wrap: wrap;
+  }
+
+  .admin-gallery__live-banner-tag {
+    margin-left: 44px;
+  }
+}
+
+/* Backup-status variant — same strip, but the icon sits at the top since the
+   body wraps two lines (head row + text) plus a storage progress bar. */
+.admin-gallery__live-banner--backup {
+  align-items: flex-start;
+}
+
+.admin-gallery__backup-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.admin-gallery__backup-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.admin-gallery__backup-head strong {
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--obw-bone);
+}
+
+.admin-gallery__backup-badge {
+  padding: 3px 10px;
+  border: 1px solid var(--obw-border);
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--obw-bone) 75%, transparent);
+}
+
+.admin-gallery__backup-text {
+  margin: 0 0 10px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--obw-bone) 78%, transparent);
+}
+
+.admin-gallery__backup-progress-track {
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--obw-bone) 12%, transparent);
+  overflow: hidden;
+}
+
+.admin-gallery__backup-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--obw-gold-bright);
+}
+
+@media (max-width: 640px) {
+  .admin-gallery__live-banner--backup {
+    flex-wrap: wrap;
+  }
+}
+
+// Deterministic column count per breakpoint (not auto-fill) so PAGE_SIZE in
+// AdminGalleryPage.tsx (columns * MAX_ROWS) always matches what's on screen.
+.admin-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 640px) {
+  .admin-gallery__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-gallery__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Photo/video cards — same dark-panel/gold-corner language as SupplierCard
+   and AdminRsvpPage's table/menu panels, so every admin section reads as
+   one system. See PhotoCard.tsx. */
+.admin-photo-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  background: linear-gradient(160deg, var(--obw-veil), rgba(18, 10, 9, 0.55)), var(--obw-charcoal);
+  overflow: hidden;
+}
+
+.admin-photo-card::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  pointer-events: none;
   border-radius: 6px;
-  object-fit: cover;
+  opacity: 0.45;
+  z-index: 2;
+  background:
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 14px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 1px 14px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 14px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 1px 14px no-repeat;
+}
+
+.admin-photo-card__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
   background: var(--obw-paper-muted);
 }
 
-.admin-gallery__guest {
-  margin: 0 0 4px;
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 700;
+.admin-photo-card__visual {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.admin-gallery__meta {
+.admin-photo-card__tag,
+.admin-photo-card__time {
+  position: absolute;
+  top: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--obw-void) 55%, transparent);
+  backdrop-filter: blur(4px);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.admin-photo-card__tag {
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: calc(100% - 20px);
+  color: var(--obw-gold-bright);
+}
+
+.admin-photo-card__time {
+  right: 10px;
+  color: #eee5dc;
+}
+
+.admin-photo-card__body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+}
+
+.admin-photo-card__name {
   margin: 0;
-  color: var(--obw-stone);
+  font-family: var(--font-editorial);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #eee6df;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-photo-card__caption {
+  margin: 0;
+  font-family: var(--font-editorial);
+  font-style: italic;
   font-size: 0.8125rem;
+  line-height: 1.4;
+  color: color-mix(in srgb, #eee5dc 78%, transparent);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.admin-gallery__caption {
-  margin: 6px 0 0;
+.admin-photo-card__footer {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.admin-photo-card__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, #4c8b5a 25%, transparent);
+  color: #a9d9b4;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.admin-photo-card__status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentcolor;
+}
+
+.admin-photo-card__actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.admin-photo-card__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: color-mix(in srgb, #eee5dc 8%, transparent);
+  color: color-mix(in srgb, #eee5dc 70%, transparent);
+  cursor: pointer;
+}
+
+.admin-photo-card__action-btn:hover {
+  background: color-mix(in srgb, #eee5dc 14%, transparent);
+}
+
+.admin-photo-card__action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-photo-card__action-btn--favorite.is-active {
+  color: var(--obw-gold-bright);
+}
+
+.admin-photo-card__action-btn--delete:hover {
+  color: var(--obw-burgundy);
+}
+
+/* "+" tile — same card footprint, dashed border, opens the upload modal. */
+.admin-photo-card--add {
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 220px;
+  border: 1px dashed var(--obw-border);
+  color: color-mix(in srgb, var(--obw-bone) 70%, transparent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-photo-card--add:hover {
+  border-color: var(--obw-gold);
+  color: var(--obw-gold-bright);
+}
+
+.admin-photo-card--add::before {
+  display: none;
+}
+
+/* Skeleton placeholder while a page loads — react-loading-skeleton, themed
+   via SkeletonTheme in AdminGalleryPage.tsx. */
+.admin-photo-card--skeleton {
+  pointer-events: none;
+}
+
+.admin-photo-card__skeleton-media {
+  display: block;
+  aspect-ratio: 4 / 3;
+  line-height: 0;
+}
+
+/* Fullscreen lightbox (Eye button) — reuses .admin-modal-backdrop from
+   AdminModal for the dim/blur overlay, own box since it needs to fit media
+   at any aspect ratio instead of AdminModal's fixed max-width. */
+.photo-lightbox {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.photo-lightbox__close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  z-index: 1;
+  border-radius: 999px;
+  background: var(--obw-charcoal);
+  box-shadow: var(--obw-shadow-dark);
+}
+
+.photo-lightbox__media {
+  width: 100%;
+  max-height: 80vh;
+  border-radius: 12px;
+  object-fit: contain;
+  background: var(--obw-void);
+}
+
+.photo-lightbox__caption {
+  margin: 10px 0 0;
+  color: var(--obw-bone);
+  font-family: var(--font-editorial);
   font-size: 0.9375rem;
-  line-height: 1.5;
-}
-
-.admin-gallery__card .obw-portal-btn {
-  margin-top: 12px;
+  text-align: center;
 }

@@ -41,6 +41,17 @@ const ROUTE_HERO: Record<string, AdminHeroKeys> = {
     titleHighlight: 'admin.hero.contactsTitleHighlight',
     subtitle: 'admin.hero.contactsSubtitle',
   },
+  '/admin/gallery': {
+    eyebrowSegments: [
+      'landing.hero.operationTag',
+      'common.roles.admin',
+      'admin.hero.galleryEyebrowLiveCloud',
+      'admin.hero.galleryEyebrowArchive',
+    ],
+    titleLead: 'admin.hero.galleryTitleLead',
+    titleHighlight: 'admin.hero.galleryTitleHighlight',
+    subtitle: 'admin.hero.gallerySubtitle',
+  },
 };
 
 export function useAdminHeroContent(): AdminHeroContent {

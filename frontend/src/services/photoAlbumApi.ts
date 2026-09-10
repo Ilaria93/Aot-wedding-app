@@ -112,11 +112,20 @@ export async function fetchAdminPhotoList(params: FetchAdminPhotoListParams = {}
   return data;
 }
 
-// Toggles the "keep this one" flag — the only edit an admin can make on a guest's upload.
+// Toggles the "keep this one" flag.
 export async function updatePhotoFavorite(photoId: number, isFavorite: boolean): Promise<PublicPhotoAlbumItem> {
   const { data } = await apiClient.patch<PublicPhotoAlbumItem>(`/admin/photos/${photoId}`, {
     is_favorite: isFavorite,
   });
+  return data;
+}
+
+// Edits a guest's caption/tag — the pencil action on the admin gallery card.
+export async function updateAdminPhoto(
+  photoId: number,
+  fields: { caption?: string | null; tag?: PhotoTagId | null },
+): Promise<PublicPhotoAlbumItem> {
+  const { data } = await apiClient.patch<PublicPhotoAlbumItem>(`/admin/photos/${photoId}`, fields);
   return data;
 }
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useI18n } from '@/contexts/I18nContext';
-import { fetchPublicPhotoAlbum, type PublicPhotoAlbumItem } from '@/services/photoAlbumApi';
+import { fetchPublicPhotoAlbum, isVideoMimeType, type PublicPhotoAlbumItem } from '@/services/photoAlbumApi';
 import './styles/GallerySection.scss';
 
 export type GalleryViewState =
@@ -101,15 +101,19 @@ export function GallerySection() {
 
           {view.status === 'ready' ? (
             <div className="landing-gallery__grid">
-              {view.photos.map((photo) => (
-                <img
-                  key={photo.id}
-                  className="landing-gallery__photo"
-                  src={photo.image_url}
-                  alt={photo.caption || photo.uploader_name}
-                  loading="lazy"
-                />
-              ))}
+              {view.photos.map((photo) =>
+                isVideoMimeType(photo.mime_type) ? (
+                  <video key={photo.id} className="landing-gallery__photo" src={photo.image_url} muted />
+                ) : (
+                  <img
+                    key={photo.id}
+                    className="landing-gallery__photo"
+                    src={photo.image_url}
+                    alt={photo.caption || photo.uploader_name}
+                    loading="lazy"
+                  />
+                ),
+              )}
             </div>
           ) : null}
         </div>
