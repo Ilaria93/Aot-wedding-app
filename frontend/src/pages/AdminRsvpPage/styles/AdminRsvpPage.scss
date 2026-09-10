@@ -1,40 +1,13 @@
-/* Search + filters toolbar */
+/* Search + filters toolbar — pills (FilterPills) and search box
+   (SearchBar) are shared components; this page just stacks them. */
 .admin-rsvp__toolbar {
+  display: grid;
+  gap: 12px;
   margin-bottom: var(--obw-space-md);
 }
 
 .admin-rsvp__toolbar-label {
-  margin-bottom: 8px;
-}
-
-.admin-rsvp__filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-/* Inactive: no border/background, just text+icon. Active: filled gold pill. */
-.admin-rsvp__filter {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  background: transparent;
-  color: color-mix(in srgb, var(--obw-bone) 75%, transparent);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.admin-rsvp__filter.is-active {
-  border-color: var(--obw-gold);
-  background: var(--obw-gold);
-  color: var(--obw-void);
+  margin-bottom: -4px;
 }
 
 /* Guest list layout — 3/4 list, 1/4 sidebar */
@@ -284,44 +257,12 @@
   font-weight: 700;
 }
 
-.admin-rsvp__pagination {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  /* Pushed to the bottom of .admin-rsvp__list (a flex column stretched to
-     the sidebar's height) so it lands flush with Riepilogo Menù instead of
-     sitting right under a short guest list. */
+/* Shared Pagination component (see components/Pagination) — pushed to the
+   bottom of .admin-rsvp__list (a flex column stretched to the sidebar's
+   height) so it lands flush with Riepilogo Menù instead of sitting right
+   under a short guest list. */
+.admin-rsvp__list .pagination {
   margin-top: auto;
-  padding: 14px 18px;
-  border-radius: 12px;
-  background: linear-gradient(160deg, var(--obw-veil), rgba(18, 10, 9, 0.55)), var(--obw-charcoal);
-}
-
-.admin-rsvp__pagination-label {
-  font-family: var(--font-editorial);
-  font-size: 0.9375rem;
-  color: color-mix(in srgb, var(--obw-bone) 80%, transparent);
-}
-
-.admin-rsvp__pagination-btn {
-  min-width: 34px;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--obw-bone) 10%, transparent);
-  color: color-mix(in srgb, var(--obw-bone) 80%, transparent);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.admin-rsvp__pagination-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
 }
 
 /* Below 900px .admin-rsvp__layout is a single column, so this simply
@@ -537,73 +478,10 @@
   color: var(--obw-gold-bright);
 }
 
-/* "Aggiungi tavolo" modal — portaled to document.body (PageShell's
-   backdrop-filter would otherwise trap position:fixed to its own box). */
-.admin-rsvp__modal-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: color-mix(in srgb, var(--obw-void) 70%, transparent);
-  backdrop-filter: blur(4px);
-}
-
-.admin-rsvp__modal {
-  width: 100%;
-  max-width: 360px;
-  padding: 22px;
-  border-radius: 16px;
-  background: #211c1b;
-  color: #eee5dc;
-  box-shadow: var(--obw-shadow-dark);
-}
-
-.admin-rsvp__modal-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.admin-rsvp__modal-head h2 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  font-weight: 700;
-}
-
-.admin-rsvp__modal-close {
-  display: inline-flex;
-  padding: 4px;
-  border: none;
-  background: transparent;
-  color: color-mix(in srgb, #eee5dc 60%, transparent);
-  cursor: pointer;
-}
-
-.admin-rsvp__modal-close:hover {
-  color: var(--obw-gold-bright);
-}
-
-.admin-rsvp__modal-body {
-  margin: 0 0 16px;
-  color: color-mix(in srgb, #eee5dc 80%, transparent);
-  font-size: 0.875rem;
-  line-height: 1.5;
-}
-
-.admin-rsvp__modal-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.admin-rsvp__modal-actions .admin-rsvp__new-table-submit,
-.admin-rsvp__modal-actions .admin-rsvp__table-edit-delete {
+/* "Aggiungi tavolo" / delete-confirm modals use the shared AdminModal shell
+   (see components/AdminModal) — only the button layout inside is page-specific. */
+.admin-modal__actions .admin-rsvp__new-table-submit,
+.admin-modal__actions .admin-rsvp__table-edit-delete {
   flex: 1 1 auto;
   justify-content: center;
 }
