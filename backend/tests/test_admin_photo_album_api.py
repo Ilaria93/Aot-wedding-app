@@ -168,3 +168,31 @@ def test_admin_photo_favorite_toggle_requires_admin(api_client, user_headers):
 
     response = api_client.patch(f"/admin/photos/{photo_id}", headers=user_headers, json={"is_favorite": True})
     assert response.status_code == 403
+
+
+def test_admin_photo_edit_caption_and_tag(api_client, admin_headers):
+    guest_client = _guest_client()
+    photo_id = _upload_and_complete_photo(guest_client, tag="cake")
+
+    response = api_client.patch(
+        f"/admin/photos/{photo_id}",
+        headers=admin_headers,
+        json={"caption": "Edited caption", "tag": "party"},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["caption"] == "Edited caption"
+    assert body["tag"] == "party"
+
+
+def test_admin_photo_edit_does_not_touch_unset_fields(api_client, admin_headers):
+    guest_client = _guest_client()
+    photo_id = _upload_and_complete_photo(guest_client, tag="cake")
+    api_client.patch(f"/admin/photos/{photo_id}", headers=admin_headers, json={"is_favorite": True})
+
+    response = api_client.patch(f"/admin/photos/{photo_id}", headers=admin_headers, json={"caption": "New caption"})
+    assert response.status_code == 200
+    body = response.json()
+    assert body["caption"] == "New caption"
+    assert body["tag"] == "cake"
+    assert body["is_favorite"] is True
