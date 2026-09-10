@@ -1,24 +1,175 @@
-.admin-contacts__form {
-  margin-top: 1rem;
-}
-
-.admin-contacts__grid {
+/* Two-column layout: the create/edit form stays put on the left while the
+   supplier directory scrolls on the right — same split as the mockup. */
+.admin-contacts__layout {
   display: grid;
-  gap: var(--obw-space-sm);
+  gap: var(--obw-space-md);
+  align-items: start;
 }
 
-.admin-contacts__grid .obw-portal-field {
-  margin-bottom: 0;
-}
-
-.admin-contacts__notes {
-  grid-column: 1 / -1;
-}
-
-@media (min-width: 640px) {
-  .admin-contacts__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (min-width: 1000px) {
+  .admin-contacts__layout {
+    grid-template-columns: minmax(320px, 400px) 1fr;
   }
+}
+
+.admin-contacts__list-col {
+  min-width: 0;
+}
+
+.admin-contacts__form-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--obw-gold-bright);
+  margin-bottom: 10px;
+}
+
+.admin-contacts__form-title {
+  margin: 0 0 6px;
+  font-family: var(--font-editorial);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--obw-bone);
+}
+
+.admin-contacts__form-subtitle {
+  margin: 0;
+  font-family: var(--font-editorial);
+  font-size: 0.9375rem;
+  color: color-mix(in srgb, var(--obw-bone) 75%, transparent);
+}
+
+.admin-contacts__form-divider {
+  margin: 18px 0;
+  border: none;
+  border-top: 1px solid var(--obw-border);
+}
+
+.admin-contacts__form {
+  margin-top: 0;
+}
+
+.admin-contacts__field {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.admin-contacts__field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-contacts__field-label {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--obw-gold-bright);
+}
+
+.admin-contacts__field select,
+.admin-contacts__field textarea,
+.admin-contacts__field-input {
+  display: block;
+  width: 100%;
+  padding: 13px 15px;
+  border-radius: 9px;
+  border: 1px solid var(--obw-border);
+  background: color-mix(in srgb, var(--obw-void) 55%, transparent);
+  color: var(--obw-bone);
+  font: inherit;
+  font-size: 0.9375rem;
+}
+
+.admin-contacts__field-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.admin-contacts__field-input input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 13px 40px 13px 15px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+.admin-contacts__field-input input::placeholder,
+.admin-contacts__field textarea::placeholder {
+  color: color-mix(in srgb, var(--obw-bone) 40%, transparent);
+}
+
+.admin-contacts__field-input svg {
+  position: absolute;
+  right: 14px;
+  color: color-mix(in srgb, var(--obw-bone) 45%, transparent);
+  pointer-events: none;
+}
+
+.admin-contacts__field textarea {
+  min-height: 92px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.admin-contacts__field select:focus,
+.admin-contacts__field textarea:focus,
+.admin-contacts__field-input:focus-within {
+  outline: none;
+  border-color: var(--obw-gold);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--obw-gold) 20%, transparent);
+}
+
+.admin-contacts__submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  background: var(--obw-gold-bright);
+  color: var(--obw-void);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.admin-contacts__submit-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.admin-contacts__cancel-link {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  border: none;
+  background: none;
+  color: color-mix(in srgb, var(--obw-bone) 70%, transparent);
+  font: inherit;
+  font-size: 0.8125rem;
+  text-align: center;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .admin-contacts__feedback {
@@ -40,26 +191,234 @@
   margin-top: 1.5rem;
 }
 
-.admin-contacts__row {
+/* Search + category filter — identical layout/pill style to
+   AdminRsvpPage's toolbar (.admin-rsvp__toolbar/__filter): a bordered
+   obw-portal-panel with a kicker label, filter pills, then the search bar. */
+/* padding-top matches .admin-contacts__form-card's (.obw-portal-card: 2rem)
+   instead of .obw-portal-panel's own 1.1rem, so "Filtra per fornitore" lines
+   up with "Registro Strategico" in the column beside it. */
+.admin-contacts__toolbar {
+  padding-top: 2rem;
+  margin-bottom: var(--obw-space-md);
+}
+
+.admin-contacts__toolbar-label {
+  margin-bottom: 8px;
+}
+
+.admin-contacts__filters {
   display: flex;
   flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.admin-contacts__filter {
+  display: inline-flex;
   align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: color-mix(in srgb, var(--obw-bone) 75%, transparent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.admin-contacts__filter.is-active {
+  border-color: var(--obw-gold);
+  background: var(--obw-gold);
+  color: var(--obw-void);
+}
+
+/* Supplier cards — same dark-panel/gold-corner language as
+   .admin-rsvp__table-panel in AdminRsvpPage, so the two admin dashboards
+   read as one system. See SupplierCard.tsx. */
+.admin-contacts__supplier-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--obw-space-md);
+  margin-top: 1rem;
+}
+
+.admin-contacts__supplier-card {
+  position: relative;
+  padding: 22px 22px 20px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, var(--obw-veil), rgba(18, 10, 9, 0.55)), var(--obw-charcoal);
+  color: #eee5dc;
+  overflow: hidden;
+}
+
+.admin-contacts__supplier-card::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  pointer-events: none;
+  border-radius: 6px;
+  opacity: 0.45;
+  background:
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 14px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 1px 14px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 14px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 1px 14px no-repeat;
+}
+
+.admin-contacts__supplier-head {
+  display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 0.75rem;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--obw-border);
+  gap: 10px;
+  margin-bottom: 14px;
 }
 
-.admin-contacts__row:last-child {
-  border-bottom: none;
-}
-
-.admin-contacts__row-actions {
+.admin-contacts__supplier-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
-.admin-contacts__row-actions .obw-portal-btn {
-  padding: 8px 14px;
+.admin-contacts__supplier-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.admin-contacts__supplier-pill--category {
+  background: color-mix(in srgb, var(--obw-gold) 20%, transparent);
+  color: var(--obw-gold-bright);
+}
+
+.admin-contacts__supplier-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentcolor;
+}
+
+.admin-contacts__supplier-pill--green {
+  background: color-mix(in srgb, #4c8b5a 25%, transparent);
+  color: #a9d9b4;
+}
+
+.admin-contacts__supplier-pill--rose {
+  background: color-mix(in srgb, var(--obw-burgundy) 25%, transparent);
+  color: color-mix(in srgb, var(--obw-burgundy) 60%, white);
+}
+
+.admin-contacts__supplier-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.admin-contacts__supplier-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 9px;
+  background: color-mix(in srgb, #eee5dc 8%, transparent);
+  color: var(--obw-gold-bright);
+  cursor: pointer;
+}
+
+.admin-contacts__supplier-icon-btn:hover {
+  background: color-mix(in srgb, #eee5dc 14%, transparent);
+}
+
+.admin-contacts__supplier-icon-btn--danger {
+  color: color-mix(in srgb, var(--obw-burgundy) 70%, white);
+}
+
+.admin-contacts__supplier-icon-btn--danger:hover {
+  background: color-mix(in srgb, var(--obw-burgundy) 25%, transparent);
+}
+
+.admin-contacts__supplier-manage-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid color-mix(in srgb, #eee5dc 14%, transparent);
+}
+
+.admin-contacts__supplier-title {
+  margin: 0 0 4px;
+  font-family: var(--font-editorial);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #eee6df;
+}
+
+.admin-contacts__supplier-role {
+  margin: 0;
+  font-family: var(--font-editorial);
+  font-size: 0.9375rem;
+  color: color-mix(in srgb, #eee5dc 80%, transparent);
+}
+
+.admin-contacts__supplier-role strong {
+  color: #eee6df;
+  font-weight: 700;
+}
+
+.admin-contacts__supplier-divider {
+  margin: 14px 0;
+  border: none;
+  border-top: 1px solid color-mix(in srgb, #eee5dc 14%, transparent);
+}
+
+.admin-contacts__supplier-info-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.admin-contacts__supplier-info-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: color-mix(in srgb, #eee5dc 85%, transparent);
+  font-size: 0.8125rem;
+}
+
+.admin-contacts__supplier-info-item svg {
+  flex-shrink: 0;
+  color: var(--obw-gold-bright);
+}
+
+.admin-contacts__supplier-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: color-mix(in srgb, #eee5dc 6%, transparent);
+  color: color-mix(in srgb, #eee5dc 85%, transparent);
+  font-family: var(--font-editorial);
+  font-size: 0.8125rem;
+  font-style: italic;
+}
+
+.admin-contacts__supplier-note svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--obw-gold-bright);
 }

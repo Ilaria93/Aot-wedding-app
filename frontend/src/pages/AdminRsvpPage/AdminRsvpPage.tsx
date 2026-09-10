@@ -6,7 +6,6 @@ import {
   Leaf,
   Pencil,
   Plus,
-  Search,
   Shield,
   Trash2,
   Users,
@@ -19,6 +18,8 @@ import { createPortal } from 'react-dom';
 
 import { PageAlert } from '@/components/PageShell';
 import { GuestList } from '@/components/Rsvp/GuestList';
+import { SearchBar } from '@/components/SearchBar';
+import { StatCards, type StatCardData } from '@/components/StatCards';
 import { useI18n } from '@/contexts/I18nContext';
 import { useAdminHeroStatsSlot } from '@/layouts/AdminLayout/AdminHeroStatsSlotContext';
 import { AdminModal } from './AdminModal';
@@ -40,21 +41,8 @@ import {
 import type { MealChoiceId } from '@/services/rsvpApi';
 import './styles/AdminRsvpPage.scss';
 
-type StatCardTone = 'gold' | 'bone' | 'stone';
-
-type StatCard = {
-  id: string;
-  tone: StatCardTone;
-  label: string;
-  value: number;
-  unit: string;
-  subtitle: string;
-  icon?: ComponentType<{ size?: number; 'aria-hidden'?: boolean }>;
-};
-
-// One card per key RSVP metric — same shape, so the row below is a plain
-// array.map() instead of four near-identical JSX blocks.
-function buildStatCards(stats: AdminRsvpStats, pendingCount: number, t: TranslateFn): StatCard[] {
+// One card per key RSVP metric.
+function buildStatCards(stats: AdminRsvpStats, pendingCount: number, t: TranslateFn): StatCardData[] {
   const totalInvited = stats.total_users;
   const percentOf = (value: number) => (totalInvited > 0 ? Math.round((value / totalInvited) * 100) : 0);
 
@@ -350,30 +338,7 @@ export function AdminRsvpPage() {
 
   return (
     <>
-      {statCards.length > 0 && heroStatsSlot
-        ? createPortal(
-            <div className="admin-rsvp__stats">
-              {statCards.map((card) => (
-                <div key={card.id} className={`admin-rsvp__stat-card admin-rsvp__stat-card--${card.tone}`}>
-                  <div className="admin-rsvp__stat-card-head">
-                    <span className="admin-rsvp__stat-card-label">{card.label}</span>
-                    {card.icon ? (
-                      <card.icon size={16} aria-hidden />
-                    ) : (
-                      <span className="admin-rsvp__stat-card-dot" aria-hidden />
-                    )}
-                  </div>
-                  <p className="admin-rsvp__stat-card-value">
-                    {card.value}
-                    <span className="admin-rsvp__stat-card-unit">{card.unit}</span>
-                  </p>
-                  <p className="admin-rsvp__stat-card-subtitle">{card.subtitle}</p>
-                </div>
-              ))}
-            </div>,
-            heroStatsSlot,
-          )
-        : null}
+      {statCards.length > 0 && heroStatsSlot ? createPortal(<StatCards cards={statCards} />, heroStatsSlot) : null}
 
       <section className="obw-portal-panel admin-rsvp__toolbar">
         <span className="obw-portal-kicker admin-rsvp__toolbar-label">{t('admin.rsvpEntries.searchLabel')}</span>
@@ -400,16 +365,7 @@ export function AdminRsvpPage() {
             {t('admin.rsvpEntries.filterChildren', { count: counts.children })}
           </button>
         </div>
-        <div className="admin-rsvp__search-wrap">
-          <Search size={16} className="admin-rsvp__search-icon" aria-hidden />
-          <input
-            className="admin-rsvp__search"
-            type="search"
-            placeholder={t('admin.rsvpEntries.searchPlaceholder')}
-            value={search}
-            onChange={(event) => handleSearchChange(event.target.value)}
-          />
-        </div>
+        <SearchBar value={search} onChange={handleSearchChange} placeholder={t('admin.rsvpEntries.searchPlaceholder')} />
       </section>
 
       <div className="admin-rsvp__layout">

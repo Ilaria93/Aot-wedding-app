@@ -1,0 +1,94 @@
+/* Portaled into .admin-layout__hero-stats-slot (see AdminHeroStatsSlotContext)
+   — compact cards so they fit next to the title. Each card is fixed at 1/4
+   of the row (AdminRsvpPage's 4-card layout is the size reference) and the
+   row is right-aligned, so a page with fewer cards (e.g. AdminContactsPage's
+   2) gets same-size cards flush with the right edge instead of stretching
+   to fill the row. Below 768px there's not enough width for that, so cards
+   fall back to 2 per row (2x2 for 4 cards, one row for 2). */
+.stat-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.stat-card {
+  flex: 0 0 calc((100% - 3 * 8px) / 4);
+  min-width: 0;
+  padding: 10px 10px;
+  border: 1px solid var(--obw-border-dark);
+  border-radius: 10px;
+  background: var(--obw-charcoal);
+}
+
+@media (max-width: 768px) {
+  .stat-card {
+    flex-basis: calc((100% - 8px) / 2);
+  }
+}
+
+.stat-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  color: color-mix(in srgb, var(--obw-gold) 75%, var(--obw-bone));
+}
+
+.stat-card__label {
+  font-family: var(--font-sans);
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.stat-card__dot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentcolor;
+}
+
+.stat-card__value {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin: 4px 0 2px;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.15;
+  color: var(--obw-gold-bright);
+}
+
+.stat-card__unit {
+  font-family: var(--font-sans);
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--obw-bone) 65%, transparent);
+}
+
+.stat-card__subtitle {
+  margin: 0;
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-size: 0.625rem;
+  color: color-mix(in srgb, var(--obw-bone) 78%, transparent);
+}
+
+.stat-card--stone .stat-card__head {
+  color: var(--obw-stone);
+}
+
+.stat-card--stone .stat-card__value {
+  color: var(--obw-stone);
+}
+
+.stat-card--bone .stat-card__head {
+  color: color-mix(in srgb, var(--obw-bone) 70%, transparent);
+}
+
+.stat-card--bone .stat-card__value {
+  color: var(--obw-bone);
+}

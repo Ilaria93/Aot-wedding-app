@@ -9,7 +9,7 @@ def test_admin_can_create_contact_and_guests_can_view_it(api_client, admin_heade
         "/admin/contacts",
         headers=admin_headers,
         json={
-            "category": "hotel",
+            "category": "location",
             "label": "Hotel Paradis",
             "contact_person": "Front desk",
             "phone": "+39 000 111 222",
@@ -32,7 +32,7 @@ def test_admin_can_create_contact_and_guests_can_view_it(api_client, admin_heade
     assert public_response.status_code == 200
     public_contacts = public_response.json()
     assert len(public_contacts) == 1
-    assert public_contacts[0]["category"] == "hotel"
+    assert public_contacts[0]["category"] == "location"
     assert public_contacts[0]["phone"] == "+39 000 111 222"
     assert public_contacts[0]["whatsapp_phone"] == "+39 333 444 555"
     assert public_contacts[0]["facebook_url"] == "https://facebook.com/hotelparadis"
@@ -54,7 +54,7 @@ def test_public_contacts_hide_inactive_items(api_client, admin_headers):
         "/admin/contacts",
         headers=admin_headers,
         json={
-            "category": "makeup",
+            "category": "beauty",
             "label": "Truccatrice Sposa",
             "phone": "+39 333 999 999",
             "sort_order": 0,
