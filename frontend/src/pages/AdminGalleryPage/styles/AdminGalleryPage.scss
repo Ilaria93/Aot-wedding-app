@@ -212,6 +212,10 @@
   }
 }
 
+.admin-gallery__edit-field {
+  margin-bottom: var(--obw-space-sm);
+}
+
 // Deterministic column count per breakpoint (not auto-fill) so PAGE_SIZE in
 // AdminGalleryPage.tsx (columns * MAX_ROWS) always matches what's on screen.
 .admin-gallery__grid {
@@ -307,6 +311,7 @@
 .admin-photo-card__body {
   position: relative;
   z-index: 1;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -326,6 +331,7 @@
 
 .admin-photo-card__caption {
   margin: 0;
+  min-height: calc(1.4em * 2);
   font-family: var(--font-editorial);
   font-style: italic;
   font-size: 0.8125rem;
@@ -338,7 +344,8 @@
 }
 
 .admin-photo-card__footer {
-  margin-top: 6px;
+  margin-top: auto;
+  padding-top: 6px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -437,19 +444,20 @@
   line-height: 0;
 }
 
-/* Fullscreen lightbox (Eye button) — reuses .admin-modal-backdrop from
-   AdminModal for the dim/blur overlay, own box since it needs to fit media
-   at any aspect ratio instead of AdminModal's fixed max-width. */
-.photo-lightbox {
+/* Fullscreen preview opened by clicking a card's photo — reuses
+   .admin-modal-backdrop from AdminModal for the dim/blur overlay, own box
+   since it needs to fit media at any aspect ratio. */
+.admin-lightbox {
   position: relative;
   width: 100%;
   max-width: 900px;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
+  touch-action: pan-y;
 }
 
-.photo-lightbox__close {
+.admin-lightbox__close {
   position: absolute;
   top: -14px;
   right: -14px;
@@ -459,7 +467,31 @@
   box-shadow: var(--obw-shadow-dark);
 }
 
-.photo-lightbox__media {
+.admin-lightbox__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--obw-charcoal);
+  color: var(--obw-bone);
+  box-shadow: var(--obw-shadow-dark);
+}
+
+.admin-lightbox__nav--prev {
+  left: -14px;
+}
+
+.admin-lightbox__nav--next {
+  right: -14px;
+}
+
+.admin-lightbox__media {
   width: 100%;
   max-height: 80vh;
   border-radius: 12px;
@@ -467,7 +499,7 @@
   background: var(--obw-void);
 }
 
-.photo-lightbox__caption {
+.admin-lightbox__caption {
   margin: 10px 0 0;
   color: var(--obw-bone);
   font-family: var(--font-editorial);

@@ -1,5 +1,5 @@
-import { Archive, Check, CloudCog, History, Image, PlayCircle, Plus, Rss, Video, X } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Archive, Check, ChevronLeft, ChevronRight, CloudCog, History, Image, PlayCircle, Plus, Rss, Video, X } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -32,6 +32,7 @@ import './styles/AdminGalleryPage.scss';
 
 const STORAGE_QUOTA_BYTES = 100 * 1024 * 1024 * 1024;
 const MAX_ROWS_PER_PAGE = 2;
+const SWIPE_THRESHOLD_PX = 50;
 
 // Mirrors AdminGalleryPage.scss's .admin-gallery__grid breakpoints so the
 // fetched page size always fills exactly MAX_ROWS_PER_PAGE rows on screen.
@@ -89,15 +90,6 @@ function formatRelativeUpload(dateIso: string, locale: AppLocale): string {
   return rtf.format(Math.round(diffHours / 24), 'day');
 }
 
-// Pure derivation, same pattern as GallerySection's toGalleryViewState — one
-// skeleton grid covers both "still fetching" and "fetch confirmed empty", so
-// there's no separate "no photos" text state to fall into by mistake.
-export function shouldShowPlaceholders(gridLoading: boolean, photoCount: number): boolean {
-  return gridLoading || photoCount === 0;
-}
-
-// Doubles as the empty-state placeholder (see shouldShowPlaceholders) —
-// animated while actually fetching, static once a fetch confirms there's nothing.
 function PhotoCardSkeleton({ animate }: { animate: boolean }) {
   return (
     <div className="admin-photo-card admin-photo-card--skeleton">
@@ -124,8 +116,9 @@ export function AdminGalleryPage() {
   const [search, setSearch] = useState('');
   const [tagFilter, setTagFilter] = useState<PhotoTagId | 'all'>('all');
   const [page, setPage] = useState(1);
-  const [previewPhoto, setPreviewPhoto] = useState<PublicPhotoAlbumItem | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const touchStartX = useRef<number | null>(null);
   const [editingPhoto, setEditingPhoto] = useState<PublicPhotoAlbumItem | null>(null);
   const [editCaption, setEditCaption] = useState('');
   const [editTag, setEditTag] = useState<PhotoTagId | ''>('');
@@ -247,9 +240,49 @@ export function AdminGalleryPage() {
     await refreshAfterMutation();
   }
 
+  function handleOpenEdit(photo: PublicPhotoAlbumItem) {
+    setEditingPhoto(photo);
+    setEditCaption(photo.caption ?? '');
+    setEditTag(photo.tag ?? '');
+  }
+
+  async function handleSaveEdit() {
+    if (!editingPhoto) return;
+    try {
+      setEditSaving(true);
+      const updated = await updateAdminPhoto(editingPhoto.id, {
+        caption: editCaption.trim() || null,
+        tag: editTag || null,
+      });
+      setPhotos((current) => current.map((item) => (item.id === updated.id ? updated : item)));
+      setEditingPhoto(null);
+    } catch (caughtError) {
+      setError(getApiErrorMessage(caughtError, t('admin.photos.editFailed')));
+    } finally {
+      setEditSaving(false);
+    }
+  }
+
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const lastPhoto = photos[0];
   const totalMediaCount = stats ? stats.total_photos + stats.total_videos : 0;
+  const previewPhoto = previewIndex !== null ? photos[previewIndex] : null;
+
+  const showPrevPreview = () =>
+    setPreviewIndex((current) => (current === null ? null : (current - 1 + photos.length) % photos.length));
+  const showNextPreview = () =>
+    setPreviewIndex((current) => (current === null ? null : (current + 1) % photos.length));
+
+  useEffect(() => {
+    if (previewIndex === null) return;
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setPreviewIndex(null);
+      if (event.key === 'ArrowLeft') showPrevPreview();
+      if (event.key === 'ArrowRight') showNextPreview();
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [previewIndex, photos.length]);
 
   const tagFilterOptions: FilterPillOption<PhotoTagId | 'all'>[] = useMemo(
     () => [
@@ -264,7 +297,6 @@ export function AdminGalleryPage() {
   );
 
   const statCards = useMemo(() => (stats ? buildGalleryStatCards(stats, t) : []), [stats, t]);
-  const showPlaceholders = shouldShowPlaceholders(gridLoading, photos.length);
 
   return (
     <SkeletonTheme baseColor="var(--obw-charcoal)" highlightColor="color-mix(in srgb, var(--obw-bone) 10%, var(--obw-charcoal))">
@@ -301,6 +333,11 @@ export function AdminGalleryPage() {
             <PlayCircle size={14} aria-hidden />
             {t('admin.photos.liveSlideButton')}
           </button>
+
+          <button type="button" className="admin-gallery__control-btn" onClick={() => setIsAddModalOpen(true)}>
+            <Plus size={14} aria-hidden />
+            {t('admin.photos.addPhotoCardLabel')}
+          </button>
         </div>
       </section>
 
@@ -321,26 +358,29 @@ export function AdminGalleryPage() {
       </div>
 
       <div className="admin-gallery__grid">
-        <button type="button" className="admin-photo-card admin-photo-card--add" onClick={() => setIsAddModalOpen(true)}>
-          <Plus size={28} aria-hidden />
-          <span>{t('admin.photos.addPhotoCardLabel')}</span>
-        </button>
-
-        {showPlaceholders
-          ? Array.from({ length: pageSize }, (_, index) => <PhotoCardSkeleton key={index} animate={gridLoading} />)
-          : photos.map((photo) => (
-              <PhotoCard
-                key={photo.id}
-                photo={photo}
-                locale={locale}
-                t={t}
-                favoriteBusy={favoriteBusyId === photo.id}
-                deleteBusy={deletingId === photo.id}
-                onToggleFavorite={() => void handleToggleFavorite(photo)}
-                onPreview={() => setPreviewPhoto(photo)}
-                onDelete={() => void handleDelete(photo)}
-              />
-            ))}
+        {gridLoading
+          ? Array.from({ length: pageSize }, (_, index) => <PhotoCardSkeleton key={index} animate />)
+          : total === 0
+            ? (
+                <button type="button" className="admin-photo-card admin-photo-card--add" onClick={() => setIsAddModalOpen(true)}>
+                  <Plus size={28} aria-hidden />
+                  <span>{t('admin.photos.addPhotoCardLabel')}</span>
+                </button>
+              )
+            : photos.map((photo, index) => (
+                <PhotoCard
+                  key={photo.id}
+                  photo={photo}
+                  locale={locale}
+                  t={t}
+                  favoriteBusy={favoriteBusyId === photo.id}
+                  deleteBusy={deletingId === photo.id}
+                  onToggleFavorite={() => void handleToggleFavorite(photo)}
+                  onOpen={() => setPreviewIndex(index)}
+                  onEdit={() => handleOpenEdit(photo)}
+                  onDelete={() => void handleDelete(photo)}
+                />
+              ))}
       </div>
 
       {!gridLoading && total > 0 ? (
@@ -399,27 +439,103 @@ export function AdminGalleryPage() {
         </AdminModal>
       ) : null}
 
+      {editingPhoto ? (
+        <AdminModal
+          titleId="admin-gallery-edit-photo-title"
+          title={t('admin.photos.editModalTitle')}
+          size="sm"
+          onClose={() => setEditingPhoto(null)}
+          t={t}>
+          <textarea
+            className="obw-textarea admin-gallery__edit-field"
+            placeholder={t('admin.photos.editCaptionPlaceholder')}
+            value={editCaption}
+            onChange={(event) => setEditCaption(event.target.value)}
+          />
+          <select
+            className="obw-select admin-gallery__edit-field"
+            value={editTag}
+            onChange={(event) => setEditTag(event.target.value as PhotoTagId | '')}>
+            <option value="">{t('admin.photos.editTagPlaceholder')}</option>
+            {PHOTO_TAG_IDS.map((tagId) => (
+              <option key={tagId} value={tagId}>
+                {getPhotoTagLabel(tagId, t)}
+              </option>
+            ))}
+          </select>
+          <div className="admin-modal__actions">
+            <button
+              type="button"
+              className="obw-btn obw-btn--secondary"
+              onClick={() => setEditingPhoto(null)}>
+              {t('common.cancel')}
+            </button>
+            <button
+              type="button"
+              className="obw-btn obw-btn--primary"
+              disabled={editSaving}
+              onClick={() => void handleSaveEdit()}>
+              {editSaving ? t('admin.photos.editSaving') : t('admin.photos.editSave')}
+            </button>
+          </div>
+        </AdminModal>
+      ) : null}
+
       {previewPhoto
         ? createPortal(
-            <div className="admin-modal-backdrop" onClick={() => setPreviewPhoto(null)}>
-              <div className="photo-lightbox" onClick={(event) => event.stopPropagation()}>
+            <div className="admin-modal-backdrop" onClick={() => setPreviewIndex(null)}>
+              <div
+                className="admin-lightbox"
+                onClick={(event) => event.stopPropagation()}
+                onTouchStart={(event) => {
+                  touchStartX.current = event.touches[0].clientX;
+                }}
+                onTouchEnd={(event) => {
+                  if (touchStartX.current === null) return;
+                  const deltaX = event.changedTouches[0].clientX - touchStartX.current;
+                  touchStartX.current = null;
+                  if (deltaX > SWIPE_THRESHOLD_PX) showPrevPreview();
+                  else if (deltaX < -SWIPE_THRESHOLD_PX) showNextPreview();
+                }}>
                 <button
                   type="button"
-                  className="admin-modal__close photo-lightbox__close"
+                  className="admin-modal__close admin-lightbox__close"
                   aria-label={t('common.cancel')}
-                  onClick={() => setPreviewPhoto(null)}>
+                  onClick={() => setPreviewIndex(null)}>
                   <X size={18} aria-hidden />
                 </button>
+
+                {photos.length > 1 ? (
+                  <button
+                    type="button"
+                    className="admin-lightbox__nav admin-lightbox__nav--prev"
+                    aria-label={t('admin.photos.previousMedia')}
+                    onClick={showPrevPreview}>
+                    <ChevronLeft size={22} aria-hidden />
+                  </button>
+                ) : null}
+
                 {isVideoMimeType(previewPhoto.mime_type) ? (
-                  <video className="photo-lightbox__media" src={previewPhoto.image_url} controls autoPlay />
+                  <video className="admin-lightbox__media" src={previewPhoto.image_url} controls autoPlay />
                 ) : (
                   <img
-                    className="photo-lightbox__media"
+                    className="admin-lightbox__media"
                     src={previewPhoto.image_url}
                     alt={previewPhoto.caption || previewPhoto.uploader_name}
                   />
                 )}
-                <p className="photo-lightbox__caption">
+
+                {photos.length > 1 ? (
+                  <button
+                    type="button"
+                    className="admin-lightbox__nav admin-lightbox__nav--next"
+                    aria-label={t('admin.photos.nextMedia')}
+                    onClick={showNextPreview}>
+                    <ChevronRight size={22} aria-hidden />
+                  </button>
+                ) : null}
+
+                <p className="admin-lightbox__caption">
                   {previewPhoto.uploader_name}
                   {previewPhoto.caption ? ` — “${previewPhoto.caption}”` : ''}
                 </p>

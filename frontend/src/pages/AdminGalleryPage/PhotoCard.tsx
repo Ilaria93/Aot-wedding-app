@@ -1,4 +1,4 @@
-import { Eye, Pencil, Star, Trash2 } from 'lucide-react';
+import { Pencil, Star, Trash2 } from 'lucide-react';
 
 import { getPhotoTagIcon, getPhotoTagLabel } from '@/constants/photoTags';
 import type { AppLocale, TranslateFn } from '@/i18n/translations';
@@ -9,7 +9,7 @@ type PhotoCardProps = {
   locale: AppLocale;
   t: TranslateFn;
   onToggleFavorite: () => void;
-  onPreview: () => void;
+  onOpen: () => void;
   onEdit: () => void;
   onDelete: () => void;
   favoriteBusy?: boolean;
@@ -25,7 +25,7 @@ export function PhotoCard({
   locale,
   t,
   onToggleFavorite,
-  onPreview,
+  onOpen,
   onEdit,
   onDelete,
   favoriteBusy,
@@ -38,9 +38,21 @@ export function PhotoCard({
     <article className="admin-photo-card">
       <div className="admin-photo-card__media">
         {isVideoMimeType(photo.mime_type) ? (
-          <video className="admin-photo-card__visual" src={photo.image_url} controls muted />
+          <video
+            className="admin-photo-card__visual"
+            src={photo.image_url}
+            muted
+            style={{ cursor: 'pointer' }}
+            onClick={onOpen}
+          />
         ) : (
-          <img className="admin-photo-card__visual" src={photo.image_url} alt={photo.caption || photo.uploader_name} />
+          <img
+            className="admin-photo-card__visual"
+            src={photo.image_url}
+            alt={photo.caption || photo.uploader_name}
+            style={{ cursor: 'pointer' }}
+            onClick={onOpen}
+          />
         )}
         {photo.tag && TagIcon ? (
           <span className="admin-photo-card__tag">
@@ -53,7 +65,7 @@ export function PhotoCard({
 
       <div className="admin-photo-card__body">
         <p className="admin-photo-card__name">{photo.uploader_name}</p>
-        {photo.caption ? <p className="admin-photo-card__caption">“{photo.caption}”</p> : null}
+        <p className="admin-photo-card__caption">{photo.caption ? `“${photo.caption}”` : ' '}</p>
 
         <div className="admin-photo-card__footer">
           <span className="admin-photo-card__status">
@@ -69,13 +81,6 @@ export function PhotoCard({
               disabled={favoriteBusy}
               onClick={onToggleFavorite}>
               <Star size={14} fill={photo.is_favorite ? 'currentColor' : 'none'} aria-hidden />
-            </button>
-            <button
-              type="button"
-              className="admin-photo-card__action-btn"
-              aria-label={t('admin.photos.previewButton')}
-              onClick={onPreview}>
-              <Eye size={14} aria-hidden />
             </button>
             <button
               type="button"
