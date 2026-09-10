@@ -21,6 +21,7 @@ import {
   fetchAdminGalleryStats,
   fetchAdminPhotoList,
   isVideoMimeType,
+  updateAdminPhoto,
   updatePhotoFavorite,
   type AdminGalleryStats,
   type PhotoTagId,
@@ -125,6 +126,10 @@ export function AdminGalleryPage() {
   const [page, setPage] = useState(1);
   const [previewPhoto, setPreviewPhoto] = useState<PublicPhotoAlbumItem | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingPhoto, setEditingPhoto] = useState<PublicPhotoAlbumItem | null>(null);
+  const [editCaption, setEditCaption] = useState('');
+  const [editTag, setEditTag] = useState<PhotoTagId | ''>('');
+  const [editSaving, setEditSaving] = useState(false);
   const [liveApproval, setLiveApproval] = useState(false);
   const [gridColumns, setGridColumns] = useState(getGridColumns);
   const heroStatsSlot = useAdminHeroStatsSlot();

@@ -1,4 +1,4 @@
-import { Eye, Star, Trash2 } from 'lucide-react';
+import { Eye, Pencil, Star, Trash2 } from 'lucide-react';
 
 import { getPhotoTagIcon, getPhotoTagLabel } from '@/constants/photoTags';
 import type { AppLocale, TranslateFn } from '@/i18n/translations';
@@ -10,21 +10,23 @@ type PhotoCardProps = {
   t: TranslateFn;
   onToggleFavorite: () => void;
   onPreview: () => void;
+  onEdit: () => void;
   onDelete: () => void;
   favoriteBusy?: boolean;
   deleteBusy?: boolean;
 };
 
 // Same dark-panel/gold-corner language as SupplierCard — one card per guest
-// upload. No "hide"/moderate action: everything is already public the
-// moment it's uploaded (see admin_photo_album_route.py), so the only edits
-// an admin can make are starring a favorite or deleting it outright.
+// upload. Everything is already public the moment it's uploaded (see
+// admin_photo_album_route.py), so admin edits are limited to starring a
+// favorite, editing the caption/tag, or deleting it outright.
 export function PhotoCard({
   photo,
   locale,
   t,
   onToggleFavorite,
   onPreview,
+  onEdit,
   onDelete,
   favoriteBusy,
   deleteBusy,
@@ -74,6 +76,13 @@ export function PhotoCard({
               aria-label={t('admin.photos.previewButton')}
               onClick={onPreview}>
               <Eye size={14} aria-hidden />
+            </button>
+            <button
+              type="button"
+              className="admin-photo-card__action-btn"
+              aria-label={t('admin.photos.editButton')}
+              onClick={onEdit}>
+              <Pencil size={14} aria-hidden />
             </button>
             <button
               type="button"
