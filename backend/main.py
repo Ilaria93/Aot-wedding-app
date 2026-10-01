@@ -1,6 +1,10 @@
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from sqlalchemy import text
+from sqlalchemy.orm import Session
+
+from database.base import get_db
 
 from routes.auth_route import router as auth_router
 from routes.admin_invite_route import router as admin_invite_router
@@ -44,6 +48,14 @@ app.add_middleware(
 
 @app.get("/health")
 def health():
+    return {"status": "ok"}
+
+
+# For an external uptime pinger: unlike /health (Render's probe, no DB) this
+# also wakes the Neon database, so the first real request isn't slow.
+@app.get("/health/db")
+def health_db(db: Session = Depends(get_db)):
+    db.execute(text("SELECT 1"))
     return {"status": "ok"}
 
 app.include_router(rsvp_router)
