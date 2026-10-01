@@ -1257,13 +1257,6 @@
   text-transform: uppercase;
 }
 
-.obw-gift-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
-  gap: var(--obw-space-lg);
-  align-items: start;
-}
-
 .obw-card--dark .obw-btn--secondary {
   border-color: color-mix(in srgb, var(--obw-bone) 22%, transparent);
   color: var(--obw-bone);
@@ -1323,7 +1316,6 @@
 
 @media (max-width: 900px) {
   .obw-split,
-  .obw-gift-layout,
   .obw-grid-3 {
     grid-template-columns: 1fr;
   }

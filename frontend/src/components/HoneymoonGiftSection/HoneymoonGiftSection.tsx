@@ -7,6 +7,7 @@ import {
 } from '@/constants/honeymoonGift';
 import { useI18n } from '@/contexts/I18nContext';
 import { copyToClipboard } from '@/components/HoneymoonGiftSection/copyToClipboard';
+import './styles/HoneymoonGiftSection.scss';
 
 type BankDetailRowProps = {
   label: string;
@@ -41,15 +42,19 @@ export function HoneymoonGiftSection() {
 
   return (
     <section className="obw-section obw-fade-up" id="gift">
-      <div className="obw-container obw-gift-layout">
-        <div>
+      <div className="obw-container gift">
+        <header className="gift__head">
           <p className="obw-kicker">{t('landing.gift.eyebrow')}</p>
           <h2 className="obw-display obw-display--lg">{t('landing.gift.title')}</h2>
-          <div className="obw-rule" aria-hidden="true" />
-          <div className="obw-card obw-card--dark">
+          <span className="obw-rule obw-rule--center" aria-hidden="true" />
+        </header>
+
+        {/* One card: the message on top, the bank coordinates underneath. */}
+        <div className="obw-card obw-card--dark landing-box gift__card">
+          <div className="gift__message">
             <p className="obw-body">{t('landing.gift.intro')}</p>
-            <p className="obw-body">{t('landing.gift.gratitude')}</p>
-            <div className="obw-tag-row obw-tag-row--start">
+            <p className="obw-body obw-body--flush">{t('landing.gift.gratitude')}</p>
+            <div className="obw-tag-row gift__tags">
               <span className="obw-tag obw-tag--on-paper">
                 <Plane size={14} aria-hidden />
                 {t('landing.gift.eyebrow')}
@@ -59,24 +64,26 @@ export function HoneymoonGiftSection() {
               </span>
             </div>
           </div>
-        </div>
 
-        <div className="obw-card obw-card--dark">
-          <p className="obw-kicker obw-kicker--light">{t('landing.gift.coordinatesTitle')}</p>
-          <BankDetailRow
-            label={t('landing.gift.accountHolder')}
-            value={HONEYMOON_GIFT_BANK_DETAILS.accountHolder}
-          />
-          <BankDetailRow label={t('landing.gift.iban')} value={formattedIban} monospace />
-          <BankDetailRow label={t('landing.gift.bic')} value={HONEYMOON_GIFT_BANK_DETAILS.bic} monospace />
-          <BankDetailRow
-            label={t('landing.gift.reference')}
-            value={HONEYMOON_GIFT_BANK_DETAILS.paymentReference}
-          />
-          <button type="button" className="obw-btn obw-btn--secondary" onClick={() => void handleCopyIban()}>
-            <Copy size={14} aria-hidden />
-            {ibanCopied ? t('landing.gift.copiedIban') : t('landing.gift.copyIban')}
-          </button>
+          <div className="gift__coordinates">
+            <p className="obw-kicker obw-kicker--light gift__coordinates-title">{t('landing.gift.coordinatesTitle')}</p>
+            <div className="gift__rows">
+              <BankDetailRow
+                label={t('landing.gift.accountHolder')}
+                value={HONEYMOON_GIFT_BANK_DETAILS.accountHolder}
+              />
+              <BankDetailRow
+                label={t('landing.gift.reference')}
+                value={HONEYMOON_GIFT_BANK_DETAILS.paymentReference}
+              />
+              <BankDetailRow label={t('landing.gift.iban')} value={formattedIban} monospace />
+              <BankDetailRow label={t('landing.gift.bic')} value={HONEYMOON_GIFT_BANK_DETAILS.bic} monospace />
+            </div>
+            <button type="button" className="obw-btn obw-btn--secondary gift__copy" onClick={() => void handleCopyIban()}>
+              <Copy size={14} aria-hidden />
+              {ibanCopied ? t('landing.gift.copiedIban') : t('landing.gift.copyIban')}
+            </button>
+          </div>
         </div>
       </div>
     </section>
