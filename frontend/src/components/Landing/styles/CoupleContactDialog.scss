@@ -1,0 +1,54 @@
+/* Native <dialog> in the top layer. Element + two classes to outrank the
+   landing's `.landing-page .obw-card` (position: relative, translucent fill). */
+.landing-page dialog.couple-contact.obw-card {
+  position: fixed;
+  inset: 0;
+  box-sizing: border-box;
+  width: min(100% - 2rem, 380px);
+  height: fit-content;
+  margin: auto;
+  padding: clamp(1.5rem, 4vw, 2rem);
+  background: color-mix(in srgb, var(--obw-void) 92%, transparent);
+  color: var(--obw-bone);
+  text-align: center;
+}
+
+.couple-contact::backdrop {
+  background: color-mix(in srgb, var(--obw-void) 70%, transparent);
+  backdrop-filter: blur(4px);
+}
+
+.couple-contact .obw-kicker {
+  margin: 0;
+}
+
+.couple-contact__title {
+  margin: 4px 0 var(--obw-space-md);
+}
+
+.couple-contact__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--obw-border-dark);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--obw-bone);
+  cursor: pointer;
+}
+
+.couple-contact__options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--obw-space-sm);
+}
+
+.couple-contact__option {
+  justify-content: center;
+  gap: 8px;
+}

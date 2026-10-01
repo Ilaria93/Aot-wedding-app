@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 
 import { ContactCard } from '@/components/ContactCard';
 import { getLogisticsContactCategoryLabel, LOGISTICS_CONTACT_CATEGORY_IDS } from '@/constants/logistics';
-import { WEDDING_COUPLE_CONTACT } from '@/constants/weddingEvent';
+import { CoupleContactDialog, type CoupleContactMode } from '@/components/Landing/CoupleContactDialog';
+import { WEDDING_COUPLE_CONTACT, WEDDING_COUPLE_PEOPLE } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
 import { fetchPublicLogisticsContacts, type LogisticsContactItem } from '@/services/logisticsContactsApi';
 
@@ -14,10 +15,16 @@ function sortByCategory(contacts: LogisticsContactItem[]) {
   );
 }
 
+// Any phone makes the card grow Call/WhatsApp; their clicks open the "who?" dialog.
+const coupleContact = WEDDING_COUPLE_PEOPLE.every((person) => person.phone)
+  ? { ...WEDDING_COUPLE_CONTACT, phone: WEDDING_COUPLE_PEOPLE[0].phone }
+  : WEDDING_COUPLE_CONTACT;
+
 /** Landing "Contatti utili": the couple first, then the logistics contacts they add in admin. */
 export function LandingContactsSection() {
   const { t } = useI18n();
   const [contacts, setContacts] = useState<LogisticsContactItem[]>([]);
+  const [coupleMode, setCoupleMode] = useState<CoupleContactMode | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -50,7 +57,12 @@ export function LandingContactsSection() {
         <div className="obw-grid-3 landing-contacts__grid">
           {/* The couple always leads, whatever the admin list holds. */}
           <div className="obw-card obw-card--dark">
-            <ContactCard contact={WEDDING_COUPLE_CONTACT} kicker={t('landing.contacts.coupleKicker')} />
+            <ContactCard
+              contact={coupleContact}
+              kicker={t('landing.contacts.coupleKicker')}
+              interceptedActions={['phone', 'whatsapp']}
+              onInterceptedAction={(id) => setCoupleMode(id as CoupleContactMode)}
+            />
           </div>
           {contacts.map((contact) => (
             <div key={contact.id} className="obw-card obw-card--dark">
@@ -59,6 +71,7 @@ export function LandingContactsSection() {
           ))}
         </div>
       </div>
+      <CoupleContactDialog mode={coupleMode} onClose={() => setCoupleMode(null)} />
     </section>
   );
 }

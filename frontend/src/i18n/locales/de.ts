@@ -326,6 +326,8 @@ export const de = {
     contacts: {
       title: 'Nützliche Kontakte',
       coupleKicker: 'Das Brautpaar',
+      callWho: 'Wen möchtest du anrufen?',
+      whatsappWho: 'Wem möchtest du schreiben?',
     },
   },
   auth: {
