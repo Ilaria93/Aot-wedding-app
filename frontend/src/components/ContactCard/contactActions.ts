@@ -1,7 +1,12 @@
 import type { TranslateFn } from '@/i18n/translations';
 import type { LogisticsContactItem } from '@/services/logisticsContactsApi';
 
-import type { ContactAction } from '@/pages/TravelPage/types/TravelPage.types';
+export type ContactAction = {
+  id: string;
+  label: string;
+  url: string;
+  accentColor: string;
+};
 
 // Official brand colors (not part of aotTheme — these identify third-party platforms).
 const SOCIAL_BRAND_COLORS = {
@@ -23,7 +28,7 @@ function normalizeExternalUrl(url: string) {
   return `https://${url}`;
 }
 
-/** Builds the action buttons shown on each travel contact card. */
+/** Builds the action buttons shown on each contact card (home, travel page, admin). */
 export function buildContactActions(contact: LogisticsContactItem, t: TranslateFn): ContactAction[] {
   const actions: ContactAction[] = [];
 

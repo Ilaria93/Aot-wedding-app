@@ -325,13 +325,7 @@ export const it = {
     },
     contacts: {
       title: 'Contatti utili',
-      teamTitle: 'Wedding team',
-      teamLine: 'Davide & Ilaria',
-      teamBody: 'davide.ilaria@esempio.it',
-      travelTitle: 'Supporto viaggio',
-      travelLine: 'Hotel, spostamenti, parcheggi',
-      ceremonyTitle: 'Cerimonia',
-      ceremonyLine: 'Dettagli location e accessi',
+      empty: 'I contatti utili per il viaggio e il giorno del matrimonio arriveranno presto.',
     },
   },
   auth: {
