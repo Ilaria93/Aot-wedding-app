@@ -13,7 +13,7 @@ from schemas.admin_invite_schema import (
     InviteMatch,
     InviteMatchHead,
 )
-from services.invite_greeting_service import FAMILY_RELATIONS, build_greeting
+from services.invite_greeting_service import FAMILY_RELATIONS, build_greeting, greeting_names
 from services.invite_link_service import build_invite_url, generate_unique_token
 from services.invite_message_service import build_head_whatsapp_url
 from services.phone_service import InvalidPhoneError, normalize_phone
@@ -197,6 +197,7 @@ def to_admin_invite(db: Session, head: InviteLink) -> AdminInviteResponse:
         whatsapp_url=build_head_whatsapp_url(head),
         greeting_kind=kind,
         greeting_name=name,
+        greeting_names=greeting_names(kind, name, head, head.members),
         editable=head.sent_at is None,
         members=[
             AdminInviteMember(

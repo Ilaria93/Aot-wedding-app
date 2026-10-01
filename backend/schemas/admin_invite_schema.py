@@ -32,6 +32,7 @@ class AdminInviteResponse(BaseModel):
     whatsapp_url: str
     greeting_kind: GreetingKind
     greeting_name: str
+    greeting_names: list[str]
     # False once the invite has been sent: the group is then locked, only resend.
     editable: bool
     members: list[AdminInviteMember] = []

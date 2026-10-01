@@ -12,5 +12,7 @@ class InviteLinkResponse(BaseModel):
     # Computed from the group (family / couple / single): see invite_greeting_service.
     greeting_kind: Literal["family", "couple", "single_m", "single_f", "single"]
     greeting_name: str
+    # The same names as a list (several for a couple) so clients can join them in their language.
+    greeting_names: list[str]
     min_party_guests: int
     max_party_guests: int

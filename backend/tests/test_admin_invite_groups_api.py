@@ -187,6 +187,7 @@ def test_public_invite_exposes_greeting_and_group_size(api_client, admin_headers
     body = api_client.get(f"/invites/{token}").json()
     assert body["greeting_kind"] == "family"
     assert body["greeting_name"] == "Rossi"
+    assert body["greeting_names"] == ["Rossi"]
     assert body["max_party_guests"] == 3
     assert "phone" not in body
 
@@ -197,3 +198,12 @@ def test_members_have_no_token_and_cannot_be_looked_up_by_one():
         assert db.query(InviteLink).filter(InviteLink.token.is_(None)).count() == 0
     finally:
         db.close()
+
+
+def test_public_invite_lists_couple_names_separately(api_client, admin_headers):
+    head = _head(api_client, first_name="Chiara", last_name="Bianchi", gender="f")
+    _create(api_client, head_id=head["id"], relation="partner", first_name="Luca", last_name="Verdi")
+    token = api_client.get("/admin/invites").json()[0]["invite_url"].rsplit("/", 1)[1]
+    body = api_client.get(f"/invites/{token}").json()
+    assert body["greeting_kind"] == "couple"
+    assert body["greeting_names"] == ["Chiara", "Luca"]

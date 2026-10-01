@@ -12,7 +12,6 @@ import { ScreenBackButton } from '@/components/ScreenBackButton';
 import { WEDDING_COUPLE_NAMES, WEDDING_OPERATION_NAME } from '@/constants/weddingEvent';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
-import { usePendingInviteCount } from '@/hooks/usePendingInviteCount';
 import type { TranslateFn } from '@/i18n/translations';
 import './styles/AppTopBar.scss';
 
@@ -45,14 +44,13 @@ type NavItem = {
   /** Home-section anchors render as <a>; page routes as router links. */
   isAnchor: boolean;
   icon?: NavIcon;
-  badge?: number;
 };
 
 /**
  * Which links belong in the nav — the one place that answers "what shows on
  * this screen", so the desktop bar and the mobile panel can't drift apart.
  */
-function getNavItems(isHome: boolean, canManageWedding: boolean, t: TranslateFn, pendingInvites: number): NavItem[] {
+function getNavItems(isHome: boolean, canManageWedding: boolean, t: TranslateFn): NavItem[] {
   // The couple only ever manages the wedding, never browses it as a guest —
   // off the home page they get just their three control-panel sections.
   if (canManageWedding && !isHome) {
@@ -62,7 +60,6 @@ function getNavItems(isHome: boolean, canManageWedding: boolean, t: TranslateFn,
       target: route.to,
       isAnchor: false,
       icon: route.icon,
-      badge: route.to === '/admin/invites' ? pendingInvites : undefined,
     }));
   }
 
@@ -91,7 +88,6 @@ function NavItemLink({ item, className, activeClassName, isActive, onNavigate }:
     <>
       {item.icon ? <item.icon size={16} aria-hidden /> : null}
       <span>{item.label}</span>
-      {item.badge ? <span className="site-header__badge">{item.badge}</span> : null}
     </>
   );
 
@@ -126,7 +122,6 @@ export function AppTopBar() {
   // Admin already has its own mobile nav (bottom tab bar, see AdminMobileNav)
   // — the hamburger here would just duplicate it.
   const isAdmin = location.pathname.startsWith('/admin');
-  const pendingInvites = usePendingInviteCount(canManageWedding);
   // The couple's desktop nav folds sign-out into the pill row instead of a
   // separate account dropdown — there's nothing else in that menu for them.
   const showSignOutPill = canManageWedding && !isHome;
@@ -136,7 +131,7 @@ export function AppTopBar() {
   /* Only the home page hides the bar: there it would cover the hero cover art.
      Every other screen needs its navigation from the first pixel. */
   const isVisible = !isHome || isScrolled;
-  const navItems = getNavItems(isHome, canManageWedding, t, pendingInvites);
+  const navItems = getNavItems(isHome, canManageWedding, t);
   const closeMobileNav = () => setMobileNavOpen(false);
   // One pill style everywhere; guests get the soft translucent variant, the
   // couple's control panel keeps the bright gold one.

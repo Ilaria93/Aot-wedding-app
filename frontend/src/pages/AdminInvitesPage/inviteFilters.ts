@@ -2,9 +2,6 @@ import type { AdminInviteItem } from '@/services/adminInvitesApi';
 
 export type InviteFilter = 'to_send' | 'sent' | 'answered';
 
-/** Window event the page fires after approve/reject so the nav badge refetches. */
-export const INVITE_REQUESTS_CHANGED = 'invite-requests-changed';
-
 // Same rules as the backend's list_admin_invites filter.
 const MATCHES: Record<InviteFilter, (invite: AdminInviteItem) => boolean> = {
   to_send: (invite) => invite.sent_at === null,
@@ -12,15 +9,23 @@ const MATCHES: Record<InviteFilter, (invite: AdminInviteItem) => boolean> = {
   answered: (invite) => invite.answer !== 'none',
 };
 
+type Person = { first_name: string; last_name: string; phone: string | null };
+
+function personMatches(person: Person, query: string): boolean {
+  return (
+    person.first_name.toLowerCase().includes(query) ||
+    person.last_name.toLowerCase().includes(query) ||
+    (person.phone ?? '').includes(query.replace(/\s/g, ''))
+  );
+}
+
+// A search hit on anyone in the group shows the whole group (the head's card).
 export function filterInvites(invites: AdminInviteItem[], filter: InviteFilter, search: string): AdminInviteItem[] {
   const query = search.trim().toLowerCase();
   return invites.filter(
     (invite) =>
       MATCHES[filter](invite) &&
-      (!query ||
-        invite.first_name.toLowerCase().includes(query) ||
-        invite.last_name.toLowerCase().includes(query) ||
-        (invite.phone ?? '').includes(query.replace(/\s/g, ''))),
+      (!query || personMatches(invite, query) || invite.members.some((member) => personMatches(member, query))),
   );
 }
 

@@ -7,7 +7,7 @@ from constants.rsvp_party import MAX_PARTY_GUESTS, MIN_PARTY_GUESTS
 from database.base import get_db
 from schemas.invite_link_schema import InviteLinkResponse
 from schemas.rsvp_lookup_schema import RsvpMeResponse
-from services.invite_greeting_service import build_greeting, max_party_guests
+from services.invite_greeting_service import build_greeting, greeting_names, max_party_guests
 from services.invite_link_service import get_invite_by_token
 from services.rsvp_service import get_rsvp_for_user
 
@@ -28,6 +28,7 @@ def read_invite(token: str, db: Session = Depends(get_db)):
         last_name=invite.last_name,
         greeting_kind=greeting_kind,
         greeting_name=greeting_name,
+        greeting_names=greeting_names(greeting_kind, greeting_name, invite, invite.members),
         min_party_guests=MIN_PARTY_GUESTS,
         max_party_guests=max_party_guests(invite, invite.members, MAX_PARTY_GUESTS),
     )

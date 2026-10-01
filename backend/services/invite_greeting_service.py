@@ -11,6 +11,14 @@ def _join_names(names: list[str]) -> str:
     return f"{', '.join(names[:-1])} e {names[-1]}"
 
 
+def greeting_names(kind: str, name: str, head: InviteLink, members: Iterable[InviteLink]) -> list[str]:
+    """The names behind a greeting, for clients that join them in their own
+    language ("Chiara e Luca" / "Chiara and Luca"). Only a couple has several."""
+    if kind != "couple":
+        return [name]
+    return [head.first_name, *(member.first_name for member in members if member.relation == "partner")]
+
+
 def build_greeting(head: InviteLink, members: Iterable[InviteLink]) -> tuple[str, str]:
     """(kind, name) for the invite greeting, computed from the group on every
     call so correcting a name in the table updates the greeting on its own.
