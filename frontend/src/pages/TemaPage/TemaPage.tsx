@@ -6,6 +6,7 @@ import { MissionDocumentSeal } from '@/components/MissionDocumentHero/MissionDoc
 import { useI18n } from '@/contexts/I18nContext';
 // The home's section/card look lives here; imported so a direct /tema load has it too.
 import '@/pages/HomePage/styles/HomePage.scss';
+import './styles/TemaPage.scss';
 
 const ANIME_LINKS = [
   { label: 'Crunchyroll', url: 'https://www.crunchyroll.com/it/series/GR751KNZY/attack-on-titan' },
@@ -17,6 +18,10 @@ const MANGA_LINKS = [
   { label: 'K MANGA (Kodansha)', url: 'https://kmanga.kodansha.com/title/10136/episode/312468' },
   { label: 'Azuki', url: 'https://www.azuki.co/series/attack-on-titan' },
 ] as const;
+
+// Term/description pairs, rendered as a list; keys map to tema.<prefix><Id>Term/Body.
+const SYMBOL_IDS = ['Wings', 'Walls', 'Petals', 'Seal', 'Reports'] as const;
+const GLOSSARY_IDS = ['Heart', 'Corps', 'Beyond', 'Recon', 'Report', 'Enlist', 'Operation'] as const;
 
 type TemaSectionProps = {
   title: string;
@@ -37,8 +42,8 @@ function TemaSection({ title, children }: TemaSectionProps) {
 }
 
 /**
- * Explains the wedding's Attack on Titan theme: crest, style, mission, and
- * where to watch it. Reuses the home's look (.landing-page): petals, a fixed
+ * Explains the wedding's Attack on Titan theme: the series in brief, why it's
+ * ours, crest, symbols, style, glossary, mission and where to watch it. Reuses the home's look (.landing-page): petals, a fixed
  * veil over the artwork and portal-style cards.
  */
 export function TemaPage() {
@@ -60,13 +65,62 @@ export function TemaPage() {
           </div>
         </section>
 
+        <TemaSection title={t('tema.aotTitle')}>
+          <p className="obw-kicker">{t('tema.aotLead')}</p>
+          <p className="obw-body obw-body--flush">{t('tema.aotBody')}</p>
+          <p className="obw-body obw-body--flush">{t('tema.aotBody2')}</p>
+          <p className="tema-page__note">{t('tema.aotFacts')}</p>
+        </TemaSection>
+
+        <TemaSection title={t('tema.whyTitle')}>
+          <p className="obw-body obw-body--flush">{t('tema.whyBody')}</p>
+          <p className="obw-body obw-body--flush">{t('tema.whyBody2')}</p>
+          <div className="tema-page__favourites">
+            <div className="tema-page__favourite">
+              <p className="obw-kicker">{t('tema.whyIlariaLabel')}</p>
+              <p className="tema-page__favourite-name">Eren Jaeger</p>
+              <p className="obw-body obw-body--flush">{t('tema.whyIlariaBody')}</p>
+            </div>
+            <div className="tema-page__favourite">
+              <p className="obw-kicker">{t('tema.whyDavideLabel')}</p>
+              <p className="tema-page__favourite-name">Levi Ackerman</p>
+              <p className="obw-body obw-body--flush">{t('tema.whyDavideBody')}</p>
+            </div>
+          </div>
+          <p className="obw-body obw-body--flush tema-page__closing">{t('tema.whyClosing')}</p>
+        </TemaSection>
+
         <TemaSection title={t('tema.crestTitle')}>
           <MissionDocumentSeal />
           <p className="obw-body obw-body--flush">{t('tema.crestBody')}</p>
         </TemaSection>
 
+        <TemaSection title={t('tema.symbolsTitle')}>
+          <p className="obw-body obw-body--flush">{t('tema.symbolsIntro')}</p>
+          <dl className="tema-page__terms">
+            {SYMBOL_IDS.map((id) => (
+              <div key={id}>
+                <dt>{t(`tema.symbol${id}Term`)}</dt>
+                <dd>{t(`tema.symbol${id}Body`)}</dd>
+              </div>
+            ))}
+          </dl>
+        </TemaSection>
+
         <TemaSection title={t('tema.styleTitle')}>
           <p className="obw-body obw-body--flush">{t('tema.styleBody')}</p>
+        </TemaSection>
+
+        <TemaSection title={t('tema.glossaryTitle')}>
+          <p className="obw-body obw-body--flush">{t('tema.glossaryIntro')}</p>
+          <dl className="tema-page__terms">
+            {GLOSSARY_IDS.map((id) => (
+              <div key={id}>
+                <dt>{t(`tema.glossary${id}Term`)}</dt>
+                <dd>{t(`tema.glossary${id}Body`)}</dd>
+              </div>
+            ))}
+          </dl>
         </TemaSection>
 
         <TemaSection title={t('tema.missionTitle')}>
