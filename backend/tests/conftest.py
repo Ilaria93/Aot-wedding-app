@@ -48,6 +48,7 @@ def truncate_test_tables():
             text(
                 """
                 TRUNCATE TABLE
+                    invite_requests,
                     invite_links,
                     refresh_token_sessions,
                     photo_album_items,

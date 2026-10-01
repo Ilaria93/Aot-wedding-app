@@ -22,6 +22,8 @@ class InviteLink(Base):
     # when not provided at import time.
     party_size = Column(Integer, nullable=True)
     created_at = Column(DateTime, nullable=False)
+    # When the admin opened the WhatsApp send for this invite (admin "Inviti" page).
+    sent_at = Column(DateTime, nullable=True)
     # Set the first time this invite's guest confirms/recovers access — lets
     # a repeat visit reuse the same guest User instead of creating another.
     user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=True, index=True)
