@@ -41,6 +41,9 @@
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   box-shadow: var(--obw-shadow-dark);
+  /* The page can't scroll while it's open, so a tall menu scrolls itself. */
+  max-height: calc(100dvh - 88px);
+  overflow-y: auto;
 }
 
 .site-header__mobile-link {
@@ -64,6 +67,23 @@
 .site-header__mobile-link.is-active {
   background: color-mix(in srgb, #db7fb0 38%, transparent);
   color: var(--obw-bone);
+}
+
+.site-header__scrim {
+  position: fixed;
+  inset: 0;
+  /* Just under the header (.obw-nav is z-index 50). */
+  z-index: 49;
+  background: color-mix(in srgb, var(--obw-void) 45%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  animation: site-header-scrim-in 200ms ease both;
+}
+
+@keyframes site-header-scrim-in {
+  from {
+    opacity: 0;
+  }
 }
 
 /* Account and language blocks reuse the desktop dropdown's markup; restyle it
@@ -228,5 +248,9 @@
 
   .site-header__menu-btn:active {
     transform: none;
+  }
+
+  .site-header__scrim {
+    animation: none;
   }
 }

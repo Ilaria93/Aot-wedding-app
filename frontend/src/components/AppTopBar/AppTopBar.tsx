@@ -1,5 +1,6 @@
 import { Contact, Home, Image as ImageIcon, LogOut, Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { ComponentType } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 
@@ -185,7 +186,13 @@ export function AppTopBar() {
     }
 
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    // The page behind the open menu stays put (the menu only exists on mobile).
+    const root = document.documentElement;
+    root.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      root.style.overflow = '';
+    };
   }, [mobileNavOpen]);
 
   return (
@@ -243,6 +250,11 @@ export function AppTopBar() {
         </div>
       </div>
 
+      {/* Blurs the page behind the open menu; a tap on it closes the menu. In
+          body, not here: the header's backdrop-filter would trap a fixed child. */}
+      {mobileNavOpen
+        ? createPortal(<div className="site-header__scrim" aria-hidden onClick={closeMobileNav} />, document.body)
+        : null}
       {mobileNavOpen ? (
         <div
           id="site-header-mobile-panel"
