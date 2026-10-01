@@ -78,3 +78,10 @@ export function parseAddParams(search: string): Pick<InviteFormValues, 'firstNam
   if (!firstName && !lastName) return null;
   return { firstName, lastName, phone: params.get('phone')?.trim() ?? '' };
 }
+
+export const RELATION_KEYS = {
+  spouse: 'admin.invites.relationSpouse',
+  partner: 'admin.invites.relationPartner',
+  child: 'admin.invites.relationChild',
+  other: 'admin.invites.relationOther',
+} as const;

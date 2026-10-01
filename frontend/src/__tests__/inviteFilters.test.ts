@@ -13,6 +13,14 @@ function invite(overrides: Partial<AdminInviteItem>): AdminInviteItem {
     answer: 'none',
     invite_url: 'https://site/invito/t',
     whatsapp_url: 'https://wa.me/393331234567?text=x',
+    gender: null,
+    family_name: null,
+    party_size: null,
+    greeting_kind: 'single',
+    greeting_name: 'Mario',
+    greeting_names: ['Mario'],
+    editable: true,
+    members: [],
     ...overrides,
   };
 }
@@ -35,6 +43,18 @@ describe('filterInvites', () => {
 
   it('answered keeps invites with any answer', () => {
     expect(filterInvites(all, 'answered', '').map((i) => i.id)).toEqual([3, 5]);
+  });
+
+  it('a search hit on a member shows the whole group', () => {
+    const family = invite({
+      id: 6,
+      first_name: 'Christian',
+      members: [
+        { id: 60, first_name: 'Arianna', last_name: 'Rossi', phone: '+393332222222', gender: 'f', relation: 'spouse' },
+      ],
+    });
+    expect(filterInvites([...all, family], 'to_send', 'arianna').map((i) => i.id)).toEqual([6]);
+    expect(filterInvites([...all, family], 'to_send', '333 2222').map((i) => i.id)).toEqual([6]);
   });
 
   it('searches first name, last name and phone, case-insensitively and trimmed', () => {

@@ -8,49 +8,26 @@
   margin: 0;
 }
 
-.admin-invites__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: var(--obw-space-md);
-}
-
-.admin-invites__card {
-  display: grid;
-  gap: 6px;
-  align-content: start;
-}
-
-.admin-invites__name {
-  margin: 0;
-  font-family: var(--font-sans);
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--obw-bone);
-}
-
-.admin-invites__meta {
+.admin-invites__toolbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
-  margin: 0;
-  font-size: 0.85rem;
-  color: color-mix(in srgb, var(--obw-bone) 72%, var(--obw-stone));
+  justify-content: space-between;
+  gap: var(--obw-space-sm);
 }
 
-/* "Already has an invite": approving re-sends that link instead of a new one. */
-.admin-invites__warning {
-  margin: 4px 0 0;
-  padding: 6px 10px;
-  border-left: 2px solid var(--obw-gold);
-  font-size: 0.85rem;
-  color: var(--obw-gold);
-}
-
-.admin-invites__actions {
+.admin-invites__toolbar-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: var(--obw-space-sm);
+}
+
+.admin-invites__notice {
+  margin: 0 0 var(--obw-space-md);
+  padding: 8px 12px;
+  border-left: 2px solid var(--obw-gold);
+  font-size: 0.875rem;
+  color: var(--obw-gold);
 }
 
 .admin-invites__list {
@@ -61,10 +38,15 @@
   list-style: none;
 }
 
-.admin-invites__row {
+.admin-invites__card {
+  display: grid;
+  gap: var(--obw-space-sm);
+}
+
+.admin-invites__card-head {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--obw-space-sm);
 }
@@ -75,11 +57,222 @@
   min-width: 0;
 }
 
-.admin-invites__row .obw-portal-btn {
+.admin-invites__name {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--obw-bone);
+}
+
+/* The greeting the guest will read on the envelope: "Cara famiglia Rossi,". */
+.admin-invites__greeting {
+  margin: 0;
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--obw-gold-bright);
+}
+
+.admin-invites__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 0.85rem;
+  color: color-mix(in srgb, var(--obw-bone) 72%, var(--obw-stone));
+}
+
+.admin-invites__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-invites__card .obw-portal-btn {
   text-decoration: none;
 }
 
-.admin-invites__row .obw-portal-btn[aria-disabled='true'] {
-  pointer-events: none;
-  opacity: 0.6;
+.admin-invites__members {
+  display: grid;
+  gap: 6px;
+  padding-top: var(--obw-space-sm);
+  border-top: 1px solid var(--obw-border);
+}
+
+.admin-invites__members .obw-portal-kicker {
+  margin: 0;
+}
+
+.admin-invites__members ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-invites__members li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--obw-bone);
+}
+
+.admin-invites__members em,
+.admin-invites__member-phone {
+  font-style: normal;
+  color: color-mix(in srgb, var(--obw-bone) 65%, var(--obw-stone));
+}
+
+.admin-invites__member-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-invites__locked {
+  margin: 0;
+  font-size: 0.8rem;
+  color: color-mix(in srgb, var(--obw-bone) 60%, var(--obw-stone));
+}
+
+/* Add / edit form (inside AdminModal). */
+.invite-form {
+  display: grid;
+  gap: 14px;
+}
+
+.invite-form__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.invite-form__roles {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-size: 0.9rem;
+  color: var(--obw-bone);
+}
+
+.invite-form__roles legend {
+  margin-bottom: 6px;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--obw-gold-bright);
+}
+
+.invite-form__roles label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.invite-form__field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.invite-form__field > span {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--obw-gold-bright);
+}
+
+.invite-form__field input,
+.invite-form__field select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 9px;
+  border: 1px solid var(--obw-border);
+  background: color-mix(in srgb, var(--obw-void) 55%, transparent);
+  color: var(--obw-bone);
+  font: inherit;
+  font-size: 0.9375rem;
+}
+
+.invite-form__field input[aria-invalid='true'],
+.invite-form__field select[aria-invalid='true'] {
+  border-color: #e0828f;
+}
+
+.invite-form__field small {
+  font-size: 0.8rem;
+  color: #e0828f;
+}
+
+.invite-form__field .invite-form__hint {
+  color: color-mix(in srgb, var(--obw-bone) 60%, var(--obw-stone));
+}
+
+.invite-form__message {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #e0828f;
+}
+
+.invite-form__duplicates {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-left: 2px solid var(--obw-gold);
+  background: color-mix(in srgb, var(--obw-gold) 8%, transparent);
+}
+
+.invite-form__duplicates-title {
+  margin: 0;
+  font-weight: 700;
+  color: var(--obw-gold);
+}
+
+.invite-form__duplicates ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.invite-form__duplicates li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: var(--obw-bone);
+}
+
+.invite-import__report {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 0.875rem;
+  color: var(--obw-bone);
+}
+
+.invite-import__report p {
+  margin: 0;
+}
+
+.invite-import__report ul {
+  margin: 0;
+  padding-left: 18px;
 }

@@ -5,7 +5,8 @@ import { apiClient } from '@/services/apiClient';
 export type InviteAnswer = 'none' | 'attending' | 'declined';
 export type Gender = 'm' | 'f';
 export type Relation = 'spouse' | 'partner' | 'child' | 'other';
-export type GreetingKind = 'family' | 'couple' | 'single_m' | 'single_f' | 'single';
+export type { GreetingKind } from '@/services/inviteApi';
+import type { GreetingKind } from '@/services/inviteApi';
 
 /** Someone linked to a head: rides on the head's invite, has no link of their own. */
 export type InviteMember = {
@@ -33,6 +34,7 @@ export type AdminInviteItem = {
   whatsapp_url: string;
   greeting_kind: GreetingKind;
   greeting_name: string;
+  greeting_names: string[];
   /** False once sent: the group is locked, the invite can only be resent. */
   editable: boolean;
   members: InviteMember[];
@@ -112,7 +114,9 @@ export async function fetchPersonWhatsappUrl(headId: number, personId: number): 
 export async function importInvitesCsv(file: File): Promise<ImportReport> {
   const body = new FormData();
   body.append('file', file);
-  const { data } = await apiClient.post<ImportReport>('/admin/invites/import', body);
+  const { data } = await apiClient.post<ImportReport>('/admin/invites/import', body, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return data;
 }
 
