@@ -1,10 +1,36 @@
 import { Leaf, Star } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
+import { ContactCard } from '@/components/ContactCard';
+import { getLogisticsContactCategoryLabel, LOGISTICS_CONTACT_CATEGORY_IDS } from '@/constants/logistics';
+import { WEDDING_COUPLE_CONTACT } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
+import { fetchPublicLogisticsContacts, type LogisticsContactItem } from '@/services/logisticsContactsApi';
 
-/** Landing contacts grid with team, travel and ceremony info. */
+/** Contacts the couple manages in admin (public, active ones), in category order. */
+function sortByCategory(contacts: LogisticsContactItem[]) {
+  return [...contacts].sort(
+    (a, b) => LOGISTICS_CONTACT_CATEGORY_IDS.indexOf(a.category) - LOGISTICS_CONTACT_CATEGORY_IDS.indexOf(b.category),
+  );
+}
+
+/** Landing "Contatti utili": the couple first, then the logistics contacts they add in admin. */
 export function LandingContactsSection() {
   const { t } = useI18n();
+  const [contacts, setContacts] = useState<LogisticsContactItem[]>([]);
+
+  useEffect(() => {
+    let active = true;
+    fetchPublicLogisticsContacts()
+      .then((items) => {
+        if (active) setContacts(sortByCategory(items));
+      })
+      // A failed load just leaves the couple's card on its own.
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <section className="obw-section obw-fade-up" id="contacts">
@@ -20,20 +46,17 @@ export function LandingContactsSection() {
             </span>
           </div>
         </div>
-        <div className="obw-grid-3">
-          <article className="landing-contacts__item">
-            <p className="obw-kicker">{t('landing.contacts.teamTitle')}</p>
-            <p className="obw-meta">{t('landing.contacts.teamLine')}</p>
-            <p className="obw-body">{t('landing.contacts.teamBody')}</p>
-          </article>
-          <article className="landing-contacts__item">
-            <p className="obw-kicker">{t('landing.contacts.travelTitle')}</p>
-            <p className="obw-meta">{t('landing.contacts.travelLine')}</p>
-          </article>
-          <article className="landing-contacts__item">
-            <p className="obw-kicker">{t('landing.contacts.ceremonyTitle')}</p>
-            <p className="obw-meta">{t('landing.contacts.ceremonyLine')}</p>
-          </article>
+
+        <div className="obw-grid-3 landing-contacts__grid">
+          {/* The couple always leads, whatever the admin list holds. */}
+          <div className="obw-card obw-card--dark">
+            <ContactCard contact={WEDDING_COUPLE_CONTACT} kicker={t('landing.contacts.coupleKicker')} />
+          </div>
+          {contacts.map((contact) => (
+            <div key={contact.id} className="obw-card obw-card--dark">
+              <ContactCard contact={contact} kicker={getLogisticsContactCategoryLabel(contact.category, t)} />
+            </div>
+          ))}
         </div>
       </div>
     </section>

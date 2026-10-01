@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { LogisticsContactItem } from '@/services/logisticsContactsApi';
-import { buildContactActions } from '@/pages/TravelPage/travelContactActions';
+import { buildContactActions } from '@/components/ContactCard/contactActions';
 
 const translate = ((key: string) => key) as never;
 

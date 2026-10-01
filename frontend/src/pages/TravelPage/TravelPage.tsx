@@ -1,7 +1,6 @@
-import type { CSSProperties } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Facebook, Globe, Instagram, Mail, MessageCircle, Phone } from 'lucide-react';
 
+import { ContactCard } from '@/components/ContactCard';
 import { PageAlert, PageHero, PageShell } from '@/components/PageShell';
 import {
   getLogisticsContactCategoryLabel,
@@ -13,8 +12,6 @@ import {
   type LogisticsContactCategory,
   type LogisticsContactItem,
 } from '@/services/logisticsContactsApi';
-import { buildContactActions } from '@/pages/TravelPage/travelContactActions';
-import './styles/TravelPage.scss';
 
 function buildGroupedContacts(contacts: LogisticsContactItem[]) {
   const empty = {} as Record<LogisticsContactCategory, LogisticsContactItem[]>;
@@ -27,16 +24,6 @@ function buildGroupedContacts(contacts: LogisticsContactItem[]) {
     return accumulator;
   }, empty);
 }
-
-const ACTION_ICONS = {
-  phone: Phone,
-  whatsapp: MessageCircle,
-  email: Mail,
-  website: Globe,
-  instagram: Instagram,
-  facebook: Facebook,
-  tiktok: Globe,
-} as const;
 
 /** Travel hub with public logistics contacts grouped by category. */
 export function TravelPage() {
@@ -93,45 +80,9 @@ export function TravelPage() {
         ).map((categoryId) => (
           <section key={categoryId} className="obw-card">
             <h2 className="obw-display obw-display--sm">{getLogisticsContactCategoryLabel(categoryId, t)}</h2>
-            {groupedContacts[categoryId].map((contact) => {
-              const contactActions = buildContactActions(contact, t);
-
-              return (
-                <article key={contact.id} className="contact-card">
-                  <p className="contact-card__label">{contact.label}</p>
-                  {contact.contact_person ? (
-                    <p className="contact-card__meta">
-                      {t('travel.contactPerson', { value: contact.contact_person })}
-                    </p>
-                  ) : null}
-                  {contact.address ? <p className="contact-card__meta">{contact.address}</p> : null}
-                  {contact.notes ? <p className="contact-card__notes">{contact.notes}</p> : null}
-
-                  {contactActions.length > 0 ? (
-                    <div className="actions-row">
-                      {contactActions.map((action) => {
-                        const Icon = ACTION_ICONS[action.id as keyof typeof ACTION_ICONS] ?? Globe;
-                        return (
-                          <a
-                            key={action.id}
-                            className="action-button"
-                            href={action.url}
-                            target="_blank"
-                            rel="noreferrer">
-                            <span
-                              className="action-button__badge"
-                              style={{ '--action-accent': action.accentColor } as CSSProperties}>
-                              <Icon size={14} aria-hidden />
-                            </span>
-                            {action.label}
-                          </a>
-                        );
-                      })}
-                    </div>
-                  ) : null}
-                </article>
-              );
-            })}
+            {groupedContacts[categoryId].map((contact) => (
+              <ContactCard key={contact.id} contact={contact} />
+            ))}
           </section>
         ))
       )}

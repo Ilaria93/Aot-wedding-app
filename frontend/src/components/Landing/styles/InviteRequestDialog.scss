@@ -1,0 +1,167 @@
+/* Native <dialog> in the top layer. Element + two classes to outrank the
+   landing's `.landing-page .obw-card` / `.obw-card--dark` (position: relative,
+   translucent fill), which would otherwise un-centre it and let the page bleed
+   through the form. */
+.landing-page dialog.invite-request.obw-card {
+  position: fixed;
+  inset: 0;
+  box-sizing: border-box;
+  width: min(100% - 2rem, 520px);
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  overflow-y: auto;
+  background: color-mix(in srgb, var(--obw-void) 92%, transparent);
+  color: var(--obw-bone);
+}
+
+.invite-request::backdrop {
+  background: color-mix(in srgb, var(--obw-void) 70%, transparent);
+  backdrop-filter: blur(4px);
+}
+
+.invite-request[open] {
+  animation: invite-request-rise 260ms var(--obw-ease-out) both;
+}
+
+.invite-request__body {
+  position: relative;
+  display: grid;
+  gap: var(--obw-space-sm);
+}
+
+.invite-request__close {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--obw-border-dark);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--obw-bone);
+  cursor: pointer;
+}
+
+.invite-request .obw-kicker {
+  margin: 0;
+}
+
+.invite-request__title {
+  margin: 0;
+  font-size: clamp(1.9rem, 5vw, 2.4rem);
+}
+
+.invite-request__form,
+.invite-request__done {
+  display: grid;
+  gap: var(--obw-space-sm);
+}
+
+.invite-request__intro,
+.invite-request__done .obw-body {
+  margin: 0;
+  color: var(--obw-bone);
+}
+
+.invite-request__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--obw-space-sm);
+}
+
+@media (max-width: 480px) {
+  .invite-request__row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.invite-request__field {
+  display: grid;
+  gap: 6px;
+}
+
+.invite-request__field label {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--obw-gold);
+}
+
+.invite-request__field input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--obw-border-dark);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--obw-bone) 6%, transparent);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--obw-bone);
+}
+
+.invite-request__field input:focus-visible {
+  outline: 2px solid var(--obw-gold-bright);
+  outline-offset: 1px;
+}
+
+.invite-request__field input[aria-invalid='true'] {
+  border-color: var(--obw-crimson-hot);
+}
+
+.invite-request__error {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: color-mix(in srgb, var(--obw-crimson-hot) 70%, var(--obw-bone));
+}
+
+/* Off-screen rather than display:none, which some bots skip. */
+.invite-request__trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.invite-request__privacy {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: color-mix(in srgb, var(--obw-bone) 70%, transparent);
+}
+
+.invite-request__submit {
+  justify-self: stretch;
+  border-color: var(--obw-bone);
+  background: var(--obw-bone);
+  color: var(--obw-void);
+}
+
+.invite-request__submit:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.invite-request__done .obw-btn {
+  justify-self: start;
+}
+
+@keyframes invite-request-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .invite-request[open] {
+    animation: none;
+  }
+}

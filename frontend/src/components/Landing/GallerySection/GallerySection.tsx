@@ -1,3 +1,4 @@
+import { ImageIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -30,7 +31,19 @@ export function toGalleryViewState(
   return { status: 'ready', photos };
 }
 
-/** Landing gallery preview: recent shared photos plus a CTA to the full album. */
+/** Six tiles: photos first, then dashed upload slots. One slot always stays
+ *  free so the upload path to the album is never hidden. */
+const TILE_COUNT = 6;
+const MAX_PHOTOS = TILE_COUNT - 1;
+
+/** Shapes cycle across the four-column row: circle, blob, rounded square, circle. */
+const TILE_SHAPES = ['circle', 'blob', 'square', 'circle'] as const;
+
+function tileShapeClass(index: number) {
+  return `landing-gallery__tile landing-gallery__tile--${TILE_SHAPES[index % TILE_SHAPES.length]}`;
+}
+
+/** Landing gallery preview: recent shared photos plus upload slots linking to the album. */
 export function GallerySection() {
   const { t } = useI18n();
   const [photos, setPhotos] = useState<PublicPhotoAlbumItem[]>([]);
@@ -70,62 +83,66 @@ export function GallerySection() {
   return (
     <section className="obw-section obw-fade-up landing-gallery" id="gallery">
       <div className="obw-container">
-        <div className="obw-section-header">
-          <p className="obw-kicker">{t('landing.gallery.eyebrow')}</p>
+        <header className="landing-gallery__head">
           <h2 className="obw-display obw-display--lg">{t('landing.gallery.title')}</h2>
-          <div className="obw-rule" aria-hidden="true" />
-          <p className="obw-body obw-section-header__intro">{t('landing.gallery.intro')}</p>
-        </div>
+          <span className="obw-rule obw-rule--center" aria-hidden="true" />
+        </header>
 
-        <div className="landing-gallery__content">
-          {view.status === 'loading' ? (
-            <p className="obw-body obw-body--flush">{t('landing.gallery.loading')}</p>
-          ) : null}
+        {view.status === 'loading' ? (
+          <p className="obw-body obw-body--flush landing-gallery__status">{t('landing.gallery.loading')}</p>
+        ) : null}
 
-          {view.status === 'error' ? (
-            <div className="landing-gallery__status">
-              <p className="obw-body obw-body--flush">{t('landing.gallery.error')}</p>
-              <button
-                type="button"
-                className="obw-btn obw-btn--secondary landing-gallery__retry"
-                onClick={() => setReloadKey((key) => key + 1)}
-              >
-                {t('landing.gallery.retry')}
-              </button>
-            </div>
-          ) : null}
+        {view.status === 'error' ? (
+          <div className="landing-gallery__status">
+            <p className="obw-body obw-body--flush">{t('landing.gallery.error')}</p>
+            <button
+              type="button"
+              className="obw-btn obw-btn--secondary"
+              onClick={() => setReloadKey((key) => key + 1)}
+            >
+              {t('landing.gallery.retry')}
+            </button>
+          </div>
+        ) : null}
 
-          {view.status === 'empty' ? (
-            <p className="obw-body obw-body--flush">{t('landing.gallery.empty')}</p>
-          ) : null}
-
-          {view.status === 'ready' ? (
-            <div className="landing-gallery__grid">
-              {view.photos.map((photo) =>
-                isVideoMimeType(photo.mime_type) ? (
-                  <video key={photo.id} className="landing-gallery__photo" src={photo.image_url} muted />
-                ) : (
-                  <img
-                    key={photo.id}
-                    className="landing-gallery__photo"
-                    src={photo.image_url}
-                    alt={photo.caption || photo.uploader_name}
-                    loading="lazy"
-                  />
-                ),
-              )}
-            </div>
-          ) : null}
-        </div>
-
-        <div className="landing-gallery__cta">
-          <p className="obw-display obw-display--sm">{t('landing.gallery.ctaTitle')}</p>
-          <p className="obw-body">{t('landing.gallery.ctaBody')}</p>
-          <Link className="obw-btn" to="/album">
-            {t('landing.gallery.ctaButton')}
-          </Link>
-        </div>
+        {view.status === 'empty' || view.status === 'ready' ? (
+          <GalleryTiles photos={view.status === 'ready' ? view.photos.slice(0, MAX_PHOTOS) : []} />
+        ) : null}
       </div>
     </section>
+  );
+}
+
+function GalleryTiles({ photos }: { photos: PublicPhotoAlbumItem[] }) {
+  const { t } = useI18n();
+  const slotCount = TILE_COUNT - photos.length;
+
+  return (
+    <div className="landing-gallery__grid">
+      {photos.map((photo, index) =>
+        isVideoMimeType(photo.mime_type) ? (
+          <video key={photo.id} className={tileShapeClass(index)} src={photo.image_url} muted />
+        ) : (
+          <img
+            key={photo.id}
+            className={tileShapeClass(index)}
+            src={photo.image_url}
+            alt={photo.caption || photo.uploader_name}
+            loading="lazy"
+          />
+        ),
+      )}
+      {Array.from({ length: slotCount }, (_, slot) => (
+        <Link
+          key={`slot-${slot}`}
+          to="/album"
+          className={`${tileShapeClass(photos.length + slot)} landing-gallery__slot`}
+        >
+          <ImageIcon size={34} strokeWidth={1.25} aria-hidden />
+          <span className="landing-gallery__slot-title">{t('landing.gallery.slotTitle')}</span>
+          <span className="landing-gallery__slot-action">{t('landing.gallery.slotAction')}</span>
+        </Link>
+      ))}
+    </div>
   );
 }

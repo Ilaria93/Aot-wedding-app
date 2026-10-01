@@ -1,111 +1,89 @@
-.gift-section {
-  margin-bottom: 0;
-  padding: clamp(1.5rem, 4vw, 2rem);
-  border: 1px solid var(--obw-border);
-  border-radius: var(--obw-radius);
-  background: color-mix(in srgb, var(--obw-paper) 90%, var(--obw-bone));
-  box-shadow: var(--obw-shadow-soft);
-}
-
-.gift-section__header {
+/* Honeymoon gift: centred section title, then a single card with the message
+   on top and the bank coordinates below a divider. */
+.gift {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 18px;
-  margin-bottom: 22px;
-}
-
-.gift-section__copy {
-  flex: 1;
-  min-width: 260px;
-}
-
-.gift-section__eyebrow {
-  margin: 0 0 10px;
-  color: var(--obw-gold);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.gift-section__title {
-  margin: 0 0 14px;
-  font-family: var(--font-display);
-  font-size: clamp(1.6rem, 4vw, 2.2rem);
-  font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
-}
-
-.gift-section__intro {
-  margin: 0 0 12px;
-  color: var(--obw-stone);
-  font-size: 0.95rem;
-  line-height: 1.65;
-}
-
-.gift-section__gratitude {
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.55;
-  color: var(--obw-stone);
-}
-
-.gift-section__emblem {
-  display: flex;
-  gap: 10px;
+  flex-direction: column;
   align-items: center;
-  padding: 10px 14px;
-  border: 1px solid var(--obw-border);
-  border-radius: var(--obw-radius);
-  background: var(--obw-paper-deep);
+  gap: clamp(1.75rem, 4vh, 2.75rem);
 }
 
-.gift-coordinates {
-  display: grid;
+.gift__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 14px;
-  padding: 18px;
-  border: 1px solid var(--obw-border);
-  border-radius: var(--obw-radius-sm);
-  background: var(--obw-paper-deep);
+  text-align: center;
 }
 
-.gift-coordinates__title {
-  margin: 0 0 4px;
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 700;
+.gift__head .obw-kicker,
+.gift__head .obw-display {
+  margin: 0;
 }
 
-.gift-row {
+.gift__card {
   display: grid;
-  gap: 4px;
-  padding: 10px 0;
-  border-top: 1px solid var(--obw-border);
+  gap: clamp(1.25rem, 3vw, 1.75rem);
+  max-width: 760px;
 }
 
-.gift-row:first-of-type {
-  border-top: none;
-  padding-top: 0;
+.gift__message {
+  text-align: center;
 }
 
-.gift-row span {
-  color: var(--obw-stone);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+.gift__message .obw-body {
+  color: var(--obw-bone);
 }
 
-.gift-row strong {
-  font-size: 0.95rem;
-  font-weight: 600;
-  word-break: break-word;
+.gift__tags {
+  justify-content: center;
+  margin-top: var(--obw-space-md);
 }
 
-.gift-copy-btn {
-  justify-self: start;
-  margin-top: 4px;
+.gift__coordinates {
+  display: grid;
+  gap: var(--obw-space-sm);
+  padding-top: clamp(1.25rem, 3vw, 1.75rem);
+  border-top: 1px solid color-mix(in srgb, var(--obw-bone) 14%, transparent);
+}
+
+.gift__coordinates-title {
+  margin: 0;
+  text-align: center;
+}
+
+/* Two columns of coordinates on wide screens, one on phones. */
+.gift__rows {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 clamp(1rem, 4vw, 2.5rem);
+}
+
+@media (max-width: 560px) {
+  .gift__rows {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Rows sit in a grid here, so every row gets the same top rule (the shared
+   :first-of-type exception would leave the second column unruled). */
+.gift__rows .obw-gift-row,
+.gift__rows .obw-gift-row:first-of-type {
+  padding: 12px 0;
+  border-top: 1px solid color-mix(in srgb, var(--obw-bone) 12%, transparent);
+}
+
+/* Extra .gift__card to outrank `.obw-card--dark .obw-gift-row span` (muted grey). */
+.gift__card .gift__rows .obw-gift-row span {
+  font-size: 0.68rem;
+  color: var(--obw-gold);
+}
+
+.gift__rows .obw-gift-row strong {
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.gift__copy {
+  justify-self: center;
+  margin-top: var(--obw-space-xs);
 }
