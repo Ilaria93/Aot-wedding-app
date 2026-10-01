@@ -24,7 +24,6 @@ directly (a guest's account is created lazily, the first time they confirm
 via the link — see services/guest_access_service.py).
 """
 import csv
-import secrets
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -39,17 +38,9 @@ from models.invite_link_model import InviteLink  # noqa: E402
 # import is required so SQLAlchemy's mapper registry knows the class exists,
 # even though nothing here calls User directly.
 from models.user_model import User  # noqa: E402,F401
+from services.invite_link_service import generate_unique_token  # noqa: E402
 
 DEFAULT_BASE_URL = "http://localhost:5173"
-TOKEN_BYTES = 12  # secrets.token_urlsafe(12) -> 16 chars, 96 bits of entropy
-
-
-def generate_unique_token(db) -> str:
-    for _ in range(5):
-        token = secrets.token_urlsafe(TOKEN_BYTES)
-        if not db.query(InviteLink).filter(InviteLink.token == token).first():
-            return token
-    raise RuntimeError("Could not generate a unique token after 5 attempts.")
 
 
 def main() -> None:
