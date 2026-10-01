@@ -326,6 +326,8 @@ export const it = {
     contacts: {
       title: 'Contatti utili',
       coupleKicker: 'Gli sposi',
+      callWho: 'Chi vuoi chiamare?',
+      whatsappWho: 'A chi vuoi scrivere?',
     },
   },
   auth: {

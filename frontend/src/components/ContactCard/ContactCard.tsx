@@ -20,10 +20,19 @@ type ContactCardProps = {
   /** Optional line above the name, e.g. the category on the home page. */
   kicker?: string;
   className?: string;
+  /** Takes over these buttons' clicks (the couple's Call/WhatsApp ask "who?" first). */
+  interceptedActions?: string[];
+  onInterceptedAction?: (actionId: string) => void;
 };
 
 /** One logistics contact: name, person, address, notes and call/chat/social buttons. */
-export function ContactCard({ contact, kicker, className = '' }: ContactCardProps) {
+export function ContactCard({
+  contact,
+  kicker,
+  className = '',
+  interceptedActions = [],
+  onInterceptedAction,
+}: ContactCardProps) {
   const { t } = useI18n();
   const contactActions = buildContactActions(contact, t);
 
@@ -42,7 +51,17 @@ export function ContactCard({ contact, kicker, className = '' }: ContactCardProp
           {contactActions.map((action) => {
             const Icon = ACTION_ICONS[action.id as keyof typeof ACTION_ICONS] ?? Globe;
             return (
-              <a key={action.id} className="action-button" href={action.url} target="_blank" rel="noreferrer">
+              <a
+                key={action.id}
+                className="action-button"
+                href={action.url}
+                target="_blank"
+                rel="noreferrer"
+                onClick={(event) => {
+                  if (!interceptedActions.includes(action.id)) return;
+                  event.preventDefault();
+                  onInterceptedAction?.(action.id);
+                }}>
                 <span className="action-button__badge" style={{ '--action-accent': action.accentColor } as CSSProperties}>
                   <Icon size={14} aria-hidden />
                 </span>

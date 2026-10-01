@@ -11,13 +11,14 @@
   animation: lightbox-fade 200ms ease both;
 }
 
-/* The viewer is a dark card (.obw-card--dark) framing the media. */
+/* The viewer is a dark card (.obw-card--dark) framing the media, rounded like
+   the landing cards (portaled to body, so .landing-page .obw-card can't reach it). */
 .lightbox {
   position: relative;
   display: flex;
   flex-direction: column;
   width: min(100%, 900px);
-  max-height: 90vh;
+  max-height: 90svh;
   padding: clamp(10px, 1.6vw, 16px);
   touch-action: pan-y;
   animation: lightbox-rise 260ms var(--obw-ease-out) both;
@@ -59,8 +60,10 @@
 }
 
 .lightbox__media {
+  /* Fixed frame: every photo fits inside it (contain), so the card no longer
+     resizes from one image to the next. */
   width: 100%;
-  max-height: 76vh;
+  height: min(72svh, 620px);
   border-radius: 8px;
   object-fit: contain;
   background: var(--obw-void);
@@ -75,6 +78,20 @@
   text-align: center;
   text-transform: uppercase;
   color: var(--obw-gold);
+}
+
+/* Phones: a tall frame left big black bands around landscape photos; a square
+   one stays fixed too and wastes less space. */
+@media (max-width: 640px) {
+  .lightbox__media {
+    height: auto;
+    aspect-ratio: 1;
+  }
+}
+
+/* Two classes so it outranks the design system's .obw-card radius. */
+.obw-card.lightbox {
+  border-radius: 14px;
 }
 
 @keyframes lightbox-fade {

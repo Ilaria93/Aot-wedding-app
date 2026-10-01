@@ -3,13 +3,21 @@ import type { AppLocale } from '@/i18n/translations';
 export const WEDDING_COUPLE_NAMES = 'Davide & Ilaria' as const;
 /**
  * The couple's own contact, always first in the home "Contatti utili".
- * PROVISIONAL: placeholder email until the couple gives the real one (add a
- * phone too and the card grows Call/WhatsApp buttons on its own).
+ * Both addresses in one mailto, so a guest's email reaches the two of them.
  */
 export const WEDDING_COUPLE_CONTACT = {
   label: WEDDING_COUPLE_NAMES,
-  email: 'davide.ilaria@esempio.it',
+  email: 'kiraleto@gmail.com,dawcorp@gmail.com',
 } as const;
+/**
+ * Who a guest picks when calling or texting the couple: there's no link that
+ * rings or opens a chat with two people, so a dialog asks which one.
+ * Call/WhatsApp stay hidden on the couple's card until both phones are set.
+ */
+export const WEDDING_COUPLE_PEOPLE: ReadonlyArray<{ name: string; phone: string }> = [
+  { name: 'Ilaria', phone: '+393289034256' },
+  { name: 'Davide', phone: '+393406014839' },
+];
 export const WEDDING_OPERATION_NAME = 'Operazione Pirulini' as const;
 export const WEDDING_VENUE_NAME = 'Lido Adriano' as const;
 export const WEDDING_VENUE_AREA = 'Amarissimo Cala Celeste' as const;

@@ -128,7 +128,11 @@ body {
 body::before {
   content: '';
   position: fixed;
-  inset: 0;
+  /* Sized to the large viewport (browser toolbar hidden), not inset: 0: on
+     phones the toolbar shows/hides while scrolling, which resized the box and
+     made `cover` rescale the artwork on every scroll direction change. */
+  inset: 0 0 auto;
+  height: 100lvh;
   z-index: -1;
   /* One file for every viewport. A separate mobile variant used to live here
      and silently broke the moment the artwork was replaced without it. */
