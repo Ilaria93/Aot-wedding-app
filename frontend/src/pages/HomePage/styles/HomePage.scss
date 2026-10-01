@@ -113,3 +113,23 @@
   font-weight: 500;
   color: var(--obw-bone);
 }
+
+/* Section title → gold rule: the title's bottom margin, the stack gap and the
+   rule's top margin added up to ~52px; keep just a small step between them. */
+.landing-page .obw-display--lg:has(+ .obw-rule) {
+  margin-bottom: 0;
+}
+
+.landing-page .obw-display--lg + .obw-rule {
+  margin-top: 4px;
+}
+
+/* A title straight in the section (FAQ) has no flex gap to add the rest. */
+.landing-page .obw-section > .obw-display--lg + .obw-rule {
+  margin-top: 16px;
+}
+
+/* Full white copy: the design system's body text on dark cards is 72% bone. */
+.landing-page .obw-card .obw-body {
+  color: var(--obw-bone);
+}
