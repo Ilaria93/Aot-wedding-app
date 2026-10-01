@@ -16,7 +16,11 @@ ip_limiter = SlidingWindowLimiter(limit=10, window_seconds=HOUR)
 
 
 def _client_ip(request: Request) -> str:
-    # Behind Render/Vercel the real client is the first X-Forwarded-For entry.
+    # ponytail: first X-Forwarded-For entry is client-supplied, so a bot can rotate it
+    # past the per-IP limit; accepted because the right-most entry may be the
+    # platform proxy (one shared bucket would block real guests). The per-phone
+    # limit still holds and spam only yields pending requests the couple rejects.
+    # Trust a fixed proxy depth if spam ever shows up.
     forwarded = request.headers.get("x-forwarded-for", "")
     if forwarded:
         return forwarded.split(",")[0].strip()

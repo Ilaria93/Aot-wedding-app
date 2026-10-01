@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 InviteRequestStatus = Literal["pending", "approved", "rejected"]
 
@@ -9,9 +9,9 @@ InviteRequestStatus = Literal["pending", "approved", "rejected"]
 class InviteRequestCreate(BaseModel):
     first_name: str
     last_name: str
-    phone: str
+    phone: str = Field(max_length=40)
     # Honeypot: real guests never see this field; anything here means a bot.
-    website: str = ""
+    website: str = Field(default="", max_length=200)
 
     @field_validator("first_name", "last_name")
     @classmethod

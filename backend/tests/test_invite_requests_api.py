@@ -79,3 +79,8 @@ def test_eleventh_request_from_same_ip_in_an_hour_is_429(api_client):
     ]
     assert statuses[:10] == [202] * 10
     assert statuses[10] == 429
+
+
+def test_oversized_phone_is_422(api_client):
+    response = api_client.post("/invite-requests", json=_payload(phone="1" * 41))
+    assert response.status_code == 422
