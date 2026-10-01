@@ -16,7 +16,13 @@
     <title>Pirulini's Wedding</title>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Shown until React mounts (it replaces #root's content): same crest as
+         the in-app LoadingScreen, styled inline since the app CSS isn't loaded yet. -->
+    <div id="root">
+      <div style="display:grid;place-items:center;min-height:100svh;background:#1c0e0d">
+        <img src="/assets/wedding/stemma.webp" alt="" width="148" height="174" style="width:clamp(96px,22vw,148px);height:auto" />
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

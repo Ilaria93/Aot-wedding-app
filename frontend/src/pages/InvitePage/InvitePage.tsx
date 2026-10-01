@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { EnvelopeInvite } from '@/components/EnvelopeInvite';
 import { useI18n } from '@/contexts/I18nContext';
 import { fetchInviteByToken, type InviteLink } from '@/services/inviteApi';
@@ -47,11 +48,7 @@ export function InvitePage() {
   }, [token]);
 
   if (state === 'loading') {
-    return (
-      <div className="obw-page invite-page invite-page--centered">
-        <p className="obw-body">{t('common.loading')}</p>
-      </div>
-    );
+    return <LoadingScreen label={t('common.loading')} />;
   }
 
   if (state === 'error' || !invite) {

@@ -2,6 +2,7 @@ import { Clock, Eye, EyeOff, Globe, IdCard, Mail, Pencil, Phone, Save, Store, Tr
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { PageAlert } from '@/components/PageShell';
 import { FilterPills } from '@/components/FilterPills';
 import { SearchBar } from '@/components/SearchBar';
@@ -233,11 +234,7 @@ export function AdminContactsPage() {
   const heroStatsSlot = useAdminHeroStatsSlot();
 
   if (loading) {
-    return (
-      <div className="loading-screen">
-        <span className="loading-text">{t('common.loading')}</span>
-      </div>
-    );
+    return <LoadingScreen label={t('common.loading')} />;
   }
 
   return (
