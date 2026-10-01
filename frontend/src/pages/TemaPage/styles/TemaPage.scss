@@ -85,3 +85,13 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* Back to the home, top-left above the page title. */
+.tema-page__back {
+  align-self: flex-start;
+}
+
+.tema-page__back .screen-back {
+  color: var(--obw-bone);
+  text-shadow: var(--obw-text-halo);
+}
