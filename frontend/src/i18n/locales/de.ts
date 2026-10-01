@@ -352,6 +352,8 @@ export const de = {
     subtitle: 'Gib den geheimen Code ein, um euch als Brautpaar anzumelden.',
     sectionLabel: 'Wer bist du?',
     secretLabel: 'Geheimer Code',
+    showSecret: 'Code anzeigen',
+    hideSecret: 'Code verbergen',
     rememberMe: 'Angemeldet bleiben',
     submitLabel: 'Anmelden',
     submitLoading: 'Anmeldung läuft...',

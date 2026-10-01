@@ -12,10 +12,12 @@ services:
         sync: false
       - key: JWT_SECRET_KEY
         sync: false
-      - key: WEDDING_ROLE_SECRET
+      - key: WEDDING_ADMIN_SECRET
         sync: false
       - key: CORS_ALLOW_ORIGINS
         sync: false
+      - key: COOKIE_SECURE
+        value: "true"
       - key: S3_BUCKET_NAME
         sync: false
       - key: S3_REGION
