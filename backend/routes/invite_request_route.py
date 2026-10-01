@@ -3,10 +3,11 @@ from sqlalchemy.orm import Session
 
 from database.base import get_db
 from schemas.invite_request_schema import InviteRequestAccepted, InviteRequestCreate
+from services.admin_invite_service import find_matches
 from services.invite_request_service import create_invite_request
 from services.phone_service import InvalidPhoneError, normalize_phone
 from services.rate_limit_service import SlidingWindowLimiter
-from services.telegram_notify_service import notify_new_invite_request
+from services.telegram_notify_service import describe_matches, notify_new_invite_request
 
 router = APIRouter(prefix="/invite-requests")
 
@@ -48,6 +49,7 @@ def request_invite(
     if not ip_limiter.hit(_client_ip(request)) or not phone_limiter.hit(phone):
         raise HTTPException(status_code=429, detail="Too many requests, try again later.")
 
+    table_status = describe_matches(find_matches(db, payload.first_name, payload.last_name, phone))
     create_invite_request(db, payload.first_name, payload.last_name, phone)
-    background_tasks.add_task(notify_new_invite_request, payload.first_name, payload.last_name, phone)
+    background_tasks.add_task(notify_new_invite_request, payload.first_name, payload.last_name, phone, table_status)
     return InviteRequestAccepted()
