@@ -94,3 +94,24 @@ def test_guest_rsvp_second_submission_updates_instead_of_creating_again(api_clie
     second = api_client.post(f"/invites/{invite_token}/rsvp", json=payload)
     assert second.status_code == 200
     assert second.json()["rsvp"]["guest_count"] == 2
+
+
+def test_invite_rsvp_is_null_before_first_answer(api_client, invite_token):
+    response = api_client.get(f"/invites/{invite_token}/rsvp")
+    assert response.status_code == 200
+    assert response.json() is None
+
+
+def test_invite_rsvp_returns_saved_answer(api_client, invite_token):
+    payload = {"attending": True, "guests": [_guest_line(), _guest_line("Anna", "Rossi")]}
+    assert api_client.post(f"/invites/{invite_token}/rsvp", json=payload).status_code == 200
+    api_client.cookies.clear()  # the token alone must be enough, no session
+
+    body = api_client.get(f"/invites/{invite_token}/rsvp").json()
+    assert body["attending"] is True
+    assert [guest["first_name"] for guest in body["guests"]] == ["Mario", "Anna"]
+    assert "phone" not in body
+
+
+def test_invite_rsvp_unknown_token_is_404(api_client):
+    assert api_client.get("/invites/nope/rsvp").status_code == 404
