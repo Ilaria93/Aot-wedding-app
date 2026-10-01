@@ -78,9 +78,34 @@
   margin-bottom: 6px;
 }
 
+.login-field__control {
+  position: relative;
+  display: block;
+}
+
+.login-field__toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: none;
+  color: color-mix(in srgb, var(--obw-bone) 70%, transparent);
+  cursor: pointer;
+}
+
+.login-field__toggle:hover,
+.login-field__toggle:focus-visible {
+  color: var(--obw-gold);
+}
+
 .login-field input {
   width: 100%;
-  padding: 13px 15px;
+  padding: 13px 48px 13px 15px;
   border-radius: 8px;
   border: 1px solid var(--obw-border);
   background: color-mix(in srgb, var(--obw-bone) 8%, transparent);

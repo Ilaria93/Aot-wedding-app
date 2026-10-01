@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 
 import { RememberMeToggle } from '@/components/RememberMeToggle';
@@ -15,6 +16,7 @@ export function LoginPage() {
   const { signIn } = useAuth();
   const { t } = useI18n();
   const [secret, setSecret] = useState('');
+  const [showSecret, setShowSecret] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,13 +45,24 @@ export function LoginPage() {
         <form onSubmit={(event) => void handleLogin(event)}>
           <label className="login-field" htmlFor="login-secret">
             <span className="login-field__label">{t('login.secretLabel')}</span>
-            <input
-              id="login-secret"
-              type="password"
-              autoComplete="off"
-              value={secret}
-              onChange={(event) => setSecret(event.target.value)}
-            />
+            <span className="login-field__control">
+              <input
+                id="login-secret"
+                type={showSecret ? 'text' : 'password'}
+                autoComplete="off"
+                value={secret}
+                onChange={(event) => setSecret(event.target.value)}
+              />
+              <button
+                type="button"
+                className="login-field__toggle"
+                aria-label={t(showSecret ? 'login.hideSecret' : 'login.showSecret')}
+                aria-pressed={showSecret}
+                onClick={() => setShowSecret((current) => !current)}
+              >
+                {showSecret ? <EyeOff size={18} aria-hidden /> : <Eye size={18} aria-hidden />}
+              </button>
+            </span>
           </label>
 
           <div className="login-remember">

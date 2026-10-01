@@ -352,6 +352,8 @@ export const fr = {
     subtitle: 'Saisissez le code secret pour accéder en tant que mariés.',
     sectionLabel: 'Qui êtes-vous ?',
     secretLabel: 'Code secret',
+    showSecret: 'Afficher le code',
+    hideSecret: 'Masquer le code',
     rememberMe: 'Rester connecté',
     submitLabel: 'Se connecter',
     submitLoading: 'Connexion en cours...',

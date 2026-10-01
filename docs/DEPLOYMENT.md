@@ -46,8 +46,10 @@ inserire a mano nella dashboard Render — non sono committati.
    - `DATABASE_URL` → connection string Neon
    - `JWT_SECRET_KEY` → nuovo valore random lungo (**diverso** da quello di
      dev), es. `openssl rand -hex 32`
-   - `WEDDING_ROLE_SECRET` → nuovo valore, da condividere solo con
-     sposi/admin
+   - `WEDDING_ADMIN_SECRET` → nuovo valore, da condividere solo con
+     sposi/admin (è il codice che si digita al login)
+   - `COOKIE_SECURE` → `true` (obbligatorio: senza, i cookie di sessione
+     non passano da Vercel a Render e il login dà "Missing access token")
    - `CORS_ALLOW_ORIGINS` → dominio Vercel finale (punto 4, va aggiornato
      dopo il primo deploy Vercel)
    - `S3_BUCKET_NAME`, `S3_REGION` (`auto` per R2), `S3_ACCESS_KEY_ID`,
