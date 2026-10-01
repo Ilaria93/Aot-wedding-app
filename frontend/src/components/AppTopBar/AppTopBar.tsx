@@ -12,6 +12,7 @@ import { ScreenBackButton } from '@/components/ScreenBackButton';
 import { WEDDING_COUPLE_NAMES, WEDDING_OPERATION_NAME } from '@/constants/weddingEvent';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
+import { usePendingInviteCount } from '@/hooks/usePendingInviteCount';
 import type { TranslateFn } from '@/i18n/translations';
 import './styles/AppTopBar.scss';
 
@@ -125,9 +126,9 @@ export function AppTopBar() {
   // Admin already has its own mobile nav (bottom tab bar, see AdminMobileNav)
   // — the hamburger here would just duplicate it.
   const isAdmin = location.pathname.startsWith('/admin');
+  const pendingInvites = usePendingInviteCount(canManageWedding);
   // The couple's desktop nav folds sign-out into the pill row instead of a
   // separate account dropdown — there's nothing else in that menu for them.
-  const pendingInvites = usePendingInviteCount(canManageWedding);
   const showSignOutPill = canManageWedding && !isHome;
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);

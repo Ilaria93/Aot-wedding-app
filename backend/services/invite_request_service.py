@@ -60,7 +60,7 @@ def _to_response(db: Session, request: InviteRequest) -> InviteRequestResponse:
 
 
 def _get_request(db: Session, request_id: int) -> InviteRequest:
-    request = db.query(InviteRequest).filter(InviteRequest.id == request_id).first()
+    request = db.query(InviteRequest).filter(InviteRequest.id == request_id).with_for_update().first()
     if not request:
         raise InviteRequestNotFoundError("Invite request not found")
     return request

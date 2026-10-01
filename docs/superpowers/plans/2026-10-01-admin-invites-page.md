@@ -35,7 +35,7 @@ The page reuses the admin building blocks already in the repo: `obw-portal-card`
 - Every new UI string goes into **all 4 locales** (`it`, `en`, `fr`, `de`) under the same keys. The locales must keep identical shapes, or `tsc` fails (`DeepTranslateShape`).
 - Admin buttons use the portal classes (`obw-portal-btn`, `obw-portal-btn--secondary`), not the landing's lilac `.obw-btn`.
 - Commit messages end with: `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
-- Backend tests: from `backend/`, run `venv/bin/pytest -q` (Postgres via the existing conftest). Frontend checks: from `frontend/`, run `npx tsc --noEmit -p .` and `npx vitest run`.
+- Backend tests: from `backend/`, run `venv/bin/pytest -q` (Postgres via the existing conftest). Frontend checks: from `frontend/`, run `npx tsc -b` and `npx vitest run`.
 
 ---
 
@@ -424,7 +424,7 @@ export function countInvites(invites: AdminInviteItem[]): Record<InviteFilter, n
 
 - [ ] **Step 4: Run them and confirm they pass.**
 
-Run: `cd frontend && npx vitest run && npx tsc --noEmit -p .`
+Run: `cd frontend && npx vitest run && npx tsc -b`
 Expected: all vitest files pass and `tsc` exits 0.
 
 - [ ] **Step 5: Commit.**
@@ -745,7 +745,7 @@ Append to `AdminMobileNav.scss`:
 
 - [ ] **Step 6: Verify.**
 
-Run: `cd frontend && npx tsc --noEmit -p . && npx vitest run`
+Run: `cd frontend && npx tsc -b && npx vitest run`
 Expected: both pass. `/admin/invites` itself doesn't exist until Task 4; the link renders anyway.
 
 - [ ] **Step 7: Commit.**
@@ -1030,7 +1030,7 @@ export function AdminInvitesPage() {
 
 - [ ] **Step 4: Verify.**
 
-Run: `cd frontend && npx tsc --noEmit -p . && npx vitest run`
+Run: `cd frontend && npx tsc -b && npx vitest run`
 Expected: both pass.
 
 - [ ] **Step 5: Commit.**
@@ -1194,7 +1194,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 - [ ] **Step 4: Verify.**
 
-Run: `cd frontend && npx tsc --noEmit -p . && npx vitest run`
+Run: `cd frontend && npx tsc -b && npx vitest run`
 Expected: both pass.
 
 - [ ] **Step 5: Commit.**

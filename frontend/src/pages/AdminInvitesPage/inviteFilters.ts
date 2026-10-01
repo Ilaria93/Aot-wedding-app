@@ -20,7 +20,7 @@ export function filterInvites(invites: AdminInviteItem[], filter: InviteFilter, 
       (!query ||
         invite.first_name.toLowerCase().includes(query) ||
         invite.last_name.toLowerCase().includes(query) ||
-        (invite.phone ?? '').includes(query)),
+        (invite.phone ?? '').includes(query.replace(/\s/g, ''))),
   );
 }
 

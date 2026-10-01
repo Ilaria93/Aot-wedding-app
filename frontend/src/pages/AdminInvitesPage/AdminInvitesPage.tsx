@@ -1,5 +1,5 @@
 import { MessageCircle, Phone, RotateCw, Send, X } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { AdminModal } from '@/components/AdminModal';
 import { FilterPills } from '@/components/FilterPills';
@@ -29,6 +29,7 @@ export function AdminInvitesPage() {
   const { t, locale } = useI18n();
   const [requests, setRequests] = useState<InviteRequestItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const approvingRef = useRef(false);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<number | null>(null);
   const [rejectTarget, setRejectTarget] = useState<InviteRequestItem | null>(null);
@@ -71,6 +72,8 @@ export function AdminInvitesPage() {
   }
 
   async function handleApprove(request: InviteRequestItem) {
+    if (approvingRef.current) return;
+    approvingRef.current = true;
     // Open the tab inside the click: browsers block window.open after an await.
     const whatsappTab = window.open('', '_blank');
     setError(null);
@@ -97,6 +100,7 @@ export function AdminInvitesPage() {
         setError(t('admin.invites.markSentFailed'));
       }
     } finally {
+      approvingRef.current = false;
       setBusyId(null);
       await afterDecision();
     }
