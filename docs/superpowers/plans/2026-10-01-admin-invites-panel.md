@@ -49,6 +49,14 @@ Esempi:
 
 Il messaggio WhatsApp usa lo stesso testo: "Cara famiglia Rossi! Davide e Ilaria vi aspettano il 31 maggio 2027 🕊️ …", "Cari Chiara e Luca! …", "Ciao Anna! …".
 
+### Regola di coerenza del gruppo
+
+Un gruppo è **o** sposato **o** non sposato, mai entrambi:
+- un gruppo con `spouse` o `child` (famiglia) non può avere persone `partner`;
+- un gruppo con `partner` (fidanzati) non può avere `spouse` né `child`;
+- `spouse` al massimo uno; `other` non cambia il saluto e può stare con tutti.
+La creazione e la modifica rifiutano con 422 la combinazione vietata (messaggio chiaro), e l'import CSV mette la riga negli errori. Il saluto quindi non ha più il caso "misto".
+
 ### Persone, gruppo e RSVP
 
 - `max_party_guests` nel modulo RSVP = `party_size` se valorizzato, altrimenti il numero di persone del gruppo (capo + collegati), altrimenti il default di sito. Chi risponde indica quanti vengono davvero.
@@ -59,6 +67,26 @@ Il messaggio WhatsApp usa lo stesso testo: "Cara famiglia Rossi! Davide e Ilaria
 - Non esiste nessun endpoint né pulsante di eliminazione.
 - Il capofamiglia e il suo gruppo si possono modificare solo finché il capo non è stato inviato (`sent_at` vuoto). Dopo l'invio il gruppo è bloccato (anche aggiungere persone, perché cambierebbe il saluto di un invito già ricevuto); resta solo **"Rimanda"**.
 - Persone con `sent_at` vuoto e senza collegati: modificabili liberamente.
+
+## Stato del branch `feature/admin-invites-page` (altra sessione, 9 commit del 2026-10-01)
+
+Il branch esiste ora su GitHub (`origin/feature/admin-invites-page`, basato su `main`). Implementa il **flusso precedente** (richieste approvate dal sito), non quello deciso qui.
+
+**Già fatto e riusabile**
+- Voce "Inviti" nella navbar desktop e nella barra mobile (`AppTopBar`, `AdminMobileNav`, icona `Send`), rotta `/admin/invites` in `App.tsx`, titolo hero (`useAdminHeroContent`) e chiavi i18n `admin.nav.invites` / `admin.invites.*` in it/en/fr/de.
+- `services/adminInvitesApi.ts` (`fetchAdminInvites`, `markInviteSent`, tipi `AdminInviteItem`) e `pages/AdminInvitesPage/inviteFilters.ts` (filtri e conteggi, con test vitest).
+- Pagina `AdminInvitesPage`: lista "Tutti gli inviti" con `FilterPills` (Da inviare / Inviati / Hanno risposto), `SearchBar` (ricerca senza spazi nel telefono), link "Invia su WhatsApp" / "Rimanda" con protezione dal doppio click, apertura della scheda dentro il click (anti popup-blocker) e `mark-sent`.
+- Backend: `mark-sent` non sovrascrive il primo `sent_at` quando si rimanda (coerente con "Inviato il"), più test.
+- Stile `AdminInvitesPage.scss` e piano `docs/superpowers/plans/2026-10-01-admin-invites-page.md`.
+
+**Da togliere o cambiare perché contraddice il flusso**
+- Sezione "Richieste in attesa" con "Approva e invia su WhatsApp" e "Rifiuta" (+ `AdminModal` di conferma), `fetchPendingInviteRequests`, `approveInviteRequest`, `rejectInviteRequest`.
+- Badge con il conteggio richieste (`usePendingInviteCount`, `INVITE_REQUESTS_CHANGED`, `site-header__badge`): le richieste vivono su Telegram, non c'è niente da contare.
+- Backend: le guardie 409/`with_for_update` su approve/reject diventano inutili quando gli endpoint spariscono (Fase 7).
+
+**Manca rispetto a questo piano**: tutto il modello a gruppi (colonne, saluto, form "Aggiungi persona", collegati nella card), import CSV, link Telegram con form precompilato, saluto nella busta, "rimanda al numero di chi ha chiesto".
+
+**Mossa consigliata**: partire da questo branch (non da `main`), così si tiene il lavoro fatto. La Fase 5 diventa "adattare la pagina esistente": togliere richieste e badge, mostrare i capofamiglia con i collegati, aggiungere il form e l'import.
 
 ## Cosa esiste già e si riusa
 
@@ -120,9 +148,12 @@ Anna,Neri,f,,,,+39 333 5555555,
 - `services/telegram_notify_service.py`: prima di inviare chiama `find_matches` e scrive "✅ Già in tabella: {nome} — gruppo di {capo}, invito inviato il … / non ancora inviato" oppure "🆕 Non è in tabella"; aggiunge il link `{SITE_URL}/admin/invites?add=1&first_name=…&last_name=…&phone=…`.
 - Resta in background e non fa mai fallire la richiesta.
 
-## Fase 5 — Frontend: pagina admin "Inviti"
+## Fase 5 — Frontend: pagina admin "Inviti" (si parte dal branch `feature/admin-invites-page`)
 
-- Rotta `invites` sotto `/admin` in `App.tsx`; voce "Inviti" in `ADMIN_ROUTES` (`AppTopBar.tsx`), in `AdminMobileNav`, chiave `admin.nav.invites` nelle 4 lingue.
+Nav, rotta, i18n di base, filtri, ricerca e invio/rimando esistono già nel branch: qui si tolgono richieste e badge e si aggiunge il resto.
+
+
+- Già nel branch: rotta, voce navbar/mobile, `admin.nav.invites`. Da togliere: badge richieste.
 - `services/adminInvitesApi.ts` (lista, crea, aggiorna, lookup, mark-sent, link WhatsApp per collegato, import CSV).
 - `pages/AdminInvitesPage/` (mobile-first, come `AdminContactsPage`):
   - `SearchBar` + `FilterPills` (Tutti / Da inviare / Inviati / Hanno risposto) con contatori.
@@ -141,12 +172,14 @@ Anna,Neri,f,,,,+39 333 5555555,
 
 ## Fase 7 — Pulizia (rimandabile)
 
+- Frontend: eliminare dal branch `usePendingInviteCount`, gli helper delle richieste in `adminInvitesApi.ts` e le chiavi i18n delle richieste.
+
 - Rimuovere dal backend `list_invite_requests`, `approve`, `reject`, `pending-count`, `ApproveInviteRequestResponse` e i relativi test; tenere `POST /invite-requests` e la tabella come archivio.
 - Aggiornare le specifiche e `docs/DEPLOYMENT.md` (`SITE_URL`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`).
 
 ## Test
 
-- **Backend** (pytest): saluto per famiglia, coppia (fidanzati), singolo m/f/vuoto, e gruppo misto (coniuge + fidanzato → famiglia); `max_party_guests` dal gruppo; creazione capo e collegato, rifiuto di catene (`head_id` che punta a un collegato); 409 sui duplicati (anche trovando una persona collegata) e `confirm_duplicate`; blocco di modifica e di aggiunta persone dopo l'invio; nessuna rotta DELETE; `lookup`; import CSV (capi e collegati in qualsiasi ordine, `head` mancante o ambiguo, duplicati, `;`, BOM, ripetizione dello stesso file); messaggio WhatsApp per i 3 saluti; link WhatsApp verso un collegato; Telegram con e senza match (client finto); accesso negato ai non admin.
+- **Backend** (pytest): saluto per famiglia, coppia (fidanzati), singolo m/f/vuoto, e rifiuto (422) di gruppi misti (coniuge o figlio insieme a fidanzato/a); `max_party_guests` dal gruppo; creazione capo e collegato, rifiuto di catene (`head_id` che punta a un collegato); 409 sui duplicati (anche trovando una persona collegata) e `confirm_duplicate`; blocco di modifica e di aggiunta persone dopo l'invio; nessuna rotta DELETE; `lookup`; import CSV (capi e collegati in qualsiasi ordine, `head` mancante o ambiguo, duplicati, `;`, BOM, ripetizione dello stesso file); messaggio WhatsApp per i 3 saluti; link WhatsApp verso un collegato; Telegram con e senza match (client finto); accesso negato ai non admin.
 - **Frontend** (vitest): validazione del form (capo/collegato, relazione obbligatoria se collegato); lettura dei parametri deep link; scelta chiave i18n per `greeting_kind`; apertura WhatsApp seguita da `mark-sent`.
 - **Manuale**: da telefono, link Telegram → login → form precompilato → salva → "Invia su WhatsApp".
 
@@ -171,5 +204,4 @@ Precompilazione RSVP al rientro (`GET /invites/{token}/rsvp` già pronto, fronte
 
 ## Da verificare con te
 
-- Se un gruppo ha sia moglie sia un fidanzato (caso raro), vince "famiglia". Va bene?
-- Il branch `feature/admin-invites-page` dell'altra sessione non è stato trovato su GitHub: se lo recuperi, confronto il suo contenuto con questo piano prima di scrivere codice.
+- Nulla di aperto: la regola "o sposati o non sposati" è confermata e validata in Fase 2.
