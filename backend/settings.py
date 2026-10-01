@@ -147,3 +147,18 @@ def is_rsvp_editable(now: Optional[datetime] = None) -> bool:
     if deadline.tzinfo is None:
         deadline = deadline.replace(tzinfo=ZoneInfo("Europe/Rome"))
     return moment < deadline
+
+
+def read_site_url() -> str:
+    """Public site origin used to build invite links (e.g. https://aot-wedding.it)."""
+    return os.getenv("SITE_URL", "http://localhost:5173").strip().rstrip("/")
+
+
+def read_telegram_bot_token() -> str:
+    """Bot token for new-invite-request notifications; empty disables them."""
+    return os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+
+
+def read_telegram_chat_id() -> str:
+    """Chat that receives the notifications; empty disables them."""
+    return os.getenv("TELEGRAM_CHAT_ID", "").strip()
