@@ -78,3 +78,8 @@
 .admin-invites__row .obw-portal-btn {
   text-decoration: none;
 }
+
+.admin-invites__row .obw-portal-btn[aria-disabled='true'] {
+  pointer-events: none;
+  opacity: 0.6;
+}

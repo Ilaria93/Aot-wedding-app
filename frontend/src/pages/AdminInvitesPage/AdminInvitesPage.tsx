@@ -230,7 +230,13 @@ export function AdminInvitesPage() {
                   target="_blank"
                   rel="noreferrer"
                   aria-disabled={sendingId === invite.id}
-                  onClick={() => void handleSent(invite)}>
+                  onClick={(event) => {
+                    if (sendingId !== null) {
+                      event.preventDefault();
+                      return;
+                    }
+                    void handleSent(invite);
+                  }}>
                   {invite.sent_at ? <RotateCw size={14} aria-hidden /> : <Send size={14} aria-hidden />}
                   {invite.sent_at ? t('admin.invites.resend') : t('admin.invites.send')}
                 </a>
