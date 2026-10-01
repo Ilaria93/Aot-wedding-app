@@ -10,6 +10,7 @@ from routes.admin_rsvp_table_route import router as admin_rsvp_table_router
 from routes.admin_tables_route import router as admin_tables_router
 from routes.guest_rsvp_route import router as guest_rsvp_router
 from routes.invite_link_route import router as invite_link_router
+from routes.invite_request_route import router as invite_request_router
 from routes.logistics_contact_route import router as logistics_contact_router
 from routes.photo_album_route import router as photo_album_router
 from routes.rsvp_confirmation_route import router as rsvp_router
@@ -56,3 +57,4 @@ app.include_router(admin_rsvp_table_router)
 app.include_router(admin_tables_router)
 app.include_router(invite_link_router)
 app.include_router(guest_rsvp_router)
+app.include_router(invite_request_router)
