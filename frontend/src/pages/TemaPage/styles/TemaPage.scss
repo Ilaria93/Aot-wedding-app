@@ -1,0 +1,87 @@
+/* Long-form copy inside the centred home cards. */
+.tema-page__note {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--obw-bone);
+  opacity: 0.8;
+}
+
+.tema-page__closing {
+  font-style: italic;
+}
+
+/* Ilaria's and Davide's favourite characters, side by side. */
+.tema-page__favourites {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--obw-space-sm);
+  width: 100%;
+}
+
+.tema-page__favourite {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  padding: var(--obw-space-md);
+  border: 1px solid var(--obw-border-dark);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--obw-void) 35%, transparent);
+}
+
+.tema-page__favourite .obw-kicker {
+  margin: 0;
+}
+
+.tema-page__favourite-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--obw-gold);
+}
+
+/* Symbols and glossary: term over description, left-aligned to read as a list. */
+.tema-page__terms {
+  display: grid;
+  gap: var(--obw-space-md);
+  width: 100%;
+  margin: 0;
+  text-align: left;
+}
+
+.tema-page__terms dt {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--obw-gold);
+}
+
+.tema-page__terms dd {
+  margin: 4px 0 0;
+  padding-left: 12px;
+  border-left: 1px solid var(--obw-border-dark);
+  line-height: 1.6;
+}
+
+@media (max-width: 640px) {
+  .tema-page__favourites {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Platform names in the watch guide are links, with their icon inline. */
+.tema-page__terms dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tema-page__terms dt a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

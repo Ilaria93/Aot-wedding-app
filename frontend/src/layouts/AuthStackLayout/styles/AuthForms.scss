@@ -35,11 +35,12 @@
   backdrop-filter: blur(18px);
 }
 
+/* Same lettering as the navbar's "Davide & Ilaria" (.obw-nav__brand-sub). */
 .obw-auth-header--portal .obw-auth-header__title {
-  color: color-mix(in srgb, var(--obw-bone) 72%, var(--obw-gold));
-  font-family: var(--font-mono);
+  color: color-mix(in srgb, var(--obw-gold) 75%, var(--obw-bone));
+  font-family: var(--font-sans);
   font-size: 11px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.2em;
 }
 
 .auth-form {

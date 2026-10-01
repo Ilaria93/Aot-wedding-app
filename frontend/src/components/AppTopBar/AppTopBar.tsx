@@ -1,5 +1,6 @@
 import { Contact, Home, Image as ImageIcon, LogOut, Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { ComponentType } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 
@@ -7,6 +8,7 @@ const SHOW_AFTER_SCROLL = 88;
 
 import { AppUserMenu } from '@/components/AppUserMenu';
 import { AppUserMenuContent } from '@/components/AppUserMenu/AppUserMenuContent';
+import { ScreenBackButton } from '@/components/ScreenBackButton';
 import { WEDDING_COUPLE_NAMES, WEDDING_OPERATION_NAME } from '@/constants/weddingEvent';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
@@ -184,7 +186,13 @@ export function AppTopBar() {
     }
 
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    // The page behind the open menu stays put (the menu only exists on mobile).
+    const root = document.documentElement;
+    root.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      root.style.overflow = '';
+    };
   }, [mobileNavOpen]);
 
   return (
@@ -192,6 +200,8 @@ export function AppTopBar() {
       className={`obw-nav site-header${isHome ? ' site-header--overlay' : ''}${isVisible ? ' site-header--visible' : ''}`}>
       <div className="obw-nav__inner site-header__inner">
         <div className="site-header__start">
+          {/* Theme page: a back control in the bar, like the login header's. */}
+          {location.pathname === '/tema' ? <ScreenBackButton fallback="/" /> : null}
           <Link className="obw-nav__brand site-header__brand" to="/">
             <span className="obw-nav__brand-title">{WEDDING_OPERATION_NAME}</span>
             <span className="obw-nav__brand-sub">{WEDDING_COUPLE_NAMES}</span>
@@ -240,6 +250,11 @@ export function AppTopBar() {
         </div>
       </div>
 
+      {/* Blurs the page behind the open menu; a tap on it closes the menu. In
+          body, not here: the header's backdrop-filter would trap a fixed child. */}
+      {mobileNavOpen
+        ? createPortal(<div className="site-header__scrim" aria-hidden onClick={closeMobileNav} />, document.body)
+        : null}
       {mobileNavOpen ? (
         <div
           id="site-header-mobile-panel"

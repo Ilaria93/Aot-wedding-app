@@ -15,11 +15,6 @@
   text-shadow: var(--obw-text-halo);
 }
 
-.landing-page .obw-btn:not(.obw-btn--secondary),
-.landing-page .obw-btn:not(.obw-btn--secondary) * {
-  text-shadow: none;
-}
-
 /* Sections after the hero drop their own tint and blur: the fixed veil below
    covers them all, so there are no seams. */
 /* Tighter rhythm than the default section padding (up to 120px each side,
@@ -41,7 +36,9 @@
    artwork and under every section; the veil comes first so petals stay sharp. */
 .landing-veil {
   position: fixed;
-  inset: 0;
+  /* Large viewport, like the artwork: no resize when the phone toolbar toggles. */
+  inset: 0 0 auto;
+  height: 100lvh;
   z-index: -1;
   opacity: var(--veil, 0);
   background: color-mix(in srgb, var(--obw-void) 45%, transparent);
@@ -111,5 +108,43 @@
   margin-top: var(--obw-space-sm);
   font-size: clamp(1.02rem, 1.6vw, 1.18rem);
   font-weight: 500;
+  color: var(--obw-bone);
+}
+
+/* Section title → gold rule: the title's bottom margin, the stack gap and the
+   rule's top margin added up to ~52px; keep just a small step between them. */
+.landing-page .obw-display--lg:has(+ .obw-rule) {
+  margin-bottom: 0;
+}
+
+.landing-page .obw-display--lg + .obw-rule {
+  margin-top: 4px;
+}
+
+/* A title straight in the section (FAQ) has no flex gap to add the rest. */
+.landing-page .obw-section > .obw-display--lg + .obw-rule {
+  margin-top: 16px;
+}
+
+/* Full white copy: the design system's body text on dark cards is 72% bone. */
+.landing-page .obw-card .obw-body {
+  color: var(--obw-bone);
+}
+
+/* Every button on the landing (and the theme page) shares one lilac, the same
+   as the navbar's active pill (petal #db7fb0), deeper on hover, and the login
+   button's 8px corners. */
+.landing-page .obw-btn,
+.landing-page .action-button {
+  border-radius: 8px;
+  border-color: color-mix(in srgb, #db7fb0 70%, transparent);
+  background: color-mix(in srgb, #db7fb0 38%, transparent);
+  color: var(--obw-bone);
+}
+
+.landing-page .obw-btn:hover,
+.landing-page .action-button:hover {
+  border-color: #db7fb0;
+  background: color-mix(in srgb, #db7fb0 60%, transparent);
   color: var(--obw-bone);
 }

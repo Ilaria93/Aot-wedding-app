@@ -19,7 +19,7 @@ const SOCIAL_BRAND_COLORS = {
   tiktok: 'var(--obw-void)',
 } as const;
 
-function buildWhatsappUrl(phone: string) {
+export function buildWhatsappUrl(phone: string) {
   const normalized = phone.replace(/[^\d+]/g, '');
   return `https://wa.me/${normalized.replace(/^\+/, '')}`;
 }

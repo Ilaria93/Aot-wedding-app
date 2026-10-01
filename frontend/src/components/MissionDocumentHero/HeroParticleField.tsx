@@ -140,8 +140,11 @@ export function HeroParticleField() {
     start();
 
     const handleResize = () => {
+      // Phones fire resize when the toolbar shows/hides on scroll: height-only
+      // changes keep the petals where they are instead of reshuffling them.
+      const widthChanged = window.innerWidth !== width;
       resize();
-      seed();
+      if (widthChanged) seed();
       start();
     };
     window.addEventListener('resize', handleResize);
