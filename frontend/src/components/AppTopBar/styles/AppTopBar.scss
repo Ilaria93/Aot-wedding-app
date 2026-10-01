@@ -13,7 +13,7 @@
   width: 40px;
   height: 40px;
   border: 1px solid var(--obw-border-dark);
-  border-radius: var(--obw-radius-sm);
+  border-radius: 8px;
   background: color-mix(in srgb, var(--obw-bone) 6%, transparent);
   color: var(--obw-bone);
   cursor: pointer;
@@ -25,30 +25,84 @@
 
 .site-header__menu-btn:hover,
 .site-header__menu-btn.is-open {
-  border-color: color-mix(in srgb, var(--obw-gold) 55%, transparent);
-  background: color-mix(in srgb, var(--obw-gold) 12%, transparent);
+  border-color: color-mix(in srgb, #db7fb0 70%, transparent);
+  background: color-mix(in srgb, #db7fb0 38%, transparent);
 }
 
+/* Mobile menu: a dark card like the landing's (14px corners, blur over the
+   artwork), lilac pills like the desktop bar, everything on one 14px inset. */
 .site-header__mobile-panel {
   display: none;
-  padding: 0 var(--obw-space-md) var(--obw-space-md);
-  border-top: 1px solid var(--obw-border-dark);
-  background: var(--obw-void);
+  margin: 0 12px 12px;
+  padding: 8px;
+  border: 1px solid var(--obw-border-dark);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--obw-void) 88%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--obw-shadow-dark);
 }
 
 .site-header__mobile-link {
   display: block;
-  padding: 14px 4px;
-  border-bottom: 1px solid var(--obw-border-dark);
-  color: color-mix(in srgb, var(--obw-bone) 78%, var(--obw-stone));
-  font-size: 0.9rem;
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: color-mix(in srgb, var(--obw-bone) 82%, transparent);
+  font-size: 0.95rem;
   font-weight: 500;
   text-decoration: none;
-  transition: color var(--obw-duration-fast) ease;
+  transition:
+    background var(--obw-duration-fast) ease,
+    color var(--obw-duration-fast) ease;
+}
+
+.site-header__mobile-link:hover {
+  background: color-mix(in srgb, #db7fb0 20%, transparent);
+  color: var(--obw-bone);
 }
 
 .site-header__mobile-link.is-active {
-  color: var(--obw-gold);
+  background: color-mix(in srgb, #db7fb0 38%, transparent);
+  color: var(--obw-bone);
+}
+
+/* Account and language blocks reuse the desktop dropdown's markup; restyle it
+   here only, so the dropdown itself keeps its own look. */
+.site-header__mobile-panel .app-user-menu__section {
+  margin-top: 8px;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--obw-border-dark);
+}
+
+.site-header__mobile-panel .app-user-menu__section-label {
+  padding-inline: 14px;
+  color: color-mix(in srgb, var(--obw-gold) 75%, var(--obw-bone));
+  font-family: var(--font-sans);
+  letter-spacing: 0.2em;
+}
+
+.site-header__mobile-panel .app-user-menu__action {
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: color-mix(in srgb, var(--obw-bone) 82%, transparent);
+}
+
+.site-header__mobile-panel .app-user-menu__action:hover,
+.site-header__mobile-panel .app-user-menu__action:focus-visible {
+  background: color-mix(in srgb, #db7fb0 20%, transparent);
+  color: var(--obw-bone);
+}
+
+.site-header__mobile-panel .language-switcher__chip {
+  border-color: var(--obw-border-dark);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--obw-bone);
+}
+
+.site-header__mobile-panel .language-switcher__chip.is-active {
+  border-color: color-mix(in srgb, #db7fb0 70%, transparent);
+  background: color-mix(in srgb, #db7fb0 38%, transparent);
 }
 
 .site-header__mobile-link--icon {
@@ -161,7 +215,7 @@
 
   .site-header__mobile-panel {
     display: grid;
-    gap: 0;
+    gap: 2px;
   }
 }
 
