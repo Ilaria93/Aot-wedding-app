@@ -1,0 +1,54 @@
+.admin-invites__section {
+  display: grid;
+  gap: var(--obw-space-md);
+  margin-bottom: var(--obw-space-lg);
+}
+
+.admin-invites__section-title {
+  margin: 0;
+}
+
+.admin-invites__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--obw-space-md);
+}
+
+.admin-invites__card {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+
+.admin-invites__name {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--obw-bone);
+}
+
+.admin-invites__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 0.85rem;
+  color: color-mix(in srgb, var(--obw-bone) 72%, var(--obw-stone));
+}
+
+/* "Already has an invite": approving re-sends that link instead of a new one. */
+.admin-invites__warning {
+  margin: 4px 0 0;
+  padding: 6px 10px;
+  border-left: 2px solid var(--obw-gold);
+  font-size: 0.85rem;
+  color: var(--obw-gold);
+}
+
+.admin-invites__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: var(--obw-space-sm);
+}
