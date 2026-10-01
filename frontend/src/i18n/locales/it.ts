@@ -352,6 +352,8 @@ export const it = {
     subtitle: 'Inserisci il codice segreto per accedere come sposi.',
     sectionLabel: 'Chi sei?',
     secretLabel: 'Codice segreto',
+    showSecret: 'Mostra codice',
+    hideSecret: 'Nascondi codice',
     rememberMe: 'Resta connesso',
     submitLabel: 'Accedi',
     submitLoading: 'Accesso in corso...',

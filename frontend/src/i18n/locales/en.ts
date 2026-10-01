@@ -352,6 +352,8 @@ export const en = {
     subtitle: 'Enter the secret code to sign in as the couple.',
     sectionLabel: 'Who are you?',
     secretLabel: 'Secret code',
+    showSecret: 'Show code',
+    hideSecret: 'Hide code',
     rememberMe: 'Keep me signed in',
     submitLabel: 'Log in',
     submitLoading: 'Logging in...',
