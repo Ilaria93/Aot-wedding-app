@@ -1,4 +1,3 @@
-import { HeroParticleField } from '@/components/MissionDocumentHero/HeroParticleField';
 import { MissionDocumentSeal } from '@/components/MissionDocumentHero/MissionDocumentSeal';
 import {
   formatWeddingHeroDate,
@@ -20,7 +19,6 @@ export function MissionDocumentHero() {
       <div className="obw-container">
         <div className="mission-hero">
           <div className="mission-hero__band">
-            <HeroParticleField />
             <div className="mission-hero__band-content">
               <h1 id="mission-hero-title" className="mission-hero__title">
                 {WEDDING_COUPLE_NAMES}

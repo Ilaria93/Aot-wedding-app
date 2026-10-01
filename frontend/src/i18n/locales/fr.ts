@@ -23,8 +23,6 @@ export const fr = {
     tabs: {
       home: 'Accueil',
       admin: 'Admin',
-      album: 'Album',
-      travel: 'Contacts',
       tema: 'Le Thème',
       profile: 'Profil',
     },
@@ -126,17 +124,108 @@ export const fr = {
       groomCaption: 'Le Marié',
       brideCaption: 'La Mariée',
       heading: 'Notre Histoire',
-      paragraphOne:
-        'Ilaria et Davide créent une page qui raconte leur journée de manière plus intime, élégante et personnelle.',
-      paragraphTwo:
-        'L’idée est de réunir le langage d’un site de mariage éditorial avec une navigation moderne, un RSVP numérique et des informations organisées au même endroit.',
-      temaLink: 'Découvrir le thème →',
+      // PROVISIONAL: placeholder dossier answers, to be replaced with the couple's own.
+      dossier: {
+        title: "Dossier d'enrôlement",
+        labels: {
+          codename: 'Nom de code',
+          enlisted: 'Enrôlement',
+          rank: 'Grade',
+          specialty: 'Spécialité',
+          weakness: 'Point faible',
+          weapon: 'Arme préférée',
+        },
+        davide: {
+          codename: 'Le Guitariste',
+          enlisted: '2011',
+          rank: 'Commandant des plans de voyage',
+          specialty: 'Riffs improvisés',
+          weakness: 'Le réveil du matin',
+          weapon: 'Guitare électrique',
+          quote: '« J’ai déjà réservé. »',
+        },
+        ilaria: {
+          codename: 'La Bassiste',
+          enlisted: '2011',
+          rank: 'Capitaine des playlists',
+          specialty: "Organiser l'impossible",
+          weakness: 'Les petites bêtes toutes mignonnes',
+          weapon: 'Basse à quatre cordes',
+          quote: '« Encore cinq minutes. »',
+        },
+      },
+      reportLabel: 'Rapport n°',
+      pendingLabel: 'Rapport en approche',
+      photos: {
+        crowd: 'Au premier rang',
+        stage: 'Sur scène',
+        lineup: 'La formation',
+        rehearsal: 'En salle de répétition',
+        bassline: 'Basse en première ligne',
+        bandmates: 'Au temps du groupe',
+        tavern: 'Ravitaillement à la taverne',
+        lookout: 'Poste de guet sur le lac',
+        secret: 'Mission secrète',
+        paris: 'Reconnaissance à Paris',
+        band: 'Le groupe, 2011',
+        vader: "Rencontre avec l'ennemi",
+        boat: 'Navigation à deux',
+        assisi: 'Reconnaissance à Assise',
+        bridge: 'Pas un pas en arrière',
+        sunset: 'Trêve au coucher du soleil',
+        fireplace: 'Rapport en grande tenue',
+        moto: 'Reconnaissance à deux roues',
+        paestum: 'Exploration au-delà des murs',
+        costumes: 'Infiltrés sous couverture',
+        procida: 'Avant-poste en bord de mer',
+        kayak: 'Patrouille sur le lac',
+        silly: 'Moral des troupes : au top',
+        snow: 'Au-delà des murs de glace',
+        arch: 'Répétition générale',
+      },
+      pending: {
+        dog: "L'escouade au complet",
+        house: 'Mur après mur',
+        monument: 'Monument Valley',
+      },
+      stages: {
+        contact: {
+          date: '2011',
+          title: 'Premier contact',
+          body:
+            "Un groupe cherchait un guitariste et un batteur, et Ilaria jouait de la basse. Le guitariste, Davide, s'est présenté avec mouche et rouflaquettes : elle ne l'avait même pas remarqué. Pourtant, ils sont toujours restés en contact, sans jamais vraiment se perdre.",
+        },
+        enlist: {
+          date: '2019',
+          title: 'Enrôlement',
+          body:
+            'Il y a sept ans, leurs chemins se sont enfin rejoints. Depuis ce jour, la mission a un équipage de deux.',
+        },
+        battles: {
+          date: '2020 – 2025',
+          title: 'Les batailles',
+          body:
+            "De vraies batailles ont suivi : un chien, des changements de travail, des disputes, le covid et une cohabitation forcée, une maison à reconquérir mur après mur, deux ans de repli derrière les lignes de leurs parents. Mais le Bataillon d'exploration n'abandonne jamais.",
+        },
+        proposal: {
+          date: 'Octobre 2025',
+          title: 'La demande',
+          body:
+            'À Monument Valley, Davide a posé un genou à terre. Vous connaissez la réponse.',
+        },
+        final: {
+          date: '31 mai 2027',
+          title: "L'ultime mission",
+          body:
+            'Il reste une dernière expédition : se dire oui. Shinzou wo sasageyo ! (Offrez votre cœur !)',
+        },
+      },
     },
     ceremony: {
       heading: 'Participez à leur cérémonie intime',
       city: 'Ravenne',
       venue: 'Lido Adriano · Amarissimo Cala Celeste',
-      body: 'Cérémonie en bord de mer avec vue sur la côte ravennate. Nous avons hâte de célébrer ce jour avec vous.',
+      body: 'Cérémonie en bord de mer avec vue sur la côte romagnole. Nous avons hâte de célébrer ce jour avec vous.',
       artworkPlaceholder: 'Photo principale / illustration du couple',
     },
     rsvp: {
@@ -169,17 +258,16 @@ export const fr = {
       copyIban: "Copier l'IBAN",
       copiedIban: 'IBAN copié',
     },
+    themeTeaser: {
+      cta: 'En savoir plus',
+    },
     gallery: {
-      eyebrow: 'Nos souvenirs',
-      title: 'Notre galerie',
-      intro: 'Un trésor de moments partagés : jetez un œil aux photos envoyées par vos proches.',
+      title: 'Galerie',
       loading: 'Chargement des photos...',
-      empty: 'Pas encore de photos. Les premières arrivent bientôt !',
       error: 'Impossible de charger les photos. Réessayez plus tard.',
       retry: 'Réessayer',
-      ctaTitle: 'Envie de revivre ces moments ?',
-      ctaBody: 'Téléversez vos photos de notre journée dans la galerie partagée.',
-      ctaButton: 'Ouvrir la galerie',
+      slotTitle: 'Photos des invités',
+      slotAction: 'Ajoutez la vôtre',
     },
     devTools: {
       title: 'Zone RSVP et outils',
@@ -452,13 +540,13 @@ export const fr = {
       'Des ailes de la liberté, un carnet de mission et deux calopsittes qui ont conquis nos cœurs : voilà pourquoi tout ici parle d’Attack on Titan.',
     crestTitle: 'Le blason',
     crestBody:
-      'Les ailes du Bataillon d’Exploration entourent nos deux calopsittes : notre petite expédition au-delà des murs, du premier rendez-vous à l’autel.',
+      "Les ailes du Bataillon d’Exploration entourent deux calopsittes : c’est nous, les Pirulini, dans notre petite expédition au-delà des murs, du premier rendez-vous à l’autel.",
     styleTitle: 'Le style',
     styleBody:
       'Chaque page de ce site se lit comme un document de mission — badges, jargon militaire et cartes plutôt que les formules habituelles de mariage — car Attack on Titan est la série qui nous a fait aimer aussi cela.',
     missionTitle: 'La mission',
     missionBody:
-      'Le nom « Pirulini » vient de Pirulì, un créateur que nous regardions ensemble : nos calopsittes en ont tiré le surnom « Pirù », et « Opération Pirulini » est devenu le nom de code du jour du oui — une seule bataille à gagner ensemble, entourés des personnes que nous aimons.',
+      "Le nom vient de Pirulì, une calopsitte dont nous regardions sans cesse les vidéos : à force, nous avons commencé à nous appeler « Pirulini », et « Opération Pirulini » est devenu le nom de code du jour du oui — une seule bataille à gagner ensemble, entourés des personnes que nous aimons.",
     watchTitle: 'Où la regarder',
     watchIntro:
       'Si vous voulez découvrir (ou revoir) la série avant le mariage, voici où la trouver légalement.',

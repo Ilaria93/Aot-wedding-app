@@ -23,8 +23,6 @@ export const de = {
     tabs: {
       home: 'Start',
       admin: 'Admin',
-      album: 'Album',
-      travel: 'Kontakte',
       tema: 'Das Thema',
       profile: 'Profil',
     },
@@ -126,17 +124,108 @@ export const de = {
       groomCaption: 'Der Bräutigam',
       brideCaption: 'Die Braut',
       heading: 'Unsere Geschichte',
-      paragraphOne:
-        'Ilaria und Davide gestalten eine Seite, die ihren Tag auf intimere, elegantere und persönlichere Weise erzählt.',
-      paragraphTwo:
-        'Die Idee ist, die Sprache einer redaktionellen Hochzeitsseite mit moderner Navigation, digitalem RSVP und organisierten Informationen an einem Ort zu verbinden.',
-      temaLink: 'Entdecke das Thema →',
+      // PROVISIONAL: placeholder dossier answers, to be replaced with the couple's own.
+      dossier: {
+        title: 'Rekrutierungsakte',
+        labels: {
+          codename: 'Codename',
+          enlisted: 'Rekrutiert',
+          rank: 'Rang',
+          specialty: 'Spezialgebiet',
+          weakness: 'Schwachstelle',
+          weapon: 'Lieblingswaffe',
+        },
+        davide: {
+          codename: 'Der Gitarrist',
+          enlisted: '2011',
+          rank: 'Kommandant der Reisepläne',
+          specialty: 'Improvisierte Riffs',
+          weakness: 'Der Wecker am Morgen',
+          weapon: 'E-Gitarre',
+          quote: '„Ich habe schon gebucht.“',
+        },
+        ilaria: {
+          codename: 'Die Bassistin',
+          enlisted: '2011',
+          rank: 'Hauptmann der Playlists',
+          specialty: 'Das Unmögliche organisieren',
+          weakness: 'Kuschelige kleine Tiere',
+          weapon: 'Viersaitiger Bass',
+          quote: '„Noch fünf Minuten.“',
+        },
+      },
+      reportLabel: 'Bericht Nr.',
+      pendingLabel: 'Bericht folgt',
+      photos: {
+        crowd: 'In der ersten Reihe',
+        stage: 'Auf der Bühne',
+        lineup: 'Die Besetzung',
+        rehearsal: 'Im Proberaum',
+        bassline: 'Bass an vorderster Front',
+        bandmates: 'Zur Zeit der Band',
+        tavern: 'Nachschub in der Taverne',
+        lookout: 'Ausguck über dem See',
+        secret: 'Geheime Mission',
+        paris: 'Erkundung in Paris',
+        band: 'Die Band, 2011',
+        vader: 'Begegnung mit dem Feind',
+        boat: 'Zu zweit auf See',
+        assisi: 'Erkundung in Assisi',
+        bridge: 'Kein Schritt zurück',
+        sunset: 'Waffenruhe bei Sonnenuntergang',
+        fireplace: 'Bericht in Galauniform',
+        moto: 'Erkundung auf zwei Rädern',
+        paestum: 'Erkundung jenseits der Mauern',
+        costumes: 'Undercover eingeschleust',
+        procida: 'Außenposten am Meer',
+        kayak: 'Seepatrouille',
+        silly: 'Moral der Truppe: bestens',
+        snow: 'Jenseits der Eismauern',
+        arch: 'Generalprobe',
+      },
+      pending: {
+        dog: 'Die vollständige Truppe',
+        house: 'Mauer für Mauer',
+        monument: 'Monument Valley',
+      },
+      stages: {
+        contact: {
+          date: '2011',
+          title: 'Erster Kontakt',
+          body:
+            'Eine Band suchte einen Gitarristen und einen Schlagzeuger, und Ilaria spielte Bass. Der Gitarrist, Davide, kam mit Fliege und Koteletten: Sie bemerkte ihn nicht einmal. Trotzdem sind die beiden immer in Kontakt geblieben und haben sich nie wirklich verloren.',
+        },
+        enlist: {
+          date: '2019',
+          title: 'Rekrutierung',
+          body:
+            'Vor sieben Jahren haben sich ihre Wege endlich vereint. Seit diesem Tag hat die Mission eine Crew aus zwei.',
+        },
+        battles: {
+          date: '2020 – 2025',
+          title: 'Die Schlachten',
+          body:
+            'Es folgten echte Schlachten: ein Hund, Jobwechsel, Streit, Corona und ein erzwungenes Zusammenleben, ein Haus, das Mauer für Mauer zurückerobert werden musste, zwei Jahre Rückzug hinter die Linien der Eltern. Doch der Aufklärungstrupp gibt niemals auf.',
+        },
+        proposal: {
+          date: 'Oktober 2025',
+          title: 'Der Antrag',
+          body:
+            'Im Monument Valley ging Davide auf die Knie. Die Antwort kennt ihr.',
+        },
+        final: {
+          date: '31. Mai 2027',
+          title: 'Die letzte Mission',
+          body:
+            'Eine letzte Expedition bleibt: Ja zueinander sagen. Shinzou wo sasageyo! (Opfert eure Herzen!)',
+        },
+      },
     },
     ceremony: {
       heading: 'Nehmt an ihrer intimen Zeremonie teil',
       city: 'Ravenna',
       venue: 'Lido Adriano · Amarissimo Cala Celeste',
-      body: 'Zeremonie am Meer mit Blick auf die Küste bei Ravenna. Wir freuen uns, diesen Tag mit euch zu feiern.',
+      body: 'Zeremonie am Meer mit Blick auf die Küste der Romagna. Wir freuen uns, diesen Tag mit euch zu feiern.',
       artworkPlaceholder: 'Hero-Foto / Artwork des Paares',
     },
     rsvp: {
@@ -169,17 +258,16 @@ export const de = {
       copyIban: 'IBAN kopieren',
       copiedIban: 'IBAN kopiert',
     },
+    themeTeaser: {
+      cta: 'Mehr erfahren',
+    },
     gallery: {
-      eyebrow: 'Unsere Erinnerungen',
-      title: 'Unsere Galerie',
-      intro: 'Ein Schatz geteilter Momente: schauen Sie sich die Fotos an, die Freunde und Familie geschickt haben.',
+      title: 'Galerie',
       loading: 'Fotos werden geladen...',
-      empty: 'Noch keine Fotos. Die ersten kommen bald!',
       error: 'Fotos konnten nicht geladen werden. Bitte versuchen Sie es später erneut.',
       retry: 'Erneut versuchen',
-      ctaTitle: 'Die Momente noch einmal erleben?',
-      ctaBody: 'Laden Sie Ihre Fotos von unserem Tag in die gemeinsame Galerie hoch.',
-      ctaButton: 'Galerie öffnen',
+      slotTitle: 'Gästefotos',
+      slotAction: 'Eigenes hochladen',
     },
     devTools: {
       title: 'RSVP-Bereich und Tools',
@@ -453,13 +541,13 @@ export const de = {
       'Flügel der Freiheit, ein Missionsprotokoll und zwei Nymphensittiche, die unsere Herzen erobert haben — deshalb spricht hier alles von Attack on Titan.',
     crestTitle: 'Das Wappen',
     crestBody:
-      'Die Flügel des Aufklärungstrupps umschließen unsere beiden Nymphensittiche: unsere kleine Expedition jenseits der Mauern, vom ersten Date bis zum Altar.',
+      "Die Flügel des Aufklärungstrupps umschließen zwei Nymphensittiche: das sind wir, die Pirulini, auf unserer kleinen Expedition jenseits der Mauern, vom ersten Date bis zum Altar.",
     styleTitle: 'Der Stil',
     styleBody:
       'Jede Seite dieser Website liest sich wie ein Missionsdokument — Abzeichen, militärischer Jargon und Karten statt der üblichen Hochzeitsformulierungen — denn Attack on Titan ist die Serie, die uns auch dafür begeistert hat.',
     missionTitle: 'Die Mission',
     missionBody:
-      'Der Name "Pirulini" stammt von Pirulì, einem Creator, den wir gemeinsam geschaut haben: daher der Spitzname "Pirù" für unsere Nymphensittiche, und "Operation Pirulini" wurde zum Codenamen für den großen Tag — eine einzige Schlacht, die wir gemeinsam gewinnen, umgeben von den Menschen, die wir lieben.',
+      'Der Name stammt von Pirulì, einem Nymphensittich, dessen Videos wir ständig geschaut haben: So fingen wir an, uns gegenseitig "Pirulini" zu nennen, und "Operation Pirulini" wurde zum Codenamen für den großen Tag — eine einzige Schlacht, die wir gemeinsam gewinnen, umgeben von den Menschen, die wir lieben.',
     watchTitle: 'Wo man sie sehen kann',
     watchIntro:
       'Wenn du die Serie vor der Hochzeit entdecken (oder noch einmal ansehen) möchtest, findest du sie hier auf legalem Weg.',

@@ -46,16 +46,18 @@ export function HoneymoonGiftSection() {
           <p className="obw-kicker">{t('landing.gift.eyebrow')}</p>
           <h2 className="obw-display obw-display--lg">{t('landing.gift.title')}</h2>
           <div className="obw-rule" aria-hidden="true" />
-          <p className="obw-body">{t('landing.gift.intro')}</p>
-          <p className="obw-body">{t('landing.gift.gratitude')}</p>
-          <div className="obw-tag-row obw-tag-row--start">
-            <span className="obw-tag obw-tag--on-paper">
-              <Plane size={14} aria-hidden />
-              {t('landing.gift.eyebrow')}
-            </span>
-            <span className="obw-tag obw-tag--on-paper">
-              <Heart size={14} aria-hidden />
-            </span>
+          <div className="obw-card obw-card--dark">
+            <p className="obw-body">{t('landing.gift.intro')}</p>
+            <p className="obw-body">{t('landing.gift.gratitude')}</p>
+            <div className="obw-tag-row obw-tag-row--start">
+              <span className="obw-tag obw-tag--on-paper">
+                <Plane size={14} aria-hidden />
+                {t('landing.gift.eyebrow')}
+              </span>
+              <span className="obw-tag obw-tag--on-paper">
+                <Heart size={14} aria-hidden />
+              </span>
+            </div>
           </div>
         </div>
 

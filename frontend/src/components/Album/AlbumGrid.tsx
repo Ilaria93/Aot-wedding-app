@@ -1,7 +1,6 @@
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useState } from 'react';
 
+import { Lightbox } from '@/components/Lightbox';
 import { isVideoMimeType, type PublicPhotoAlbumItem } from '@/services/photoAlbumApi';
 import { useI18n } from '@/contexts/I18nContext';
 import { formatDateByLocale } from '@/types/formatters';
@@ -10,29 +9,17 @@ type AlbumGridProps = {
   photos: PublicPhotoAlbumItem[];
 };
 
-const SWIPE_THRESHOLD_PX = 50;
-
 /** Grid of public wedding photos, opening a swipeable lightbox on click. */
 export function AlbumGrid({ photos }: AlbumGridProps) {
   const { locale, t } = useI18n();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const touchStartX = useRef<number | null>(null);
 
-  const showPrev = () => setOpenIndex((current) => (current === null ? null : (current - 1 + photos.length) % photos.length));
-  const showNext = () => setOpenIndex((current) => (current === null ? null : (current + 1) % photos.length));
-
-  useEffect(() => {
-    if (openIndex === null) return;
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') setOpenIndex(null);
-      if (event.key === 'ArrowLeft') showPrev();
-      if (event.key === 'ArrowRight') showNext();
-    }
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [openIndex, photos.length]);
-
-  const openPhoto = openIndex !== null ? photos[openIndex] : null;
+  const lightboxItems = photos.map((photo) => ({
+    src: photo.image_url,
+    alt: photo.caption || photo.uploader_name,
+    caption: photo.caption ? `${photo.uploader_name} — "${photo.caption}"` : photo.uploader_name,
+    isVideo: isVideoMimeType(photo.mime_type),
+  }));
 
   return (
     <div className="obw-card">
@@ -65,69 +52,7 @@ export function AlbumGrid({ photos }: AlbumGridProps) {
         ))
       )}
 
-      {openPhoto
-        ? createPortal(
-            <div className="album-lightbox-backdrop" onClick={() => setOpenIndex(null)}>
-              <div
-                className="album-lightbox"
-                onClick={(event) => event.stopPropagation()}
-                onTouchStart={(event) => {
-                  touchStartX.current = event.touches[0].clientX;
-                }}
-                onTouchEnd={(event) => {
-                  if (touchStartX.current === null) return;
-                  const deltaX = event.changedTouches[0].clientX - touchStartX.current;
-                  touchStartX.current = null;
-                  if (deltaX > SWIPE_THRESHOLD_PX) showPrev();
-                  else if (deltaX < -SWIPE_THRESHOLD_PX) showNext();
-                }}>
-                <button
-                  type="button"
-                  className="album-lightbox__close"
-                  aria-label={t('common.cancel')}
-                  onClick={() => setOpenIndex(null)}>
-                  <X size={18} aria-hidden />
-                </button>
-
-                {photos.length > 1 ? (
-                  <button
-                    type="button"
-                    className="album-lightbox__nav album-lightbox__nav--prev"
-                    aria-label={t('album.previousMedia')}
-                    onClick={showPrev}>
-                    <ChevronLeft size={22} aria-hidden />
-                  </button>
-                ) : null}
-
-                {isVideoMimeType(openPhoto.mime_type) ? (
-                  <video className="album-lightbox__media" src={openPhoto.image_url} controls autoPlay />
-                ) : (
-                  <img
-                    className="album-lightbox__media"
-                    src={openPhoto.image_url}
-                    alt={openPhoto.caption || openPhoto.uploader_name}
-                  />
-                )}
-
-                {photos.length > 1 ? (
-                  <button
-                    type="button"
-                    className="album-lightbox__nav album-lightbox__nav--next"
-                    aria-label={t('album.nextMedia')}
-                    onClick={showNext}>
-                    <ChevronRight size={22} aria-hidden />
-                  </button>
-                ) : null}
-
-                <p className="album-lightbox__caption">
-                  {openPhoto.uploader_name}
-                  {openPhoto.caption ? ` — "${openPhoto.caption}"` : ''}
-                </p>
-              </div>
-            </div>,
-            document.body,
-          )
-        : null}
+      <Lightbox items={lightboxItems} openIndex={openIndex} onChange={setOpenIndex} />
     </div>
   );
 }

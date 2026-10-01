@@ -13,70 +13,452 @@
   text-align: center;
 }
 
-.landing-story__head .mission-hero__seal {
-  width: clamp(80px, 8.5vw, 112px);
-  margin: 0;
-  opacity: 0.9;
-}
-
 .landing-story__head .obw-display {
   margin: 0;
 }
 
-/* Two portraits side by side, collapsing to one column on narrow screens. */
-.landing-story__portraits {
+/* Recruit panels, the forked first report and the timeline share one
+   width, so each recruit's column centre (25% / 75%) is where their line runs. */
+.landing-story__journey {
+  --journey-line: color-mix(in srgb, var(--obw-gold) 80%, transparent);
+  --merge-height: clamp(64px, 8vw, 110px);
+
+  width: 100%;
+  max-width: 1040px;
+}
+
+/* The two recruit panels, side by side. No column gap, so each column's
+   centre (25% / 75%) is where that recruit's line runs down from. */
+.landing-story__recruits {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: clamp(1.75rem, 4vw, 3.5rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   justify-items: center;
-  width: 100%;
 }
 
-/* Both portraits share one width and a fixed ratio, so the two frames always
-   match in size whatever the source images measure. */
-.landing-story__portrait {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  width: 100%;
-  max-width: clamp(190px, 24vw, 280px);
-  margin: 0;
+.landing-story__recruit {
+  box-sizing: border-box;
+  width: calc(100% - clamp(1.5rem, 4vw, 3rem));
 }
 
-/* Hairline mat around the artwork, like a mounted print. */
-.landing-story__portrait-frame {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  border: 1px solid color-mix(in srgb, var(--obw-bone) 35%, transparent);
-  background: color-mix(in srgb, var(--obw-bone) 6%, transparent);
-}
-
-/* Absolutely placed inside the mat: in normal flow a taller source image
-   stretched its own frame and the two portraits stopped matching. */
-.landing-story__portrait-frame img {
-  position: absolute;
-  inset: 10px;
+/* Portraits are tall: keep the face in the card's wide cover crop. */
+.landing-story__recruit-portrait {
   display: block;
-  width: calc(100% - 20px);
-  height: calc(100% - 20px);
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
   object-fit: cover;
-  object-position: top center;
+  object-position: 50% 18%;
 }
 
-.landing-story__portrait-caption {
+.landing-story__dossier-fields {
+  display: grid;
+  gap: 8px;
+  margin: var(--obw-space-xs) 0 0;
+}
+
+.landing-story__dossier-field {
+  display: grid;
+  grid-template-columns: minmax(7.5rem, 40%) 1fr;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.landing-story__dossier-field dt {
   font-family: var(--font-sans);
-  font-size: clamp(0.72rem, 1.4vw, 0.9rem);
-  font-weight: 400;
-  letter-spacing: 0.28em;
-  padding-left: 0.28em;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  line-height: 1.2;
+  color: color-mix(in srgb, var(--obw-gold) 85%, var(--obw-bone));
+}
+
+.landing-story__dossier-field dd {
+  margin: 0;
+  font-family: var(--font-editorial);
+  font-size: clamp(0.9rem, 1.2vw, 0.98rem);
+  font-weight: 500;
   color: var(--obw-bone);
 }
 
-.landing-story__copy {
-  max-width: 680px;
+.landing-story__dossier-quote {
+  margin: 14px 0 0;
+  /* Serif italic: Geist has no italic cut. */
+  font-family: var(--font-serif);
+  font-size: clamp(1.02rem, 1.4vw, 1.15rem);
+  font-style: italic;
   text-align: center;
+  color: color-mix(in srgb, var(--obw-bone) 85%, transparent);
+}
+
+/* Report 001 sits between the two recruits' separate lines, which then curve
+   together (SVG) into the single timeline line where report 002 begins. */
+.landing-story__fork {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: clamp(1.5rem, 3vw, 2.25rem) 0 var(--merge-height);
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 600ms ease,
+    transform 600ms var(--obw-ease-out);
+}
+
+.landing-story__fork.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.landing-story__fork::before,
+.landing-story__fork::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: var(--merge-height);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--journey-line);
+  box-shadow: 0 0 6px rgb(0 0 0 / 45%);
+}
+
+.landing-story__fork::before {
+  left: 25%;
+}
+
+.landing-story__fork::after {
+  left: 75%;
+}
+
+.landing-story__fork .landing-story__stage-card {
+  width: calc(50% - clamp(2rem, 4vw, 3rem));
+}
+
+/* Desktop reads the two lines instead; the dot is for the phone layout. */
+.landing-story__fork .landing-story__stage-dot {
+  display: none;
+}
+
+.landing-story__merge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: var(--merge-height);
+  overflow: visible;
+}
+
+/* Drawn in once the fork scrolls into view. */
+.landing-story__merge path {
+  fill: none;
+  stroke: var(--journey-line);
+  stroke-width: 2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  vector-effect: non-scaling-stroke;
+  transition: stroke-dashoffset 1200ms var(--obw-ease-out) 300ms;
+}
+
+.landing-story__fork.is-visible .landing-story__merge path {
+  stroke-dashoffset: 0;
+}
+
+@media (max-width: 760px) {
+  .landing-story__recruits {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(1.25rem, 4vw, 1.75rem);
+  }
+
+  .landing-story__recruit {
+    width: 100%;
+  }
+
+  .landing-story__fork {
+    justify-content: stretch;
+    margin-top: clamp(1.5rem, 4vw, 2rem);
+    padding: 0 0 clamp(1.5rem, 4vw, 2.75rem) 30px;
+  }
+
+  .landing-story__fork::before {
+    left: 7px;
+    bottom: 0;
+  }
+
+  .landing-story__fork::after,
+  .landing-story__merge {
+    display: none;
+  }
+
+  .landing-story__fork .landing-story__stage-card {
+    width: 100%;
+  }
+
+  .landing-story__fork .landing-story__stage-dot {
+    display: block;
+    right: auto;
+    left: 0;
+  }
+}
+
+/* The story as a mission timeline: a thin gold line down the middle, report
+   cards alternating left and right of it (one column with the line on the
+   left on phones). */
+.landing-story__timeline {
+  --timeline-line: var(--journey-line);
+
+  position: relative;
+  display: grid;
+  /* minmax(0, …): tracks never grow past the column to fit an image's width. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 2.75rem);
+  width: 100%;
+  max-width: 1040px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.landing-story__timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  box-shadow: 0 0 6px rgb(0 0 0 / 45%);
+  /* Solid from the top, where the two recruits' lines have just merged. */
+  background: linear-gradient(to bottom, var(--timeline-line) 94%, transparent);
+}
+
+.landing-story__stage {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-start;
+  width: 50%;
+  padding-right: clamp(1.5rem, 3.5vw, 2.75rem);
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 600ms ease,
+    transform 600ms var(--obw-ease-out);
+}
+
+.landing-story__stage:nth-child(even) {
+  justify-self: end;
+  padding-right: 0;
+  padding-left: clamp(1.5rem, 3.5vw, 2.75rem);
+}
+
+.landing-story__stage.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Staggered: each report starts halfway down the previous one, on the other
+   side of the line, so the column doesn't grow one full card per step. */
+@media (min-width: 761px) {
+  .landing-story__stage + .landing-story__stage {
+    margin-top: calc(-1 * clamp(9rem, 20vw, 17rem));
+  }
+}
+
+/* Marker on the line; lights up gold once its report has scrolled in. */
+.landing-story__stage-dot {
+  position: absolute;
+  top: 2rem;
+  right: -7px;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--timeline-line);
+  border-radius: 50%;
+  background: var(--obw-void);
+  transition:
+    background 500ms ease 200ms,
+    box-shadow 500ms ease 200ms;
+}
+
+.landing-story__stage:nth-child(even) .landing-story__stage-dot {
+  right: auto;
+  left: -7px;
+}
+
+.landing-story__stage.is-visible .landing-story__stage-dot,
+.landing-story__fork.is-visible .landing-story__stage-dot {
+  border-color: var(--obw-gold);
+  background: var(--obw-gold);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--obw-gold) 70%, transparent);
+}
+
+.landing-story__stage-card {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--obw-space-md);
+  width: 100%;
+  min-width: 0;
+  padding: clamp(1rem, 2vw, 1.4rem);
+}
+
+.landing-story__stage-cover,
+.landing-story__stage-body {
+  position: relative;
+  z-index: 1;
+}
+
+.landing-story__stage-meta {
+  margin: 0 0 6px;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--obw-gold);
+}
+
+.landing-story__stage-title {
+  margin: 0 0 var(--obw-space-xs);
+  font-size: clamp(1.7rem, 3vw, 2.2rem);
+}
+
+.landing-story__stage-body .obw-body {
+  color: var(--obw-bone);
+  font-size: clamp(0.95rem, 1.3vw, 1.03rem);
+}
+
+/* Cover photo: the button that opens the report's photos in the lightbox. */
+.landing-story__stage-open {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  cursor: zoom-in;
+}
+
+.landing-story__stage-open:focus-visible {
+  outline: 2px solid var(--obw-gold-bright);
+  outline-offset: 3px;
+}
+
+.landing-story__stage-open img,
+.landing-story__stage-crest,
+.landing-story__stage-pending {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+}
+
+.landing-story__stage-open img {
+  object-fit: cover;
+  transition: transform var(--obw-duration-normal) var(--obw-ease-out);
+}
+
+.landing-story__stage-open:hover img {
+  transform: scale(1.06);
+}
+
+.landing-story__stage-count {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--obw-void) 75%, transparent);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--obw-bone);
+}
+
+/* Final report and photos still to come: the crest on a faint tint. */
+.landing-story__stage-crest,
+.landing-story__stage-pending {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid var(--obw-border-dark);
+  background: color-mix(in srgb, var(--obw-bone) 6%, transparent);
+  perspective: 600px;
+}
+
+.landing-story__stage-crest img,
+.landing-story__stage-pending img {
+  width: auto;
+  height: 58%;
+}
+
+.landing-story__stage-pending {
+  border-style: dashed;
+}
+
+.landing-story__stage-pending img {
+  height: 44%;
+  opacity: 0.35;
+}
+
+.landing-story__stage-pending span {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--obw-gold);
+}
+
+/* The last report's crest spins a full turn on hover, like a flipped coin. */
+.landing-story__stage-crest img {
+  transition: transform 900ms var(--obw-ease-out);
+}
+
+.landing-story__stage:hover .landing-story__stage-crest img {
+  transform: rotateY(360deg);
+}
+
+@media (max-width: 760px) {
+  .landing-story__timeline::before {
+    left: 7px;
+  }
+
+  .landing-story__stage,
+  .landing-story__stage:nth-child(even) {
+    justify-self: stretch;
+    width: 100%;
+    padding: 0 0 0 30px;
+  }
+
+  .landing-story__stage-dot,
+  .landing-story__stage:nth-child(even) .landing-story__stage-dot {
+    right: auto;
+    left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-story__stage,
+  .landing-story__fork {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .landing-story__merge path {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+
+  .landing-story__stage-open img,
+  .landing-story__stage-crest img {
+    transition: none;
+  }
 }

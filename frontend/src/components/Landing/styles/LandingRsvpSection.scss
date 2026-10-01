@@ -2,9 +2,38 @@
   background: var(--obw-paper);
 }
 
+.landing-rsvp__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.75rem, 4vh, 2.75rem);
+}
+
+/* Section title, centred like the other sections' headers. */
+.landing-rsvp__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.landing-rsvp__head .obw-kicker,
+.landing-rsvp__head .obw-display {
+  margin: 0;
+}
+
+.landing-rsvp__subtitle {
+  max-width: 36rem;
+  color: var(--obw-bone);
+}
+
 .landing-rsvp__briefing {
   position: relative;
   overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 720px;
 }
 
 .landing-rsvp__briefing-body {
@@ -69,7 +98,8 @@
   justify-self: start;
   border-color: var(--obw-bone);
   background: var(--obw-bone);
-  color: var(--obw-text);
+  /* Dark ink: --obw-text is bone too, which left the label invisible. */
+  color: var(--obw-void);
 }
 
 .landing-rsvp__cta:hover {
@@ -78,58 +108,7 @@
   color: var(--obw-bone);
 }
 
-.landing-rsvp__visual {
-  position: relative;
-  min-height: 100%;
-}
-
-.landing-rsvp__visual-frame {
-  display: grid;
-  align-content: center;
-  gap: var(--obw-space-sm);
-  min-height: 420px;
-  padding: var(--obw-space-lg);
-  border: 1px solid var(--obw-border);
-  border-radius: var(--obw-radius);
-  background:
-    linear-gradient(165deg, var(--obw-paper-deep) 0%, var(--obw-paper) 48%, var(--obw-paper-muted) 100%);
-  box-shadow: var(--obw-shadow-soft);
-}
-
-.landing-rsvp__visual-tag {
-  margin: 0;
-  color: var(--obw-gold-dim);
-}
-
-.landing-rsvp__visual-title {
-  margin: 0;
-  font-size: clamp(1.75rem, 4vw, 2.35rem);
-  line-height: 1.15;
-  color: var(--obw-text);
-}
-
-.landing-rsvp__visual-rule {
-  width: 4rem;
-  margin: var(--obw-space-xs) 0;
-}
-
-.landing-rsvp__visual-icons {
-  display: flex;
-  gap: var(--obw-space-md);
-  color: var(--obw-crimson-hot);
-}
-
-.landing-rsvp__visual-caption {
-  margin: var(--obw-space-sm) 0 0;
-  max-width: 28ch;
-  color: var(--obw-stone);
-}
-
 @media (max-width: 900px) {
-  .landing-rsvp__visual-frame {
-    min-height: 280px;
-  }
-
   .landing-rsvp__cta {
     width: 100%;
   }

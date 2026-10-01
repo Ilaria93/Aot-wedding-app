@@ -23,8 +23,6 @@ export const en = {
     tabs: {
       home: 'Home',
       admin: 'Admin',
-      album: 'Album',
-      travel: 'Contacts',
       tema: 'The Theme',
       profile: 'Profile',
     },
@@ -126,17 +124,108 @@ export const en = {
       groomCaption: 'The Groom',
       brideCaption: 'The Bride',
       heading: 'Our Story',
-      paragraphOne:
-        'Ilaria and Davide are building a page that tells the story of their day in a more intimate, elegant, and personal way.',
-      paragraphTwo:
-        'The idea is to blend the language of an editorial wedding site with modern navigation, digital RSVP, and organized details in one place.',
-      temaLink: 'Discover the theme →',
+      // PROVISIONAL: placeholder dossier answers, to be replaced with the couple's own.
+      dossier: {
+        title: 'Enlistment dossier',
+        labels: {
+          codename: 'Codename',
+          enlisted: 'Enlisted',
+          rank: 'Rank',
+          specialty: 'Specialty',
+          weakness: 'Weak spot',
+          weapon: 'Weapon of choice',
+        },
+        davide: {
+          codename: 'The Guitarist',
+          enlisted: '2011',
+          rank: 'Commander of travel plans',
+          specialty: 'Improvised riffs',
+          weakness: 'The morning alarm',
+          weapon: 'Electric guitar',
+          quote: '“I already booked it.”',
+        },
+        ilaria: {
+          codename: 'The Bassist',
+          enlisted: '2011',
+          rank: 'Captain of playlists',
+          specialty: 'Organising the impossible',
+          weakness: 'Fluffy little animals',
+          weapon: 'Four-string bass',
+          quote: '“Five more minutes.”',
+        },
+      },
+      reportLabel: 'Report no.',
+      pendingLabel: 'Report incoming',
+      photos: {
+        crowd: 'Front row',
+        stage: 'On stage',
+        lineup: 'The line-up',
+        rehearsal: 'In the rehearsal room',
+        bassline: 'Bass on the front line',
+        bandmates: 'Back in the band days',
+        tavern: 'Supplies at the tavern',
+        lookout: 'Lookout over the lake',
+        secret: 'Secret mission',
+        paris: 'Scouting in Paris',
+        band: 'The band, 2011',
+        vader: 'Meeting the enemy',
+        boat: 'Sailing as a pair',
+        assisi: 'Scouting in Assisi',
+        bridge: 'No step back',
+        sunset: 'Truce at sunset',
+        fireplace: 'Report in dress uniform',
+        moto: 'Scouting on two wheels',
+        paestum: 'Exploring beyond the walls',
+        costumes: 'Undercover infiltrators',
+        procida: 'Seaside outpost',
+        kayak: 'Lake patrol',
+        silly: 'Troop morale: sky-high',
+        snow: 'Beyond the ice walls',
+        arch: 'Dress rehearsal',
+      },
+      pending: {
+        dog: 'The full squad',
+        house: 'Wall by wall',
+        monument: 'Monument Valley',
+      },
+      stages: {
+        contact: {
+          date: '2011',
+          title: 'First contact',
+          body:
+            "A band was looking for a guitarist and a drummer, and Ilaria played bass. The guitarist, Davide, showed up with a soul patch and sideburns: she didn't even notice him. Yet they always stayed in touch, and never truly lost each other.",
+        },
+        enlist: {
+          date: '2019',
+          title: 'Enlistment',
+          body:
+            'Seven years ago their paths finally joined. Since that day the mission has had a crew of two.',
+        },
+        battles: {
+          date: '2020 – 2025',
+          title: 'The battles',
+          body:
+            "Real battles followed: a dog, job changes, arguments, covid and a forced lockdown together, a house to reclaim wall by wall, two years of retreat behind their parents' lines. But the Survey Corps never gives up.",
+        },
+        proposal: {
+          date: 'October 2025',
+          title: 'The proposal',
+          body:
+            'At Monument Valley, Davide got down on one knee. You know the answer.',
+        },
+        final: {
+          date: '31 May 2027',
+          title: 'The last mission',
+          body:
+            'One last expedition remains: saying yes. Shinzou wo sasageyo! (Dedicate your hearts!)',
+        },
+      },
     },
     ceremony: {
       heading: 'Join their intimate ceremony',
       city: 'Ravenna',
       venue: 'Lido Adriano · Amarissimo Cala Celeste',
-      body: 'A seaside ceremony overlooking the Ravenna coast. We cannot wait to celebrate this day with you.',
+      body: 'A seaside ceremony overlooking the Romagna coast. We cannot wait to celebrate this day with you.',
       artworkPlaceholder: 'Hero photo / couple artwork',
     },
     rsvp: {
@@ -169,17 +258,16 @@ export const en = {
       copyIban: 'Copy IBAN',
       copiedIban: 'IBAN copied',
     },
+    themeTeaser: {
+      cta: 'Learn more',
+    },
     gallery: {
-      eyebrow: 'Our memories',
-      title: 'Our gallery',
-      intro: 'A treasure of shared moments: take a look at the photos loved ones have sent.',
+      title: 'Gallery',
       loading: 'Loading photos...',
-      empty: 'No photos yet. The first ones will be here soon!',
       error: 'Could not load photos. Please try again later.',
       retry: 'Retry',
-      ctaTitle: 'Want to relive the moments?',
-      ctaBody: 'Upload your photos of our day to the shared gallery.',
-      ctaButton: 'Open the gallery',
+      slotTitle: 'Guest photos',
+      slotAction: 'Add yours',
     },
     devTools: {
       title: 'RSVP area and tools',
@@ -448,13 +536,13 @@ export const en = {
       'Wings of freedom, a mission logbook, and two cockatiels who won our hearts — that is why everything here speaks Attack on Titan.',
     crestTitle: 'The crest',
     crestBody:
-      'The Survey Corps wings wrap around our two cockatiels: our own small expedition beyond the walls, from our first date to the altar.',
+      "The Survey Corps wings wrap around two cockatiels: that's us, the Pirulini, on our own small expedition beyond the walls, from our first date to the altar.",
     styleTitle: 'The style',
     styleBody:
       'Every page on this site reads like a mission document — badges, military jargon, and maps instead of the usual wedding phrasing — because Attack on Titan is the show that made us fall for this too.',
     missionTitle: 'The mission',
     missionBody:
-      'The name "Pirulini" comes from Pirulì, a creator we used to watch together: our cockatiels got the nickname "Pirù" from that, and "Operation Pirulini" became the code name for the big day — one battle to win together, surrounded by the people we love.',
+      'The name comes from Pirulì, a cockatiel whose videos we watched all the time: we ended up calling each other "Pirulini", and "Operation Pirulini" became the code name for the big day — one battle to win together, surrounded by the people we love.',
     watchTitle: 'Where to watch it',
     watchIntro:
       'If you want to discover (or rewatch) the series before the wedding, here is where to find it legally.',

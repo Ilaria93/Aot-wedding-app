@@ -1,39 +1,96 @@
-.landing-gallery__content {
-  display: grid;
-  gap: var(--obw-space-md);
+.landing-gallery__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: clamp(2rem, 5vh, 3.5rem);
+  text-align: center;
 }
 
-.landing-gallery__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: var(--obw-space-sm);
-}
-
-.landing-gallery__photo {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border: 1px solid var(--obw-border);
-  border-radius: var(--obw-radius);
-  box-shadow: var(--obw-shadow-soft);
+.landing-gallery__head .obw-display {
+  margin: 0;
 }
 
 .landing-gallery__status {
   display: grid;
+  justify-items: center;
   gap: var(--obw-space-sm);
+  text-align: center;
 }
 
-.landing-gallery__retry {
-  justify-self: start;
-}
-
-.landing-gallery__cta {
+/* Four across on desktop, two on phones; a short last row stays left-aligned. */
+.landing-gallery__grid {
   display: grid;
-  gap: var(--obw-space-sm);
-  justify-items: start;
-  margin-top: var(--obw-space-lg);
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(1rem, 3vw, 2.5rem);
 }
 
-.landing-gallery__cta .obw-btn {
-  margin-top: var(--obw-space-xs);
+@media (max-width: 720px) {
+  .landing-gallery__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.landing-gallery__tile {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 1px solid color-mix(in srgb, var(--obw-bone) 45%, transparent);
+  box-shadow: 0 14px 34px rgb(0 0 0 / 30%);
+}
+
+.landing-gallery__tile--circle {
+  border-radius: 50%;
+}
+
+/* Hand-drawn pebble: uneven radii so it reads organic, not elliptical. */
+.landing-gallery__tile--blob {
+  border-radius: 42% 58% 38% 62% / 48% 38% 62% 52%;
+}
+
+.landing-gallery__tile--square {
+  border-radius: 10px;
+}
+
+/* Empty upload slot: dashed outline over the frosted artwork. */
+.landing-gallery__slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1.5px dashed color-mix(in srgb, var(--obw-bone) 60%, transparent);
+  background: color-mix(in srgb, var(--obw-bone) 6%, transparent);
+  box-shadow: none;
+  color: var(--obw-bone);
+  text-decoration: none;
+  transition:
+    background 200ms ease,
+    border-color 200ms ease;
+}
+
+.landing-gallery__slot:hover,
+.landing-gallery__slot:focus-visible {
+  border-color: var(--obw-bone);
+  background: color-mix(in srgb, var(--obw-bone) 14%, transparent);
+}
+
+.landing-gallery__slot svg {
+  margin-bottom: 8px;
+  opacity: 0.8;
+}
+
+.landing-gallery__slot-title {
+  font-family: var(--font-sans);
+  font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+  font-weight: 500;
+}
+
+.landing-gallery__slot-action {
+  font-family: var(--font-sans);
+  font-size: clamp(0.78rem, 1.2vw, 0.92rem);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: 0.85;
 }

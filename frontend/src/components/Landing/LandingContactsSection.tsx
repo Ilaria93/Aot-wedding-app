@@ -21,16 +21,16 @@ export function LandingContactsSection() {
           </div>
         </div>
         <div className="obw-grid-3">
-          <article className="landing-contacts__item">
+          <article className="obw-card obw-card--dark landing-contacts__item">
             <p className="obw-kicker">{t('landing.contacts.teamTitle')}</p>
             <p className="obw-meta">{t('landing.contacts.teamLine')}</p>
             <p className="obw-body">{t('landing.contacts.teamBody')}</p>
           </article>
-          <article className="landing-contacts__item">
+          <article className="obw-card obw-card--dark landing-contacts__item">
             <p className="obw-kicker">{t('landing.contacts.travelTitle')}</p>
             <p className="obw-meta">{t('landing.contacts.travelLine')}</p>
           </article>
-          <article className="landing-contacts__item">
+          <article className="obw-card obw-card--dark landing-contacts__item">
             <p className="obw-kicker">{t('landing.contacts.ceremonyTitle')}</p>
             <p className="obw-meta">{t('landing.contacts.ceremonyLine')}</p>
           </article>

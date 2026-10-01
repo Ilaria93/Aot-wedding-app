@@ -76,7 +76,7 @@
   margin: 0 0 var(--obw-space-md);
   color: var(--obw-text-muted);
   font-family: var(--font-editorial);
-  font-size: clamp(1.05rem, 1.9vw, 1.28rem);
+  font-size: clamp(0.98rem, 1.4vw, 1.08rem);
   font-weight: 400;
   line-height: 1.7;
 }
@@ -557,14 +557,16 @@
 }
 
 .obw-page-hero .obw-btn--secondary,
-.obw-card--dark .obw-btn--secondary {
+.obw-card--dark .obw-btn--secondary,
+.landing-page__body .obw-btn--secondary {
   border-color: var(--obw-border-dark);
   color: var(--obw-bone);
 }
 
 .obw-btn--secondary:hover,
 .obw-page-hero .obw-btn--secondary:hover,
-.obw-card--dark .obw-btn--secondary:hover {
+.obw-card--dark .obw-btn--secondary:hover,
+.landing-page__body .obw-btn--secondary:hover {
   border-color: var(--obw-gold);
   background: color-mix(in srgb, var(--obw-bone) 10%, transparent);
   color: var(--obw-gold-bright);
@@ -1004,6 +1006,30 @@
   color: #000;
 }
 
+/* Guest-facing variant: same pill shape, frosted and tinted instead of solid
+   black and gold, so it sits softly over the sunset artwork. */
+.obw-nav__links--soft {
+  border: 1px solid color-mix(in srgb, var(--obw-bone) 16%, transparent);
+  background: color-mix(in srgb, var(--obw-void) 45%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.obw-nav__links--soft .obw-nav__link--pill {
+  color: color-mix(in srgb, var(--obw-bone) 82%, transparent);
+}
+
+/* Lilac taken from the falling petals (#db7fb0), tinted so it stays soft. */
+.obw-nav__links--soft .obw-nav__link--pill:hover {
+  background: color-mix(in srgb, #db7fb0 20%, transparent);
+  color: var(--obw-bone);
+}
+
+.obw-nav__links--soft .obw-nav__link--pill.is-active {
+  background: color-mix(in srgb, #db7fb0 38%, transparent);
+  color: var(--obw-bone);
+}
+
 .obw-nav__cta.obw-btn {
   min-height: 38px;
   padding: 10px 20px;
@@ -1059,8 +1085,8 @@
   gap: var(--obw-space-md);
 }
 
-/* Contact entries float on the section veil with no card border, like the
-   reference mockup's contact grid — just a label and a line, centered. */
+/* Contact entries: label and a line, centered (on the landing they sit in
+   dark cards so the copy stays legible over the artwork). */
 .landing-contacts__item {
   display: flex;
   flex-direction: column;
