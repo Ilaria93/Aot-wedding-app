@@ -1,12 +1,14 @@
-import { Contact, Home, Image as ImageIcon, LogOut } from 'lucide-react';
+import { Contact, Home, Image as ImageIcon, LogOut, Send } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
+import { usePendingInviteCount } from '@/hooks/usePendingInviteCount';
 import './styles/AdminMobileNav.scss';
 
 const TABS = [
   { to: '/admin/rsvp', icon: Home, labelKey: 'admin.nav.rsvp' as const },
+  { to: '/admin/invites', icon: Send, labelKey: 'admin.nav.invites' as const },
   { to: '/admin/contacts', icon: Contact, labelKey: 'admin.nav.contacts' as const },
   { to: '/admin/gallery', icon: ImageIcon, labelKey: 'admin.nav.gallery' as const },
 ] as const;
@@ -14,7 +16,8 @@ const TABS = [
 /** Bottom tab bar shown only on small screens within the admin section. */
 export function AdminMobileNav() {
   const { t } = useI18n();
-  const { signOut } = useAuth();
+  const { signOut, canManageWedding } = useAuth();
+  const pendingInvites = usePendingInviteCount(canManageWedding);
   const navigate = useNavigate();
 
   async function handleSignOut() {
@@ -29,7 +32,12 @@ export function AdminMobileNav() {
           key={tab.to}
           to={tab.to}
           className={({ isActive }) => `admin-mobile-nav__item${isActive ? ' is-active' : ''}`}>
-          <tab.icon size={18} aria-hidden />
+          <span className="admin-mobile-nav__icon">
+            <tab.icon size={18} aria-hidden />
+            {tab.to === '/admin/invites' && pendingInvites > 0 ? (
+              <span className="admin-mobile-nav__badge">{pendingInvites}</span>
+            ) : null}
+          </span>
           <span>{t(tab.labelKey)}</span>
         </NavLink>
       ))}

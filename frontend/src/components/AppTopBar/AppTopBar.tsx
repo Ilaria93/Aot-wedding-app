@@ -1,4 +1,4 @@
-import { Contact, Home, Image as ImageIcon, LogOut, Menu, X } from 'lucide-react';
+import { Contact, Home, Image as ImageIcon, LogOut, Menu, Send, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { ComponentType } from 'react';
@@ -17,8 +17,9 @@ import './styles/AppTopBar.scss';
 
 type NavIcon = ComponentType<{ size?: number; 'aria-hidden'?: boolean }>;
 
-const ADMIN_ROUTES: { to: string; i18nKey: 'admin.nav.rsvp' | 'admin.nav.contacts' | 'admin.nav.gallery'; icon: NavIcon }[] = [
+const ADMIN_ROUTES: { to: string; i18nKey: 'admin.nav.rsvp' | 'admin.nav.contacts' | 'admin.nav.gallery' | 'admin.nav.invites'; icon: NavIcon }[] = [
   { to: '/admin/rsvp', i18nKey: 'admin.nav.rsvp', icon: Home },
+  { to: '/admin/invites', i18nKey: 'admin.nav.invites', icon: Send },
   { to: '/admin/contacts', i18nKey: 'admin.nav.contacts', icon: Contact },
   { to: '/admin/gallery', i18nKey: 'admin.nav.gallery', icon: ImageIcon },
 ];
@@ -43,13 +44,14 @@ type NavItem = {
   /** Home-section anchors render as <a>; page routes as router links. */
   isAnchor: boolean;
   icon?: NavIcon;
+  badge?: number;
 };
 
 /**
  * Which links belong in the nav — the one place that answers "what shows on
  * this screen", so the desktop bar and the mobile panel can't drift apart.
  */
-function getNavItems(isHome: boolean, canManageWedding: boolean, t: TranslateFn): NavItem[] {
+function getNavItems(isHome: boolean, canManageWedding: boolean, t: TranslateFn, pendingInvites: number): NavItem[] {
   // The couple only ever manages the wedding, never browses it as a guest —
   // off the home page they get just their three control-panel sections.
   if (canManageWedding && !isHome) {
@@ -59,6 +61,7 @@ function getNavItems(isHome: boolean, canManageWedding: boolean, t: TranslateFn)
       target: route.to,
       isAnchor: false,
       icon: route.icon,
+      badge: route.to === '/admin/invites' ? pendingInvites : undefined,
     }));
   }
 
@@ -87,6 +90,7 @@ function NavItemLink({ item, className, activeClassName, isActive, onNavigate }:
     <>
       {item.icon ? <item.icon size={16} aria-hidden /> : null}
       <span>{item.label}</span>
+      {item.badge ? <span className="site-header__badge">{item.badge}</span> : null}
     </>
   );
 
@@ -123,6 +127,7 @@ export function AppTopBar() {
   const isAdmin = location.pathname.startsWith('/admin');
   // The couple's desktop nav folds sign-out into the pill row instead of a
   // separate account dropdown — there's nothing else in that menu for them.
+  const pendingInvites = usePendingInviteCount(canManageWedding);
   const showSignOutPill = canManageWedding && !isHome;
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -130,7 +135,7 @@ export function AppTopBar() {
   /* Only the home page hides the bar: there it would cover the hero cover art.
      Every other screen needs its navigation from the first pixel. */
   const isVisible = !isHome || isScrolled;
-  const navItems = getNavItems(isHome, canManageWedding, t);
+  const navItems = getNavItems(isHome, canManageWedding, t, pendingInvites);
   const closeMobileNav = () => setMobileNavOpen(false);
   // One pill style everywhere; guests get the soft translucent variant, the
   // couple's control panel keeps the bright gold one.
