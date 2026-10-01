@@ -102,6 +102,21 @@ def test_invite_rsvp_is_null_before_first_answer(api_client, invite_token):
     assert response.json() is None
 
 
+def test_invite_rsvp_is_null_when_bound_user_has_no_rsvp(api_client, invite_token):
+    from models.user_model import User
+
+    db = SessionLocal()
+    user = User(first_name="Mario", last_name="Rossi", email=None, password_hash=None, role="user", created_at=datetime.utcnow())
+    db.add(user)
+    db.flush()
+    db.query(InviteLink).filter(InviteLink.token == invite_token).update({"user_id": user.id})
+    db.commit()
+    db.close()
+    response = api_client.get(f"/invites/{invite_token}/rsvp")
+    assert response.status_code == 200
+    assert response.json() is None
+
+
 def test_invite_rsvp_returns_saved_answer(api_client, invite_token):
     payload = {"attending": True, "guests": [_guest_line(), _guest_line("Anna", "Rossi")]}
     assert api_client.post(f"/invites/{invite_token}/rsvp", json=payload).status_code == 200

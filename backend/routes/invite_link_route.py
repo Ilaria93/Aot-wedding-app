@@ -31,7 +31,7 @@ def read_invite(token: str, db: Session = Depends(get_db)):
 
 # The guest's answer so far, so reopening the WhatsApp link shows a filled-in
 # form. The token is the only credential, as for GET /invites/{token}; null
-# until the guest answers for the first time.
+# until the guest answers for the first time (no bound user or no RSVP yet).
 @router.get("/{token}/rsvp", response_model=Optional[RsvpMeResponse])
 def read_invite_rsvp(token: str, db: Session = Depends(get_db)):
     invite = get_invite_by_token(db, token)
@@ -39,4 +39,5 @@ def read_invite_rsvp(token: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Invite not found")
     if not invite.user:
         return None
-    return get_rsvp_for_user(db, invite.user)
+    rsvp = get_rsvp_for_user(db, invite.user)
+    return rsvp if rsvp.has_rsvp else None
