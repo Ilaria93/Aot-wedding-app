@@ -7,6 +7,7 @@ const SHOW_AFTER_SCROLL = 88;
 
 import { AppUserMenu } from '@/components/AppUserMenu';
 import { AppUserMenuContent } from '@/components/AppUserMenu/AppUserMenuContent';
+import { ScreenBackButton } from '@/components/ScreenBackButton';
 import { WEDDING_COUPLE_NAMES, WEDDING_OPERATION_NAME } from '@/constants/weddingEvent';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
@@ -192,6 +193,8 @@ export function AppTopBar() {
       className={`obw-nav site-header${isHome ? ' site-header--overlay' : ''}${isVisible ? ' site-header--visible' : ''}`}>
       <div className="obw-nav__inner site-header__inner">
         <div className="site-header__start">
+          {/* Theme page: a back control in the bar, like the login header's. */}
+          {location.pathname === '/tema' ? <ScreenBackButton fallback="/" /> : null}
           <Link className="obw-nav__brand site-header__brand" to="/">
             <span className="obw-nav__brand-title">{WEDDING_OPERATION_NAME}</span>
             <span className="obw-nav__brand-sub">{WEDDING_COUPLE_NAMES}</span>

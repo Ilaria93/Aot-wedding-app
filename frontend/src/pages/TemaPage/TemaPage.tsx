@@ -3,7 +3,6 @@ import type { CSSProperties, ReactNode } from 'react';
 
 import { HeroParticleField } from '@/components/MissionDocumentHero/HeroParticleField';
 import { MissionDocumentSeal } from '@/components/MissionDocumentHero/MissionDocumentSeal';
-import { ScreenBackButton } from '@/components/ScreenBackButton';
 import { useI18n } from '@/contexts/I18nContext';
 // The home's section/card look lives here; imported so a direct /tema load has it too.
 import '@/pages/HomePage/styles/HomePage.scss';
@@ -58,9 +57,6 @@ export function TemaPage() {
       <div className="landing-page__body">
         <section className="obw-section obw-fade-up">
           <div className="obw-container obw-container--narrow obw-stack-center">
-            <div className="tema-page__back">
-              <ScreenBackButton fallback="/" />
-            </div>
             <h1 className="obw-display obw-display--lg">{t('tema.title')}</h1>
             <div className="obw-rule obw-rule--center" aria-hidden="true" />
             <div className="obw-card obw-card--dark landing-box">
