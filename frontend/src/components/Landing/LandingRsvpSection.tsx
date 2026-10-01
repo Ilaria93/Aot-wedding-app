@@ -1,14 +1,16 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
+import { InviteRequestDialog } from '@/components/Landing/InviteRequestDialog';
 import { useI18n } from '@/contexts/I18nContext';
 import type { TranslationKey } from '@/i18n/translations';
 import './styles/LandingRsvpSection.scss';
 
-const RSVP_STEP_KEYS = ['stepOne', 'stepTwo', 'stepThree'] as const;
+const RSVP_STEP_KEYS = ['stepOne', 'stepTwo'] as const;
 
 /** Landing RSVP section: title header, then the briefing card with steps and CTA. */
 export function LandingRsvpSection() {
   const { t } = useI18n();
+  const [requestOpen, setRequestOpen] = useState(false);
 
   return (
     <section className="obw-section landing-rsvp obw-fade-up" id="rsvp">
@@ -51,13 +53,18 @@ export function LandingRsvpSection() {
               {t('landing.rsvp.deadlineNote')}
             </p>
 
-            <Link className="obw-btn landing-rsvp__cta" to="/rsvp">
-              {t('landing.rsvp.button')}
-            </Link>
+            <p className="obw-body landing-rsvp__invite-note">{t('landing.rsvp.inviteNote')}</p>
+
+            {/* Guests answer from their personal WhatsApp link; this is for
+                whoever reaches the site without it. */}
+            <button type="button" className="obw-btn landing-rsvp__cta" onClick={() => setRequestOpen(true)}>
+              {t('landing.rsvp.requestButton')}
+            </button>
           </div>
         </div>
-
       </div>
+
+      <InviteRequestDialog open={requestOpen} onClose={() => setRequestOpen(false)} />
     </section>
   );
 }
