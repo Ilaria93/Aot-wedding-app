@@ -15,7 +15,7 @@ def test_whatsapp_url_targets_phone_with_prefilled_message():
     assert parsed.netloc == "wa.me"
     assert parsed.path == "/393331234567"
     assert parse_qs(parsed.query)["text"] == [
-        "Ciao Mario! Davide e Ilaria ti aspettano il 31 maggio 2027 🕊️ "
+        "Ciao Mario! Davide e Ilaria ti invitano al loro matrimonio il 31 maggio 2027 🕊️\n"
         "Ecco il tuo invito personale: https://site/invito/tok"
     ]
 
@@ -28,8 +28,8 @@ def test_whatsapp_url_without_phone_lets_admin_pick_contact():
 def test_message_for_couple_and_family():
     couple = build_invite_message("couple", "Chiara e Luca", "https://site/invito/tok")
     assert couple == (
-        "Cari Chiara e Luca! Davide e Ilaria vi aspettano il 31 maggio 2027 🕊️ "
+        "Cari Chiara e Luca! Davide e Ilaria vi invitano al loro matrimonio il 31 maggio 2027 🕊️\n"
         "Ecco il vostro invito personale: https://site/invito/tok"
     )
     family = build_invite_message("family", "Rossi", "https://site/invito/tok")
-    assert family.startswith("Cara famiglia Rossi! Davide e Ilaria vi aspettano")
+    assert family.startswith("Cara famiglia Rossi! Davide e Ilaria vi invitano al loro matrimonio")

@@ -1,17 +1,19 @@
 from typing import Optional
 from urllib.parse import quote
 
-# Opening line per greeting kind; the rest of the message is the same for all.
+# One message per greeting kind. The link sits on its own last line: WhatsApp
+# makes it tappable only for a real https:// address (not localhost), so
+# SITE_URL must be the public site in the environment that sends invites.
 _SINGLE_MESSAGE = (
-    "Ciao {name}! Davide e Ilaria ti aspettano il 31 maggio 2027 🕊️ "
+    "Ciao {name}! Davide e Ilaria ti invitano al loro matrimonio il 31 maggio 2027 🕊️\n"
     "Ecco il tuo invito personale: {invite_url}"
 )
 _COUPLE_MESSAGE = (
-    "Cari {name}! Davide e Ilaria vi aspettano il 31 maggio 2027 🕊️ "
+    "Cari {name}! Davide e Ilaria vi invitano al loro matrimonio il 31 maggio 2027 🕊️\n"
     "Ecco il vostro invito personale: {invite_url}"
 )
 _FAMILY_MESSAGE = (
-    "Cara famiglia {name}! Davide e Ilaria vi aspettano il 31 maggio 2027 🕊️ "
+    "Cara famiglia {name}! Davide e Ilaria vi invitano al loro matrimonio il 31 maggio 2027 🕊️\n"
     "Ecco il vostro invito personale: {invite_url}"
 )
 
