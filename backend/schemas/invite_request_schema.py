@@ -56,17 +56,3 @@ class ApproveInviteRequestResponse(BaseModel):
     invite_link_id: int
     invite_url: str
     whatsapp_url: str
-
-
-InviteAnswer = Literal["none", "attending", "declined"]
-
-
-class AdminInviteResponse(BaseModel):
-    id: int
-    first_name: str
-    last_name: str
-    phone: Optional[str] = None
-    sent_at: Optional[datetime] = None
-    answer: InviteAnswer
-    invite_url: str
-    whatsapp_url: str

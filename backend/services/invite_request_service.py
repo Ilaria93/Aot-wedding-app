@@ -1,20 +1,17 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from models.invite_link_model import InviteLink
 from models.invite_request_model import InviteRequest
-from models.rsvp_model import RSVP
 from schemas.invite_request_schema import (
-    AdminInviteResponse,
     ApproveInviteRequestResponse,
     ExistingInviteSummary,
     InviteRequestResponse,
 )
 from services.invite_link_service import build_invite_url, generate_unique_token
-from services.invite_message_service import build_whatsapp_url
+from services.invite_message_service import build_head_whatsapp_url
 
 
 def create_invite_request(db: Session, first_name: str, last_name: str, phone_e164: str) -> InviteRequest:
@@ -46,7 +43,9 @@ def _require_pending(request: InviteRequest) -> None:
 
 
 def _invite_for_phone(db: Session, phone: str) -> Optional[InviteLink]:
-    return db.query(InviteLink).filter(InviteLink.phone == phone).order_by(InviteLink.id).first()
+    # The phone may belong to a group member: the invite to resend is the head's.
+    row = db.query(InviteLink).filter(InviteLink.phone == phone).order_by(InviteLink.id).first()
+    return (row.head or row) if row else None
 
 
 def _to_response(db: Session, request: InviteRequest) -> InviteRequestResponse:
@@ -103,7 +102,8 @@ def approve_invite_request(db: Session, request_id: int) -> ApproveInviteRequest
     return ApproveInviteRequestResponse(
         invite_link_id=invite.id,
         invite_url=invite_url,
-        whatsapp_url=build_whatsapp_url(invite.phone, invite.first_name, invite_url),
+        # Addressed to whoever asked, even when they are a member of the group.
+        whatsapp_url=build_head_whatsapp_url(invite, phone=request.phone),
     )
 
 
@@ -115,60 +115,3 @@ def reject_invite_request(db: Session, request_id: int) -> InviteRequestResponse
     db.commit()
     db.refresh(request)
     return _to_response(db, request)
-
-
-class InviteNotFoundError(Exception):
-    pass
-
-
-# ponytail: N+1 per invite, join RSVP if the list ever grows large
-def _answer_for(db: Session, invite: InviteLink) -> str:
-    if not invite.user_id:
-        return "none"
-    rsvp = db.query(RSVP).filter(RSVP.user_id == invite.user_id).first()
-    if not rsvp:
-        return "none"
-    return "attending" if rsvp.attending else "declined"
-
-
-def _to_admin_invite(db: Session, invite: InviteLink) -> AdminInviteResponse:
-    invite_url = build_invite_url(invite.token)
-    return AdminInviteResponse(
-        id=invite.id,
-        first_name=invite.first_name,
-        last_name=invite.last_name,
-        phone=invite.phone,
-        sent_at=invite.sent_at,
-        answer=_answer_for(db, invite),
-        invite_url=invite_url,
-        whatsapp_url=build_whatsapp_url(invite.phone, invite.first_name, invite_url),
-    )
-
-
-def list_admin_invites(db: Session, filter: Optional[str], search: Optional[str]) -> list[AdminInviteResponse]:
-    query = db.query(InviteLink)
-    if search:
-        pattern = f"%{search.strip()}%"
-        query = query.filter(
-            or_(InviteLink.first_name.ilike(pattern), InviteLink.last_name.ilike(pattern), InviteLink.phone.ilike(pattern))
-        )
-    invites = [_to_admin_invite(db, invite) for invite in query.order_by(InviteLink.id).all()]
-    if filter == "to_send":
-        return [invite for invite in invites if invite.sent_at is None]
-    if filter == "sent":
-        return [invite for invite in invites if invite.sent_at is not None]
-    if filter == "answered":
-        return [invite for invite in invites if invite.answer != "none"]
-    return invites
-
-
-def mark_invite_sent(db: Session, invite_id: int) -> AdminInviteResponse:
-    invite = db.query(InviteLink).filter(InviteLink.id == invite_id).first()
-    if not invite:
-        raise InviteNotFoundError("Invite not found")
-    # Resending keeps the first-sent date: "Inviato il" means the first send.
-    if invite.sent_at is None:
-        invite.sent_at = datetime.utcnow()
-    db.commit()
-    db.refresh(invite)
-    return _to_admin_invite(db, invite)

@@ -1,25 +1,41 @@
 from typing import Literal, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from database.base import get_db
 from dependencies.auth_user_dependency import require_admin_user
-from schemas.invite_request_schema import (
+from schemas.admin_invite_schema import (
+    AdminInviteCreate,
     AdminInviteResponse,
+    AdminInviteUpdate,
+    InviteMatch,
+)
+from schemas.invite_request_schema import (
     ApproveInviteRequestResponse,
     InviteRequestResponse,
     PendingCountResponse,
 )
-from services.invite_request_service import (
+from services.admin_invite_service import (
+    DuplicateInviteError,
+    InvalidInviteError,
+    InviteLockedError,
     InviteNotFoundError,
-    InviteRequestNotFoundError,
+    create_person,
+    find_matches,
+    get_admin_invite,
+    list_admin_invites,
+    mark_invite_sent,
+    to_admin_invite,
+    update_person,
+    whatsapp_url_for_person,
+)
+from services.invite_request_service import (
     InviteRequestAlreadyDecidedError,
+    InviteRequestNotFoundError,
     approve_invite_request,
     count_pending_requests,
-    list_admin_invites,
     list_invite_requests,
-    mark_invite_sent,
     reject_invite_request,
 )
 
@@ -60,6 +76,8 @@ def reject_request(request_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=409, detail=str(error)) from error
 
 
+# One entry per head (the person who receives the invite), with the people
+# linked to them under `members`.
 @router.get("/invites", response_model=list[AdminInviteResponse])
 def list_invites(
     filter: Optional[Literal["to_send", "sent", "answered"]] = None,
@@ -67,6 +85,65 @@ def list_invites(
     db: Session = Depends(get_db),
 ):
     return list_admin_invites(db, filter, search)
+
+
+# Who is already in the table with this name or phone (members included), so
+# the admin can resend instead of adding the same person twice.
+@router.get("/invites/lookup", response_model=list[InviteMatch])
+def lookup_invites(first_name: str = "", last_name: str = "", phone: Optional[str] = None, db: Session = Depends(get_db)):
+    try:
+        return find_matches(db, first_name, last_name, phone)
+    except InvalidInviteError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
+
+
+# Adds a head (no head_id) or a person linked to a head. There is no delete:
+# an invite the guest may already have received must never disappear.
+@router.post("/invites", response_model=AdminInviteResponse, status_code=201)
+def create_invite(
+    payload: AdminInviteCreate,
+    confirm_duplicate: bool = Query(default=False),
+    db: Session = Depends(get_db),
+):
+    try:
+        person = create_person(db, payload, confirm_duplicate)
+    except DuplicateInviteError as error:
+        raise HTTPException(
+            status_code=409,
+            detail={"code": "duplicate", "matches": [match.model_dump(mode="json") for match in error.matches]},
+        ) from error
+    except InviteNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+    except InviteLockedError as error:
+        raise HTTPException(status_code=409, detail={"code": "locked", "message": str(error)}) from error
+    except InvalidInviteError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
+    return to_admin_invite(db, person.head or person)
+
+
+# Editable only until the head's invite is sent; after that, just resend.
+@router.patch("/invites/{invite_id}", response_model=AdminInviteResponse)
+def update_invite(invite_id: int, payload: AdminInviteUpdate, db: Session = Depends(get_db)):
+    try:
+        person = update_person(db, invite_id, payload.model_dump(exclude_unset=True))
+    except InviteNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+    except InviteLockedError as error:
+        raise HTTPException(status_code=409, detail={"code": "locked", "message": str(error)}) from error
+    except InvalidInviteError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
+    return to_admin_invite(db, person.head or person)
+
+
+# The head's invite addressed to one person of the group.
+@router.get("/invites/{head_id}/whatsapp/{person_id}")
+def person_whatsapp(head_id: int, person_id: int, db: Session = Depends(get_db)):
+    try:
+        return {"whatsapp_url": whatsapp_url_for_person(db, head_id, person_id)}
+    except InviteNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+    except InvalidInviteError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
 
 
 # Called by the admin page right after it opens the wa.me link.
