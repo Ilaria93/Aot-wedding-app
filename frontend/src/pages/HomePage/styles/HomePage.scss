@@ -130,9 +130,11 @@
 }
 
 /* Every button on the landing (and the theme page) shares one lilac, the same
-   as the navbar's active pill (petal #db7fb0); deeper on hover. */
+   as the navbar's active pill (petal #db7fb0), deeper on hover, and the login
+   button's 8px corners. */
 .landing-page .obw-btn,
 .landing-page .action-button {
+  border-radius: 8px;
   border-color: color-mix(in srgb, #db7fb0 70%, transparent);
   background: color-mix(in srgb, #db7fb0 38%, transparent);
   color: var(--obw-bone);
