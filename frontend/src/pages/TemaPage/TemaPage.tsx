@@ -8,19 +8,19 @@ import { useI18n } from '@/contexts/I18nContext';
 import '@/pages/HomePage/styles/HomePage.scss';
 import './styles/TemaPage.scss';
 
+// Where to watch/read in Italy (checked October 2026); bodies under tema.watch<Id>Body.
 const ANIME_LINKS = [
-  { label: 'Crunchyroll', url: 'https://www.crunchyroll.com/it/series/GR751KNZY/attack-on-titan' },
-  { label: 'Netflix', url: 'https://www.netflix.com/it-en/title/70299043' },
-  { label: 'Disney+', url: 'https://www.disneyplus.com/' },
+  { id: 'Crunchyroll', label: 'Crunchyroll', url: 'https://www.crunchyroll.com/it/series/GR751KNZY/attack-on-titan' },
+  { id: 'Netflix', label: 'Netflix', url: 'https://www.netflix.com/it/title/70299043' },
+  { id: 'Prime', label: 'Prime Video', url: 'https://www.primevideo.com/-/it/detail/LAttacco-dei-Giganti/0J3OTJAN6KC2NV157JXI5G0TCD' },
 ] as const;
 
 const MANGA_LINKS = [
-  { label: 'K MANGA (Kodansha)', url: 'https://kmanga.kodansha.com/title/10136/episode/312468' },
-  { label: 'Azuki', url: 'https://www.azuki.co/series/attack-on-titan' },
+  { id: 'Zipaki', label: 'Zipaki', url: 'https://www.zipaki.com/serie/l-attacco-dei-giganti' },
 ] as const;
 
 // Term/description pairs, rendered as a list; keys map to tema.<prefix><Id>Term/Body.
-const SYMBOL_IDS = ['Wings', 'Walls', 'Petals', 'Seal', 'Reports'] as const;
+const SYMBOL_IDS = ['Walls', 'Petals', 'Seal', 'Reports'] as const;
 const GLOSSARY_IDS = ['Heart', 'Corps', 'Beyond', 'Recon', 'Report', 'Enlist', 'Operation'] as const;
 
 type TemaSectionProps = {
@@ -43,7 +43,7 @@ function TemaSection({ title, children }: TemaSectionProps) {
 
 /**
  * Explains the wedding's Attack on Titan theme: the series in brief, why it's
- * ours, crest, symbols, style, glossary, mission and where to watch it. Reuses the home's look (.landing-page): petals, a fixed
+ * ours, crest, symbols, glossary and where to watch/read it in Italy. Reuses the home's look (.landing-page): petals, a fixed
  * veil over the artwork and portal-style cards.
  */
 export function TemaPage() {
@@ -93,6 +93,7 @@ export function TemaPage() {
         <TemaSection title={t('tema.crestTitle')}>
           <MissionDocumentSeal />
           <p className="obw-body obw-body--flush">{t('tema.crestBody')}</p>
+          <p className="obw-body obw-body--flush">{t('tema.crestBody2')}</p>
         </TemaSection>
 
         <TemaSection title={t('tema.symbolsTitle')}>
@@ -107,9 +108,6 @@ export function TemaPage() {
           </dl>
         </TemaSection>
 
-        <TemaSection title={t('tema.styleTitle')}>
-          <p className="obw-body obw-body--flush">{t('tema.styleBody')}</p>
-        </TemaSection>
 
         <TemaSection title={t('tema.glossaryTitle')}>
           <p className="obw-body obw-body--flush">{t('tema.glossaryIntro')}</p>
@@ -123,34 +121,48 @@ export function TemaPage() {
           </dl>
         </TemaSection>
 
-        <TemaSection title={t('tema.missionTitle')}>
-          <p className="obw-body obw-body--flush">{t('tema.missionBody')}</p>
-        </TemaSection>
 
         <TemaSection title={t('tema.watchTitle')}>
           <p className="obw-body obw-body--flush">{t('tema.watchIntro')}</p>
 
-          <p className="obw-kicker">{t('tema.watchAnimeLabel')}</p>
-          <div className="obw-tag-row">
+          <p className="obw-kicker">{t('tema.watchAnimeTitle')}</p>
+          <dl className="tema-page__terms">
             {ANIME_LINKS.map((link) => (
-              <a key={link.label} className="obw-btn obw-btn--secondary" href={link.url} target="_blank" rel="noreferrer">
-                <Tv size={14} aria-hidden />
-                {link.label}
-              </a>
+              <div key={link.id}>
+                <dt>
+                  <a href={link.url} target="_blank" rel="noreferrer">
+                    <Tv size={14} aria-hidden />
+                    {link.label}
+                  </a>
+                </dt>
+                <dd>{t(`tema.watch${link.id}Body`)}</dd>
+              </div>
             ))}
-          </div>
+          </dl>
 
-          <p className="obw-kicker">{t('tema.watchMangaLabel')}</p>
-          <div className="obw-tag-row">
+          <p className="obw-kicker">{t('tema.watchMangaTitle')}</p>
+          <dl className="tema-page__terms">
             {MANGA_LINKS.map((link) => (
-              <a key={link.label} className="obw-btn obw-btn--secondary" href={link.url} target="_blank" rel="noreferrer">
-                <BookOpen size={14} aria-hidden />
-                {link.label}
-              </a>
+              <div key={link.id}>
+                <dt>
+                  <a href={link.url} target="_blank" rel="noreferrer">
+                    <BookOpen size={14} aria-hidden />
+                    {link.label}
+                  </a>
+                </dt>
+                <dd>{t(`tema.watch${link.id}Body`)}</dd>
+              </div>
             ))}
-          </div>
+            <div>
+              <dt>
+                <BookOpen size={14} aria-hidden />
+                {t('tema.watchPrintTerm')}
+              </dt>
+              <dd>{t('tema.watchPrintBody')}</dd>
+            </div>
+          </dl>
 
-          <p className="obw-body obw-body--flush">{t('tema.watchNote')}</p>
+          <p className="tema-page__note">{t('tema.watchNote')}</p>
         </TemaSection>
       </div>
     </div>

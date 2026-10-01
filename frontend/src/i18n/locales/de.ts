@@ -547,24 +547,12 @@ export const de = {
   tema: {
     eyebrow: 'Operation Pirulini',
     title: 'Das Thema unserer Hochzeit',
-    subtitle:
-      'Flügel der Freiheit, ein Missionsprotokoll und zwei Nymphensittiche, die unsere Herzen erobert haben — deshalb spricht hier alles von Attack on Titan.',
+    subtitle: 'Unsere Hochzeit ist von Attack on Titan inspiriert, dem Anime, der uns jahrelang ans Sofa gefesselt hat. Hier erzählen wir dir, warum, und geben dir alles, was du brauchst, um vorbereitet zu kommen.',
     crestTitle: 'Das Wappen',
-    crestBody:
-      "Die Flügel des Aufklärungstrupps umschließen zwei Nymphensittiche: das sind wir, die Pirulini, auf unserer kleinen Expedition jenseits der Mauern, vom ersten Date bis zum Altar.",
-    styleTitle: 'Der Stil',
-    styleBody:
-      'Jede Seite dieser Website liest sich wie ein Missionsdokument — Abzeichen, militärischer Jargon und Karten statt der üblichen Hochzeitsformulierungen — denn Attack on Titan ist die Serie, die uns auch dafür begeistert hat.',
-    missionTitle: 'Die Mission',
-    missionBody:
-      'Der Name stammt von Pirulì, einem Nymphensittich, dessen Videos wir ständig geschaut haben: So fingen wir an, uns gegenseitig "Pirulini" zu nennen, und "Operation Pirulini" wurde zum Codenamen für den großen Tag — eine einzige Schlacht, die wir gemeinsam gewinnen, umgeben von den Menschen, die wir lieben.',
+    crestBody: 'Wir haben es selbst entworfen. Die Form ist der Schild der Regimentswappen aus Attack on Titan, aber statt der Flügel des Aufklärungstrupps sind dort zwei Nymphensittiche, ein grauer und ein gelber, mit verschlungenen Flügeln: das sind wir.',
     watchTitle: 'Wo man sie sehen kann',
-    watchIntro:
-      'Wenn du die Serie vor der Hochzeit entdecken (oder noch einmal ansehen) möchtest, findest du sie hier auf legalem Weg.',
-    watchAnimeLabel: 'Anime — im Stream',
-    watchMangaLabel: 'Manga — offizielle kostenlose Kapitel',
-    watchNote:
-      'Die kostenlosen Kapitel sind begrenzt: Sie sind der günstigste Weg, in die Geschichte hineinzuschnuppern, nicht sie ganz zu lesen.',
+    watchIntro: 'Wenn du die Serie vor der Hochzeit entdecken (oder wiedersehen) willst, findest du sie in Italien legal hier.',
+    watchNote: 'Eine dauerhaft kostenlose legale Option gibt es derzeit nicht: Am günstigsten startest du mit der kostenlosen Testphase von Crunchyroll.',
     aotTitle: 'Attack on Titan in Kürze',
     aotLead: 'Für alle, die es nie gesehen haben. Keine Spoiler, versprochen.',
     aotBody: 'Die Menschheit überlebt eingeschlossen hinter drei gigantischen, ineinanderliegenden Mauern: Maria, Rose und Sina. Draußen leben die Titanen, riesige, unerklärliche Wesen, die Menschen verschlingen. Hundert Jahre lang hielten die Mauern, bis eines Tages ein Titan, größer als sie, eine Bresche schlägt und sich alles ändert.',
@@ -580,8 +568,6 @@ export const de = {
     whyClosing: 'Im Grunde ist es eine Geschichte darüber, für jemanden die Mauern zu verlassen. Wir haben uns entschieden, es gemeinsam zu tun.',
     symbolsTitle: 'Symbole und Details',
     symbolsIntro: 'Nichts auf dieser Seite ist zufällig: Das steckt hinter den Details.',
-    symbolWingsTerm: 'Die weißen und blauen Flügel',
-    symbolWingsBody: 'Das sind die Flügel der Freiheit, das Wappen des Aufklärungstrupps: Wer sie auf dem Rücken trägt, hat sich entschieden, jenseits der Mauern zu gehen. Du findest sie in unserem Wappen, rund um die zwei Nymphensittiche.',
     symbolWallsTerm: 'Die Mauern im Sonnenuntergang',
     symbolWallsBody: 'Die Titelillustration zeigt uns beide auf einer Blumenwiese vor den Mauern. Ausnahmsweise keine Titanen: nur ein Sonnenuntergang, den wir zusammen anschauen.',
     symbolPetalsTerm: 'Die Blütenblätter',
@@ -606,6 +592,15 @@ export const de = {
     glossaryEnlistBody: 'Der Moment, in dem wir zusammengekommen sind, 2019.',
     glossaryOperationTerm: 'Operation Pirulini',
     glossaryOperationBody: 'Der Codename der Hochzeit: 31. Mai 2027, Cala Celeste.',
+    crestBody2: 'Die Nymphensittiche kommen von Pirulì, einem Nymphensittich, dessen Videos wir ständig angeschaut haben: Irgendwann nannten wir uns gegenseitig „Pirulini“, und daher stammt auch der Codename der Hochzeit, Operation Pirulini.',
+    watchAnimeTitle: 'Anime',
+    watchCrunchyrollBody: 'Alle vier Staffeln, inklusive Finale: der einzige Dienst mit der kompletten Serie. 7 Tage kostenlos testen, danach im Abo.',
+    watchNetflixBody: 'Nur ein Teil der Serie: das Finale fehlt.',
+    watchPrimeBody: 'Im Abo nur ein Teil der Serie; komplette Staffeln kann man einzeln kaufen.',
+    watchMangaTitle: 'Manga auf Italienisch',
+    watchZipakiBody: 'Die italienische Ausgabe von Planet Manga (Panini) digital, alle 34 Bände: Jeder hat eine kostenlose Leseprobe und wird dann einzeln gekauft.',
+    watchPrintBody: 'Dieselben 34 Planet-Manga-Bände gedruckt, im Comicladen, in der Buchhandlung oder online.',
+    watchPrintTerm: 'Gedruckt',
   },
   admin: {
     nav: {

@@ -69,3 +69,19 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Platform names in the watch guide are links, with their icon inline. */
+.tema-page__terms dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tema-page__terms dt a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

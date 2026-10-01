@@ -544,30 +544,18 @@ export const it = {
   tema: {
     eyebrow: 'Operazione Pirulini',
     title: 'Il tema del nostro matrimonio',
-    subtitle:
-      'Ali della libertà, un manoscritto di missione e due calopsite che hanno conquistato i nostri cuori: ecco perché tutto qui parla di Attack on Titan.',
+    subtitle: 'Il nostro matrimonio è ispirato all\'Attacco dei giganti (Attack on Titan), l\'anime che ci ha tenuti incollati al divano per anni. Qui ti raccontiamo perché, e ti diamo tutto quello che serve per arrivare preparato.',
     crestTitle: 'Lo stemma',
-    crestBody:
-      "Le ali del Corpo di Ricerca racchiudono due calopsite: siamo noi, i Pirulini, nella nostra piccola spedizione oltre le mura, dal primo appuntamento all’altare.",
-    styleTitle: 'Lo stile',
-    styleBody:
-      'Ogni pagina di questo sito è scritta come un documento di missione — badge, gerghi militari e mappe al posto delle solite formule da matrimonio — perché Attack on Titan è la serie che ci ha fatto innamorare anche di questo.',
-    missionTitle: 'La missione',
-    missionBody:
-      'Il nome viene da Pirulì, una calopsite di cui guardavamo sempre i video: a forza di vederla abbiamo iniziato a chiamarci a vicenda "Pirulini", e "Operazione Pirulini" è diventato il nome in codice del giorno del sì — un’unica battaglia da vincere insieme, circondati dalle persone che amiamo.',
+    crestBody: 'Lo abbiamo disegnato noi. La sagoma è quella dello scudo degli stemmi dei reparti dell\'Attacco dei giganti, ma al posto delle ali del Corpo di Ricerca ci sono due calopsite, una grigia e una gialla, con le ali intrecciate: siamo noi.',
     watchTitle: 'Dove vederlo',
-    watchIntro:
-      'Se vuoi scoprire (o rivedere) la serie prima del matrimonio, ecco dove trovarla in modo legale.',
-    watchAnimeLabel: 'Anime — in streaming',
-    watchMangaLabel: 'Manga — capitoli gratuiti ufficiali',
-    watchNote:
-      'I capitoli gratuiti sono limitati: sono il modo più economico per assaggiare la storia, non per leggerla tutta.',
-    aotTitle: 'Attack on Titan in breve',
+    watchIntro: 'Se vuoi scoprire (o rivedere) la serie prima del matrimonio, ecco dove trovarla in Italia, in modo legale.',
+    watchNote: 'Gratis per sempre, legalmente, al momento non si trova: il modo più economico per iniziare è la prova gratuita di Crunchyroll.',
+    aotTitle: 'L\'Attacco dei giganti in breve',
     aotLead: 'Per chi non l\'ha mai visto. Niente spoiler, promesso.',
     aotBody: 'L\'umanità sopravvive chiusa dentro tre gigantesche mura concentriche, Maria, Rose e Sina. Fuori ci sono i giganti: creature enormi e inspiegabili che divorano gli esseri umani. Per cento anni le mura hanno retto, finché un giorno un gigante più alto di loro apre una breccia e tutto cambia.',
     aotBody2: 'Eren, Mikasa e Armin, cresciuti insieme, si arruolano nel Corpo di Ricerca: l\'unico reparto che ha il coraggio di uscire oltre le mura, appeso ai cavi del movimento tridimensionale, per scoprire la verità sul mondo. Sotto l\'azione c\'è una storia di libertà, di sacrificio e di persone che scelgono per chi combattere.',
     aotFacts: 'Il manga è di Hajime Isayama (2009–2021); l\'anime conta quattro stagioni, dal 2013 al 2023.',
-    whyTitle: 'Perché proprio Attack on Titan',
+    whyTitle: "Perché proprio l'Attacco dei giganti",
     whyBody: 'Ha iniziato Davide. Ilaria all\'inizio guardava da lontano, poi un episodio tira l\'altro e si è ritrovata arruolata anche lei.',
     whyBody2: 'Più di una scena, ci è rimasto il rito: noi due accoccolati sul divano, una coperta, e «ancora un episodio» che diventava sempre tre. È lì che questa serie è diventata un pezzo di casa nostra.',
     whyIlariaLabel: 'Il preferito di Ilaria',
@@ -577,8 +565,6 @@ export const it = {
     whyClosing: 'In fondo è una storia su chi sceglie di uscire dalle mura per qualcuno. Noi abbiamo scelto di farlo insieme.',
     symbolsTitle: 'Simboli e dettagli',
     symbolsIntro: 'Niente su questo sito è messo a caso: ecco cosa si nasconde dietro i dettagli.',
-    symbolWingsTerm: 'Le ali bianca e blu',
-    symbolWingsBody: 'Sono le Ali della libertà, lo stemma del Corpo di Ricerca: chi le porta sulla schiena ha scelto di andare oltre le mura. Le ritrovi nel nostro stemma, intorno alle due calopsite.',
     symbolWallsTerm: 'Le mura al tramonto',
     symbolWallsBody: 'Nell\'illustrazione di copertina ci siamo noi due, in un prato fiorito davanti alle mura. Per una volta niente giganti: solo un tramonto da guardare insieme.',
     symbolPetalsTerm: 'I petali',
@@ -603,6 +589,15 @@ export const it = {
     glossaryEnlistBody: 'Il momento in cui ci siamo messi insieme, nel 2019.',
     glossaryOperationTerm: 'Operazione Pirulini',
     glossaryOperationBody: 'Il nome in codice del matrimonio: 31 maggio 2027, Cala Celeste.',
+    crestBody2: 'Le calopsite vengono da Pirulì, una calopsite di cui guardavamo sempre i video: a forza di vederla abbiamo iniziato a chiamarci a vicenda «Pirulini», e da lì è nato anche il nome in codice del matrimonio, Operazione Pirulini.',
+    watchAnimeTitle: 'Anime',
+    watchCrunchyrollBody: 'Tutte e quattro le stagioni, finale compreso: è l\'unico servizio dove vedere la serie completa. C\'è una prova gratuita di 7 giorni, poi serve l\'abbonamento.',
+    watchNetflixBody: 'Solo una parte della serie: il finale non c’è.',
+    watchPrimeBody: 'In abbonamento solo una parte della serie; le stagioni complete si possono acquistare una alla volta.',
+    watchMangaTitle: 'Manga in italiano',
+    watchZipakiBody: 'L\'edizione italiana di Planet Manga (Panini) in digitale, tutti i 34 volumi: ogni volume ha un\'anteprima gratuita, poi si acquista singolarmente.',
+    watchPrintBody: 'Gli stessi 34 volumi Planet Manga in cartaceo, in fumetteria, in libreria o online.',
+    watchPrintTerm: 'Cartaceo',
   },
   admin: {
     nav: {

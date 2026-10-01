@@ -542,24 +542,12 @@ export const en = {
   tema: {
     eyebrow: 'Operation Pirulini',
     title: 'The theme of our wedding',
-    subtitle:
-      'Wings of freedom, a mission logbook, and two cockatiels who won our hearts — that is why everything here speaks Attack on Titan.',
+    subtitle: 'Our wedding is inspired by Attack on Titan, the anime that kept us glued to the sofa for years. Here we tell you why, and give you everything you need to arrive prepared.',
     crestTitle: 'The crest',
-    crestBody:
-      "The Survey Corps wings wrap around two cockatiels: that's us, the Pirulini, on our own small expedition beyond the walls, from our first date to the altar.",
-    styleTitle: 'The style',
-    styleBody:
-      'Every page on this site reads like a mission document — badges, military jargon, and maps instead of the usual wedding phrasing — because Attack on Titan is the show that made us fall for this too.',
-    missionTitle: 'The mission',
-    missionBody:
-      'The name comes from Pirulì, a cockatiel whose videos we watched all the time: we ended up calling each other "Pirulini", and "Operation Pirulini" became the code name for the big day — one battle to win together, surrounded by the people we love.',
+    crestBody: 'We designed it ourselves. The outline is the shield of the regiment crests in Attack on Titan, but instead of the Survey Corps wings there are two cockatiels, a grey one and a yellow one, with their wings intertwined: that is us.',
     watchTitle: 'Where to watch it',
-    watchIntro:
-      'If you want to discover (or rewatch) the series before the wedding, here is where to find it legally.',
-    watchAnimeLabel: 'Anime — streaming',
-    watchMangaLabel: 'Manga — official free chapters',
-    watchNote:
-      'The free chapters are limited: they are the cheapest way to sample the story, not to read all of it.',
+    watchIntro: 'If you want to discover (or rewatch) the series before the wedding, here is where to find it legally in Italy.',
+    watchNote: 'There is no legal free-forever option at the moment: the cheapest way to start is Crunchyroll\'s free trial.',
     aotTitle: 'Attack on Titan in a nutshell',
     aotLead: 'For anyone who has never watched it. No spoilers, promise.',
     aotBody: 'Humanity survives locked inside three gigantic concentric walls, Maria, Rose and Sina. Outside roam the Titans: huge, inexplicable creatures that devour people. For a hundred years the walls held, until one day a Titan taller than them breaks through and everything changes.',
@@ -575,8 +563,6 @@ export const en = {
     whyClosing: 'In the end it is a story about choosing to go beyond the walls for someone. We chose to do it together.',
     symbolsTitle: 'Symbols and details',
     symbolsIntro: 'Nothing on this site is there by chance: here is what hides behind the details.',
-    symbolWingsTerm: 'The white and blue wings',
-    symbolWingsBody: 'They are the Wings of Freedom, the Survey Corps emblem: whoever wears them on their back has chosen to go beyond the walls. You will find them in our crest, around the two cockatiels.',
     symbolWallsTerm: 'The walls at sunset',
     symbolWallsBody: 'The cover illustration shows the two of us in a field of flowers in front of the walls. For once, no Titans: just a sunset to watch together.',
     symbolPetalsTerm: 'The petals',
@@ -601,6 +587,15 @@ export const en = {
     glossaryEnlistBody: 'The moment we got together, in 2019.',
     glossaryOperationTerm: 'Operation Pirulini',
     glossaryOperationBody: 'The code name for the wedding: 31 May 2027, Cala Celeste.',
+    crestBody2: 'The cockatiels come from Pirulì, a cockatiel whose videos we watched all the time: seeing her so often, we started calling each other «Pirulini», and that is also where the wedding\'s code name comes from, Operation Pirulini.',
+    watchAnimeTitle: 'Anime',
+    watchCrunchyrollBody: 'All four seasons, finale included: the only service with the complete series. There is a 7-day free trial, then a subscription.',
+    watchNetflixBody: 'Only part of the series: the finale is missing.',
+    watchPrimeBody: 'Only part of the series with the subscription; complete seasons can be bought one at a time.',
+    watchMangaTitle: 'Manga in Italian',
+    watchZipakiBody: 'Planet Manga\'s (Panini) Italian edition in digital form, all 34 volumes: each one has a free preview, then you buy it individually.',
+    watchPrintBody: 'The same 34 Planet Manga volumes in print, at comic shops, bookshops or online.',
+    watchPrintTerm: 'Print',
   },
   admin: {
     nav: {

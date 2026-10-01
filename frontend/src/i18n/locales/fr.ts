@@ -546,24 +546,12 @@ export const fr = {
   tema: {
     eyebrow: 'Opération Pirulini',
     title: 'Le thème de notre mariage',
-    subtitle:
-      'Des ailes de la liberté, un carnet de mission et deux calopsittes qui ont conquis nos cœurs : voilà pourquoi tout ici parle d’Attack on Titan.',
+    subtitle: 'Notre mariage s\'inspire de L\'Attaque des Titans, l\'anime qui nous a scotchés au canapé pendant des années. Ici, on te raconte pourquoi, et on te donne tout ce qu\'il faut pour arriver préparé.',
     crestTitle: 'Le blason',
-    crestBody:
-      "Les ailes du Bataillon d’Exploration entourent deux calopsittes : c’est nous, les Pirulini, dans notre petite expédition au-delà des murs, du premier rendez-vous à l’autel.",
-    styleTitle: 'Le style',
-    styleBody:
-      'Chaque page de ce site se lit comme un document de mission — badges, jargon militaire et cartes plutôt que les formules habituelles de mariage — car Attack on Titan est la série qui nous a fait aimer aussi cela.',
-    missionTitle: 'La mission',
-    missionBody:
-      "Le nom vient de Pirulì, une calopsitte dont nous regardions sans cesse les vidéos : à force, nous avons commencé à nous appeler « Pirulini », et « Opération Pirulini » est devenu le nom de code du jour du oui — une seule bataille à gagner ensemble, entourés des personnes que nous aimons.",
+    crestBody: 'Nous l\'avons dessiné nous-mêmes. La silhouette est celle du bouclier des blasons des régiments de L\'Attaque des Titans, mais à la place des ailes du Bataillon d\'exploration il y a deux calopsittes, une grise et une jaune, aux ailes entrelacées : c\'est nous.',
     watchTitle: 'Où la regarder',
-    watchIntro:
-      'Si vous voulez découvrir (ou revoir) la série avant le mariage, voici où la trouver légalement.',
-    watchAnimeLabel: 'Anime — en streaming',
-    watchMangaLabel: 'Manga — chapitres officiels gratuits',
-    watchNote:
-      'Les chapitres gratuits sont limités : c’est le moyen le plus économique de découvrir l’histoire, pas de la lire en entier.',
+    watchIntro: 'Si tu veux découvrir (ou revoir) la série avant le mariage, voici où la trouver légalement en Italie.',
+    watchNote: 'Il n\'existe pas pour l\'instant d\'option légale gratuite pour toujours : le moins cher pour commencer est l\'essai gratuit de Crunchyroll.',
     aotTitle: 'L\'Attaque des Titans en bref',
     aotLead: 'Pour ceux qui ne l\'ont jamais vu. Sans spoiler, promis.',
     aotBody: 'L\'humanité survit enfermée derrière trois gigantesques murs concentriques, Maria, Rose et Sina. Dehors rôdent les Titans : des créatures immenses et inexplicables qui dévorent les humains. Pendant cent ans les murs ont tenu, jusqu\'au jour où un Titan plus grand qu\'eux ouvre une brèche et tout bascule.',
@@ -579,8 +567,6 @@ export const fr = {
     whyClosing: 'Au fond, c\'est une histoire sur le fait de choisir de sortir des murs pour quelqu\'un. Nous avons choisi de le faire ensemble.',
     symbolsTitle: 'Symboles et détails',
     symbolsIntro: 'Rien sur ce site n\'est là par hasard : voici ce qui se cache derrière les détails.',
-    symbolWingsTerm: 'Les ailes blanche et bleue',
-    symbolWingsBody: 'Ce sont les Ailes de la liberté, l\'emblème du Bataillon d\'exploration : qui les porte dans le dos a choisi d\'aller au-delà des murs. Tu les retrouves dans notre blason, autour des deux calopsittes.',
     symbolWallsTerm: 'Les murs au coucher du soleil',
     symbolWallsBody: 'L\'illustration de couverture nous montre tous les deux dans un pré fleuri devant les murs. Pour une fois, pas de Titans : juste un coucher de soleil à regarder ensemble.',
     symbolPetalsTerm: 'Les pétales',
@@ -605,6 +591,15 @@ export const fr = {
     glossaryEnlistBody: 'Le moment où nous nous sommes mis ensemble, en 2019.',
     glossaryOperationTerm: 'Opération Pirulini',
     glossaryOperationBody: 'Le nom de code du mariage : 31 mai 2027, Cala Celeste.',
+    crestBody2: 'Les calopsittes viennent de Pirulì, une calopsitte dont on regardait sans cesse les vidéos : à force, on a commencé à s\'appeler « Pirulini », et c\'est de là qu\'est né le nom de code du mariage, Opération Pirulini.',
+    watchAnimeTitle: 'Anime',
+    watchCrunchyrollBody: 'Les quatre saisons, finale comprise : le seul service avec la série complète. Essai gratuit de 7 jours, puis abonnement.',
+    watchNetflixBody: 'Seulement une partie de la série : la fin manque.',
+    watchPrimeBody: 'Seulement une partie de la série avec l\'abonnement ; les saisons complètes s\'achètent une par une.',
+    watchMangaTitle: 'Manga en italien',
+    watchZipakiBody: 'L\'édition italienne de Planet Manga (Panini) en numérique, les 34 volumes : chacun a un aperçu gratuit, puis s\'achète à l\'unité.',
+    watchPrintBody: 'Les mêmes 34 volumes Planet Manga en papier, en boutique de BD, en librairie ou en ligne.',
+    watchPrintTerm: 'Papier',
   },
   admin: {
     nav: {
