@@ -15,11 +15,6 @@
   text-shadow: var(--obw-text-halo);
 }
 
-.landing-page .obw-btn:not(.obw-btn--secondary),
-.landing-page .obw-btn:not(.obw-btn--secondary) * {
-  text-shadow: none;
-}
-
 /* Sections after the hero drop their own tint and blur: the fixed veil below
    covers them all, so there are no seams. */
 /* Tighter rhythm than the default section padding (up to 120px each side,
@@ -131,5 +126,21 @@
 
 /* Full white copy: the design system's body text on dark cards is 72% bone. */
 .landing-page .obw-card .obw-body {
+  color: var(--obw-bone);
+}
+
+/* Every button on the landing (and the theme page) shares one lilac, the same
+   as the navbar's active pill (petal #db7fb0); deeper on hover. */
+.landing-page .obw-btn,
+.landing-page .action-button {
+  border-color: color-mix(in srgb, #db7fb0 70%, transparent);
+  background: color-mix(in srgb, #db7fb0 38%, transparent);
+  color: var(--obw-bone);
+}
+
+.landing-page .obw-btn:hover,
+.landing-page .action-button:hover {
+  border-color: #db7fb0;
+  background: color-mix(in srgb, #db7fb0 60%, transparent);
   color: var(--obw-bone);
 }

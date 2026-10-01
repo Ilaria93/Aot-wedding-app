@@ -99,18 +99,9 @@
   color: var(--obw-bone);
 }
 
-/* Lilac like the navbar's active pill (petal #db7fb0), deeper on hover. */
+/* Colours come from the shared lilac button rule in HomePage.scss. */
 .landing-rsvp__cta {
   justify-self: start;
-  border-color: color-mix(in srgb, #db7fb0 70%, transparent);
-  background: color-mix(in srgb, #db7fb0 38%, transparent);
-  color: var(--obw-bone);
-}
-
-.landing-rsvp__cta:hover {
-  border-color: #db7fb0;
-  background: color-mix(in srgb, #db7fb0 60%, transparent);
-  color: var(--obw-bone);
 }
 
 @media (max-width: 900px) {
