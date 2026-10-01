@@ -1,8 +1,6 @@
 from datetime import datetime
 from urllib.parse import parse_qs, urlparse
 
-import pytest
-
 from database.base import SessionLocal
 from models.invite_link_model import InviteLink
 from models.invite_request_model import InviteRequest
@@ -64,8 +62,8 @@ def test_approve_creates_invite_and_returns_whatsapp_link(api_client, admin_head
     assert body["invite_url"] in parse_qs(parsed.query)["text"][0]
 
     db = SessionLocal()
-    request = db.query(InviteRequest).get(request_id)
-    invite = db.query(InviteLink).get(body["invite_link_id"])
+    request = db.get(InviteRequest, request_id)
+    invite = db.get(InviteLink, body["invite_link_id"])
     db.close()
     assert request.status == "approved" and request.invite_link_id == invite.id and request.decided_at
     assert (invite.first_name, invite.phone) == ("Mario", "+393331234567")
