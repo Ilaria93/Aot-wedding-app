@@ -1,9 +1,6 @@
-from datetime import datetime
-from typing import Literal, Optional
+from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
-
-InviteRequestStatus = Literal["pending", "approved", "rejected"]
+from pydantic import BaseModel, Field, field_validator
 
 
 class InviteRequestCreate(BaseModel):
@@ -26,33 +23,3 @@ class InviteRequestCreate(BaseModel):
 
 class InviteRequestAccepted(BaseModel):
     status: Literal["received"] = "received"
-
-
-class ExistingInviteSummary(BaseModel):
-    id: int
-    first_name: str
-    last_name: str
-
-
-class InviteRequestResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    id: int
-    first_name: str
-    last_name: str
-    phone: str
-    status: InviteRequestStatus
-    created_at: datetime
-    decided_at: Optional[datetime] = None
-    invite_link_id: Optional[int] = None
-    existing_invite: Optional[ExistingInviteSummary] = None
-
-
-class PendingCountResponse(BaseModel):
-    pending: int
-
-
-class ApproveInviteRequestResponse(BaseModel):
-    invite_link_id: int
-    invite_url: str
-    whatsapp_url: str

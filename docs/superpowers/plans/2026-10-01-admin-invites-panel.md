@@ -1,5 +1,7 @@
 # Pannello admin "Inviti" — Piano di implementazione
 
+> **Stato: implementato** sul branch `feature/admin-invites-page` (fasi 1–7). Il piano resta come riferimento delle decisioni.
+
 Data: 2026-10-01 (rev. 2: tabella a persone collegate)
 Sostituisce, per la parte admin, il flusso "approva richieste" di `docs/superpowers/specs/2026-10-01-invite-requests-design.md`.
 Sostituisce il modello dati della specifica `docs/superpowers/specs/2026-09-11-invite-greeting-design.md` (colonne `partner_first_name`/`family_name`/`sent`), tenendone la logica del saluto e le regole di import.

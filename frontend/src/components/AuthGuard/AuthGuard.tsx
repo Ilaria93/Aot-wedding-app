@@ -18,7 +18,7 @@ export function AuthGuard() {
   }
 
   if (!isAuthenticated && requiresAuthentication(location.pathname, DEV_UNLOCK_ALL_ROUTES)) {
-    return <Navigate to="/auth/login" replace state={{ from: location.pathname }} />;
+    return <Navigate to="/auth/login" replace state={{ from: `${location.pathname}${location.search}` }} />;
   }
 
   if (!DEV_UNLOCK_ALL_ROUTES && isAuthenticated && location.pathname.startsWith('/auth/')) {

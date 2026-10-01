@@ -12,11 +12,6 @@ from schemas.admin_invite_schema import (
     ImportReport,
     InviteMatch,
 )
-from schemas.invite_request_schema import (
-    ApproveInviteRequestResponse,
-    InviteRequestResponse,
-    PendingCountResponse,
-)
 from services.admin_invite_service import (
     DuplicateInviteError,
     InvalidInviteError,
@@ -32,50 +27,8 @@ from services.admin_invite_service import (
     whatsapp_url_for_person,
 )
 from services.invite_import_service import ImportFileError, import_invites, parse_csv
-from services.invite_request_service import (
-    InviteRequestAlreadyDecidedError,
-    InviteRequestNotFoundError,
-    approve_invite_request,
-    count_pending_requests,
-    list_invite_requests,
-    reject_invite_request,
-)
 
 router = APIRouter(prefix="/admin", dependencies=[Depends(require_admin_user)])
-
-
-@router.get("/invite-requests", response_model=list[InviteRequestResponse])
-def list_requests(
-    status: Optional[Literal["pending", "approved", "rejected"]] = None,
-    db: Session = Depends(get_db),
-):
-    return list_invite_requests(db, status)
-
-
-# Feeds the badge on the admin "Inviti" menu entry.
-@router.get("/invite-requests/pending-count", response_model=PendingCountResponse)
-def pending_count(db: Session = Depends(get_db)):
-    return PendingCountResponse(pending=count_pending_requests(db))
-
-
-@router.post("/invite-requests/{request_id}/approve", response_model=ApproveInviteRequestResponse)
-def approve_request(request_id: int, db: Session = Depends(get_db)):
-    try:
-        return approve_invite_request(db, request_id)
-    except InviteRequestNotFoundError as error:
-        raise HTTPException(status_code=404, detail=str(error)) from error
-    except InviteRequestAlreadyDecidedError as error:
-        raise HTTPException(status_code=409, detail=str(error)) from error
-
-
-@router.post("/invite-requests/{request_id}/reject", response_model=InviteRequestResponse)
-def reject_request(request_id: int, db: Session = Depends(get_db)):
-    try:
-        return reject_invite_request(db, request_id)
-    except InviteRequestNotFoundError as error:
-        raise HTTPException(status_code=404, detail=str(error)) from error
-    except InviteRequestAlreadyDecidedError as error:
-        raise HTTPException(status_code=409, detail=str(error)) from error
 
 
 # One entry per head (the person who receives the invite), with the people

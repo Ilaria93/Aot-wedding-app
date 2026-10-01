@@ -59,9 +59,15 @@ inserire a mano nella dashboard Render — non sono committati.
    - `VITE_API_URL` → URL Render del punto 3
 5. Torna su Render e aggiorna `CORS_ALLOW_ORIGINS` con il dominio Vercel
    assegnato (es. `https://aot-wedding.vercel.app`).
-6. Verifica: apri il dominio Vercel, prova login/registrazione, apri
-   `/invito/<token>` generato con
-   `backend/scripts/generate_invite_links.py` puntato al DB Neon.
+6. Verifica: apri il dominio Vercel, entra come sposi, vai su **Inviti**,
+   aggiungi una persona (o importa un CSV) e apri `/invito/<token>` col
+   pulsante "Invia su WhatsApp". In alternativa lo script
+   `backend/scripts/generate_invite_links.py` importa lo stesso CSV da riga
+   di comando.
+7. Su Render imposta anche `SITE_URL` (dominio Vercel, senza slash finale:
+   finisce nei link WhatsApp), `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID`
+   (il bot che avvisa le richieste dalla home, con il link che apre
+   Inviti già compilato).
 
 ## Dare accesso a un'altra persona
 
