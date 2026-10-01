@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from routes.auth_route import router as auth_router
+from routes.admin_invite_route import router as admin_invite_router
 from routes.admin_logistics_contact_route import router as admin_logistics_contact_router
 from routes.admin_photo_album_route import router as admin_photo_album_router
 from routes.admin_rsvp_entries_route import router as admin_rsvp_entries_router
@@ -58,3 +59,4 @@ app.include_router(admin_tables_router)
 app.include_router(invite_link_router)
 app.include_router(guest_rsvp_router)
 app.include_router(invite_request_router)
+app.include_router(admin_invite_router)
