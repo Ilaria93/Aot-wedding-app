@@ -9,6 +9,7 @@ import { AppLayout } from '@/layouts/AppLayout/index';
 import { AuthStackLayout } from '@/layouts/AuthStackLayout/index';
 import { AdminContactsPage } from '@/pages/AdminContactsPage/index';
 import { AdminGalleryPage } from '@/pages/AdminGalleryPage/index';
+import { AdminInvitesPage } from '@/pages/AdminInvitesPage/index';
 import { AdminRsvpPage } from '@/pages/AdminRsvpPage/index';
 import { AlbumPage } from '@/pages/AlbumPage/index';
 import { GuestRsvpPage } from '@/pages/GuestRsvpPage/index';
@@ -45,6 +46,7 @@ export function App() {
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route index element={<Navigate to="/admin/rsvp" replace />} />
                   <Route path="rsvp" element={<AdminRsvpPage />} />
+                  <Route path="invites" element={<AdminInvitesPage />} />
                   <Route path="contacts" element={<AdminContactsPage />} />
                   <Route path="gallery" element={<AdminGalleryPage />} />
                 </Route>

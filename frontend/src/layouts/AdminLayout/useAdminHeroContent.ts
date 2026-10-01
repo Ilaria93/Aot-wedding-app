@@ -34,6 +34,13 @@ const ROUTE_HERO: Record<string, AdminHeroKeys> = {
     titleHighlight: 'admin.hero.rsvpTitleHighlight',
     subtitle: 'admin.hero.rsvpSubtitle',
   },
+  '/admin/invites': {
+    eyebrowSegments: ['landing.hero.operationTag', 'common.roles.admin'],
+    code: 'admin.hero.invitesCode',
+    titleLead: 'admin.hero.invitesTitleLead',
+    titleHighlight: 'admin.hero.invitesTitleHighlight',
+    subtitle: 'admin.hero.invitesSubtitle',
+  },
   '/admin/contacts': {
     eyebrowSegments: ['landing.hero.operationTag', 'common.roles.admin'],
     code: 'admin.hero.contactsCode',

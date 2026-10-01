@@ -36,7 +36,7 @@ def test_saves_pending_request_with_normalised_phone(api_client, no_telegram_and
     assert response.json() == ACCEPTED_BODY
     [row] = _requests()
     assert (row.first_name, row.last_name, row.phone, row.status) == ("Mario", "Rossi", "+393331234567", "pending")
-    assert no_telegram_and_fresh_limits == [("Mario", "Rossi", "+393331234567")]
+    assert no_telegram_and_fresh_limits == [("Mario", "Rossi", "+393331234567", "🆕 Non è ancora in tabella.")]
 
 
 def test_same_answer_when_phone_already_has_invite(api_client):
@@ -84,3 +84,19 @@ def test_eleventh_request_from_same_ip_in_an_hour_is_429(api_client):
 def test_oversized_phone_is_422(api_client):
     response = api_client.post("/invite-requests", json=_payload(phone="1" * 41))
     assert response.status_code == 422
+
+
+def test_telegram_message_says_when_the_requester_is_already_in_the_table(api_client, no_telegram_and_fresh_limits):
+    db = SessionLocal()
+    head = InviteLink(token="t1", first_name="Christian", last_name="Rossi", created_at=datetime.utcnow())
+    db.add(head)
+    db.flush()
+    db.add(InviteLink(head_id=head.id, relation="spouse", first_name="Arianna", last_name="Rossi", phone="+393331234567", created_at=datetime.utcnow()))
+    db.commit()
+    db.close()
+
+    api_client.post("/invite-requests", json=_payload(first_name="Arianna"))
+
+    [(_, _, _, table_status)] = no_telegram_and_fresh_limits
+    assert "coniuge di Christian Rossi" in table_status
+    assert "non ancora inviato" in table_status

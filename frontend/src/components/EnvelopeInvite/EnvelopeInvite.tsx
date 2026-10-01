@@ -8,12 +8,16 @@ import {
   formatWeddingDateDisplay,
 } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
+import type { GreetingKind } from '@/services/inviteApi';
+import { formatInviteGreeting } from './inviteGreeting';
 
 import './styles/EnvelopeInvite.scss';
 
 type EnvelopeInviteProps = {
   token: string;
-  firstName: string;
+  greetingKind: GreetingKind;
+  greetingName: string;
+  greetingNames: string[];
 };
 
 const CONTACT_EMAIL = 'davide.ilaria@esempio.it';
@@ -141,7 +145,7 @@ const LETTER_REVEAL_LEAD_SECONDS = 1;
  * and typing during the video's last second (see LETTER_REVEAL_LEAD_SECONDS),
  * overlapping the tail of the footage instead of waiting for it to fully end.
  */
-export function EnvelopeInvite({ token, firstName }: EnvelopeInviteProps) {
+export function EnvelopeInvite({ token, greetingKind, greetingName, greetingNames }: EnvelopeInviteProps) {
   const { locale, t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
@@ -157,14 +161,14 @@ export function EnvelopeInvite({ token, firstName }: EnvelopeInviteProps) {
   // elapsed time, and the text never advances past empty.
   const letterLines = useMemo(
     () => [
-      t('invite.greeting', { firstName }),
+      formatInviteGreeting(t, locale, { kind: greetingKind, name: greetingName, names: greetingNames }),
       t('invite.headline'),
       t('invite.coupleNames'),
       `${formatWeddingDateDisplay(locale)}\n${WEDDING_VENUE_AREA}\n${WEDDING_VENUE_NAME}, ${WEDDING_CITY}`,
       t('invite.ceremonyStart'),
       t('invite.intro'),
     ],
-    [t, firstName, locale],
+    [t, greetingKind, greetingName, greetingNames, locale],
   );
   const { revealed, activeIndex, done: typingDone } = useTypewriterLines(letterLines, isOpen);
 

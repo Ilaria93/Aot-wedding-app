@@ -1,8 +1,14 @@
 import { apiClient } from '@/services/apiClient';
 
+export type GreetingKind = 'family' | 'couple' | 'single_m' | 'single_f' | 'single';
+
 export type InviteLink = {
   first_name: string;
   last_name: string;
+  /** Computed from the group by the server: which greeting, and for whom. */
+  greeting_kind: GreetingKind;
+  greeting_name: string;
+  greeting_names: string[];
   min_party_guests: number;
   max_party_guests: number;
 };

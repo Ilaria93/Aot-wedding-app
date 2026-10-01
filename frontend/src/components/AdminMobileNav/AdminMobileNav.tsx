@@ -1,4 +1,4 @@
-import { Contact, Home, Image as ImageIcon, LogOut } from 'lucide-react';
+import { Contact, Home, Image as ImageIcon, LogOut, Send } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -7,6 +7,7 @@ import './styles/AdminMobileNav.scss';
 
 const TABS = [
   { to: '/admin/rsvp', icon: Home, labelKey: 'admin.nav.rsvp' as const },
+  { to: '/admin/invites', icon: Send, labelKey: 'admin.nav.invites' as const },
   { to: '/admin/contacts', icon: Contact, labelKey: 'admin.nav.contacts' as const },
   { to: '/admin/gallery', icon: ImageIcon, labelKey: 'admin.nav.gallery' as const },
 ] as const;

@@ -61,3 +61,41 @@ def test_does_not_leak_bot_token_in_logs(monkeypatch, caplog):
 
     # Verify bot-token is not leaked in logs - the critical security requirement
     assert "bot-token" not in caplog.text
+
+
+def test_message_links_to_the_prefilled_add_form(monkeypatch):
+    from urllib.parse import parse_qs, urlparse
+
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "bot-token")
+    monkeypatch.setenv("TELEGRAM_CHAT_ID", "42")
+    monkeypatch.setenv("SITE_URL", "https://site")
+    sent = {}
+    monkeypatch.setattr(
+        telegram_notify_service.httpx,
+        "post",
+        lambda url, json, timeout: sent.update(json=json) or httpx.Response(200, request=httpx.Request("POST", url)),
+    )
+    telegram_notify_service.notify_new_invite_request("Mario", "Rossi", "+393331234567", "🆕 Non è ancora in tabella.")
+
+    text = sent["json"]["text"]
+    assert "🆕 Non è ancora in tabella." in text
+    link = text.splitlines()[-1]
+    assert urlparse(link).path == "/admin/invites"
+    assert parse_qs(urlparse(link).query) == {
+        "add": ["1"], "first_name": ["Mario"], "last_name": ["Rossi"], "phone": ["+393331234567"],
+    }
+
+
+def test_describe_matches():
+    from datetime import datetime
+
+    from schemas.admin_invite_schema import InviteMatch, InviteMatchHead
+
+    assert telegram_notify_service.describe_matches([]) == "🆕 Non è ancora in tabella."
+    head = InviteMatchHead(id=1, first_name="Christian", last_name="Rossi", sent_at=datetime(2026, 10, 1))
+    spouse = InviteMatch(id=2, first_name="Arianna", last_name="Rossi", relation="spouse", head=head)
+    assert telegram_notify_service.describe_matches([spouse]) == (
+        "✅ Già in tabella: Arianna Rossi (coniuge di Christian Rossi), invito inviato il 01/10/2026."
+    )
+    unsent = InviteMatch(id=1, first_name="Christian", last_name="Rossi", head=InviteMatchHead(id=1, first_name="Christian", last_name="Rossi"))
+    assert "invito non ancora inviato" in telegram_notify_service.describe_matches([unsent])
