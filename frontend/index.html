@@ -3,18 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Ilaria & Davide — Operazione Pirulini" />
+    <meta name="description" content="Pirulini's Wedding — Davide & Ilaria, 31 maggio 2027" />
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Pirulini's Wedding" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Infant:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Geist:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <title>Ilaria & Davide</title>
+    <title>Pirulini's Wedding</title>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Shown until React mounts (it replaces #root's content): same crest as
+         the in-app LoadingScreen, styled inline since the app CSS isn't loaded yet. -->
+    <div id="root">
+      <div style="display:grid;place-items:center;min-height:100svh;background:#1c0e0d">
+        <img src="/assets/wedding/stemma.webp" alt="" width="148" height="174" style="width:clamp(96px,22vw,148px);height:auto" />
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

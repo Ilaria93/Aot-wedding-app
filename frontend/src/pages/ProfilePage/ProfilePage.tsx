@@ -1,3 +1,4 @@
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
 import { formatUserRoleLabel } from '@/services/authApi';
@@ -9,11 +10,7 @@ export function ProfilePage() {
   const { t } = useI18n();
 
   if (isBootstrapping) {
-    return (
-      <div className="loading-screen">
-        <span className="loading-text">{t('common.loadingSession')}</span>
-      </div>
-    );
+    return <LoadingScreen label={t('common.loadingSession')} />;
   }
 
   if (!user) {

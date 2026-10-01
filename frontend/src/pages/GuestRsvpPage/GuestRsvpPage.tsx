@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { RsvpPartyForm } from '@/components/Rsvp/RsvpPartyForm';
 import { useI18n } from '@/contexts/I18nContext';
 import { fetchInviteByToken, type InviteLink } from '@/services/inviteApi';
@@ -38,11 +39,7 @@ export function GuestRsvpPage() {
   }, [token]);
 
   if (loadState === 'loading') {
-    return (
-      <div className="obw-page guest-rsvp-page guest-rsvp-page--centered">
-        <p className="obw-body">{t('common.loading')}</p>
-      </div>
-    );
+    return <LoadingScreen label={t('common.loading')} />;
   }
 
   if (loadState === 'error' || !invite || !token) {

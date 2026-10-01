@@ -296,11 +296,36 @@
   display: grid;
   place-items: center;
   min-height: 100vh;
+  min-height: 100svh;
   background: var(--obw-void);
   color: var(--obw-bone);
 }
 
-.loading-text {
-  color: color-mix(in srgb, var(--obw-bone) 65%, var(--obw-stone));
-  font-size: 0.95rem;
+.loading-screen__crest {
+  display: block;
+  width: clamp(96px, 22vw, 148px);
+  height: auto;
+  filter: drop-shadow(0 2px 14px rgba(42, 22, 20, 0.55));
+  animation: loading-crest-breathe 2.4s ease-in-out infinite;
 }
+
+@keyframes loading-crest-breathe {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: scale(0.96);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-screen__crest {
+    animation: none;
+    opacity: 1;
+  }
+}
+

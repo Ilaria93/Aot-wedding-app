@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { useI18n } from '@/contexts/I18nContext';
 
 type PageShellProps = {
@@ -12,11 +13,7 @@ export function PageShell({ children, loading = false }: PageShellProps) {
   const { t } = useI18n();
 
   if (loading) {
-    return (
-      <div className="loading-screen">
-        <span className="loading-text">{t('common.loading')}</span>
-      </div>
-    );
+    return <LoadingScreen label={t('common.loading')} />;
   }
 
   return (
