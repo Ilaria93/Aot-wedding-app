@@ -41,7 +41,9 @@
    artwork and under every section; the veil comes first so petals stay sharp. */
 .landing-veil {
   position: fixed;
-  inset: 0;
+  /* Large viewport, like the artwork: no resize when the phone toolbar toggles. */
+  inset: 0 0 auto;
+  height: 100lvh;
   z-index: -1;
   opacity: var(--veil, 0);
   background: color-mix(in srgb, var(--obw-void) 45%, transparent);
