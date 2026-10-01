@@ -1,31 +1,36 @@
-"""One-off script: generate WhatsApp invite links from a CSV of names.
+"""Import the guest list from a CSV and print the invite links.
 
 Usage (from the backend/ folder, with the venv active):
 
     python scripts/generate_invite_links.py invitati.csv
     python scripts/generate_invite_links.py invitati.csv --base-url https://aot-wedding.it
 
-CSV format (header required; phone and party_size are optional):
+CSV format (header required; only first_name and last_name are mandatory):
 
-    first_name,last_name,phone,party_size
-    Ilaria,Rossi,+39 333 1234567,2
-    Famiglia,Bianchi,,4
+    first_name,last_name,gender,relation,head,family_name,phone,party_size
+    Christian,Rossi,m,,,Rossi,+39 333 1111111,5
+    Arianna,Rossi,f,spouse,Christian Rossi,,+39 333 2222222,
+    Matteo,Rossi,m,child,Christian Rossi,,,
+    Chiara,Bianchi,f,,,,+39 333 3333333,2
+    Luca,Verdi,m,partner,Chiara Bianchi,,+39 333 4444444,
 
-`party_size` pre-fills the max guest count on that invite's RSVP form
-instead of the site-wide default. Leave it blank to use the default.
+A row without `head` is a head: the person who receives the invite, with a
+personal link. A row with `head` ("Name Surname" of a head in the file or
+already in the table) and a `relation` (spouse, partner, child, other) is
+linked to that head and has no link of its own. A group is either a family
+(spouse/children) or partners, never both. `gender` is m or f. `party_size`
+pre-fills the max guest count of the head's RSVP form.
 
-For each row: generates a random, unguessable token, saves it in the
-invite_links table, and prints the ready-to-paste WhatsApp link. Also writes
-invitati_output.csv next to the input file with the same rows plus the
-generated token and link, so nothing gets lost.
+People already in the table (same name or same phone) are skipped, so the same
+file can be loaded again with new rows at the bottom. Writes
+<file>_output.csv next to the input with a link for every new head.
 
-This script only ever creates invite_links rows — it never touches users
-directly (a guest's account is created lazily, the first time they confirm
-via the link — see services/guest_access_service.py).
+The same import is available in the admin panel (Inviti > Importa CSV); a
+guest's account is created lazily on their first confirmation (see
+services/guest_access_service.py).
 """
 import csv
 import sys
-from datetime import datetime
 from pathlib import Path
 
 # Allows running this script directly (`python scripts/generate_invite_links.py`)
@@ -33,28 +38,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from database.base import SessionLocal  # noqa: E402
-from models.invite_link_model import InviteLink  # noqa: E402
 # InviteLink.user relationship resolves "User" by name at query time — this
 # import is required so SQLAlchemy's mapper registry knows the class exists,
 # even though nothing here calls User directly.
 from models.user_model import User  # noqa: E402,F401
-from services.invite_link_service import generate_unique_token  # noqa: E402
-from services.phone_service import InvalidPhoneError, normalize_phone  # noqa: E402
+from services.invite_import_service import ImportFileError, import_invites, parse_csv  # noqa: E402
 
 DEFAULT_BASE_URL = "http://localhost:5173"
-
-
-def _normalized_phone_or_none(raw: str, label: str):
-    """E.164 phone for an imported row, or None (with a message naming the
-    row) when blank or invalid, so approval of invite requests can match it."""
-    raw = (raw or "").strip()
-    if not raw:
-        return None
-    try:
-        return normalize_phone(raw)
-    except InvalidPhoneError:
-        print(f"Telefono non valido per {label}: {raw!r} -> importato senza telefono.")
-        return None
 
 
 def main() -> None:
@@ -76,49 +66,34 @@ def main() -> None:
         print(f"File non trovato: {input_path}")
         sys.exit(1)
 
-    output_rows = []
     db = SessionLocal()
     try:
-        with input_path.open(newline="", encoding="utf-8") as csv_file:
-            reader = csv.DictReader(csv_file)
-            for row in reader:
-                first_name = (row.get("first_name") or "").strip()
-                last_name = (row.get("last_name") or "").strip()
-                if not first_name or not last_name:
-                    print(f"Riga saltata (nome o cognome vuoto): {row}")
-                    continue
-
-                phone = _normalized_phone_or_none(row.get("phone"), f"{first_name} {last_name}")
-                raw_party_size = (row.get("party_size") or "").strip()
-                party_size = int(raw_party_size) if raw_party_size.isdigit() else None
-
-                token = generate_unique_token(db)
-                db.add(
-                    InviteLink(
-                        token=token,
-                        first_name=first_name,
-                        last_name=last_name,
-                        phone=phone,
-                        party_size=party_size,
-                        created_at=datetime.utcnow(),
-                    )
-                )
-                db.commit()
-
-                link = f"{base_url}/invito/{token}"
-                print(f"{first_name} {last_name} -> {link}")
-                output_rows.append(
-                    {
-                        "first_name": first_name,
-                        "last_name": last_name,
-                        "phone": phone or "",
-                        "party_size": party_size or "",
-                        "token": token,
-                        "link": link,
-                    }
-                )
+        try:
+            rows = parse_csv(input_path.read_bytes())
+        except ImportFileError as error:
+            print(f"File non valido: {error}")
+            sys.exit(1)
+        report, heads = import_invites(db, rows)
+        output_rows = [
+            {
+                "first_name": head.first_name,
+                "last_name": head.last_name,
+                "phone": head.phone or "",
+                "party_size": head.party_size or "",
+                "token": head.token,
+                "link": f"{base_url}/invito/{head.token}",
+            }
+            for head in heads
+        ]
     finally:
         db.close()
+
+    for row in output_rows:
+        print(f"{row['first_name']} {row['last_name']} -> {row['link']}")
+    for name in report.skipped_duplicates:
+        print(f"Già in tabella, saltato: {name}")
+    for error in report.errors:
+        print(f"Riga {error.row} non importata: {error.reason}")
 
     if output_rows:
         output_path = input_path.with_name(f"{input_path.stem}_output.csv")
@@ -129,6 +104,7 @@ def main() -> None:
             writer.writeheader()
             writer.writerows(output_rows)
         print(f"\n{len(output_rows)} link generati. Salvati anche in: {output_path}")
+    print(f"{report.created} persone create, {len(report.skipped_duplicates)} saltate, {len(report.errors)} errori.")
 
 
 if __name__ == "__main__":

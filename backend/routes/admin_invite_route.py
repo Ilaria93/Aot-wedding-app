@@ -1,6 +1,6 @@
 from typing import Literal, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from sqlalchemy.orm import Session
 
 from database.base import get_db
@@ -9,6 +9,7 @@ from schemas.admin_invite_schema import (
     AdminInviteCreate,
     AdminInviteResponse,
     AdminInviteUpdate,
+    ImportReport,
     InviteMatch,
 )
 from schemas.invite_request_schema import (
@@ -30,6 +31,7 @@ from services.admin_invite_service import (
     update_person,
     whatsapp_url_for_person,
 )
+from services.invite_import_service import ImportFileError, import_invites, parse_csv
 from services.invite_request_service import (
     InviteRequestAlreadyDecidedError,
     InviteRequestNotFoundError,
@@ -119,6 +121,23 @@ def create_invite(
     except InvalidInviteError as error:
         raise HTTPException(status_code=422, detail=str(error)) from error
     return to_admin_invite(db, person.head or person)
+
+
+MAX_IMPORT_BYTES = 1_000_000
+
+
+# Guest-list CSV (first_name,last_name,gender,relation,head,family_name,phone,party_size).
+# People already in the table are skipped, so the same file can be loaded twice.
+@router.post("/invites/import", response_model=ImportReport)
+def import_invites_csv(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    raw = file.file.read(MAX_IMPORT_BYTES + 1)
+    if len(raw) > MAX_IMPORT_BYTES:
+        raise HTTPException(status_code=413, detail="File too large.")
+    try:
+        report, _ = import_invites(db, parse_csv(raw))
+    except ImportFileError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
+    return report
 
 
 # Editable only until the head's invite is sent; after that, just resend.
