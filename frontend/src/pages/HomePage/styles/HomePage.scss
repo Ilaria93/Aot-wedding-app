@@ -7,3 +7,109 @@
      never scrolls sideways. */
   overflow-x: clip;
 }
+
+/* Every piece of copy on the landing carries the dark halo, so nothing gets
+   lost over the artwork. Listed tags outrank single-class shadows like
+   .obw-display's; solid (light) buttons opt out, the halo would muddy them. */
+.landing-page :is(h1, h2, h3, h4, p, span, a, li, label, small, strong, em, figcaption, button) {
+  text-shadow: var(--obw-text-halo);
+}
+
+.landing-page .obw-btn:not(.obw-btn--secondary),
+.landing-page .obw-btn:not(.obw-btn--secondary) * {
+  text-shadow: none;
+}
+
+/* Sections after the hero drop their own tint and blur: the fixed veil below
+   covers them all, so there are no seams. */
+/* Tighter rhythm than the default section padding (up to 120px each side,
+   so up to 240px between two sections). Phones keep their own smaller value. */
+@media (min-width: 641px) {
+  .landing-page__body > .obw-section {
+    padding-block: clamp(40px, 6vh, 72px);
+  }
+}
+
+.landing-page__body > .obw-section {
+  background: none;
+  backdrop-filter: none;
+}
+
+/* Blur + dark tint over the fixed artwork, faded in gradually with scroll:
+   clear on the cover, full only at the page foot (--veil 0→1, set by HomePage).
+   Both layers are z-index -1 after body::before, so they paint above the
+   artwork and under every section; the veil comes first so petals stay sharp. */
+.landing-veil {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: var(--veil, 0);
+  background: color-mix(in srgb, var(--obw-void) 45%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+
+.landing-petals {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* Every landing card takes the admin "portal" look (.obw-portal-card in the
+   design system): rounder 14px corners and gold corner brackets inset from the
+   edge, with a slightly lighter fill so the artwork isn't dimmed as much. */
+.landing-page .obw-card {
+  position: relative;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--obw-void) 34%, transparent);
+}
+
+.landing-page .obw-card--dark {
+  background: color-mix(in srgb, var(--obw-void) 48%, transparent);
+}
+
+.landing-page .obw-card::before {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.55;
+  background:
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 16px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 1px 16px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right top / 16px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right top / 1px 16px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left bottom / 16px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) left bottom / 1px 16px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 16px 1px no-repeat,
+    linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 1px 16px no-repeat;
+}
+
+/* Body copy under a section title, boxed so it reads over the artwork. */
+.landing-box {
+  box-sizing: border-box;
+  width: 100%;
+  padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1.25rem, 3vw, 2.5rem);
+}
+
+/* Ceremony details: the default 0.75rem meta was too small to read here. */
+.landing-ceremony__details .obw-meta {
+  margin-bottom: 2px;
+  font-family: var(--font-sans);
+  font-size: clamp(0.85rem, 1.3vw, 1rem);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--obw-bone);
+}
+
+.landing-ceremony__details .obw-body {
+  margin-top: var(--obw-space-sm);
+  font-size: clamp(1.02rem, 1.6vw, 1.18rem);
+  font-weight: 500;
+  color: var(--obw-bone);
+}

@@ -42,14 +42,13 @@ function createPetal(width: number, height: number, startAbove: boolean): Petal 
   };
 }
 
-/** Petals drifting down over the sunset hero. Respects prefers-reduced-motion. */
+/** Petals drifting down over the fixed sunset artwork, page-wide. Respects prefers-reduced-motion. */
 export function HeroParticleField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const container = canvas?.parentElement;
-    if (!canvas || !container) {
+    if (!canvas) {
       return;
     }
 
@@ -66,10 +65,10 @@ export function HeroParticleField() {
     let height = 0;
 
     function resize() {
-      const rect = container!.getBoundingClientRect();
+      // Fixed to the viewport, so it sizes to the window, not a parent box.
       const dpr = window.devicePixelRatio || 1;
-      width = rect.width;
-      height = rect.height;
+      width = window.innerWidth;
+      height = window.innerHeight;
       canvas!.width = width * dpr;
       canvas!.height = height * dpr;
       canvas!.style.width = `${width}px`;
@@ -155,5 +154,5 @@ export function HeroParticleField() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="mission-hero__particles" aria-hidden />;
+  return <canvas ref={canvasRef} className="landing-petals" aria-hidden />;
 }

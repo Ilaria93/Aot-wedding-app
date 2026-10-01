@@ -34,6 +34,13 @@
   --obw-veil-strong: rgba(20, 29, 26, 0.62);
   --obw-veil-blur: blur(10px);
 
+  /* Tight dark halo hugging the letters, then a soft glow: keeps copy legible
+     on both the dark clouds and the bright sunset/flowers of the artwork. */
+  --obw-text-halo:
+    0 0 2px rgba(28, 14, 13, 0.9),
+    0 1px 4px rgba(28, 14, 13, 0.8),
+    0 0 18px rgba(28, 14, 13, 0.55);
+
   --obw-radius: 3px;
   --obw-radius-sm: 2px;
   --obw-max: 1200px;
@@ -74,7 +81,10 @@
   --font-sans: 'Geist', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-display: 'Great Vibes', cursive;
   --font-mono: 'Cormorant Infant', Georgia, serif;
-  --font-editorial: 'Cormorant Infant', Georgia, serif;
+  /* Body copy is set in the clean sans of the navbar; the serif stays for dates,
+     places and quotes only (--font-serif / --font-mono). */
+  --font-editorial: var(--font-sans);
+  --font-serif: 'Cormorant Infant', Georgia, serif;
   --font-kicker: var(--font-sans);
 
   --mission-parchment: var(--obw-paper);

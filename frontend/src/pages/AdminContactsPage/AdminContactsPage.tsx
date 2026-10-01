@@ -10,7 +10,7 @@ import { LOGISTICS_CONTACT_CATEGORY_IDS, getLogisticsContactCategoryLabel } from
 import { useI18n } from '@/contexts/I18nContext';
 import type { TranslateFn } from '@/i18n/translations';
 import { useAdminHeroStatsSlot } from '@/layouts/AdminLayout/AdminHeroStatsSlotContext';
-import { buildContactActions } from '@/pages/TravelPage/travelContactActions';
+import { buildContactActions } from '@/components/ContactCard/contactActions';
 import { getApiErrorMessage } from '@/services/apiErrors';
 import {
   createAdminLogisticsContact,

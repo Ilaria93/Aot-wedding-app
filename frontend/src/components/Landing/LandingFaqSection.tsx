@@ -11,7 +11,7 @@ export function LandingFaqSection() {
       <p className="obw-kicker obw-kicker--light">{t('landing.faq.eyebrow')}</p>
       <h2 className="obw-display obw-display--lg obw-display--light">{t('landing.faq.title')}</h2>
       <div className="obw-rule obw-rule--center" aria-hidden="true" />
-      <div className="obw-faq-list">
+      <div className="obw-card obw-card--dark landing-box obw-faq-list">
         <article className="obw-faq-list__item">
           <h3>{t('landing.faq.locationQuestion')}</h3>
           <p>{t('landing.faq.locationAnswer')}</p>

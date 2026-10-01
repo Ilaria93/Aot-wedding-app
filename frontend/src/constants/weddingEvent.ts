@@ -1,6 +1,15 @@
 import type { AppLocale } from '@/i18n/translations';
 
 export const WEDDING_COUPLE_NAMES = 'Davide & Ilaria' as const;
+/**
+ * The couple's own contact, always first in the home "Contatti utili".
+ * PROVISIONAL: placeholder email until the couple gives the real one (add a
+ * phone too and the card grows Call/WhatsApp buttons on its own).
+ */
+export const WEDDING_COUPLE_CONTACT = {
+  label: WEDDING_COUPLE_NAMES,
+  email: 'davide.ilaria@esempio.it',
+} as const;
 export const WEDDING_OPERATION_NAME = 'Operazione Pirulini' as const;
 export const WEDDING_VENUE_NAME = 'Lido Adriano' as const;
 export const WEDDING_VENUE_AREA = 'Amarissimo Cala Celeste' as const;

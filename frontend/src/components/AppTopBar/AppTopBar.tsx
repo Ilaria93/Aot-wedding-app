@@ -15,33 +15,30 @@ import './styles/AppTopBar.scss';
 
 type NavIcon = ComponentType<{ size?: number; 'aria-hidden'?: boolean }>;
 
-const APP_ROUTES = [
-  { to: '/album', i18nKey: 'navigation.tabs.album' as const },
-  { to: '/travel', i18nKey: 'navigation.tabs.travel' as const },
-  { to: '/tema', i18nKey: 'navigation.tabs.tema' as const },
-] as const;
-
 const ADMIN_ROUTES: { to: string; i18nKey: 'admin.nav.rsvp' | 'admin.nav.contacts' | 'admin.nav.gallery'; icon: NavIcon }[] = [
   { to: '/admin/rsvp', i18nKey: 'admin.nav.rsvp', icon: Home },
   { to: '/admin/contacts', i18nKey: 'admin.nav.contacts', icon: Contact },
   { to: '/admin/gallery', i18nKey: 'admin.nav.gallery', icon: ImageIcon },
 ];
 
+// Same order as the sections on the home page — keep the two in step.
 const HOME_ANCHORS = [
-  { href: '#story', labelKey: 'story' as const },
-  { href: '#gallery', labelKey: 'gallery' as const },
-  { href: '#ceremony', labelKey: 'ceremony' as const },
-  { href: '#rsvp', labelKey: 'rsvp' as const },
-  { href: '#gift', labelKey: 'gift' as const },
-  { href: '#faq', labelKey: 'faq' as const },
-  { href: '#contacts', labelKey: 'contacts' as const },
+  { href: '#story', i18nKey: 'landing.nav.story' },
+  { href: '#ceremony', i18nKey: 'landing.nav.ceremony' },
+  // Gallery temporarily hidden from the home page — uncomment together with <GallerySection /> in HomePage.
+  // { href: '#gallery', i18nKey: 'landing.nav.gallery' },
+  { href: '#rsvp', i18nKey: 'landing.nav.rsvp' },
+  { href: '#gift', i18nKey: 'landing.nav.gift' },
+  { href: '#theme', i18nKey: 'navigation.tabs.tema' },
+  { href: '#faq', i18nKey: 'landing.nav.faq' },
+  { href: '#contacts', i18nKey: 'landing.nav.contacts' },
 ] as const;
 
 type NavItem = {
   key: string;
   label: string;
   target: string;
-  /** Home renders in-page anchors; every other screen renders real routes. */
+  /** Home-section anchors render as <a>; page routes as router links. */
   isAnchor: boolean;
   icon?: NavIcon;
 };
@@ -51,24 +48,25 @@ type NavItem = {
  * this screen", so the desktop bar and the mobile panel can't drift apart.
  */
 function getNavItems(isHome: boolean, canManageWedding: boolean, t: TranslateFn): NavItem[] {
-  if (isHome) {
-    return HOME_ANCHORS.map((anchor) => ({
-      key: anchor.href,
-      label: t(`landing.nav.${anchor.labelKey}`),
-      target: anchor.href,
-      isAnchor: true,
+  // The couple only ever manages the wedding, never browses it as a guest —
+  // off the home page they get just their three control-panel sections.
+  if (canManageWedding && !isHome) {
+    return ADMIN_ROUTES.map((route) => ({
+      key: route.to,
+      label: t(route.i18nKey),
+      target: route.to,
+      isAnchor: false,
+      icon: route.icon,
     }));
   }
 
-  // The couple only ever manages the wedding, never browses it as a guest —
-  // no Album/Contatti/Tema, just their three control-panel sections.
-  const routes = canManageWedding ? ADMIN_ROUTES : APP_ROUTES;
-  return routes.map((route) => ({
-    key: route.to,
-    label: t(route.i18nKey),
-    target: route.to,
-    isAnchor: false,
-    icon: 'icon' in route ? route.icon : undefined,
+  // Everyone else sees the home sections on every page. Off the home page the
+  // anchors point back at it ("/#story"), a plain load that lands on the section.
+  return HOME_ANCHORS.map((anchor) => ({
+    key: anchor.href,
+    label: t(anchor.i18nKey),
+    target: isHome ? anchor.href : `/${anchor.href}`,
+    isAnchor: true,
   }));
 }
 
@@ -76,11 +74,13 @@ type NavItemLinkProps = {
   item: NavItem;
   className: string;
   activeClassName?: string;
+  /** Anchors only — route links work out their own active state. */
+  isActive?: boolean;
   onNavigate: () => void;
 };
 
 /** Renders one nav item as an in-page anchor or a router link, same data either way. */
-function NavItemLink({ item, className, activeClassName, onNavigate }: NavItemLinkProps) {
+function NavItemLink({ item, className, activeClassName, isActive, onNavigate }: NavItemLinkProps) {
   const content = (
     <>
       {item.icon ? <item.icon size={16} aria-hidden /> : null}
@@ -90,7 +90,10 @@ function NavItemLink({ item, className, activeClassName, onNavigate }: NavItemLi
 
   if (item.isAnchor) {
     return (
-      <a href={item.target} className={className} onClick={onNavigate}>
+      <a
+        href={item.target}
+        className={`${className}${isActive && activeClassName ? ` ${activeClassName}` : ''}`}
+        onClick={onNavigate}>
         {content}
       </a>
     );
@@ -121,14 +124,16 @@ export function AppTopBar() {
   const showSignOutPill = canManageWedding && !isHome;
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeAnchor, setActiveAnchor] = useState('');
   /* Only the home page hides the bar: there it would cover the hero cover art.
      Every other screen needs its navigation from the first pixel. */
   const isVisible = !isHome || isScrolled;
   const navItems = getNavItems(isHome, canManageWedding, t);
   const closeMobileNav = () => setMobileNavOpen(false);
-  const desktopLinkClassName = isHome
-    ? 'obw-nav__link obw-nav__link--animated site-header__route'
-    : 'obw-nav__link obw-nav__link--pill site-header__route';
+  // One pill style everywhere; guests get the soft translucent variant, the
+  // couple's control panel keeps the bright gold one.
+  const desktopLinkClassName = 'obw-nav__link obw-nav__link--pill site-header__route';
+  const desktopNavClassName = `obw-nav__links obw-nav__links--pill${showSignOutPill ? '' : ' obw-nav__links--soft'}`;
 
   async function handleSignOut() {
     await signOut();
@@ -138,6 +143,24 @@ export function AppTopBar() {
   useEffect(() => {
     function handleScroll() {
       setIsScrolled(window.scrollY > SHOW_AFTER_SCROLL);
+      // Scroll-spy: the last home section whose top has passed 40% of the viewport.
+      // Off the home page none of these exist, so nothing is highlighted.
+      let current = '';
+      for (const anchor of HOME_ANCHORS) {
+        const section = document.querySelector(anchor.href);
+        if (section && section.getBoundingClientRect().top <= window.innerHeight * 0.4) {
+          current = anchor.href;
+        }
+      }
+      // The last section is too short to ever reach that line: once it is fully
+      // on screen it wins. Measured on the section itself, not scrollY vs page
+      // height, which browser zoom and fractional pixels throw off.
+      const lastHref = HOME_ANCHORS[HOME_ANCHORS.length - 1].href;
+      const lastSection = document.querySelector(lastHref);
+      if (current && lastSection && lastSection.getBoundingClientRect().bottom <= window.innerHeight + 8) {
+        current = lastHref;
+      }
+      setActiveAnchor(current);
     }
 
     handleScroll();
@@ -177,7 +200,7 @@ export function AppTopBar() {
 
         <div className="site-header__end">
           <nav
-            className={`obw-nav__links site-header__nav site-header__nav--desktop${isHome ? '' : ' obw-nav__links--pill'}`}
+            className={`${desktopNavClassName} site-header__nav site-header__nav--desktop`}
             aria-label={t('navigation.menu.primary')}>
             {navItems.map((item) => (
               <NavItemLink
@@ -185,6 +208,7 @@ export function AppTopBar() {
                 item={item}
                 className={desktopLinkClassName}
                 activeClassName="is-active"
+                isActive={item.key === activeAnchor}
                 onNavigate={closeMobileNav}
               />
             ))}
@@ -227,6 +251,7 @@ export function AppTopBar() {
               item={item}
               className="site-header__mobile-link site-header__mobile-link--icon"
               activeClassName="is-active"
+              isActive={item.key === activeAnchor}
               onNavigate={closeMobileNav}
             />
           ))}
