@@ -30,4 +30,5 @@ def notify_new_invite_request(first_name: str, last_name: str, phone: str) -> No
         )
         response.raise_for_status()
     except httpx.HTTPError as error:
-        logger.warning("Telegram notification failed: %s", error)
+        status_code = getattr(getattr(error, "response", None), "status_code", None)
+        logger.warning("Telegram notification failed: %s (status %s)", type(error).__name__, status_code)
