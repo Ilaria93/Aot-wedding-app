@@ -1,19 +1,23 @@
-import { MessageCircle, Phone, X } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { MessageCircle, Phone, RotateCw, Send, X } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { AdminModal } from '@/components/AdminModal';
+import { FilterPills } from '@/components/FilterPills';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { PageAlert } from '@/components/PageShell';
+import { SearchBar } from '@/components/SearchBar';
 import { useI18n } from '@/contexts/I18nContext';
 import { getApiStatusCode } from '@/services/apiErrors';
 import {
   approveInviteRequest,
+  fetchAdminInvites,
   fetchPendingInviteRequests,
   markInviteSent,
   rejectInviteRequest,
+  type AdminInviteItem,
   type InviteRequestItem,
 } from '@/services/adminInvitesApi';
-import { INVITE_REQUESTS_CHANGED } from './inviteFilters';
+import { INVITE_REQUESTS_CHANGED, countInvites, filterInvites, type InviteFilter } from './inviteFilters';
 import './styles/AdminInvitesPage.scss';
 
 function fullName(person: { first_name: string; last_name: string }) {
@@ -28,12 +32,21 @@ export function AdminInvitesPage() {
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<number | null>(null);
   const [rejectTarget, setRejectTarget] = useState<InviteRequestItem | null>(null);
+  const [invites, setInvites] = useState<AdminInviteItem[]>([]);
+  const [filter, setFilter] = useState<InviteFilter>('to_send');
+  const [search, setSearch] = useState('');
+  const [sendingId, setSendingId] = useState<number | null>(null);
+
+  const counts = useMemo(() => countInvites(invites), [invites]);
+  const visibleInvites = useMemo(() => filterInvites(invites, filter, search), [invites, filter, search]);
 
   const formatDate = (iso: string) => new Date(iso).toLocaleDateString(locale);
 
   const reload = useCallback(async () => {
     try {
-      setRequests(await fetchPendingInviteRequests());
+      const [nextRequests, nextInvites] = await Promise.all([fetchPendingInviteRequests(), fetchAdminInvites()]);
+      setRequests(nextRequests);
+      setInvites(nextInvites);
     } catch {
       setError(t('admin.invites.loadFailed'));
     } finally {
@@ -106,6 +119,25 @@ export function AdminInvitesPage() {
     }
   }
 
+  async function handleSent(invite: AdminInviteItem) {
+    setError(null);
+    setSendingId(invite.id);
+    try {
+      await markInviteSent(invite.id);
+    } catch {
+      setError(t('admin.invites.actionFailed'));
+    } finally {
+      setSendingId(null);
+      await reload();
+    }
+  }
+
+  function answerLabel(invite: AdminInviteItem) {
+    if (invite.answer === 'attending') return t('admin.invites.answerAttending');
+    if (invite.answer === 'declined') return t('admin.invites.answerDeclined');
+    return t('admin.invites.answerNone');
+  }
+
   if (loading) {
     return <LoadingScreen label={t('common.loading')} />;
   }
@@ -156,6 +188,55 @@ export function AdminInvitesPage() {
               </article>
             ))}
           </div>
+        )}
+      </section>
+
+      <section className="obw-portal-panel admin-invites__section">
+        <h2 className="obw-portal-kicker admin-invites__section-title">{t('admin.invites.listTitle')}</h2>
+        <FilterPills<InviteFilter>
+          options={[
+            { id: 'to_send', label: t('admin.invites.filterToSend', { count: counts.to_send }) },
+            { id: 'sent', label: t('admin.invites.filterSent', { count: counts.sent }) },
+            { id: 'answered', label: t('admin.invites.filterAnswered', { count: counts.answered }) },
+          ]}
+          active={filter}
+          onChange={setFilter}
+        />
+        <SearchBar value={search} onChange={setSearch} placeholder={t('admin.invites.searchPlaceholder')} />
+
+        {visibleInvites.length === 0 ? (
+          <p className="obw-body obw-body--flush">{t('admin.invites.listEmpty')}</p>
+        ) : (
+          <ul className="admin-invites__list">
+            {visibleInvites.map((invite) => (
+              <li key={invite.id} className="obw-portal-card admin-invites__row">
+                <div className="admin-invites__row-info">
+                  <p className="admin-invites__name">{fullName(invite)}</p>
+                  <p className="admin-invites__meta">
+                    <Phone size={14} aria-hidden />
+                    {invite.phone ?? t('admin.invites.noPhone')}
+                  </p>
+                  <p className="admin-invites__meta">
+                    {invite.sent_at
+                      ? t('admin.invites.sentOn', { date: formatDate(invite.sent_at) })
+                      : t('admin.invites.notSent')}
+                    {' · '}
+                    {answerLabel(invite)}
+                  </p>
+                </div>
+                <a
+                  className={`obw-portal-btn${invite.sent_at ? ' obw-portal-btn--secondary' : ''}`}
+                  href={invite.whatsapp_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-disabled={sendingId === invite.id}
+                  onClick={() => void handleSent(invite)}>
+                  {invite.sent_at ? <RotateCw size={14} aria-hidden /> : <Send size={14} aria-hidden />}
+                  {invite.sent_at ? t('admin.invites.resend') : t('admin.invites.send')}
+                </a>
+              </li>
+            ))}
+          </ul>
         )}
       </section>
 

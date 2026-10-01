@@ -52,3 +52,29 @@
   gap: 8px;
   margin-top: var(--obw-space-sm);
 }
+
+.admin-invites__list {
+  display: grid;
+  gap: var(--obw-space-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-invites__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--obw-space-sm);
+}
+
+.admin-invites__row-info {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.admin-invites__row .obw-portal-btn {
+  text-decoration: none;
+}
