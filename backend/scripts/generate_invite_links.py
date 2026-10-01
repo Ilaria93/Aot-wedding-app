@@ -39,8 +39,22 @@ from models.invite_link_model import InviteLink  # noqa: E402
 # even though nothing here calls User directly.
 from models.user_model import User  # noqa: E402,F401
 from services.invite_link_service import generate_unique_token  # noqa: E402
+from services.phone_service import InvalidPhoneError, normalize_phone  # noqa: E402
 
 DEFAULT_BASE_URL = "http://localhost:5173"
+
+
+def _normalized_phone_or_none(raw: str, label: str):
+    """E.164 phone for an imported row, or None (with a message naming the
+    row) when blank or invalid, so approval of invite requests can match it."""
+    raw = (raw or "").strip()
+    if not raw:
+        return None
+    try:
+        return normalize_phone(raw)
+    except InvalidPhoneError:
+        print(f"Telefono non valido per {label}: {raw!r} -> importato senza telefono.")
+        return None
 
 
 def main() -> None:
@@ -74,7 +88,7 @@ def main() -> None:
                     print(f"Riga saltata (nome o cognome vuoto): {row}")
                     continue
 
-                phone = (row.get("phone") or "").strip() or None
+                phone = _normalized_phone_or_none(row.get("phone"), f"{first_name} {last_name}")
                 raw_party_size = (row.get("party_size") or "").strip()
                 party_size = int(raw_party_size) if raw_party_size.isdigit() else None
 

@@ -144,3 +144,12 @@ def test_mark_sent_sets_timestamp(api_client, admin_headers):
     assert response.status_code == 200
     assert response.json()["sent_at"] is not None
     assert api_client.post("/admin/invites/999/mark-sent").status_code == 404
+
+
+def test_script_phone_normalisation(capsys):
+    from scripts.generate_invite_links import _normalized_phone_or_none
+
+    assert _normalized_phone_or_none("+39 333 1234567", "Mario Rossi") == "+393331234567"
+    assert _normalized_phone_or_none("  ", "Mario Rossi") is None
+    assert _normalized_phone_or_none("abc", "Mario Rossi") is None
+    assert "Mario Rossi" in capsys.readouterr().out
