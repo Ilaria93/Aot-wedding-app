@@ -46,8 +46,10 @@ inserire a mano nella dashboard Render — non sono committati.
    - `DATABASE_URL` → connection string Neon
    - `JWT_SECRET_KEY` → nuovo valore random lungo (**diverso** da quello di
      dev), es. `openssl rand -hex 32`
-   - `WEDDING_ROLE_SECRET` → nuovo valore, da condividere solo con
-     sposi/admin
+   - `WEDDING_ADMIN_SECRET` → nuovo valore, da condividere solo con
+     sposi/admin (è il codice che si digita al login)
+   - `COOKIE_SECURE` → `true` (obbligatorio: senza, i cookie di sessione
+     non passano da Vercel a Render e il login dà "Missing access token")
    - `CORS_ALLOW_ORIGINS` → dominio Vercel finale (punto 4, va aggiornato
      dopo il primo deploy Vercel)
    - `S3_BUCKET_NAME`, `S3_REGION` (`auto` per R2), `S3_ACCESS_KEY_ID`,
@@ -59,9 +61,15 @@ inserire a mano nella dashboard Render — non sono committati.
    - `VITE_API_URL` → URL Render del punto 3
 5. Torna su Render e aggiorna `CORS_ALLOW_ORIGINS` con il dominio Vercel
    assegnato (es. `https://aot-wedding.vercel.app`).
-6. Verifica: apri il dominio Vercel, prova login/registrazione, apri
-   `/invito/<token>` generato con
-   `backend/scripts/generate_invite_links.py` puntato al DB Neon.
+6. Verifica: apri il dominio Vercel, entra come sposi, vai su **Inviti**,
+   aggiungi una persona (o importa un CSV) e apri `/invito/<token>` col
+   pulsante "Invia su WhatsApp". In alternativa lo script
+   `backend/scripts/generate_invite_links.py` importa lo stesso CSV da riga
+   di comando.
+7. Su Render imposta anche `SITE_URL` (dominio Vercel, senza slash finale:
+   finisce nei link WhatsApp), `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID`
+   (il bot che avvisa le richieste dalla home, con il link che apre
+   Inviti già compilato).
 
 ## Dare accesso a un'altra persona
 

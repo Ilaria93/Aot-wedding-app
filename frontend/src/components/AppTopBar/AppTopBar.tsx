@@ -1,4 +1,4 @@
-import { Contact, Home, Image as ImageIcon, LogOut, Menu, X } from 'lucide-react';
+import { Contact, Home, Image as ImageIcon, LogOut, Menu, Send, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { ComponentType } from 'react';
@@ -17,8 +17,9 @@ import './styles/AppTopBar.scss';
 
 type NavIcon = ComponentType<{ size?: number; 'aria-hidden'?: boolean }>;
 
-const ADMIN_ROUTES: { to: string; i18nKey: 'admin.nav.rsvp' | 'admin.nav.contacts' | 'admin.nav.gallery'; icon: NavIcon }[] = [
+const ADMIN_ROUTES: { to: string; i18nKey: 'admin.nav.rsvp' | 'admin.nav.contacts' | 'admin.nav.gallery' | 'admin.nav.invites'; icon: NavIcon }[] = [
   { to: '/admin/rsvp', i18nKey: 'admin.nav.rsvp', icon: Home },
+  { to: '/admin/invites', i18nKey: 'admin.nav.invites', icon: Send },
   { to: '/admin/contacts', i18nKey: 'admin.nav.contacts', icon: Contact },
   { to: '/admin/gallery', i18nKey: 'admin.nav.gallery', icon: ImageIcon },
 ];
