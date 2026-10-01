@@ -633,6 +633,7 @@ export const en = {
       loadFailed: 'Could not load the invites.',
       actionFailed: 'Something went wrong. Please try again.',
       alreadyDecided: 'This request had already been handled: the list has been refreshed.',
+      markSentFailed: 'Invite approved and opened on WhatsApp, but it was not marked as sent: you will find it under “To send”.',
     },
     placeholder: {
       comingSoon: 'This section is coming soon.',

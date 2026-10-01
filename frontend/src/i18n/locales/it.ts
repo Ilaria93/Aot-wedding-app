@@ -635,6 +635,7 @@ export const it = {
       loadFailed: 'Non è stato possibile caricare gli inviti.',
       actionFailed: 'Operazione non riuscita. Riprova.',
       alreadyDecided: 'Questa richiesta era già stata gestita: l’elenco è stato aggiornato.',
+      markSentFailed: 'Invito approvato e aperto su WhatsApp, ma non è stato segnato come inviato: lo trovi tra quelli «Da inviare».',
     },
     placeholder: {
       comingSoon: 'Sezione in arrivo.',

@@ -34,7 +34,6 @@ export function AdminInvitesPage() {
   const reload = useCallback(async () => {
     try {
       setRequests(await fetchPendingInviteRequests());
-      setError(null);
     } catch {
       setError(t('admin.invites.loadFailed'));
     } finally {
@@ -61,15 +60,29 @@ export function AdminInvitesPage() {
   async function handleApprove(request: InviteRequestItem) {
     // Open the tab inside the click: browsers block window.open after an await.
     const whatsappTab = window.open('', '_blank');
+    setError(null);
     setBusyId(request.id);
     try {
-      const result = await approveInviteRequest(request.id);
-      if (whatsappTab) whatsappTab.location.href = result.whatsapp_url;
-      else window.location.href = result.whatsapp_url;
-      await markInviteSent(result.invite_link_id);
-    } catch (caughtError) {
-      whatsappTab?.close();
-      reportActionError(caughtError);
+      let result;
+      try {
+        result = await approveInviteRequest(request.id);
+      } catch (caughtError) {
+        whatsappTab?.close();
+        reportActionError(caughtError);
+        return;
+      }
+      try {
+        if (whatsappTab) {
+          whatsappTab.location.href = result.whatsapp_url;
+          await markInviteSent(result.invite_link_id);
+        } else {
+          // Popup blocked: mark as sent before navigating away from this page.
+          await markInviteSent(result.invite_link_id);
+          window.location.href = result.whatsapp_url;
+        }
+      } catch {
+        setError(t('admin.invites.markSentFailed'));
+      }
     } finally {
       setBusyId(null);
       await afterDecision();
@@ -79,6 +92,7 @@ export function AdminInvitesPage() {
   async function confirmReject() {
     if (!rejectTarget) return;
     const target = rejectTarget;
+    setError(null);
     setBusyId(target.id);
     try {
       await rejectInviteRequest(target.id);

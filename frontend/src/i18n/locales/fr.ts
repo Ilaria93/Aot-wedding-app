@@ -637,6 +637,7 @@ export const fr = {
       loadFailed: 'Impossible de charger les invitations.',
       actionFailed: 'L’opération a échoué. Réessaie.',
       alreadyDecided: 'Cette demande avait déjà été traitée : la liste a été mise à jour.',
+      markSentFailed: 'Invitation approuvée et ouverte sur WhatsApp, mais elle n’a pas été marquée comme envoyée : tu la trouveras dans « À envoyer ».',
     },
     placeholder: {
       comingSoon: 'Section bientôt disponible.',

@@ -638,6 +638,7 @@ export const de = {
       loadFailed: 'Die Einladungen konnten nicht geladen werden.',
       actionFailed: 'Das hat nicht geklappt. Bitte erneut versuchen.',
       alreadyDecided: 'Diese Anfrage war bereits bearbeitet: Die Liste wurde aktualisiert.',
+      markSentFailed: 'Einladung bestätigt und in WhatsApp geöffnet, aber nicht als gesendet markiert: Du findest sie unter „Zu senden“.',
     },
     placeholder: {
       comingSoon: 'Dieser Bereich kommt bald.',
