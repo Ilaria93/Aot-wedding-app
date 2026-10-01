@@ -14,6 +14,7 @@ from schemas.invite_request_schema import (
 from services.invite_request_service import (
     InviteNotFoundError,
     InviteRequestNotFoundError,
+    InviteRequestAlreadyDecidedError,
     approve_invite_request,
     count_pending_requests,
     list_admin_invites,
@@ -45,6 +46,8 @@ def approve_request(request_id: int, db: Session = Depends(get_db)):
         return approve_invite_request(db, request_id)
     except InviteRequestNotFoundError as error:
         raise HTTPException(status_code=404, detail=str(error)) from error
+    except InviteRequestAlreadyDecidedError as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
 
 
 @router.post("/invite-requests/{request_id}/reject", response_model=InviteRequestResponse)
@@ -53,6 +56,8 @@ def reject_request(request_id: int, db: Session = Depends(get_db)):
         return reject_invite_request(db, request_id)
     except InviteRequestNotFoundError as error:
         raise HTTPException(status_code=404, detail=str(error)) from error
+    except InviteRequestAlreadyDecidedError as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
 
 
 @router.get("/invites", response_model=list[AdminInviteResponse])

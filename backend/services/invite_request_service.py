@@ -35,6 +35,16 @@ class InviteRequestNotFoundError(Exception):
     pass
 
 
+class InviteRequestAlreadyDecidedError(Exception):
+    pass
+
+
+def _require_pending(request: InviteRequest) -> None:
+    # A double tap or a stale admin tab must not re-decide a request.
+    if request.status != "pending":
+        raise InviteRequestAlreadyDecidedError("Invite request already decided")
+
+
 def _invite_for_phone(db: Session, phone: str) -> Optional[InviteLink]:
     return db.query(InviteLink).filter(InviteLink.phone == phone).order_by(InviteLink.id).first()
 
@@ -71,6 +81,7 @@ def count_pending_requests(db: Session) -> int:
 # gets the same one back); otherwise creates a fresh invite for them.
 def approve_invite_request(db: Session, request_id: int) -> ApproveInviteRequestResponse:
     request = _get_request(db, request_id)
+    _require_pending(request)
     invite = _invite_for_phone(db, request.phone)
     if not invite:
         invite = InviteLink(
@@ -98,6 +109,7 @@ def approve_invite_request(db: Session, request_id: int) -> ApproveInviteRequest
 
 def reject_invite_request(db: Session, request_id: int) -> InviteRequestResponse:
     request = _get_request(db, request_id)
+    _require_pending(request)
     request.status = "rejected"
     request.decided_at = datetime.utcnow()
     db.commit()
@@ -154,7 +166,9 @@ def mark_invite_sent(db: Session, invite_id: int) -> AdminInviteResponse:
     invite = db.query(InviteLink).filter(InviteLink.id == invite_id).first()
     if not invite:
         raise InviteNotFoundError("Invite not found")
-    invite.sent_at = datetime.utcnow()
+    # Resending keeps the first-sent date: "Inviato il" means the first send.
+    if invite.sent_at is None:
+        invite.sent_at = datetime.utcnow()
     db.commit()
     db.refresh(invite)
     return _to_admin_invite(db, invite)

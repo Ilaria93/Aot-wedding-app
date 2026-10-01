@@ -151,3 +151,30 @@ def test_script_phone_normalisation(capsys):
     assert _normalized_phone_or_none("  ", "Mario Rossi") is None
     assert _normalized_phone_or_none("abc", "Mario Rossi") is None
     assert "Mario Rossi" in capsys.readouterr().out
+
+
+def test_approve_twice_is_409(api_client, admin_headers):
+    request_id = _add_request()
+    assert api_client.post(f"/admin/invite-requests/{request_id}/approve").status_code == 200
+    second = api_client.post(f"/admin/invite-requests/{request_id}/approve")
+    assert second.status_code == 409
+    assert second.json()["detail"] == "Invite request already decided"
+
+
+def test_reject_after_approve_is_409(api_client, admin_headers):
+    request_id = _add_request()
+    api_client.post(f"/admin/invite-requests/{request_id}/approve")
+    assert api_client.post(f"/admin/invite-requests/{request_id}/reject").status_code == 409
+
+
+def test_approve_rejected_request_is_409(api_client, admin_headers):
+    request_id = _add_request(status="rejected")
+    assert api_client.post(f"/admin/invite-requests/{request_id}/approve").status_code == 409
+
+
+def test_mark_sent_twice_keeps_first_timestamp(api_client, admin_headers):
+    invite_id = _add_invite()
+    first = api_client.post(f"/admin/invites/{invite_id}/mark-sent").json()["sent_at"]
+    second = api_client.post(f"/admin/invites/{invite_id}/mark-sent").json()["sent_at"]
+    assert first is not None
+    assert second == first
