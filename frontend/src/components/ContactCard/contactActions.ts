@@ -1,6 +1,9 @@
 import type { TranslateFn } from '@/i18n/translations';
 import type { LogisticsContactItem } from '@/services/logisticsContactsApi';
 
+/** What a contact card shows: a backend logistics contact minus its admin bookkeeping. */
+export type ContactCardData = Omit<LogisticsContactItem, 'id' | 'category' | 'sort_order' | 'is_active'>;
+
 export type ContactAction = {
   id: string;
   label: string;
@@ -29,7 +32,7 @@ function normalizeExternalUrl(url: string) {
 }
 
 /** Builds the action buttons shown on each contact card (home, travel page, admin). */
-export function buildContactActions(contact: LogisticsContactItem, t: TranslateFn): ContactAction[] {
+export function buildContactActions(contact: ContactCardData, t: TranslateFn): ContactAction[] {
   const actions: ContactAction[] = [];
 
   if (contact.phone) {

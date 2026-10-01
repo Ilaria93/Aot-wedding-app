@@ -325,7 +325,7 @@ export const it = {
     },
     contacts: {
       title: 'Contatti utili',
-      empty: 'I contatti utili per il viaggio e il giorno del matrimonio arriveranno presto.',
+      coupleKicker: 'Gli sposi',
     },
   },
   auth: {

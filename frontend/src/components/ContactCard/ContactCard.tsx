@@ -2,8 +2,7 @@ import type { CSSProperties } from 'react';
 import { Facebook, Globe, Instagram, Mail, MessageCircle, Phone } from 'lucide-react';
 
 import { useI18n } from '@/contexts/I18nContext';
-import type { LogisticsContactItem } from '@/services/logisticsContactsApi';
-import { buildContactActions } from '@/components/ContactCard/contactActions';
+import { buildContactActions, type ContactCardData } from '@/components/ContactCard/contactActions';
 import './styles/ContactCard.scss';
 
 const ACTION_ICONS = {
@@ -17,7 +16,7 @@ const ACTION_ICONS = {
 } as const;
 
 type ContactCardProps = {
-  contact: LogisticsContactItem;
+  contact: ContactCardData;
   /** Optional line above the name, e.g. the category on the home page. */
   kicker?: string;
   className?: string;

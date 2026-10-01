@@ -3,10 +3,9 @@ import { useEffect, useState } from 'react';
 
 import { ContactCard } from '@/components/ContactCard';
 import { getLogisticsContactCategoryLabel, LOGISTICS_CONTACT_CATEGORY_IDS } from '@/constants/logistics';
+import { WEDDING_COUPLE_CONTACT } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
 import { fetchPublicLogisticsContacts, type LogisticsContactItem } from '@/services/logisticsContactsApi';
-
-type ContactsState = { status: 'loading' } | { status: 'empty' } | { status: 'ready'; contacts: LogisticsContactItem[] };
 
 /** Contacts the couple manages in admin (public, active ones), in category order. */
 function sortByCategory(contacts: LogisticsContactItem[]) {
@@ -15,21 +14,19 @@ function sortByCategory(contacts: LogisticsContactItem[]) {
   );
 }
 
-/** Landing "Contatti utili": the logistics contacts added by the couple in admin. */
+/** Landing "Contatti utili": the couple first, then the logistics contacts they add in admin. */
 export function LandingContactsSection() {
   const { t } = useI18n();
-  const [state, setState] = useState<ContactsState>({ status: 'loading' });
+  const [contacts, setContacts] = useState<LogisticsContactItem[]>([]);
 
   useEffect(() => {
     let active = true;
     fetchPublicLogisticsContacts()
-      .then((contacts) => {
-        if (active) setState(contacts.length ? { status: 'ready', contacts: sortByCategory(contacts) } : { status: 'empty' });
+      .then((items) => {
+        if (active) setContacts(sortByCategory(items));
       })
-      // A failed load reads the same as "nothing yet" here: the travel page has the retry.
-      .catch(() => {
-        if (active) setState({ status: 'empty' });
-      });
+      // A failed load just leaves the couple's card on its own.
+      .catch(() => undefined);
     return () => {
       active = false;
     };
@@ -50,21 +47,17 @@ export function LandingContactsSection() {
           </div>
         </div>
 
-        {state.status === 'ready' ? (
-          <div className="obw-grid-3 landing-contacts__grid">
-            {state.contacts.map((contact) => (
-              <div key={contact.id} className="obw-card obw-card--dark">
-                <ContactCard contact={contact} kicker={getLogisticsContactCategoryLabel(contact.category, t)} />
-              </div>
-            ))}
+        <div className="obw-grid-3 landing-contacts__grid">
+          {/* The couple always leads, whatever the admin list holds. */}
+          <div className="obw-card obw-card--dark">
+            <ContactCard contact={WEDDING_COUPLE_CONTACT} kicker={t('landing.contacts.coupleKicker')} />
           </div>
-        ) : null}
-
-        {state.status === 'empty' ? (
-          <div className="obw-card obw-card--dark landing-box">
-            <p className="obw-body obw-body--flush">{t('landing.contacts.empty')}</p>
-          </div>
-        ) : null}
+          {contacts.map((contact) => (
+            <div key={contact.id} className="obw-card obw-card--dark">
+              <ContactCard contact={contact} kicker={getLogisticsContactCategoryLabel(contact.category, t)} />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

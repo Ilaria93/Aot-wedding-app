@@ -325,7 +325,7 @@ export const en = {
     },
     contacts: {
       title: 'Useful contacts',
-      empty: 'Useful contacts for the trip and the wedding day will be here soon.',
+      coupleKicker: 'The couple',
     },
   },
   auth: {
