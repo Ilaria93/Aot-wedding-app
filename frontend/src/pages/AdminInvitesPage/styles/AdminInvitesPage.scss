@@ -51,21 +51,38 @@
   gap: var(--obw-space-sm);
 }
 
+/* Name on the left and the buttons on the right of the first row; the one-line
+   info (phone, party size, sent, answer) runs under both. On a narrow card
+   everything stacks: name, info, buttons. */
 .admin-invites__card-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--obw-space-sm);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 4px var(--obw-space-sm);
+}
+
+@media (max-width: 899px) {
+  .admin-invites__card-head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-invites__card-head .admin-invites__actions {
+    grid-column: 1;
+    grid-row: 3;
+    justify-content: flex-start;
+    margin-top: var(--obw-space-xs);
+  }
 }
 
 .admin-invites__row-info {
-  display: grid;
-  gap: 4px;
-  min-width: 0;
+  /* Its children (name, info line) sit directly in the card-head grid. */
+  display: contents;
 }
 
 .admin-invites__name {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
   margin: 0;
   font-family: var(--font-sans);
   font-size: 1.05rem;
@@ -74,6 +91,11 @@
 }
 
 /* The greeting the guest will read on the envelope: "Cara famiglia Rossi,". */
+.admin-invites__card-head .admin-invites__meta {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
 .admin-invites__meta.admin-invites__meta--row {
   gap: 4px 18px;
 }
@@ -94,13 +116,13 @@
   color: color-mix(in srgb, var(--obw-bone) 72%, var(--obw-stone));
 }
 
-/* The whole row, buttons spread out with the same gap between each (the
-   delete icon ends up at the right edge). If the row is too narrow they wrap. */
+/* Top right of the card, next to the name. */
 .admin-invites__actions {
   display: flex;
-  flex: 1 1 100%;
   flex-wrap: wrap;
-  justify-content: space-between;
+  grid-column: 2;
+  grid-row: 1;
+  justify-content: flex-end;
   gap: 8px;
 }
 
