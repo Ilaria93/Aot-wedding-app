@@ -299,6 +299,14 @@
   min-height: 100svh;
   background: var(--obw-void);
   color: var(--obw-bone);
+  /* Depth for the crest's slow flip. */
+  perspective: 700px;
+}
+
+.loading-screen--overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
 }
 
 .loading-screen__crest {
@@ -306,26 +314,24 @@
   width: clamp(96px, 22vw, 148px);
   height: auto;
   filter: drop-shadow(0 2px 14px rgba(42, 22, 20, 0.55));
-  animation: loading-crest-breathe 2.4s ease-in-out infinite;
+  animation: loading-crest-flip 3.6s ease-in-out infinite;
 }
 
-@keyframes loading-crest-breathe {
-  0%,
-  100% {
-    opacity: 0.72;
-    transform: scale(0.96);
+/* One slow turn around its vertical axis, easing in and out so it lingers
+   face-on at both ends instead of spinning like a coin. */
+@keyframes loading-crest-flip {
+  from {
+    transform: rotateY(0deg);
   }
 
-  50% {
-    opacity: 1;
-    transform: scale(1);
+  to {
+    transform: rotateY(360deg);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .loading-screen__crest {
     animation: none;
-    opacity: 1;
   }
 }
 

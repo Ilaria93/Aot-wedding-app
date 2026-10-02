@@ -19,6 +19,7 @@ import { createPortal } from 'react-dom';
 import { AdminModal } from '@/components/AdminModal';
 import { FilterPills, type FilterPillOption } from '@/components/FilterPills';
 import { PageAlert } from '@/components/PageShell';
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { Pagination } from '@/components/Pagination';
 import { GuestList } from '@/components/Rsvp/GuestList';
 import { SearchBar } from '@/components/SearchBar';
@@ -145,6 +146,9 @@ export function AdminRsvpPage() {
   const [filter, setFilter] = useState<AdminRsvpEntryFilter>('all');
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  // The crest covers the page until both the summary and the first list are in.
+  const [summaryLoaded, setSummaryLoaded] = useState(false);
+  const [entriesLoadedOnce, setEntriesLoadedOnce] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [assigningRsvpId, setAssigningRsvpId] = useState<number | null>(null);
   const [newTable, setNewTable] = useState<TableDraft>(EMPTY_TABLE_DRAFT);
@@ -186,6 +190,8 @@ export function AdminRsvpPage() {
       setTableUsage(computeTableUsage(tablesResponse, allEntries));
     } catch (caughtError) {
       setError(getApiErrorMessage(caughtError, t('admin.rsvpEntries.loadFailed')));
+    } finally {
+      setSummaryLoaded(true);
     }
   }, [t]);
 
@@ -209,7 +215,10 @@ export function AdminRsvpPage() {
           setError(getApiErrorMessage(caughtError, t('admin.rsvpEntries.loadFailed')));
         })
         .finally(() => {
-          if (active) setLoading(false);
+          if (active) {
+            setLoading(false);
+            setEntriesLoadedOnce(true);
+          }
         });
     }, 300);
 
@@ -344,6 +353,10 @@ export function AdminRsvpPage() {
     { id: 'children', label: t('admin.rsvpEntries.filterChildren', { count: counts.children }), icon: Baby },
   ];
 
+  if (!summaryLoaded || !entriesLoadedOnce) {
+    return <LoadingScreen overlay label={t('common.loading')} />;
+  }
+
   return (
     <>
       {statCards.length > 0 && heroStatsSlot ? createPortal(<StatCards cards={statCards} />, heroStatsSlot) : null}
@@ -368,10 +381,8 @@ export function AdminRsvpPage() {
 
           {error ? <PageAlert message={error} /> : null}
 
-          {loading ? (
-            <p className="obw-body obw-body--flush">{t('common.loading')}</p>
-          ) : entries.length === 0 ? (
-            <p className="obw-body obw-body--flush admin-rsvp__empty">{t('admin.rsvpEntries.empty')}</p>
+          {entries.length === 0 ? (
+            loading ? null : <p className="obw-body obw-body--flush admin-rsvp__empty">{t('admin.rsvpEntries.empty')}</p>
           ) : (
               <>
                 <GuestList

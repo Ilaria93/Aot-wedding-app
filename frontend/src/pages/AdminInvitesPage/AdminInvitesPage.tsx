@@ -4,11 +4,13 @@ import { useSearchParams } from 'react-router-dom';
 
 import { copyToClipboard } from '@/components/HoneymoonGiftSection/copyToClipboard';
 import { FilterPills } from '@/components/FilterPills';
+import { Pagination } from '@/components/Pagination';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { PageAlert } from '@/components/PageShell';
 import { SearchBar } from '@/components/SearchBar';
 import { useI18n } from '@/contexts/I18nContext';
 import {
+  deleteInvite,
   fetchAdminInvites,
   fetchPersonWhatsappUrl,
   markInviteSent,
@@ -38,6 +40,9 @@ function formFromPerson(
 }
 
 /** Admin section: the guest table — add people, link families and couples, send invites on WhatsApp. */
+// Cards are tall: a page of them, not the whole guest list at once.
+const PAGE_SIZE = 8;
+
 export function AdminInvitesPage() {
   const { t, locale } = useI18n();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -47,6 +52,7 @@ export function AdminInvitesPage() {
   const [notice, setNotice] = useState<string | null>(null);
   const [filter, setFilter] = useState<InviteFilter>('to_send');
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
   const [dialog, setDialog] = useState<PersonDialogMode | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [sendingId, setSendingId] = useState<number | null>(null);
@@ -54,6 +60,13 @@ export function AdminInvitesPage() {
 
   const counts = useMemo(() => countInvites(invites), [invites]);
   const visibleInvites = useMemo(() => filterInvites(invites, filter, search), [invites, filter, search]);
+  const totalPages = Math.max(1, Math.ceil(visibleInvites.length / PAGE_SIZE));
+  // Deleting or filtering can leave the current page past the end.
+  const currentPage = Math.min(page, totalPages);
+  const pageInvites = useMemo(
+    () => visibleInvites.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [visibleInvites, currentPage],
+  );
   const editableHeads = useMemo(() => invites.filter((invite) => invite.editable), [invites]);
 
   const formatDate = useCallback((iso: string) => new Date(iso).toLocaleDateString(locale), [locale]);
@@ -137,6 +150,25 @@ export function AdminInvitesPage() {
     }
   }
 
+  // Deleting is final: an answered invite also loses the answer and the guest's account.
+  async function handleDelete(invite: AdminInviteItem) {
+    const name = `${invite.first_name} ${invite.last_name}`;
+    const message =
+      invite.answer === 'none'
+        ? t('admin.invites.confirmDelete', { name })
+        : t('admin.invites.confirmDeleteAnswered', { name });
+    if (!window.confirm(message)) return;
+    setError(null);
+    setNotice(null);
+    try {
+      await deleteInvite(invite.id);
+      setNotice(t('admin.invites.deleted', { name }));
+    } catch {
+      setError(t('admin.invites.actionFailed'));
+    }
+    await reload();
+  }
+
   async function handleCopy(invite: AdminInviteItem) {
     setError(null);
     if (await copyToClipboard(invite.invite_url)) {
@@ -204,15 +236,24 @@ export function AdminInvitesPage() {
             { id: 'answered', label: t('admin.invites.filterAnswered', { count: counts.answered }) },
           ]}
           active={filter}
-          onChange={setFilter}
+          onChange={(next) => {
+            setFilter(next);
+            setPage(1);
+          }}
         />
-        <SearchBar value={search} onChange={setSearch} placeholder={t('admin.invites.searchPlaceholder')} />
+        <SearchBar
+          value={search}
+          onChange={(next) => {
+            setSearch(next);
+            setPage(1);
+          }}
+          placeholder={t('admin.invites.searchPlaceholder')} />
 
         {visibleInvites.length === 0 ? (
           <p className="obw-body obw-body--flush">{t('admin.invites.listEmpty')}</p>
         ) : (
           <ul className="admin-invites__list">
-            {visibleInvites.map((invite) => (
+            {pageInvites.map((invite) => (
               <InviteCard
                 key={invite.id}
                 invite={invite}
@@ -224,10 +265,22 @@ export function AdminInvitesPage() {
                 onEdit={handleEdit}
                 onEditMember={handleEditMember}
                 onAddMember={handleAddMember}
+                onDelete={(invite) => void handleDelete(invite)}
               />
             ))}
           </ul>
         )}
+
+        {totalPages > 1 ? (
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            label={t('admin.rsvpEntries.pageOf', { page: currentPage, totalPages })}
+            prevLabel={t('admin.rsvpEntries.prevPage')}
+            nextLabel={t('admin.rsvpEntries.nextPage')}
+            onChange={setPage}
+          />
+        ) : null}
       </section>
 
       {dialog ? (

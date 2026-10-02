@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 
 from database.base import get_db
@@ -7,6 +7,7 @@ from schemas.rsvp_confirmation_schema import RSVPSubmitRequest
 from services.auth_cookie_service import set_auth_cookies
 from services.guest_access_service import GuestInviteNotFoundError, confirm_guest_rsvp
 from services.rsvp_service import RsvpDeadlineError
+from services.telegram_notify_service import notify_guest_rsvp
 
 router = APIRouter(prefix="/invites")
 
@@ -19,6 +20,7 @@ def confirm_rsvp_via_invite(
     token: str,
     payload: RSVPSubmitRequest,
     response: Response,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
 ):
     try:
@@ -28,4 +30,12 @@ def confirm_rsvp_via_invite(
     except RsvpDeadlineError as error:
         raise HTTPException(status_code=403, detail=str(error)) from error
     set_auth_cookies(response, session)
+    # After the answer is saved: a failed Telegram ping can't undo it.
+    background_tasks.add_task(
+        notify_guest_rsvp,
+        session.user.first_name,
+        session.user.last_name,
+        payload.attending,
+        [f"{guest.first_name} {guest.last_name}" for guest in payload.guests],
+    )
     return GuestRsvpConfirmResponse(user=session.user, rsvp=rsvp)

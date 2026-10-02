@@ -684,6 +684,10 @@ export const de = {
       close: 'Schließen',
       loadFailed: 'Die Einladungen konnten nicht geladen werden.',
       actionFailed: 'Vorgang fehlgeschlagen. Versuche es erneut.',
+      delete: 'Einladung löschen',
+      confirmDelete: 'Einladung von {{name}} und die Personen der Gruppe löschen? Das lässt sich nicht rückgängig machen.',
+      confirmDeleteAnswered: '{{name}} hat bereits geantwortet. Beim Löschen der Einladung werden auch Antwort und Zugang entfernt, unwiderruflich. Fortfahren?',
+      deleted: 'Einladung von {{name}} wurde gelöscht.',
       markSentFailed: 'WhatsApp wurde geöffnet, aber die Einladung wurde nicht als gesendet markiert: versuche es erneut unter „Zu senden“.',
     },
     placeholder: {

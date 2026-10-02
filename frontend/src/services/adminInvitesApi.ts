@@ -99,6 +99,12 @@ export async function updateInvite(id: number, payload: UpdateInvitePayload): Pr
   return data;
 }
 
+// Removes the head and the whole group; if the guest already answered, their
+// answer and guest account go too (the page asks for confirmation first).
+export async function deleteInvite(id: number): Promise<void> {
+  await apiClient.delete(`/admin/invites/${id}`);
+}
+
 // Called right after the admin opens the WhatsApp link.
 export async function markInviteSent(inviteId: number): Promise<AdminInviteItem> {
   const { data } = await apiClient.post<AdminInviteItem>(`/admin/invites/${inviteId}/mark-sent`);
