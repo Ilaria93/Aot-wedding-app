@@ -9,7 +9,7 @@ const PUBLIC_PATHS = new Set([
 ]);
 // Prefix, not exact match: the token segment is different for every guest link.
 const PUBLIC_PATH_PREFIXES = ['/invito/'];
-const ALWAYS_PROTECTED_PATHS = new Set(['/profile', '/rsvp', '/travel']);
+const ALWAYS_PROTECTED_PATHS = new Set(['/rsvp', '/travel']);
 // Prefix: /admin has sub-routes (rsvp/contacts/gallery) that must stay just as protected.
 const ALWAYS_PROTECTED_PATH_PREFIXES = ['/admin'];
 

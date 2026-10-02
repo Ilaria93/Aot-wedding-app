@@ -1,23 +1,248 @@
-.guest-rsvp-page--centered {
+/* Page frame, header, cards and buttons come from the home's styles (the
+   .landing-page rules in HomePage.scss); this only adapts the shared RSVP form
+   to that look. */
+
+.guest-rsvp-page__header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 60vh;
+  gap: 14px;
   text-align: center;
-  gap: var(--obw-space-sm);
 }
 
-.guest-rsvp-page__inner {
+.guest-rsvp-page__header .obw-kicker,
+.guest-rsvp-page__header .obw-display {
+  margin: 0;
+}
+
+.guest-rsvp-page__header .obw-body {
+  max-width: 36rem;
+  color: var(--obw-bone);
+}
+
+/* The form card: the home's glass card, with the same inner padding. */
+.guest-rsvp-page .rsvp-panel {
+  box-sizing: border-box;
+  width: 100%;
+  padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1.25rem, 3vw, 2.5rem);
+}
+
+/* The page column centres its text; the form reads left-aligned, only its question stays centred. */
+.guest-rsvp-page .rsvp-panel {
+  text-align: left;
+}
+
+.guest-rsvp-page .rsvp-panel__header {
+  margin-bottom: var(--obw-space-md);
+  text-align: center;
+}
+
+.guest-rsvp-page .rsvp-panel__header .obw-display {
+  margin: 0;
+}
+
+/* One person's lines: translucent over the artwork instead of an opaque brown block. */
+.guest-rsvp-page .rsvp-guest-card {
+  border-color: var(--obw-border-dark);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--obw-void) 35%, transparent);
+}
+
+.guest-rsvp-page .rsvp-guest-card:hover {
+  box-shadow: none;
+}
+
+.guest-rsvp-page .rsvp-guest-card--account {
+  border-color: color-mix(in srgb, var(--obw-gold) 55%, transparent);
+  background: color-mix(in srgb, var(--obw-void) 35%, transparent);
+}
+
+.guest-rsvp-page .rsvp-guest-card--account::before {
+  display: none;
+}
+
+/* Yes / No choices and fields: same 8px corners as the buttons and the login. */
+.guest-rsvp-page .obw-choice {
+  border-radius: 8px;
+  border-color: var(--obw-border-dark);
+  background: color-mix(in srgb, var(--obw-void) 35%, transparent);
+}
+
+.guest-rsvp-page .obw-choice.is-active {
+  border-color: var(--obw-gold);
+  background: color-mix(in srgb, var(--obw-gold) 14%, transparent);
+  box-shadow: none;
+}
+
+.guest-rsvp-page .obw-input,
+.guest-rsvp-page .obw-select,
+.guest-rsvp-page .obw-textarea {
+  border-radius: 8px;
+}
+
+/* "Add participant": the home's lilac button (untouched), just compact and on
+   the right so it doesn't compete with "Confirm". */
+.guest-rsvp-page .rsvp-panel__add-guest {
+  display: flex;
+  width: fit-content;
+  min-height: 42px;
+  margin-left: auto;
+  padding: 10px 18px 10px calc(18px + 0.12em);
+  letter-spacing: 0.12em;
+}
+
+/* Same light text as the page subtitle. */
+.guest-rsvp-page .rsvp-panel__limit {
+  max-width: 28rem;
+  margin-inline: auto;
+  color: var(--obw-bone);
+}
+
+/* "Confirm": fades from the page's dark brown to transparent, with the home's
+   lilac border and a lilac label. */
+.guest-rsvp-page .rsvp-panel__actions .obw-btn--primary,
+.guest-rsvp-page .guest-rsvp-page__cta {
+  border-color: #db7fb0;
+  background: linear-gradient(180deg, #1c0e0d, #ffffff00);
+  color: #db7fb0;
+}
+
+.guest-rsvp-page .rsvp-panel__actions .obw-btn--primary:hover,
+.guest-rsvp-page .guest-rsvp-page__cta:hover {
+  border-color: #db7fb0;
+  background: linear-gradient(180deg, #1c0e0d, #ffffff00);
+  color: #f0a8cf;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #db7fb0 35%, transparent);
+}
+
+/* Thank-you and saved-answer pages: the two actions on one row — "Edit" (the
+   home's lilac) on the left, "Go to the site" (same look as "Confirm") on the right. */
+.guest-rsvp-page__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--obw-space-sm);
+  width: 100%;
+}
+
+.guest-rsvp-page__actions .obw-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 42px;
+  padding: 10px 16px 10px calc(16px + 0.12em);
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+/* Pinned layout (thank-you, saved answer, form): content at the top, the action(s) at the foot of the screen. */
+.guest-rsvp-page--pinned .landing-page__body {
   display: flex;
   flex-direction: column;
-  gap: var(--obw-space-lg);
+  min-height: 100svh;
 }
 
-.guest-rsvp-page__header {
+.guest-rsvp-page--pinned .landing-page__body > .obw-section {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.guest-rsvp-page--pinned .obw-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+/* The one button takes the full column, solid gold like the admin login button. */
+.guest-rsvp-page .guest-rsvp-page__cta--wide {
+  width: 100%;
+  min-height: 46px;
+  margin-top: auto;
+  border-color: var(--obw-gold);
+  background: var(--obw-gold);
+  color: var(--obw-void);
+  text-shadow: none;
+}
+
+.guest-rsvp-page .guest-rsvp-page__cta--wide:hover {
+  border-color: var(--obw-gold-bright);
+  background: var(--obw-gold-bright);
+  color: var(--obw-void);
+  box-shadow: none;
+}
+
+/* Alone (edits closed), the single button keeps half the row, on the right. */
+.guest-rsvp-page__actions .obw-btn:only-child {
+  flex: 0 0 calc(50% - var(--obw-space-sm) / 2);
+  margin-left: auto;
+}
+
+/* The summary card sits in the same column as the buttons below it: the
+   .rsvp-panel padding above is for the form card, not this wrapper. */
+.guest-rsvp-page .rsvp-panel--confirmed {
+  width: 100%;
+  padding: 0;
+  text-align: left;
+}
+
+/* Guest names in the summary: the script font is unreadable at this size, so
+   they use the same spaced capitals as the "Participants" heading, in gold. */
+.guest-rsvp-page .rsvp-guest-summary__name {
+  font-family: var(--font-kicker);
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--obw-gold);
+}
+
+/* The two actions at the foot of the screen: "Edit" in solid gold (like the
+   admin login button), "Go to the site" in the home's pink. */
+.guest-rsvp-page .guest-rsvp-page__actions {
+  margin-top: auto;
+}
+
+.guest-rsvp-page .guest-rsvp-page__edit {
+  border-color: var(--obw-gold);
+  background: var(--obw-gold);
+  color: var(--obw-void);
+  text-shadow: none;
+}
+
+.guest-rsvp-page .guest-rsvp-page__edit:hover {
+  border-color: var(--obw-gold-bright);
+  background: var(--obw-gold-bright);
+  color: var(--obw-void);
+}
+
+.guest-rsvp-page .guest-rsvp-page__actions .guest-rsvp-page__cta {
+  border-color: color-mix(in srgb, #db7fb0 70%, transparent);
+  background: color-mix(in srgb, #db7fb0 38%, transparent);
+  color: var(--obw-bone);
+}
+
+.guest-rsvp-page .guest-rsvp-page__actions .guest-rsvp-page__cta:hover {
+  border-color: #db7fb0;
+  background: color-mix(in srgb, #db7fb0 60%, transparent);
+  color: var(--obw-bone);
+  box-shadow: none;
+}
+
+/* In the form the card stretches to the foot of the screen, so "Confirm" stays at
+   the bottom even when "No" leaves little above it. */
+.guest-rsvp-page--pinned .rsvp-panel:not(.rsvp-panel--confirmed) {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.guest-rsvp-page--pinned .rsvp-panel__actions {
+  margin-top: auto;
+  padding-top: var(--obw-space-lg);
+}
+
+/* "Are you sure you can't make it?" — centred like the page subtitle. */
+.guest-rsvp-page .rsvp-panel__not-attending {
+  margin-top: var(--obw-space-lg);
   text-align: center;
-}
-
-.guest-rsvp-page__email {
-  max-width: 28rem;
+  color: var(--obw-bone);
 }

@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { EnvelopeInvite } from '@/components/EnvelopeInvite';
 import { useI18n } from '@/contexts/I18nContext';
-import { fetchInviteByToken, type InviteLink } from '@/services/inviteApi';
+import { fetchInviteByToken, fetchInviteRsvp, type InviteLink } from '@/services/inviteApi';
 
 import './styles/InvitePage.scss';
 
-type LoadState = 'loading' | 'ready' | 'error';
+type LoadState = 'loading' | 'ready' | 'error' | 'answered';
 
 /** Landing page for the personalized WhatsApp invite link (`/invito/:token`). */
 export function InvitePage() {
@@ -28,10 +28,14 @@ export function InvitePage() {
 
     async function loadInvite() {
       try {
-        const result = await fetchInviteByToken(currentToken);
+        // The saved answer is optional: if it can't be read, show the envelope as usual.
+        const [result, rsvp] = await Promise.all([
+          fetchInviteByToken(currentToken),
+          fetchInviteRsvp(currentToken).catch(() => null),
+        ]);
         if (isMounted) {
           setInvite(result);
-          setState('ready');
+          setState(rsvp?.has_rsvp ? 'answered' : 'ready');
         }
       } catch {
         if (isMounted) {
@@ -49,6 +53,11 @@ export function InvitePage() {
 
   if (state === 'loading') {
     return <LoadingScreen label={t('common.loading')} />;
+  }
+
+  // Already answered: skip the envelope and show what they confirmed.
+  if (state === 'answered') {
+    return <Navigate to={`/invito/${token}/rsvp`} replace />;
   }
 
   if (state === 'error' || !invite) {

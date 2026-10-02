@@ -471,7 +471,7 @@ export const en = {
     mealLabel: 'Meal type',
     intoleranceLabel: 'Intolerances',
     isChildLabel: 'Is a child',
-    maxGuestsReached: 'You reached the maximum of 10 participants per booking.',
+    maxGuestsReached: 'You reached the maximum of {{max}} participants per booking.',
     deadlineClosedTitle: 'Edits closed',
     deadlineClosedBanner:
       'Edits are closed: you can review your summary but cannot update the booking.',
@@ -924,8 +924,13 @@ export const en = {
     greetingSingle: 'Dear {{name}},',
     greetingCouple: 'Dear {{name}},',
     greetingFamily: 'Dear {{name}} family,',
-    headline: 'We joyfully invite you',
-    coupleNames: 'Ilaria & Davide',
+    headlineSingleM: 'you are officially invited',
+    headlineSingleF: 'you are officially invited',
+    headlineSingle: 'you are officially invited',
+    headlinePlural: 'you are officially invited',
+    weddingOf: 'to the wedding of',
+    takesPlace: 'taking place on',
+    coupleNames: 'Davide & Ilaria',
     ceremonyStart: 'We look forward to seeing you at 5:00 PM, ceremony start.',
     intro: "It would mean the world to have you with us. Bring only yourselves and the will to dance until late.",
     rsvpSection: {
@@ -946,7 +951,12 @@ export const en = {
   },
   guestRsvp: {
     intro: "Confirm your attendance and your group's.",
+    guestsHint: 'Add whoever is coming with you, with name, surname and dietary needs.',
+    addGuest: 'Add',
+    notAttendingHint: "Are you sure you can't make it?",
     confirmedTitle: 'Thank you, all set.',
     confirmedBody: 'Your confirmation is saved. Reopen the same link any time to come back to this page.',
+    declinedBody:
+      "We're so sorry you won't be able to join us on our most important day. If you change your mind, reopen this link to edit your answer.",
   },
 } as const;

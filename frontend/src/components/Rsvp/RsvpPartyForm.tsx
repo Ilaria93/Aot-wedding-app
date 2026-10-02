@@ -12,6 +12,12 @@ type RsvpPartyFormProps = {
   submitting: boolean;
   isEditMode: boolean;
   fieldErrors: RsvpGuestFieldError[];
+  /** Overrides the default "first row is your account" hint, which only fits a logged-in guest. */
+  guestsHint?: string;
+  /** Overrides the "add guest" button label (the guest page uses a shorter one). */
+  addGuestLabel?: string;
+  /** Overrides the text shown when "No" is selected. */
+  notAttendingHint?: string;
   /** Read from the backend — see useRsvpDraft — never hardcoded here. */
   partyLimits: RsvpPartyLimits;
   onAttendingChange: (attending: boolean) => void;
@@ -28,6 +34,9 @@ export function RsvpPartyForm({
   isEditMode,
   fieldErrors,
   partyLimits,
+  guestsHint,
+  addGuestLabel,
+  notAttendingHint,
   onAttendingChange,
   onGuestsChange,
   onSubmit,
@@ -54,9 +63,8 @@ export function RsvpPartyForm({
   }
 
   return (
-    <section className="obw-card obw-card--interactive rsvp-panel obw-fade-up">
+    <section className="obw-card obw-card--dark obw-card--interactive rsvp-panel obw-fade-up">
       <header className="rsvp-panel__header">
-        <p className="obw-kicker">{t('rsvp.formTitle')}</p>
         <h2 className="obw-display obw-display--sm">{t('rsvp.attendQuestion')}</h2>
       </header>
 
@@ -87,7 +95,7 @@ export function RsvpPartyForm({
               {t('rsvp.partyCount', { current: guests.length, max: partyLimits.max })}
             </p>
           </div>
-          <p className="obw-body rsvp-panel__hint">{t('rsvp.guestsHint')}</p>
+          <p className="obw-body rsvp-panel__hint">{guestsHint ?? t('rsvp.guestsHint')}</p>
 
           <div className="rsvp-guest-list">
             {guests.map((guest, index) => (
@@ -106,15 +114,24 @@ export function RsvpPartyForm({
             <button
               type="button"
               className="obw-btn obw-btn--secondary rsvp-panel__add-guest"
-              onClick={addGuest}>
-              {t('rsvp.addGuest')}
+              onClick={(event) => {
+                // A mouse/touch click shouldn't leave the button highlighted
+                // (focus ring); detail is 0 for keyboard, which keeps its focus.
+                if (event.detail > 0) {
+                  event.currentTarget.blur();
+                }
+                addGuest();
+              }}>
+              {addGuestLabel ?? t('rsvp.addGuest')}
             </button>
           ) : (
-            <p className="obw-body rsvp-panel__hint">{t('rsvp.maxGuestsReached')}</p>
+            <p className="obw-body rsvp-panel__hint rsvp-panel__limit">
+              {t('rsvp.maxGuestsReached', { max: partyLimits.max })}
+            </p>
           )}
         </div>
       ) : (
-        <p className="obw-body">{t('rsvp.notAttendingHint')}</p>
+        <p className="obw-body rsvp-panel__not-attending">{notAttendingHint ?? t('rsvp.notAttendingHint')}</p>
       )}
 
       <div className="rsvp-panel__actions">

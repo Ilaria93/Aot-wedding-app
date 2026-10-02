@@ -1,4 +1,5 @@
 import { apiClient } from '@/services/apiClient';
+import type { RsvpMe } from '@/services/rsvpApi';
 
 export type GreetingKind = 'family' | 'couple' | 'single_m' | 'single_f' | 'single';
 
@@ -16,6 +17,15 @@ export type InviteLink = {
 /** Reads the guest name behind a WhatsApp invite token. Public endpoint, no auth. */
 export async function fetchInviteByToken(token: string): Promise<InviteLink> {
   const { data } = await apiClient.get<InviteLink>(`/invites/${token}`);
+  return data;
+}
+
+/**
+ * The answer this invite already gave, or null if none yet. Public: the token
+ * is the only credential, same as for the invite itself.
+ */
+export async function fetchInviteRsvp(token: string): Promise<RsvpMe | null> {
+  const { data } = await apiClient.get<RsvpMe | null>(`/invites/${token}/rsvp`);
   return data;
 }
 

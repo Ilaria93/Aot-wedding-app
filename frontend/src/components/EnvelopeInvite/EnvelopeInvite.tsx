@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 
 import {
@@ -9,9 +9,12 @@ import {
 } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
 import type { GreetingKind } from '@/services/inviteApi';
-import { formatInviteGreeting } from './inviteGreeting';
+import { formatInviteGreeting, formatInviteHeadline } from './inviteGreeting';
 
 import './styles/EnvelopeInvite.scss';
+
+// When (ms after the text starts) a block begins to fade in.
+const revealAt = (delayMs: number) => ({ '--reveal-delay': `${delayMs}ms` }) as CSSProperties;
 
 type EnvelopeInviteProps = {
   token: string;
@@ -21,94 +24,6 @@ type EnvelopeInviteProps = {
 };
 
 const CONTACT_EMAIL = 'davide.ilaria@esempio.it';
-
-// Typewriter pacing for the letter's opening lines: each line's own type
-// duration scales with its length but is clamped so a long paragraph
-// doesn't drag on forever, and lines run one after another (never two
-// typing at once).
-const TYPE_START_DELAY_MS = 350;
-const TYPE_MS_PER_CHAR = 90;
-const TYPE_MIN_LINE_MS = 650;
-// High enough that the short identity lines (greeting, headline, names,
-// date/venue, ceremony time) never hit it and all type at the same
-// TYPE_MS_PER_CHAR pace — only the long intro paragraph gets compressed,
-// and only mildly, instead of every line past it visibly speeding up.
-const TYPE_MAX_LINE_MS = 4200;
-const TYPE_LINE_GAP_MS = 350;
-const TYPE_SECTIONS_GAP_MS = 500;
-
-export type TypedLine = { text: string; startMs: number; endMs: number };
-
-export function buildTypeSchedule(lines: string[]): TypedLine[] {
-  let cursor = TYPE_START_DELAY_MS;
-  return lines.map((text) => {
-    const duration = Math.min(TYPE_MAX_LINE_MS, Math.max(TYPE_MIN_LINE_MS, text.length * TYPE_MS_PER_CHAR));
-    const startMs = cursor;
-    const endMs = startMs + duration;
-    cursor = endMs + TYPE_LINE_GAP_MS;
-    return { text, startMs, endMs };
-  });
-}
-
-/** Pure reveal math, kept separate from the rAF/state plumbing below so it
- * can be unit-tested without a DOM or a fake clock. */
-export function computeTypeReveal(schedule: TypedLine[], elapsed: number, done: boolean) {
-  const revealed = schedule.map(({ text, startMs, endMs }) => {
-    if (done || elapsed >= endMs) {
-      return text;
-    }
-    if (elapsed <= startMs) {
-      return '';
-    }
-    const progress = (elapsed - startMs) / (endMs - startMs);
-    return text.slice(0, Math.round(text.length * progress));
-  });
-  const activeIndex = done ? -1 : schedule.findIndex(({ startMs, endMs }) => elapsed > startMs && elapsed < endMs);
-  return { revealed, activeIndex };
-}
-
-/** Types `lines` out one at a time while `active`; skips straight to the
- * full text for prefers-reduced-motion. Returns the revealed substrings
- * plus the index of the line currently mid-type (-1 once all are done).
- * `lines` must be a referentially stable array (e.g. via useMemo) — a new
- * array every render would retrigger the effect below on every animation
- * frame and the text would never advance past empty. */
-function useTypewriterLines(lines: string[], active: boolean) {
-  const schedule = useMemo(() => buildTypeSchedule(lines), [lines]);
-  const [elapsed, setElapsed] = useState(0);
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    if (!active) {
-      setElapsed(0);
-      setDone(false);
-      return;
-    }
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setDone(true);
-      return;
-    }
-    let raf = 0;
-    const start = performance.now();
-    const totalEnd = schedule[schedule.length - 1]?.endMs ?? 0;
-    const tick = (now: number) => {
-      const e = now - start;
-      if (e >= totalEnd) {
-        setElapsed(totalEnd);
-        setDone(true);
-        return;
-      }
-      setElapsed(e);
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [active, schedule]);
-
-  const { revealed, activeIndex } = computeTypeReveal(schedule, elapsed, done);
-
-  return { revealed, activeIndex, done };
-}
 
 // Real footage: seal breaks, flap opens, the parchment note slides out and
 // fills the frame — its last frame already matches the letter's own
@@ -132,45 +47,29 @@ const VIDEO_NATURAL_HEIGHT = 1696;
 // has time to finish before the clip's natural end.
 const ZOOM_START_SECONDS = 4;
 
-// The letter starts revealing (and typing) this many seconds before the
-// video's own end, instead of waiting for onEnded — the video keeps playing
-// underneath (it never fades, see the stage comment below), so the last
-// second of the seal/flap footage and the first lines of the letter overlap
-// instead of the text only starting once the clip has fully stopped.
-const LETTER_REVEAL_LEAD_SECONDS = 1;
+// The text starts a little before the zoom does — the paper is already on
+// its way out of the envelope, and waiting for the zoom made it feel late.
+const TEXT_START_SECONDS = 3.5;
 
 /**
  * Personalized envelope for the WhatsApp invite link. Closed by default —
- * tapping anywhere starts the opening video; the letter starts fading in
- * and typing during the video's last second (see LETTER_REVEAL_LEAD_SECONDS),
- * overlapping the tail of the footage instead of waiting for it to fully end.
+ * tapping anywhere starts the opening video. When the paper is coming out of
+ * the envelope (TEXT_START_SECONDS) the letter's text begins fading in block by
+ * block directly over the footage, so the guest never sees a blank sheet;
+ * the HTML parchment only takes over from the video once it has ended.
  */
 export function EnvelopeInvite({ token, greetingKind, greetingName, greetingNames }: EnvelopeInviteProps) {
   const { locale, t } = useI18n();
+  // isRevealing: the text is animating in over the video. isOpen: the video
+  // has ended and the letter (parchment, links) has taken over.
+  const [isRevealing, setIsRevealing] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isZooming, setIsZooming] = useState(false);
-  const [sectionsVisible, setSectionsVisible] = useState(false);
   const letterHeadingRef = useRef<HTMLHeadingElement>(null);
   const openerVideoRef = useRef<HTMLVideoElement>(null);
 
-  // Memoized so the array keeps the same reference across re-renders
-  // (including the ones the typing animation itself triggers) — otherwise
-  // useTypewriterLines' effect sees a "new" lines array on every tick, tears
-  // down and restarts the animation loop before it can accumulate any
-  // elapsed time, and the text never advances past empty.
-  const letterLines = useMemo(
-    () => [
-      formatInviteGreeting(t, locale, { kind: greetingKind, name: greetingName, names: greetingNames }),
-      t('invite.headline'),
-      t('invite.coupleNames'),
-      `${formatWeddingDateDisplay(locale)}\n${WEDDING_VENUE_AREA}\n${WEDDING_VENUE_NAME}, ${WEDDING_CITY}`,
-      t('invite.ceremonyStart'),
-      t('invite.intro'),
-    ],
-    [t, greetingKind, greetingName, greetingNames, locale],
-  );
-  const { revealed, activeIndex, done: typingDone } = useTypewriterLines(letterLines, isOpen);
+  const greeting = formatInviteGreeting(t, locale, { kind: greetingKind, name: greetingName, names: greetingNames });
 
   useEffect(() => {
     if (isOpen) {
@@ -181,17 +80,9 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    if (!typingDone) {
-      setSectionsVisible(false);
-      return;
-    }
-    const timeoutId = setTimeout(() => setSectionsVisible(true), TYPE_SECTIONS_GAP_MS);
-    return () => clearTimeout(timeoutId);
-  }, [typingDone]);
-
   return (
-    <div className={`envelope-invite${isOpen ? ' envelope-invite--open' : ''}`}>
+    <div
+      className={`envelope-invite${isRevealing ? ' envelope-invite--revealing' : ''}${isZooming ? ' envelope-invite--zooming' : ''}${isOpen ? ' envelope-invite--open' : ''}`}>
       <div className="envelope-invite__stage" aria-hidden={isOpen}>
         <video
           ref={openerVideoRef}
@@ -202,8 +93,8 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
           preload="auto"
           onTimeUpdate={(event) => {
             const video = event.currentTarget;
-            if (!isOpen && video.duration - video.currentTime <= LETTER_REVEAL_LEAD_SECONDS) {
-              setIsOpen(true);
+            if (!isRevealing && video.currentTime >= TEXT_START_SECONDS) {
+              setIsRevealing(true);
             }
             if (isZooming || video.currentTime < ZOOM_START_SECONDS) {
               return;
@@ -222,11 +113,10 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
             video.style.setProperty('--zoom-scale', String(coverScale / containScale));
             // The footage's own last second (the paper filling the frame)
             // plays out quickly on its own — slowing playback here, not
-            // just the CSS zoom on top of it, is what actually makes the
-            // ending feel unhurried instead of stacking a slow zoom onto a
-            // fast clip. Keep this above ~0.5 or the gap before the letter's
-            // text appears drags.
-            video.playbackRate = 0.55;
+            // just the CSS zoom on top of it, keeps the paper from arriving
+            // in the guest's face. The letter's text is already appearing
+            // over it by now, so a slow ending doesn't leave a blank sheet.
+            video.playbackRate = 0.4;
             setIsZooming(true);
           }}
           onEnded={() => setIsOpen(true)}
@@ -248,30 +138,44 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
 
       {/* Sibling of the (perspective:) stage, not a child — position: fixed
           needs to cover the real viewport, not the stage's containing block. */}
-      <article className="envelope-invite__letter" aria-hidden={!isOpen}>
+      {/* Parchment backdrop, separate from the text so it can fade in after
+          the text has already started appearing over the video. */}
+      <div className="envelope-invite__letter-bg" aria-hidden />
+
+      <article className="envelope-invite__letter" aria-hidden={!isRevealing}>
+        {/* Each block fades up in turn, at the delay given by revealAt(). */}
         <div className="envelope-invite__letter-content">
-          <p
-            className={`envelope-invite__personal-greeting${activeIndex === 0 ? ' is-typing' : ''}`}>
-            {revealed[0]}
-          </p>
-          <h1
-            ref={letterHeadingRef}
-            tabIndex={-1}
-            className={`obw-display obw-display--sm envelope-invite__greeting${activeIndex === 1 ? ' is-typing' : ''}`}>
-            {revealed[1]}
-          </h1>
-          <p className={`envelope-invite__couple-names${activeIndex === 2 ? ' is-typing' : ''}`}>{revealed[2]}</p>
-          <p className={`envelope-invite__details${activeIndex === 3 ? ' is-typing' : ''}`}>{revealed[3]}</p>
-          <p className={`envelope-invite__ceremony-start${activeIndex === 4 ? ' is-typing' : ''}`}>{revealed[4]}</p>
-          <p className={`obw-body envelope-invite__body-text${activeIndex === 5 ? ' is-typing' : ''}`}>
-            {revealed[5]}
-          </p>
+          <div className="envelope-invite__block" style={revealAt(250)}>
+            <p className="obw-body envelope-invite__personal-greeting">{greeting}</p>
+          </div>
+          <div className="envelope-invite__block" style={revealAt(1150)}>
+            <h1
+              ref={letterHeadingRef}
+              tabIndex={-1}
+              className="obw-body envelope-invite__headline">
+              {formatInviteHeadline(t, greetingKind)}
+            </h1>
+          </div>
+          <div className="envelope-invite__block" style={revealAt(2050)}>
+            <p className="obw-body envelope-invite__lead">{t('invite.weddingOf')}</p>
+            <p className="obw-display envelope-invite__couple-names">{t('invite.coupleNames')}</p>
+          </div>
+          <div className="envelope-invite__block" style={revealAt(2950)}>
+            <p className="obw-body envelope-invite__lead">{t('invite.takesPlace')}</p>
+            <p className="obw-body envelope-invite__details">
+              {`${formatWeddingDateDisplay(locale)}\n${WEDDING_VENUE_AREA}\n${WEDDING_VENUE_NAME}, ${WEDDING_CITY}`}
+            </p>
+          </div>
+          <div className="envelope-invite__block" style={revealAt(3850)}>
+            <p className="obw-body envelope-invite__ceremony-start">{t('invite.ceremonyStart')}</p>
+            <p className="obw-body envelope-invite__body-text">{t('invite.intro')}</p>
+          </div>
         </div>
 
-        <div className={`envelope-invite__sections${sectionsVisible ? ' envelope-invite__sections--visible' : ''}`}>
-          <section className="envelope-invite__section">
-            <h2 className="envelope-invite__section-title">{t('invite.rsvpSection.title')}</h2>
-            <p className="envelope-invite__rsvp-note">{t('invite.rsvpSection.note')}</p>
+        <div className="envelope-invite__sections">
+          <section className="envelope-invite__section" style={revealAt(5200)}>
+            <h2 className="obw-body envelope-invite__section-title">{t('invite.rsvpSection.title')}</h2>
+            <p className="obw-body envelope-invite__rsvp-note">{t('invite.rsvpSection.note')}</p>
             <div className="envelope-invite__rsvp-actions">
               <Link
                 className="obw-btn obw-btn--primary envelope-invite__cta"
@@ -288,8 +192,8 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
             </div>
           </section>
 
-          <section className="envelope-invite__section envelope-invite__section--more-info">
-            <p className="envelope-invite__more-info-text">{t('invite.moreInfo.text')}</p>
+          <section className="envelope-invite__section envelope-invite__section--more-info" style={revealAt(6600)}>
+            <p className="obw-body envelope-invite__more-info-text">{t('invite.moreInfo.text')}</p>
             <Link
               className="obw-btn obw-btn--secondary envelope-invite__more-info-link"
               to="/"
