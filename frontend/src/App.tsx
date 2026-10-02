@@ -17,7 +17,6 @@ import { HomePage } from '@/pages/HomePage/index';
 import { InvitePage } from '@/pages/InvitePage/index';
 import { LoginPage } from '@/pages/LoginPage/index';
 import { NotFoundPage } from '@/pages/NotFoundPage/index';
-import { ProfilePage } from '@/pages/ProfilePage/index';
 import { RsvpPage } from '@/pages/RsvpPage/index';
 import { TemaPage } from '@/pages/TemaPage/index';
 import { TravelPage } from '@/pages/TravelPage/index';
@@ -41,7 +40,6 @@ export function App() {
                 <Route path="/rsvp" element={<RsvpPage />} />
                 <Route path="/travel" element={<TravelPage />} />
                 <Route path="/tema" element={<TemaPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
 
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route index element={<Navigate to="/admin/rsvp" replace />} />

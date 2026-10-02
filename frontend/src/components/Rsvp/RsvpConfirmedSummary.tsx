@@ -1,4 +1,3 @@
-import { getFactionLabel } from '@/constants/factions';
 import type { FactionId, RsvpGuestLine } from '@/services/rsvpApi';
 import { useI18n } from '@/contexts/I18nContext';
 import type { TranslationKey } from '@/i18n/translations';
@@ -14,6 +13,8 @@ type RsvpConfirmedSummaryProps = {
   confirmedRsvp: ConfirmedRsvpState | null;
   editable: boolean;
   onEdit?: () => void;
+  /** When set, a "not attending" answer still lists this person, with "--" where the menu would be. */
+  declinedGuest?: Pick<RsvpGuestLine, 'first_name' | 'last_name'>;
 };
 
 function mealLabelKey(mealChoice: RsvpGuestLine['meal_choice']): TranslationKey {
@@ -29,9 +30,15 @@ export function RsvpConfirmedSummary({
   confirmedRsvp,
   editable,
   onEdit,
+  declinedGuest,
 }: RsvpConfirmedSummaryProps) {
   const { t } = useI18n();
   const isAttending = confirmedRsvp?.attending ?? false;
+  const listedGuests: Array<Pick<RsvpGuestLine, 'first_name' | 'last_name'> & Partial<RsvpGuestLine>> = isAttending
+    ? (confirmedRsvp?.guests ?? [])
+    : declinedGuest
+      ? [declinedGuest]
+      : [];
 
   return (
     <section className="rsvp-panel rsvp-panel--confirmed obw-fade-up">
@@ -59,20 +66,11 @@ export function RsvpConfirmedSummary({
             </div>
           </dl>
 
-          {isAttending && confirmedRsvp?.faction ? (
-            <div className="rsvp-faction-reveal">
-              <p className="obw-kicker obw-kicker--light">{t('rsvp.factionLabel')}</p>
-              <p className="obw-display obw-display--sm obw-display--light rsvp-faction-reveal__name">
-                {getFactionLabel(confirmedRsvp.faction, t)}
-              </p>
-            </div>
-          ) : null}
-
-          {isAttending && confirmedRsvp?.guests.length ? (
+          {listedGuests.length ? (
             <div className="rsvp-guest-summary">
               <p className="obw-kicker obw-kicker--light">{t('rsvp.guestsSummaryTitle')}</p>
               <ul className="rsvp-guest-summary__list">
-                {confirmedRsvp.guests.map((guest, index) => (
+                {listedGuests.map((guest, index) => (
                   <li
                     key={`${guest.first_name}-${guest.last_name}-${index}`}
                     className="rsvp-guest-summary__item">
@@ -84,9 +82,9 @@ export function RsvpConfirmedSummary({
                         {guest.first_name} {guest.last_name}
                       </p>
                       <p className="rsvp-guest-summary__meta">
-                        {t(mealLabelKey(guest.meal_choice))}
-                        {' · '}
-                        {t(intoleranceLabelKey(guest.intolerance))}
+                        {guest.meal_choice && guest.intolerance
+                          ? `${t(mealLabelKey(guest.meal_choice))} · ${t(intoleranceLabelKey(guest.intolerance))}`
+                          : '--'}
                       </p>
                       {guest.dietary_notes ? (
                         <p className="rsvp-guest-summary__notes">{guest.dietary_notes}</p>

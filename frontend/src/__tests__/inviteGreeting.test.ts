@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatInviteGreeting } from '@/components/EnvelopeInvite/inviteGreeting';
+import { formatInviteGreeting, formatInviteHeadline } from '@/components/EnvelopeInvite/inviteGreeting';
 import { translations } from '@/i18n/translations';
 
 // A tiny translate function over the real Italian/English dictionaries.
@@ -30,5 +30,17 @@ describe('formatInviteGreeting', () => {
     expect(
       formatInviteGreeting(translator('en') as never, 'en', { kind: 'couple', name: 'Chiara e Luca', names }),
     ).toBe('Dear Chiara and Luca,');
+  });
+});
+
+describe('formatInviteHeadline', () => {
+  const t = translator('it') as never;
+
+  it('agrees with gender and number', () => {
+    expect(formatInviteHeadline(t, 'single_m')).toBe('sei stato ufficialmente invitato');
+    expect(formatInviteHeadline(t, 'single_f')).toBe('sei stata ufficialmente invitata');
+    expect(formatInviteHeadline(t, 'single')).toBe('sei stato/a ufficialmente invitato/a');
+    expect(formatInviteHeadline(t, 'couple')).toBe('siete stati ufficialmente invitati');
+    expect(formatInviteHeadline(t, 'family')).toBe('siete stati ufficialmente invitati');
   });
 });

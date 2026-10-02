@@ -472,7 +472,7 @@ export const de = {
     mealLabel: 'Menüart',
     intoleranceLabel: 'Unverträglichkeiten',
     isChildLabel: 'Ist ein Kind',
-    maxGuestsReached: 'Du hast das Maximum von 10 Teilnehmern pro Buchung erreicht.',
+    maxGuestsReached: 'Du hast das Maximum von {{max}} Teilnehmern pro Buchung erreicht.',
     deadlineClosedTitle: 'Änderungen geschlossen',
     deadlineClosedBanner:
       'Änderungen sind geschlossen: Du kannst die Zusammenfassung sehen, aber die Buchung nicht aktualisieren.',
@@ -929,8 +929,13 @@ export const de = {
     greetingSingle: 'Liebe/r {{name}},',
     greetingCouple: 'Liebe {{name}},',
     greetingFamily: 'Liebe Familie {{name}},',
-    headline: 'Mit Freude laden wir euch ein',
-    coupleNames: 'Ilaria & Davide',
+    headlineSingleM: 'ihr seid offiziell eingeladen',
+    headlineSingleF: 'ihr seid offiziell eingeladen',
+    headlineSingle: 'ihr seid offiziell eingeladen',
+    headlinePlural: 'ihr seid offiziell eingeladen',
+    weddingOf: 'zur Hochzeit von',
+    takesPlace: 'die stattfindet am',
+    coupleNames: 'Davide & Ilaria',
     ceremonyStart: 'Wir erwarten euch um 17:00 Uhr, Beginn der Trauung.',
     intro:
       'Es würde uns sehr freuen, euch an unserer Seite zu haben. Bringt nur euch selbst mit und die Lust, bis spät zu tanzen.',
@@ -952,7 +957,12 @@ export const de = {
   },
   guestRsvp: {
     intro: 'Bestätige deine Teilnahme und die deiner Gruppe.',
+    guestsHint: 'Trag deine Begleitung ein: Name und eventuelle Unverträglichkeiten.',
+    addGuest: 'Hinzufügen',
+    notAttendingHint: "Bist du sicher, dass du nicht teilnehmen kannst?",
     confirmedTitle: 'Danke, alles eingetragen.',
     confirmedBody: 'Deine Bestätigung ist gespeichert. Öffne jederzeit denselben Link, um hierher zurückzukehren.',
+    declinedBody:
+      "Es tut uns sehr leid, dass ihr an unserem wichtigsten Tag nicht dabei sein könnt. Wenn ihr es euch anders überlegt, öffnet diesen Link erneut, um eure Antwort zu ändern.",
   },
 } as const;

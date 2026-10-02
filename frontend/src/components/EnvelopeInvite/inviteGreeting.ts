@@ -29,3 +29,18 @@ export function formatInviteGreeting(t: TranslateFn, locale: string, { kind, nam
       return t('invite.greetingSingle', { name });
   }
 }
+
+/** The line under the greeting — "sei stato ufficialmente invitato" — agreeing with who is addressed. */
+export function formatInviteHeadline(t: TranslateFn, kind: GreetingKind): string {
+  switch (kind) {
+    case 'family':
+    case 'couple':
+      return t('invite.headlinePlural');
+    case 'single_m':
+      return t('invite.headlineSingleM');
+    case 'single_f':
+      return t('invite.headlineSingleF');
+    default:
+      return t('invite.headlineSingle');
+  }
+}

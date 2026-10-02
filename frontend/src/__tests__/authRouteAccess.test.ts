@@ -10,8 +10,8 @@ describe('authRouteAccess', () => {
     expect(isPublicPath('/auth/login')).toBe(true);
   });
 
-  it('always protects profile, admin and travel even in dev unlock mode', () => {
-    expect(requiresAuthentication('/profile', true)).toBe(true);
+  it('always protects rsvp, admin and travel even in dev unlock mode', () => {
+    expect(requiresAuthentication('/rsvp', true)).toBe(true);
     expect(requiresAuthentication('/admin', true)).toBe(true);
     expect(requiresAuthentication('/travel', true)).toBe(true);
   });
@@ -29,6 +29,6 @@ describe('authRouteAccess', () => {
 
   it('protects non-public routes when dev unlock is disabled', () => {
     expect(requiresAuthentication('/settings', false)).toBe(true);
-    expect(requiresAuthentication('/profile', false)).toBe(true);
+    expect(requiresAuthentication('/rsvp', false)).toBe(true);
   });
 });

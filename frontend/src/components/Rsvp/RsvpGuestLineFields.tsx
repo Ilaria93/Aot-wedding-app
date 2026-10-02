@@ -1,3 +1,5 @@
+import { Trash2 } from 'lucide-react';
+
 import { INTOLERANCE_IDS, MEAL_CHOICE_IDS } from '@/constants/rsvpParty';
 import { RememberMeToggle } from '@/components/RememberMeToggle';
 import type { RsvpGuestDraft } from '@/components/Rsvp/types/RsvpGuestDraft';
@@ -47,9 +49,11 @@ export function RsvpGuestLineFields({
         {onRemove ? (
           <button
             type="button"
-            className="obw-btn obw-btn--ghost rsvp-guest-card__remove"
+            className="rsvp-guest-card__remove"
+            aria-label={t('rsvp.removeGuest')}
+            title={t('rsvp.removeGuest')}
             onClick={() => onRemove(guest.clientId)}>
-            {t('rsvp.removeGuest')}
+            <Trash2 size={18} aria-hidden />
           </button>
         ) : null}
       </header>

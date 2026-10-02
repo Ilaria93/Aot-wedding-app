@@ -471,7 +471,7 @@ export const fr = {
     mealLabel: 'Type de menu',
     intoleranceLabel: 'Intolérances',
     isChildLabel: 'Est un enfant',
-    maxGuestsReached: 'Vous avez atteint le maximum de 10 participants par réservation.',
+    maxGuestsReached: 'Vous avez atteint le maximum de {{max}} participants par réservation.',
     deadlineClosedTitle: 'Modifications closes',
     deadlineClosedBanner:
       'Les modifications sont closes : vous pouvez consulter le récapitulatif mais pas mettre à jour la réservation.',
@@ -928,8 +928,13 @@ export const fr = {
     greetingSingle: 'Chère/cher {{name}},',
     greetingCouple: 'Chers {{name}},',
     greetingFamily: 'Chère famille {{name}},',
-    headline: 'Avec joie, nous vous invitons',
-    coupleNames: 'Ilaria & Davide',
+    headlineSingleM: 'vous êtes officiellement invité',
+    headlineSingleF: 'vous êtes officiellement invitée',
+    headlineSingle: 'vous êtes officiellement invité(e)',
+    headlinePlural: 'vous êtes officiellement invités',
+    weddingOf: 'au mariage de',
+    takesPlace: 'qui aura lieu le',
+    coupleNames: 'Davide & Ilaria',
     ceremonyStart: 'Nous vous attendons pour 17h00, début de la cérémonie.',
     intro:
       "Votre présence à nos côtés compterait beaucoup pour nous. Venez comme vous êtes, avec l'envie de danser jusqu'au bout de la nuit.",
@@ -951,7 +956,12 @@ export const fr = {
   },
   guestRsvp: {
     intro: 'Confirmez votre présence et celle de votre groupe.',
+    guestsHint: 'Ajoutez vos accompagnants : nom, prénom et éventuelles intolérances.',
+    addGuest: 'Ajouter',
+    notAttendingHint: "Êtes-vous sûr de ne pas pouvoir venir ?",
     confirmedTitle: "Merci, c'est noté.",
     confirmedBody: 'Votre confirmation est enregistrée. Rouvrez ce même lien à tout moment pour revenir ici.',
+    declinedBody:
+      "Nous sommes vraiment désolés que vous ne puissiez pas être des nôtres pour notre journée la plus importante. Si vous changez d'avis, rouvrez ce lien pour modifier votre réponse.",
   },
 } as const;
