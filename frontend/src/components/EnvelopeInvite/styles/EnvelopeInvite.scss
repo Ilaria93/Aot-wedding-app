@@ -130,16 +130,26 @@
   pointer-events: auto;
 }
 
-.envelope-invite--zooming .envelope-invite__letter-content {
+.envelope-invite--zooming .envelope-invite__letter-body {
   transform: translateY(0);
   transition: transform var(--zoom-duration) var(--obw-ease-out);
 }
 
 /* While the paper is still small in the middle of the screen the text sits
    lower, over it, instead of up on the black; once the zoom starts it rises
-   to its place in step with the paper growing. */
-.envelope-invite__letter-content {
+   to its place in step with the paper growing. The whole body moves as one, so
+   the sections below never end up under the header text. */
+.envelope-invite__letter-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--obw-space-xl);
+  width: 100%;
+  flex-shrink: 0;
   transform: translateY(var(--text-lift, 20svh));
+}
+
+.envelope-invite__letter-content {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -277,6 +287,11 @@
   bottom: clamp(1.5rem, 6vh, 3rem);
   z-index: 10;
   transform: translateX(-50%);
+  /* A fixed box at left: 50% only gets the right half of the screen to wrap
+     in; size it to its text instead, so it stays on one line on phones. */
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+  text-align: center;
   margin: 0;
   font-family: var(--font-sans);
   font-size: 0.85rem;
@@ -288,7 +303,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .envelope-invite__letter-bg,
-  .envelope-invite__letter-content,
+  .envelope-invite__letter-body,
   .envelope-invite__block,
   .envelope-invite__section,
   .envelope-invite__opener-video {

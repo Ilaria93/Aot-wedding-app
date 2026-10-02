@@ -28,15 +28,22 @@ const CONTACT_EMAIL = 'davide.ilaria@esempio.it';
 // Real footage: seal breaks, flap opens, the parchment note slides out and
 // fills the frame — its last frame already matches the letter's own
 // background (same parchment art), so the cut to the HTML letter is seamless.
-const OPENER_VIDEO_SRC = '/assets/wedding/green-letter.mp4';
+// 960px-wide re-encode of green-letter.mp4 (~1 MB instead of 5.4 MB, no audio
+// track): the original stalled on phones while it loaded.
+const OPENER_VIDEO_SRC = '/assets/wedding/green-letter-web.mp4';
 
-// Native size of green-letter.mp4 — needed to compute how much bigger than
+// First frame of the clip. iPhone Safari doesn't paint a video's first frame
+// until the viewer taps (it ignores preload), so without this the sealed
+// envelope is invisible and the screen looks empty.
+const OPENER_VIDEO_POSTER = '/assets/wedding/green-letter-poster.webp';
+
+// Native size of green-letter-web.mp4 — needed to compute how much bigger than
 // `contain` the video has to grow to match the letter's `cover` background,
 // and where its baked-in seal sits on screen. Re-measure these against the
 // actual file any time the video is swapped — they're not derived at
 // runtime from the source.
-const VIDEO_NATURAL_WIDTH = 1220;
-const VIDEO_NATURAL_HEIGHT = 1696;
+const VIDEO_NATURAL_WIDTH = 960;
+const VIDEO_NATURAL_HEIGHT = 1334;
 
 // The video plays at its natural `contain` size (whole envelope visible,
 // nothing cropped) until this point, then smoothly scales up to fill the
@@ -68,8 +75,57 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
   const [isZooming, setIsZooming] = useState(false);
   const letterHeadingRef = useRef<HTMLHeadingElement>(null);
   const openerVideoRef = useRef<HTMLVideoElement>(null);
+  // Read from the frame loop below, which must not see stale state.
+  const revealedRef = useRef(false);
+  const zoomedRef = useRef(false);
 
   const greeting = formatInviteGreeting(t, locale, { kind: greetingKind, name: greetingName, names: greetingNames });
+
+  // Starts the text and the zoom once the video has reached these moments.
+  function advance(video: HTMLVideoElement, mediaTime: number) {
+    if (!revealedRef.current && mediaTime >= TEXT_START_SECONDS) {
+      revealedRef.current = true;
+      setIsRevealing(true);
+    }
+    if (zoomedRef.current || mediaTime < ZOOM_START_SECONDS) {
+      return;
+    }
+    zoomedRef.current = true;
+    // How much bigger than `contain` the video needs to be to fill the
+    // viewport the way `cover` (and the letter's background) does — computed
+    // against the real screen, not guessed.
+    const containScale = Math.min(video.clientWidth / VIDEO_NATURAL_WIDTH, video.clientHeight / VIDEO_NATURAL_HEIGHT);
+    const coverScale = Math.max(video.clientWidth / VIDEO_NATURAL_WIDTH, video.clientHeight / VIDEO_NATURAL_HEIGHT);
+    video.style.setProperty('--zoom-scale', String(coverScale / containScale));
+    // The footage's own last second (the paper filling the frame) plays out
+    // quickly on its own — slowing playback here, not just the CSS zoom on top
+    // of it, keeps the paper from arriving in the guest's face. The letter's
+    // text is already appearing over it by now, so a slow ending doesn't leave
+    // a blank sheet.
+    video.playbackRate = 0.4;
+    setIsZooming(true);
+  }
+
+  // Driven by the frames actually shown, not by the media clock: on a phone
+  // that is still loading or decoding, the clock can run ahead of the picture
+  // and the text would appear over the closed envelope. Safari 15.4+ and
+  // current Chrome have requestVideoFrameCallback; elsewhere onTimeUpdate below
+  // does the job.
+  useEffect(() => {
+    const video = openerVideoRef.current;
+    if (!isVideoPlaying || !video || typeof video.requestVideoFrameCallback !== 'function') {
+      return undefined;
+    }
+    let handle = 0;
+    const onFrame = (_now: number, metadata: VideoFrameCallbackMetadata) => {
+      advance(video, metadata.mediaTime);
+      if (!zoomedRef.current) {
+        handle = video.requestVideoFrameCallback(onFrame);
+      }
+    };
+    handle = video.requestVideoFrameCallback(onFrame);
+    return () => video.cancelVideoFrameCallback(handle);
+  }, [isVideoPlaying]);
 
   useEffect(() => {
     if (isOpen) {
@@ -88,36 +144,15 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
           ref={openerVideoRef}
           className={`envelope-invite__opener-video${isZooming ? ' envelope-invite__opener-video--zoomed' : ''}`}
           src={OPENER_VIDEO_SRC}
+          poster={OPENER_VIDEO_POSTER}
           playsInline
           muted
           preload="auto"
           onTimeUpdate={(event) => {
             const video = event.currentTarget;
-            if (!isRevealing && video.currentTime >= TEXT_START_SECONDS) {
-              setIsRevealing(true);
+            if (typeof video.requestVideoFrameCallback !== 'function') {
+              advance(video, video.currentTime);
             }
-            if (isZooming || video.currentTime < ZOOM_START_SECONDS) {
-              return;
-            }
-            // How much bigger than `contain` the video needs to be to fill
-            // the viewport the way `cover` (and the letter's background)
-            // does — computed against the real screen, not guessed.
-            const containScale = Math.min(
-              video.clientWidth / VIDEO_NATURAL_WIDTH,
-              video.clientHeight / VIDEO_NATURAL_HEIGHT,
-            );
-            const coverScale = Math.max(
-              video.clientWidth / VIDEO_NATURAL_WIDTH,
-              video.clientHeight / VIDEO_NATURAL_HEIGHT,
-            );
-            video.style.setProperty('--zoom-scale', String(coverScale / containScale));
-            // The footage's own last second (the paper filling the frame)
-            // plays out quickly on its own — slowing playback here, not
-            // just the CSS zoom on top of it, keeps the paper from arriving
-            // in the guest's face. The letter's text is already appearing
-            // over it by now, so a slow ending doesn't leave a blank sheet.
-            video.playbackRate = 0.4;
-            setIsZooming(true);
           }}
           onEnded={() => setIsOpen(true)}
         />
@@ -144,63 +179,65 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
 
       <article className="envelope-invite__letter" aria-hidden={!isRevealing}>
         {/* Each block fades up in turn, at the delay given by revealAt(). */}
-        <div className="envelope-invite__letter-content">
-          <div className="envelope-invite__block" style={revealAt(250)}>
-            <p className="obw-body envelope-invite__personal-greeting">{greeting}</p>
-          </div>
-          <div className="envelope-invite__block" style={revealAt(1150)}>
-            <h1
-              ref={letterHeadingRef}
-              tabIndex={-1}
-              className="obw-body envelope-invite__headline">
-              {formatInviteHeadline(t, greetingKind)}
-            </h1>
-          </div>
-          <div className="envelope-invite__block" style={revealAt(2050)}>
-            <p className="obw-body envelope-invite__lead">{t('invite.weddingOf')}</p>
-            <p className="obw-display envelope-invite__couple-names">{t('invite.coupleNames')}</p>
-          </div>
-          <div className="envelope-invite__block" style={revealAt(2950)}>
-            <p className="obw-body envelope-invite__lead">{t('invite.takesPlace')}</p>
-            <p className="obw-body envelope-invite__details">
-              {`${formatWeddingDateDisplay(locale)}\n${WEDDING_VENUE_AREA}\n${WEDDING_VENUE_NAME}, ${WEDDING_CITY}`}
-            </p>
-          </div>
-          <div className="envelope-invite__block" style={revealAt(3850)}>
-            <p className="obw-body envelope-invite__ceremony-start">{t('invite.ceremonyStart')}</p>
-            <p className="obw-body envelope-invite__body-text">{t('invite.intro')}</p>
-          </div>
-        </div>
-
-        <div className="envelope-invite__sections">
-          <section className="envelope-invite__section" style={revealAt(5200)}>
-            <h2 className="obw-body envelope-invite__section-title">{t('invite.rsvpSection.title')}</h2>
-            <p className="obw-body envelope-invite__rsvp-note">{t('invite.rsvpSection.note')}</p>
-            <div className="envelope-invite__rsvp-actions">
-              <Link
-                className="obw-btn obw-btn--primary envelope-invite__cta"
-                to={`/invito/${token}/rsvp`}
-                tabIndex={isOpen ? 0 : -1}>
-                {t('invite.rsvpSection.yes')}
-              </Link>
-              <a
-                className="obw-btn obw-btn--secondary envelope-invite__contact"
-                href={`mailto:${CONTACT_EMAIL}`}
-                tabIndex={isOpen ? 0 : -1}>
-                {t('invite.rsvpSection.contact')}
-              </a>
+        <div className="envelope-invite__letter-body">
+          <div className="envelope-invite__letter-content">
+            <div className="envelope-invite__block" style={revealAt(250)}>
+              <p className="obw-body envelope-invite__personal-greeting">{greeting}</p>
             </div>
-          </section>
+            <div className="envelope-invite__block" style={revealAt(1150)}>
+              <h1
+                ref={letterHeadingRef}
+                tabIndex={-1}
+                className="obw-body envelope-invite__headline">
+                {formatInviteHeadline(t, greetingKind)}
+              </h1>
+            </div>
+            <div className="envelope-invite__block" style={revealAt(2050)}>
+              <p className="obw-body envelope-invite__lead">{t('invite.weddingOf')}</p>
+              <p className="obw-display envelope-invite__couple-names">{t('invite.coupleNames')}</p>
+            </div>
+            <div className="envelope-invite__block" style={revealAt(2950)}>
+              <p className="obw-body envelope-invite__lead">{t('invite.takesPlace')}</p>
+              <p className="obw-body envelope-invite__details">
+                {`${formatWeddingDateDisplay(locale)}\n${WEDDING_VENUE_AREA}\n${WEDDING_VENUE_NAME}, ${WEDDING_CITY}`}
+              </p>
+            </div>
+            <div className="envelope-invite__block" style={revealAt(3850)}>
+              <p className="obw-body envelope-invite__ceremony-start">{t('invite.ceremonyStart')}</p>
+              <p className="obw-body envelope-invite__body-text">{t('invite.intro')}</p>
+            </div>
+          </div>
 
-          <section className="envelope-invite__section envelope-invite__section--more-info" style={revealAt(6600)}>
-            <p className="obw-body envelope-invite__more-info-text">{t('invite.moreInfo.text')}</p>
-            <Link
-              className="obw-btn obw-btn--secondary envelope-invite__more-info-link"
-              to="/"
-              tabIndex={isOpen ? 0 : -1}>
-              {t('invite.moreInfo.cta')}
-            </Link>
-          </section>
+          <div className="envelope-invite__sections">
+            <section className="envelope-invite__section" style={revealAt(5200)}>
+              <h2 className="obw-body envelope-invite__section-title">{t('invite.rsvpSection.title')}</h2>
+              <p className="obw-body envelope-invite__rsvp-note">{t('invite.rsvpSection.note')}</p>
+              <div className="envelope-invite__rsvp-actions">
+                <Link
+                  className="obw-btn obw-btn--primary envelope-invite__cta"
+                  to={`/invito/${token}/rsvp`}
+                  tabIndex={isOpen ? 0 : -1}>
+                  {t('invite.rsvpSection.yes')}
+                </Link>
+                <a
+                  className="obw-btn obw-btn--secondary envelope-invite__contact"
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  tabIndex={isOpen ? 0 : -1}>
+                  {t('invite.rsvpSection.contact')}
+                </a>
+              </div>
+            </section>
+
+            <section className="envelope-invite__section envelope-invite__section--more-info" style={revealAt(6600)}>
+              <p className="obw-body envelope-invite__more-info-text">{t('invite.moreInfo.text')}</p>
+              <Link
+                className="obw-btn obw-btn--secondary envelope-invite__more-info-link"
+                to="/"
+                tabIndex={isOpen ? 0 : -1}>
+                {t('invite.moreInfo.cta')}
+              </Link>
+            </section>
+          </div>
         </div>
       </article>
     </div>
