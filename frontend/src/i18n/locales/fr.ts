@@ -683,6 +683,10 @@ export const fr = {
       close: 'Fermer',
       loadFailed: 'Impossible de charger les invitations.',
       actionFailed: 'L’opération a échoué. Réessaie.',
+      delete: 'Supprimer l\'invitation',
+      confirmDelete: 'Supprimer l\'invitation de {{name}} et les personnes de son groupe ? Cette action est irréversible.',
+      confirmDeleteAnswered: '{{name}} a déjà répondu. Supprimer l\'invitation efface aussi sa réponse et son accès, de façon irréversible. Continuer ?',
+      deleted: 'L\'invitation de {{name}} a été supprimée.',
       markSentFailed: 'WhatsApp s’est ouvert, mais l’invitation n’a pas été marquée comme envoyée : réessaie depuis « À envoyer ».',
     },
     placeholder: {

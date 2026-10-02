@@ -149,9 +149,11 @@ def test_update_before_send(api_client, admin_headers):
     assert api_client.patch("/admin/invites/9999", json={"first_name": "X"}).status_code == 404
 
 
-def test_no_delete_route(api_client, admin_headers):
+def test_delete_removes_the_head_and_its_members(api_client, admin_headers):
     head = _head(api_client)
-    assert api_client.delete(f"/admin/invites/{head['id']}").status_code == 405
+    _member(api_client, head["id"], "spouse")
+    assert api_client.delete(f"/admin/invites/{head['id']}").status_code == 204
+    assert api_client.get("/admin/invites").json() == []
 
 
 def test_list_shows_only_heads_and_search_finds_members(api_client, admin_headers):

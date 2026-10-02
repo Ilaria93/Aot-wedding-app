@@ -679,6 +679,10 @@ export const en = {
       close: 'Close',
       loadFailed: 'Could not load the invites.',
       actionFailed: 'Something went wrong. Try again.',
+      delete: 'Delete invite',
+      confirmDelete: 'Delete {{name}}\'s invite and everyone in their group? This cannot be undone.',
+      confirmDeleteAnswered: '{{name}} has already answered. Deleting the invite also removes their answer and their access, and cannot be undone. Continue?',
+      deleted: '{{name}}\'s invite was deleted.',
       markSentFailed: 'WhatsApp was opened, but the invite was not marked as sent: try again from “To send”.',
     },
     placeholder: {

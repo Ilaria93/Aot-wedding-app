@@ -234,7 +234,7 @@ export function AdminContactsPage() {
   const heroStatsSlot = useAdminHeroStatsSlot();
 
   if (loading) {
-    return <LoadingScreen label={t('common.loading')} />;
+    return <LoadingScreen overlay label={t('common.loading')} />;
   }
 
   return (

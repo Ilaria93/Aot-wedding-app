@@ -1,6 +1,5 @@
-import { Copy, MessageCircle, Pencil, Phone, RotateCw, Send, UserPlus } from 'lucide-react';
+import { Copy, MessageCircle, Pencil, Phone, RotateCw, Send, Trash2, UserPlus } from 'lucide-react';
 
-import { formatInviteGreeting } from '@/components/EnvelopeInvite/inviteGreeting';
 import { useI18n } from '@/contexts/I18nContext';
 import type { AdminInviteItem, InviteMember } from '@/services/adminInvitesApi';
 import { RELATION_KEYS } from './inviteForm';
@@ -15,6 +14,7 @@ type InviteCardProps = {
   onEdit: (invite: AdminInviteItem) => void;
   onEditMember: (invite: AdminInviteItem, member: InviteMember) => void;
   onAddMember: (invite: AdminInviteItem) => void;
+  onDelete: (invite: AdminInviteItem) => void;
 };
 
 /** One guest group: the head who receives the invite, and the people linked to them. */
@@ -28,19 +28,15 @@ export function InviteCard({
   onEdit,
   onEditMember,
   onAddMember,
+  onDelete,
 }: InviteCardProps) {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const answerLabel =
     invite.answer === 'attending'
       ? t('admin.invites.answerAttending')
       : invite.answer === 'declined'
         ? t('admin.invites.answerDeclined')
         : t('admin.invites.answerNone');
-  const greeting = formatInviteGreeting(t, locale, {
-    kind: invite.greeting_kind,
-    name: invite.greeting_name,
-    names: invite.greeting_names,
-  });
 
   return (
     <li className="obw-portal-card admin-invites__card">
@@ -49,16 +45,19 @@ export function InviteCard({
           <p className="admin-invites__name">
             {invite.first_name} {invite.last_name}
           </p>
-          <p className="admin-invites__greeting">{greeting}</p>
-          <p className="admin-invites__meta">
-            <Phone size={14} aria-hidden />
-            {invite.phone ?? t('admin.invites.noPhone')}
-            {invite.party_size ? ` · ${t('admin.invites.partySize', { count: invite.party_size })}` : ''}
-          </p>
-          <p className="admin-invites__meta">
-            {invite.sent_at ? t('admin.invites.sentOn', { date: formatDate(invite.sent_at) }) : t('admin.invites.notSent')}
-            {' · '}
-            {answerLabel}
+          {/* Only what matters, on one line: phone, party size, sent date, answer. */}
+          <p className="admin-invites__meta admin-invites__meta--row">
+            <span className="admin-invites__meta-item">
+              <Phone size={14} aria-hidden />
+              {invite.phone ?? t('admin.invites.noPhone')}
+            </span>
+            {invite.party_size ? (
+              <span className="admin-invites__meta-item">{t('admin.invites.partySize', { count: invite.party_size })}</span>
+            ) : null}
+            <span className="admin-invites__meta-item">
+              {invite.sent_at ? t('admin.invites.sentOn', { date: formatDate(invite.sent_at) }) : t('admin.invites.notSent')}
+            </span>
+            <span className="admin-invites__meta-item">{answerLabel}</span>
           </p>
         </div>
         <div className="admin-invites__actions">
@@ -89,6 +88,15 @@ export function InviteCard({
               </button>
             </>
           ) : null}
+          <button
+            type="button"
+            className="obw-portal-btn obw-portal-btn--secondary admin-invites__delete"
+            aria-label={t('admin.invites.delete')}
+            title={t('admin.invites.delete')}
+            disabled={busy}
+            onClick={() => onDelete(invite)}>
+            <Trash2 size={16} aria-hidden />
+          </button>
         </div>
       </div>
 
@@ -130,7 +138,6 @@ export function InviteCard({
         </div>
       ) : null}
 
-      {!invite.editable ? <p className="admin-invites__locked">{t('admin.invites.lockedNote')}</p> : null}
     </li>
   );
 }

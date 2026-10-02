@@ -40,7 +40,7 @@ export function LoginPage() {
   // crest instead of a frozen form. A wrong code brings the form back with the
   // error and the typed code still in place.
   if (submitting) {
-    return <LoadingScreen label={t('login.submitLoading')} />;
+    return <LoadingScreen overlay label={t('login.submitLoading')} />;
   }
 
   return (

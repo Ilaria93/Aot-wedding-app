@@ -4,6 +4,14 @@
   margin-bottom: var(--obw-space-lg);
 }
 
+/* The outer box takes the home page's light glass (artwork showing through);
+   the guest cards inside it stay dark. */
+.admin-invites__section.obw-portal-panel {
+  background: color-mix(in srgb, var(--obw-void) 34%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
 .admin-invites__section-title {
   margin: 0;
 }
@@ -66,12 +74,14 @@
 }
 
 /* The greeting the guest will read on the envelope: "Cara famiglia Rossi,". */
-.admin-invites__greeting {
-  margin: 0;
-  font-family: var(--font-editorial);
-  font-style: italic;
-  font-size: 0.9rem;
-  color: var(--obw-gold-bright);
+.admin-invites__meta.admin-invites__meta--row {
+  gap: 4px 18px;
+}
+
+.admin-invites__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .admin-invites__meta {
@@ -84,14 +94,28 @@
   color: color-mix(in srgb, var(--obw-bone) 72%, var(--obw-stone));
 }
 
+/* The whole row, buttons spread out with the same gap between each (the
+   delete icon ends up at the right edge). If the row is too narrow they wrap. */
 .admin-invites__actions {
   display: flex;
+  flex: 1 1 100%;
   flex-wrap: wrap;
+  justify-content: space-between;
   gap: 8px;
 }
 
 .admin-invites__card .obw-portal-btn {
+  gap: 8px;
+  padding: 11px 16px;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
   text-decoration: none;
+  white-space: nowrap;
+}
+
+/* Icon-only delete button: a square, not a wide label button. */
+.admin-invites__card .admin-invites__delete {
+  padding: 11px 12px;
 }
 
 .admin-invites__members {
@@ -133,12 +157,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-}
-
-.admin-invites__locked {
-  margin: 0;
-  font-size: 0.8rem;
-  color: color-mix(in srgb, var(--obw-bone) 60%, var(--obw-stone));
 }
 
 /* Add / edit form (inside AdminModal). */

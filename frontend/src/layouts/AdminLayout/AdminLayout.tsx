@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { AdminMobileNav } from '@/components/AdminMobileNav';
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { PageAlert, PageShell } from '@/components/PageShell';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
@@ -19,7 +20,7 @@ export function AdminLayout() {
   const [heroStatsSlot, setHeroStatsSlot] = useState<HTMLDivElement | null>(null);
 
   if (isBootstrapping) {
-    return <PageShell loading>{null}</PageShell>;
+    return <LoadingScreen overlay label={t('common.loading')} />;
   }
 
   if (!isAuthenticated) {
