@@ -1,9 +1,12 @@
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 
 from database.base import get_db
 from dependencies.auth_user_dependency import require_current_user
 from models.user_model import User
+from services.auth_diagnostics import log_auth_event
 from schemas.auth_schema import AuthLoginRequest, AuthLogoutResponse, AuthUserResponse, ProfileUpdateRequest
 from services.auth_cookie_service import REFRESH_TOKEN_COOKIE, clear_auth_cookies, set_auth_cookies
 from services.auth_service import (
@@ -28,12 +31,14 @@ def _auth_error_detail(error: AuthValidationError) -> dict[str, str]:
 # passcode — no per-person credential, no public registration endpoint.
 # Tokens go in httpOnly cookies, never in the response body.
 @router.post("/login", response_model=AuthUserResponse)
-def login_auth_user(payload: AuthLoginRequest, response: Response, db: Session = Depends(get_db)):
+def login_auth_user(payload: AuthLoginRequest, request: Request, response: Response, db: Session = Depends(get_db)):
     try:
         session = authenticate_admin(db, payload)
     except AuthValidationError as error:
+        log_auth_event(f"login rejected ({error.code})", request, logging.WARNING)
         raise HTTPException(status_code=401, detail=_auth_error_detail(error)) from error
     set_auth_cookies(response, session)
+    log_auth_event("login ok, session cookies set", request)
     return session.user
 
 
@@ -42,6 +47,7 @@ def login_auth_user(payload: AuthLoginRequest, response: Response, db: Session =
 def refresh_auth_tokens(request: Request, response: Response, db: Session = Depends(get_db)):
     refresh_token = request.cookies.get(REFRESH_TOKEN_COOKIE)
     if not refresh_token:
+        log_auth_event("refresh without refresh_token cookie", request, logging.WARNING)
         raise HTTPException(status_code=401, detail={"code": "INVALID_CREDENTIALS", "message": "Missing refresh token."})
     try:
         session = refresh_auth_session(db, refresh_token)

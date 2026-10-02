@@ -21,6 +21,7 @@ from routes.photo_album_route import router as photo_album_router
 from routes.rsvp_confirmation_route import router as rsvp_router
 from routes.admin_user_list_route import router as admin_user_router
 from services.auth_service import AuthConfigError
+from services.auth_diagnostics import log_auth_config
 from settings import read_cors_allow_origins
 
 app = FastAPI(
@@ -35,6 +36,7 @@ app = FastAPI(
 def handle_auth_config_error(request: Request, error: AuthConfigError) -> JSONResponse:
     return JSONResponse(status_code=503, content={"detail": str(error)})
 
+log_auth_config()
 cors_origins = read_cors_allow_origins()
 _open_cors = cors_origins == ["*"]
 
