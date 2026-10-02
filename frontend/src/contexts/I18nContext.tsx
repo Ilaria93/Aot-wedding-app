@@ -33,14 +33,6 @@ function normalizeLocale(value: string | null | undefined): AppLocale {
   return isSupportedLocale(languageCode) ? languageCode : defaultLocale;
 }
 
-function detectDeviceLocale() {
-  try {
-    return normalizeLocale(Intl.DateTimeFormat().resolvedOptions().locale);
-  } catch {
-    return defaultLocale;
-  }
-}
-
 function getTranslationTemplate(locale: AppLocale, key: TranslationKey) {
   const pathSegments = key.split('.');
   let currentValue: unknown = translations[locale];
@@ -79,7 +71,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     async function bootstrapLocale() {
       const storedLocale = await readStoredLanguage();
-      const resolvedLocale = storedLocale ? normalizeLocale(storedLocale) : detectDeviceLocale();
+      // Italian for everyone until they pick another language from the menu —
+      // not the device language, which put Italian guests on English phones
+      // in front of an English site.
+      const resolvedLocale = storedLocale ? normalizeLocale(storedLocale) : defaultLocale;
       activeLocale = resolvedLocale;
       setLocaleState(resolvedLocale);
     }
