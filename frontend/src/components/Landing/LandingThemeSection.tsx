@@ -13,6 +13,14 @@ export function LandingThemeSection() {
         <span className="obw-rule obw-rule--center" aria-hidden="true" />
         <div className="obw-card obw-card--dark landing-box obw-stack-center">
           <p className="obw-body">{t('tema.subtitle')}</p>
+          <dl className="landing-theme__terms">
+            {(['Seal', 'Reports'] as const).map((id) => (
+              <div key={id}>
+                <dt>{t(`tema.symbol${id}Term`)}</dt>
+                <dd>{t(`tema.symbol${id}Body`)}</dd>
+              </div>
+            ))}
+          </dl>
           <Link to="/tema" className="obw-btn obw-btn--secondary">
             {t('landing.themeTeaser.cta')}
           </Link>

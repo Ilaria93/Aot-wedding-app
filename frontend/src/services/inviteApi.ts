@@ -12,6 +12,8 @@ export type InviteLink = {
   greeting_names: string[];
   min_party_guests: number;
   max_party_guests: number;
+  /** How many people the form starts with (the couple's preset); the guest can change it up to the max. */
+  default_party_guests: number;
 };
 
 /** Reads the guest name behind a WhatsApp invite token. Public endpoint, no auth. */

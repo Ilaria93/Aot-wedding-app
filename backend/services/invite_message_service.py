@@ -4,17 +4,22 @@ from urllib.parse import quote
 # One message per greeting kind. The link sits on its own last line: WhatsApp
 # makes it tappable only for a real https:// address (not localhost), so
 # SITE_URL must be the public site in the environment that sends invites.
+# The emoji is a plain one (no variation selector): the dove 🕊️ showed up as a
+# broken square on some phones.
 _SINGLE_MESSAGE = (
-    "Ciao {name}! Davide e Ilaria ti invitano al loro matrimonio il 31 maggio 2027 🕊️\n"
-    "Ecco il tuo invito personale: {invite_url}"
+    "Ciao {name}! 💌\n"
+    "Davide e Ilaria si sposano il 31 maggio 2027 e ti aspettano alla festa!\n"
+    "Qui c'è il tuo invito: {invite_url}"
 )
 _COUPLE_MESSAGE = (
-    "Cari {name}! Davide e Ilaria vi invitano al loro matrimonio il 31 maggio 2027 🕊️\n"
-    "Ecco il vostro invito personale: {invite_url}"
+    "Ciao {name}! 💌\n"
+    "Davide e Ilaria si sposano il 31 maggio 2027 e vi aspettano alla festa!\n"
+    "Qui c'è il vostro invito: {invite_url}"
 )
 _FAMILY_MESSAGE = (
-    "Cara famiglia {name}! Davide e Ilaria vi invitano al loro matrimonio il 31 maggio 2027 🕊️\n"
-    "Ecco il vostro invito personale: {invite_url}"
+    "Ciao famiglia {name}! 💌\n"
+    "Davide e Ilaria si sposano il 31 maggio 2027 e vi aspettano alla festa!\n"
+    "Qui c'è il vostro invito: {invite_url}"
 )
 
 

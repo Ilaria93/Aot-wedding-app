@@ -138,21 +138,21 @@ export const en = {
           quote: 'Battle cry',
         },
         davide: {
-          codename: 'The Guitarist',
+          codename: 'Pirù',
           enlisted: '2011',
           rank: 'Commander of travel plans',
           specialty: 'Improvised riffs',
           weakness: 'The morning alarm',
-          weapon: 'Electric guitar',
+          weapon: 'The MacBook, with 47 tabs open',
           quote: '“I already booked it.”',
         },
         ilaria: {
-          codename: 'The Bassist',
+          codename: 'T-Rex',
           enlisted: '2011',
           rank: 'Captain of playlists',
           specialty: 'Organising the impossible',
           weakness: 'Fluffy little animals',
-          weapon: 'Four-string bass',
+          weapon: 'Gummy candies, endless supply',
           quote: '“Five more minutes.”',
         },
       },
@@ -185,6 +185,10 @@ export const en = {
         snow: 'Beyond the ice walls',
         arch: 'Dress rehearsal',
         monument: 'Monument Valley',
+        beverly: 'Reconnaissance in Beverly Hills',
+        zion: 'Summit at Zion',
+        vegas: 'Welcome to Las Vegas',
+        road: 'Death Valley, the endless road',
         amarissimo: 'Amarissimo Cala Celeste',
       },
       pending: {
@@ -196,7 +200,7 @@ export const en = {
           date: '2011',
           title: 'First contact',
           body:
-            "A band was looking for a guitarist and a drummer, and Ilaria played bass. The guitarist, Davide, showed up with a soul patch and sideburns: she didn't even notice him. Yet they always stayed in touch, and never truly lost each other.",
+            "A band needed a guitarist, and Ilaria played bass. Davide showed up with a soul patch and sideburns: she didn't even notice him. But they stayed in touch.",
         },
         enlist: {
           date: '2019',
@@ -208,16 +212,16 @@ export const en = {
           date: '2020 – 2025',
           title: 'The battles',
           body:
-            "Real battles followed: a dog, job changes, covid and a forced lockdown together, a house to renovate wall by wall, two years of retreat behind their parents' lines. But the Survey Corps never gives up.",
+            "Then the real battles: a dog, job changes, covid, a house to renovate wall by wall, two years at their parents'. But the Survey Corps never gives up.",
         },
         proposal: {
           date: 'October 2025',
           title: 'The proposal',
           body:
-            'A wonderful journey across the United States, together with many new companions in adventure. And suddenly, in the middle of Monument Valley, the proposal: unexpected, full of emotion, with so many tears... The answer, you already know.',
+            'A wonderful trip across the United States and, in the middle of Monument Valley, the proposal: unexpected, with so many tears. The answer, you already know.',
         },
         final: {
-          date: '31 April 2027',
+          date: '31 May 2027',
           title: 'The last mission',
           body:
             'One last expedition remains: saying yes. Shinzou wo sasageyo! (Dedicate your hearts!)',
@@ -269,8 +273,8 @@ export const en = {
       eyebrow: 'Our dream',
       title: 'Towards Japan',
       intro:
-        'Your presence is the greatest gift we could receive. If you would like to give us something extra, your contribution will help us make our long-held dream come true: a honeymoon in Japan. Anime, ancient temples, breathtaking landscapes and plenty of ramen to enjoy together.',
-      gratitude: 'Every gesture, big or small, will be received with heartfelt gratitude.',
+        'Your presence is the greatest gift. If you would like to give us something, your contribution will help us set off to discover Japan.',
+      gratitude: 'Every gesture will be received with heartfelt gratitude.',
       coordinatesTitle: 'Bank transfer details',
       accountHolder: 'Account holder',
       iban: 'IBAN',
@@ -457,6 +461,8 @@ export const en = {
     saveEditLoading: 'Saving...',
     editButton: 'Edit response',
     loginSubmitLabel: 'Log in to confirm RSVP',
+    partySizeLabel: "How many of you are coming?",
+    partySizeHint: "If someone is missing, tap “Add” below.",
     guestsTitle: 'Participants',
     guestsHint: 'The first row matches the account you are logged in with.',
     guestsSummaryTitle: 'Participant details',
@@ -937,7 +943,7 @@ export const en = {
     headlinePlural: 'you are all invited to our wedding',
     meetingPoint: 'Where',
     whenLabel: 'When',
-    dateAndTime: '{{date}}, 5:00 PM',
+    dateAndTime: '{{date}}\nRecommended arrival 4:30 PM\nCeremony starts 5:00 PM',
     closing: 'The best gift will be having you with us.',
     closingPlural: 'The best gift will be having you with us.',
     coupleNames: 'Davide & Ilaria',
@@ -951,6 +957,10 @@ export const en = {
       no: "I won't be there",
       noPlural: "We won't be there",
       contact: 'Contact us',
+    },
+    gift: {
+      text: "If you'd like to give us a gift, your contribution will help us set off to discover Japan. Here is our IBAN:",
+      textPlural: "If you'd like to give us a gift, your contribution will help us set off to discover Japan. Here is our IBAN:",
     },
     moreInfo: {
       text: "For more information, you'll find everything here:",

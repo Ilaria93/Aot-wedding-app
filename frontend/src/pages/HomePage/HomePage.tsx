@@ -51,13 +51,13 @@ export function HomePage() {
       <HeroParticleField />
       <MissionDocumentHero />
       <div className="landing-page__body">
+        <LandingThemeSection />
         <LandingStorySection />
         <LandingCeremonySection />
         {/* Gallery temporarily hidden — uncomment to bring it back. */}
         {/* <GallerySection /> */}
         <LandingRsvpSection />
         <HoneymoonGiftSection />
-        <LandingThemeSection />
         <LandingFaqSection />
         <LandingContactsSection />
       </div>

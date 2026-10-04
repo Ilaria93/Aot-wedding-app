@@ -377,3 +377,48 @@
     transition: none;
   }
 }
+
+/* Gift section: the IBAN written out so it can be read (or copied) without opening the site. */
+.envelope-invite__section--gift {
+  gap: 10px;
+}
+
+.envelope-invite__gift-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.envelope-invite__gift-holder {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--obw-gold-dim);
+}
+
+.envelope-invite__gift-iban {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: clamp(0.8rem, 3.6vw, 1rem);
+  letter-spacing: 0.04em;
+  color: var(--obw-gold);
+}
+
+.envelope-invite__gift-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* "For more information…" and the gift line sit over the crest in the parchment art: solid ink,
+   a touch heavier, with a cream halo so the emblem never swallows the words. */
+.envelope-invite__letter .envelope-invite__more-info-text,
+.envelope-invite__letter .envelope-invite__gift-text {
+  color: var(--obw-charcoal-deep);
+  font-weight: 600;
+  text-shadow:
+    0 0 6px color-mix(in srgb, var(--obw-bone) 95%, transparent),
+    0 0 14px color-mix(in srgb, var(--obw-bone) 90%, transparent),
+    0 0 24px color-mix(in srgb, var(--obw-bone) 80%, transparent);
+}

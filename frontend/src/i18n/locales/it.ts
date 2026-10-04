@@ -138,21 +138,21 @@ export const it = {
           quote: 'Frase di battaglia',
         },
         davide: {
-          codename: 'Il Chitarrista',
+          codename: 'Pirù',
           enlisted: '2011',
           rank: 'Comandante dei piani di viaggio',
           specialty: 'Riff improvvisati',
           weakness: 'La sveglia del mattino',
-          weapon: 'Chitarra elettrica',
+          weapon: 'Il MacBook, con 47 schede aperte',
           quote: '“Ho prenotato!”',
         },
         ilaria: {
-          codename: 'La Bassista',
+          codename: 'T-Rex',
           enlisted: '2011',
           rank: 'Capitano delle playlist',
           specialty: "Organizzare l'impossibile",
           weakness: 'Gli animaletti pucciosi',
-          weapon: 'Basso a quattro corde',
+          weapon: 'Caramelle gommose, scorta infinita',
           quote: '“Ancora cinque minuti.”',
         },
       },
@@ -185,6 +185,10 @@ export const it = {
         snow: 'Oltre le mura di ghiaccio',
         arch: 'Prove generali',
         monument: 'Monument Valley',
+        beverly: 'Ricognizione a Beverly Hills',
+        zion: 'In vetta a Zion',
+        vegas: 'Benvenuti a Las Vegas',
+        road: 'Death Valley, strada senza fine',
         amarissimo: 'Amarissimo Cala Celeste',
       },
       pending: {
@@ -196,7 +200,7 @@ export const it = {
           date: '2011',
           title: 'Primo contatto',
           body:
-            "Una band cercava chitarrista e batterista, e Ilaria suonava il basso. Il chitarrista, Davide, si presentò con mosca e basettoni: lei non l'aveva nemmeno notato. Eppure sono rimasti sempre in contatto, e non si sono mai persi davvero.",
+            "Una band cercava un chitarrista, e Ilaria suonava il basso. Davide arrivò con mosca e basettoni: lei non lo notò nemmeno. Ma sono rimasti in contatto.",
         },
         enlist: {
           date: '2019',
@@ -208,16 +212,16 @@ export const it = {
           date: '2020 – 2025',
           title: 'Le battaglie',
           body:
-            'Sono seguite battaglie vere: un cane, cambi di lavoro, il covid e una convivenza forzata, una casa da ristrutturare muro dopo muro, due anni di ritirata nelle retrovie dei genitori. Ma il Corpo di Ricerca non si arrende.',
+            'Poi le battaglie vere: un cane, cambi di lavoro, il covid, una casa da ristrutturare muro dopo muro, due anni dai genitori. Ma il Corpo di Ricerca non si arrende.',
         },
         proposal: {
           date: 'Ottobre 2025',
           title: 'La proposta',
           body:
-            'Un meraviglioso viaggio attraverso gli Stati Uniti, insieme a tanti nuovi compagni di avventura. E all’improvviso, in mezzo alla Monument Valley, la proposta: inaspettata, carica di emozione, con tante lacrime... La risposta, la conoscete già.',
+            'Un viaggio meraviglioso negli Stati Uniti e, in mezzo alla Monument Valley, la proposta: inaspettata, tra mille lacrime. La risposta, la conoscete già.',
         },
         final: {
-          date: '31 aprile 2027',
+          date: '31 maggio 2027',
           title: "L'ultima missione",
           body:
             "Ora resta l'ultima spedizione: dirsi sì. Shinzou wo sasageyo! (Offrite il vostro cuore!)",
@@ -269,8 +273,8 @@ export const it = {
       eyebrow: 'Il nostro sogno',
       title: 'Verso il Giappone',
       intro:
-        'La vostra presenza è il regalo più bello che possiamo ricevere. Se però desiderate farci un regalo, il vostro contributo ci aiuterà a realizzare il nostro sogno nel cassetto: la luna di miele in Giappone. Anime, templi antichi, paesaggi meravigliosi e tanti ramen da gustare insieme.',
-      gratitude: 'Ogni gesto, piccolo o grande, sarà accolto con immensa gratitudine.',
+        'La vostra presenza è il regalo più bello. Se desiderate farci un pensiero, il vostro contributo ci aiuterà a partire alla scoperta del Giappone.',
+      gratitude: 'Ogni gesto sarà accolto con immensa gratitudine.',
       coordinatesTitle: 'Coordinate per il bonifico',
       accountHolder: 'Intestatario',
       iban: 'IBAN',
@@ -457,6 +461,8 @@ export const it = {
     saveEditLoading: 'Salvataggio...',
     editButton: 'Modifica risposta',
     loginSubmitLabel: 'Accedi per confermare RSVP',
+    partySizeLabel: "In quanti siete?",
+    partySizeHint: "Se manca qualcuno, tocca «Aggiungi» qui sotto.",
     guestsTitle: 'Partecipanti',
     guestsHint: "La prima riga corrisponde all'account con cui hai effettuato l'accesso.",
     guestsSummaryTitle: 'Dettaglio partecipanti',
@@ -939,7 +945,7 @@ export const it = {
     headlinePlural: 'siete invitati al nostro matrimonio',
     meetingPoint: 'Dove',
     whenLabel: 'Quando',
-    dateAndTime: '{{date}}, ore 17:00',
+    dateAndTime: '{{date}}\nArrivo consigliato ore 16:30\nInizio cerimonia ore 17:00',
     closing: 'Il regalo più bello sarà averti con noi.',
     closingPlural: 'Il regalo più bello sarà avervi con noi.',
     coupleNames: 'Davide & Ilaria',
@@ -953,6 +959,10 @@ export const it = {
       no: 'Non ci sarò',
       noPlural: 'Non ci saremo',
       contact: 'Contattaci',
+    },
+    gift: {
+      text: "Se vuoi farci un regalo, il tuo contributo ci aiuterà a partire alla scoperta del Giappone. Ecco l'IBAN:",
+      textPlural: "Se volete farci un regalo, il vostro contributo ci aiuterà a partire alla scoperta del Giappone. Ecco l'IBAN:",
     },
     moreInfo: {
       text: 'Per altre informazioni trovi tutto qui:',
