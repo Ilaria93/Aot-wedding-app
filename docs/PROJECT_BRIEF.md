@@ -73,7 +73,7 @@ Non videogioco, non rivista di nozze generica. L’RSVP deve ispirare fiducia; l
 | 3 | Registrazione + login | Email + password |
 | 4 | RSVP gruppo (max 10, dati per persona, 2 select menu + testo) | PRODUCT_DECISIONS |
 | 5 | Fazione **auto-assegnata** (3 reggimenti, bilanciata, gruppo uguale) | Per spille |
-| 6 | Modifica RSVP fino al **6 maggio 2027** | Magic link in email |
+| 6 | Modifica RSVP fino al **1 aprile 2027** | Magic link in email |
 | 7 | Admin: conteggi fazione / export per **spille** (1 per partecipante) | |
 | 8 | Travel, album, admin | Login dove serve |
 | 9 | Album foto | Upload registrati; anche post-matrimonio |
@@ -223,7 +223,7 @@ Flusso: **QR → home → (hero o skip) → registrati → RSVP → resto**.
 
 - [ ] Ospite da QR completa RSVP famiglia in **< 3 min** su mobile
 - [ ] Hero skippabile; nessuno schermo nero su iPhone/Android testati
-- [ ] Modifica RSVP fino al **6 maggio 2027**; blocco dopo
+- [ ] Modifica RSVP fino al **1 aprile 2027**; blocco dopo
 - [ ] Admin vede conteggi per fazione e lista per spille
 - [ ] Upload foto con S3 configurato
 - [ ] pytest + vitest verdi; i18n su stringhe nuove
@@ -279,5 +279,5 @@ Tre reggimenti **come in AoT**, ma **nomi display propri** Operation Ravenna (ev
 | Hero dopo | **Video reel** ODM, mobile-first; 3D non obbligatorio |
 | Look sito | **Mix briefing militare + matrimonio elegante AoT** |
 | Fazioni | **3**, auto-bilanciate, 1 spilla per partecipante |
-| Deadline RSVP | **6 maggio 2027** (25 giorni prima) |
+| Deadline RSVP | **1 aprile 2027** |
 | Da dove partire | Sprint 0–1 su `feature/rsvp-party` |

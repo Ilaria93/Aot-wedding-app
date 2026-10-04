@@ -1,6 +1,8 @@
 /* Native <dialog> in the top layer. Element + two classes to outrank the
-   landing's `.landing-page .obw-card` (position: relative, translucent fill). */
-.landing-page dialog.couple-contact.obw-card {
+   landing's `.landing-page .obw-card` (position: relative, translucent fill).
+   Also used from the invite letter, which has no .landing-page around it. */
+.landing-page dialog.couple-contact.obw-card,
+.envelope-invite dialog.couple-contact.obw-card {
   position: fixed;
   inset: 0;
   box-sizing: border-box;

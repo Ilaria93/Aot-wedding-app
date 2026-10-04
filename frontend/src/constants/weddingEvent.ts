@@ -36,8 +36,6 @@ export const WEDDING_LOCAL = {
 const localeMap: Record<AppLocale, string> = {
   it: 'it-IT',
   en: 'en-GB',
-  fr: 'fr-FR',
-  de: 'de-DE',
 };
 
 export type CountdownParts = {

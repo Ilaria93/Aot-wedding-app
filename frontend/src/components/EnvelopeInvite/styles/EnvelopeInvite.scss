@@ -105,7 +105,7 @@
 }
 
 .envelope-invite--open .envelope-invite__letter-bg {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 /* Transparent text layer over the backdrop/video. Takes over the whole
@@ -159,11 +159,10 @@
   padding-top: clamp(1rem, 6vh, 3rem);
 }
 
-/* The letter reveals block by block: each block fades up in turn, ordered by
-   --reveal-delay (set inline in EnvelopeInvite.tsx), starting as the paper begins
-   to come forward in the video. */
-.envelope-invite__block,
-.envelope-invite__section {
+/* The text comes in word by word (see .envelope-invite__word below). What is not
+   text — the buttons — fades up after the words above it, at its --reveal-delay
+   (set inline in EnvelopeInvite.tsx). */
+.envelope-invite__fade {
   opacity: 0;
   filter: blur(8px);
   transform: translateY(14px);
@@ -173,8 +172,7 @@
     transform 1100ms var(--obw-ease-out) var(--reveal-delay, 0ms);
 }
 
-.envelope-invite--revealing .envelope-invite__block,
-.envelope-invite--revealing .envelope-invite__section {
+.envelope-invite--revealing .envelope-invite__fade {
   opacity: 1;
   filter: blur(0);
   transform: translateY(0);
@@ -205,13 +203,33 @@
   text-shadow: none;
 }
 
-/* The greeting keeps the ochre accent. */
+/* The greeting keeps the ochre accent, set in the display (script) font like the
+   couple's names — bigger than the body text, which a script face needs to read. */
 .envelope-invite__letter .envelope-invite__personal-greeting {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 5.5vw, 2.1rem);
+  font-weight: 600;
+  line-height: 1.2;
   color: var(--obw-gold-dim);
 }
 
-.envelope-invite__couple-names {
+.envelope-invite__letter .envelope-invite__of {
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  color: var(--obw-gold-dim);
+}
+
+/* The mission line is long: balance the two lines instead of leaving "di te." alone. */
+.envelope-invite__mission {
+  text-wrap: balance;
+}
+
+.envelope-invite__letter .envelope-invite__couple-names {
+  margin-top: 14px;
   font-size: clamp(1.7rem, 6vw, 2.4rem);
+  /* The same weight as the greeting. The script face has one weight, so the
+     browser thickens it itself. */
+  font-weight: 600;
 }
 
 .envelope-invite__details {
@@ -233,16 +251,32 @@
   align-items: center;
   gap: 16px;
   padding-top: var(--obw-space-lg);
-  border-top: 1px solid color-mix(in srgb, var(--obw-gold) 45%, transparent);
+  /* The rule above each section is drawn in just before its text starts. */
+  border-top: 1px solid transparent;
+  transition: border-color 900ms var(--obw-ease-out) var(--reveal-delay, 0ms);
   text-align: center;
 }
 
+.envelope-invite--revealing .envelope-invite__section {
+  border-top-color: color-mix(in srgb, var(--obw-gold) 45%, transparent);
+}
+
+/* Both answers always on one row, sharing it equally — even on a narrow phone. */
 .envelope-invite__rsvp-actions {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
+  flex-wrap: nowrap;
+  align-items: stretch;
   gap: 12px;
+  width: 100%;
+}
+
+.envelope-invite__rsvp-actions .obw-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 12px 8px;
+  letter-spacing: 0.1em;
+  font-size: clamp(0.68rem, 3.3vw, 0.82rem);
+  text-align: center;
 }
 
 .envelope-invite__section--more-info {
@@ -279,6 +313,19 @@
   color: var(--obw-charcoal-deep);
 }
 
+/* "Vai al sito" in solid gold, like "Ci sarò": the translucent white one got lost on the paper. */
+.envelope-invite__letter .envelope-invite__more-info-link {
+  border-color: var(--obw-gold);
+  background: var(--obw-gold);
+  color: var(--obw-void);
+}
+
+.envelope-invite__letter .envelope-invite__more-info-link:hover {
+  border-color: var(--obw-gold-bright);
+  background: var(--obw-gold-bright);
+  color: var(--obw-void);
+}
+
 /* Fixed above the full-screen stage (z-index 1) — a static sibling would
    otherwise paint underneath it. */
 .envelope-invite__hint {
@@ -301,10 +348,30 @@
   text-shadow: 0 1px 12px rgba(28, 14, 13, 0.6);
 }
 
+/* Word-by-word reveal of the long sentence: each word starts blurred, a little
+   low and transparent, and sharpens into place after its own delay. */
+.envelope-invite__word {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(8px);
+  transform: translateY(10px);
+  transition:
+    opacity 800ms var(--obw-ease-out) var(--word-delay, 0ms),
+    filter 800ms var(--obw-ease-out) var(--word-delay, 0ms),
+    transform 800ms var(--obw-ease-out) var(--word-delay, 0ms);
+}
+
+.envelope-invite--revealing .envelope-invite__word {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .envelope-invite__word,
+  .envelope-invite__fade,
   .envelope-invite__letter-bg,
   .envelope-invite__letter-body,
-  .envelope-invite__block,
   .envelope-invite__section,
   .envelope-invite__opener-video {
     transition: none;

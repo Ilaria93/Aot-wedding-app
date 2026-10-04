@@ -30,6 +30,11 @@ export function formatInviteGreeting(t: TranslateFn, locale: string, { kind, nam
   }
 }
 
+/** Couples and families are addressed in the plural ("darvi", "con voi"); everyone else in the singular. */
+export function isPluralInvite(kind: GreetingKind): boolean {
+  return kind === 'family' || kind === 'couple';
+}
+
 /** The line under the greeting — "sei stato ufficialmente invitato" — agreeing with who is addressed. */
 export function formatInviteHeadline(t: TranslateFn, kind: GreetingKind): string {
   switch (kind) {

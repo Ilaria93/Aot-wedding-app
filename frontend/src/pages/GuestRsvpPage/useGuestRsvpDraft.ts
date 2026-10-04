@@ -49,6 +49,8 @@ export function useGuestRsvpDraft(
   invitePrefill: InvitePrefill,
   t: TranslateFn,
   existingRsvp: RsvpMe | null = null,
+  /** First answer preselected on the form (the letter's "No" button opens it on No). */
+  startAttending = true,
 ): UseGuestRsvpDraftResult {
   const { applySession } = useAuth();
   // Lazy: the hook is mounted once per page load, so the saved answer is read a single time.
@@ -65,7 +67,7 @@ export function useGuestRsvpDraft(
   const [justSubmitted, setJustSubmitted] = useState(false);
   const [editable, setEditable] = useState(existingRsvp?.editable ?? true);
   const [viewMode, setViewMode] = useState<'summary' | 'form'>(initialConfirmed ? 'summary' : 'form');
-  const [attending, setAttendingState] = useState(initialConfirmed?.attending ?? true);
+  const [attending, setAttendingState] = useState(initialConfirmed?.attending ?? startAttending);
   const [guests, setGuests] = useState<RsvpGuestDraft[]>(() =>
     initialConfirmed
       ? guestLinesToDrafts(initialConfirmed.guests, invitePrefill)
