@@ -314,18 +314,15 @@ export const fr = {
       title: 'Questions fréquentes',
       locationQuestion: 'Le lieu est-il accessible ?',
       locationAnswer:
-        'Oui, toutes les informations pratiques seront communiquées en temps voulu, y compris pour tout besoin d’accessibilité.',
+        'Oui, il y a un grand parking devant la plage et une passerelle en bois pratique pour accéder à l’établissement balnéaire.',
+      travelQuestion: 'Faudra-t-il se déplacer pendant la journée ?',
+      travelAnswer: 'Non, la cérémonie et la fête auront lieu au même endroit.',
       foodQuestion: 'Comment signaler des allergies ou besoins alimentaires ?',
       foodAnswer:
         'Vous pourrez le faire directement dans le formulaire RSVP, afin que toutes les notes restent liées à votre invitation personnelle.',
       phoneQuestion: 'Puis-je utiliser mon téléphone pendant la cérémonie ?',
       phoneAnswer:
         'Nous serions ravis que vous profitiez de l’instant avec nous — un photographe dédié sera là pour l’immortaliser.',
-    },
-    decorative: {
-      wings: 'Ailes de la liberté',
-      mission: 'Journal de mission',
-      routes: 'Murs et itinéraires',
     },
     contacts: {
       title: 'Contacts utiles',

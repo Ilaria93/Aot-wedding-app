@@ -1,8 +1,6 @@
-import { Compass, Map, Shield } from 'lucide-react';
-
 import { useI18n } from '@/contexts/I18nContext';
 
-/** Landing FAQ section with decorative tags. */
+/** Landing FAQ section. */
 export function LandingFaqSection() {
   const { t } = useI18n();
 
@@ -17,6 +15,10 @@ export function LandingFaqSection() {
           <p>{t('landing.faq.locationAnswer')}</p>
         </article>
         <article className="obw-faq-list__item">
+          <h3>{t('landing.faq.travelQuestion')}</h3>
+          <p>{t('landing.faq.travelAnswer')}</p>
+        </article>
+        <article className="obw-faq-list__item">
           <h3>{t('landing.faq.foodQuestion')}</h3>
           <p>{t('landing.faq.foodAnswer')}</p>
         </article>
@@ -24,20 +26,6 @@ export function LandingFaqSection() {
           <h3>{t('landing.faq.phoneQuestion')}</h3>
           <p>{t('landing.faq.phoneAnswer')}</p>
         </article>
-      </div>
-      <div className="obw-tag-row">
-        <span className="obw-tag">
-          <Shield size={14} aria-hidden />
-          {t('landing.decorative.wings')}
-        </span>
-        <span className="obw-tag">
-          <Compass size={14} aria-hidden />
-          {t('landing.decorative.mission')}
-        </span>
-        <span className="obw-tag">
-          <Map size={14} aria-hidden />
-          {t('landing.decorative.routes')}
-        </span>
       </div>
     </section>
   );

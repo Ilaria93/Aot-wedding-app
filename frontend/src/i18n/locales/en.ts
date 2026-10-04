@@ -314,18 +314,15 @@ export const en = {
       title: 'Frequently asked questions',
       locationQuestion: 'Is the venue accessible?',
       locationAnswer:
-        'Yes, all the practical information will be shared in good time, including any accessibility needs.',
+        'Yes, there is a large car park in front of the beach and a convenient wooden boardwalk leading to the beach club.',
+      travelQuestion: 'Will we need to move around during the day?',
+      travelAnswer: 'No, the ceremony and the party will both take place at the same venue.',
       foodQuestion: 'How do I share allergies or dietary needs?',
       foodAnswer:
         'You will be able to do it directly in the RSVP form, so every note stays linked to your personal invitation.',
       phoneQuestion: 'Can I use my phone during the ceremony?',
       phoneAnswer:
         "We'd love for you to enjoy the moment with us — a dedicated photographer will be there to capture it.",
-    },
-    decorative: {
-      wings: 'Wings of Freedom',
-      mission: 'Mission Log',
-      routes: 'Walls and Routes',
     },
     contacts: {
       title: 'Useful contacts',

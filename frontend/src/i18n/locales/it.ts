@@ -269,7 +269,7 @@ export const it = {
       eyebrow: 'Il nostro sogno',
       title: 'Verso il Giappone',
       intro:
-        'La vostra presenza è il regalo più bello che possiamo ricevere. Se però desiderate farci un pensiero, un vostro contributo ci aiuterà a realizzare il nostro sogno nel cassetto: la luna di miele in Giappone. Anime, templi antichi, paesaggi meravigliosi e tanti ramen da gustare insieme.',
+        'La vostra presenza è il regalo più bello che possiamo ricevere. Se però desiderate farci un regalo, il vostro contributo ci aiuterà a realizzare il nostro sogno nel cassetto: la luna di miele in Giappone. Anime, templi antichi, paesaggi meravigliosi e tanti ramen da gustare insieme.',
       gratitude: 'Ogni gesto, piccolo o grande, sarà accolto con immensa gratitudine.',
       coordinatesTitle: 'Coordinate per il bonifico',
       accountHolder: 'Intestatario',
@@ -314,18 +314,15 @@ export const it = {
       title: 'Domande frequenti',
       locationQuestion: 'La location è accessibile?',
       locationAnswer:
-        'Sì, tutte le informazioni pratiche saranno condivise per tempo, incluse eventuali esigenze di accessibilità.',
+        'Sì, davanti alla spiaggia c’è un ampio parcheggio e una comoda passerella in legno per accedere al lido.',
+      travelQuestion: 'Dovremo spostarci durante la giornata?',
+      travelAnswer: 'No, la cerimonia e la festa si terranno nello stesso luogo.',
       foodQuestion: 'Come comunico allergie o esigenze alimentari?',
       foodAnswer:
         'Potrai farlo direttamente nel form RSVP, così tutte le note restano collegate al tuo invito personale.',
       phoneQuestion: 'Posso usare il telefono durante la cerimonia?',
       phoneAnswer:
-        'Vi chiediamo di godervi il momento con noi — ci sarà un fotografo dedicato a immortalarlo.',
-    },
-    decorative: {
-      wings: 'Ali della libertà',
-      mission: 'Registro missione',
-      routes: 'Mura e percorsi',
+        'Vi chiediamo di godervi il momento con noi, ci sarà un fotografo dedicato a immortalarlo.',
     },
     contacts: {
       title: 'Contatti utili',

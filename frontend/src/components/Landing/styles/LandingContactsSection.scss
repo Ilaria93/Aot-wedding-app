@@ -1,0 +1,32 @@
+/* Centred title, like the other landing sections. */
+.landing-contacts__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: var(--obw-space-lg);
+  text-align: center;
+}
+
+.landing-contacts__head .obw-display {
+  margin: 0;
+}
+
+/* Cards stay a third wide; a short last row sits in the middle instead of on the left. */
+.landing-contacts__grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--obw-space-md);
+}
+
+.landing-contacts__grid > * {
+  flex: 0 1 calc((100% - 2 * var(--obw-space-md)) / 3);
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .landing-contacts__grid > * {
+    flex-basis: 100%;
+  }
+}

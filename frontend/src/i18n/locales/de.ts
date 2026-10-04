@@ -314,18 +314,15 @@ export const de = {
       title: 'Häufige Fragen',
       locationQuestion: 'Ist die Location barrierefrei?',
       locationAnswer:
-        'Ja, alle praktischen Informationen werden rechtzeitig geteilt, einschließlich möglicher Bedürfnisse zur Barrierefreiheit.',
+        'Ja, vor dem Strand gibt es einen großen Parkplatz und einen bequemen Holzsteg zum Strandbad.',
+      travelQuestion: 'Müssen wir im Laufe des Tages den Ort wechseln?',
+      travelAnswer: 'Nein, die Zeremonie und die Feier finden am selben Ort statt.',
       foodQuestion: 'Wie teile ich Allergien oder Ernährungsbedürfnisse mit?',
       foodAnswer:
         'Das kannst du direkt im RSVP-Formular tun, damit alle Hinweise mit deiner persönlichen Einladung verknüpft bleiben.',
       phoneQuestion: 'Darf ich während der Zeremonie mein Handy benutzen?',
       phoneAnswer:
         'Wir würden uns freuen, wenn ihr den Moment mit uns genießt — ein eigener Fotograf wird da sein, um ihn festzuhalten.',
-    },
-    decorative: {
-      wings: 'Flügel der Freiheit',
-      mission: 'Missionsprotokoll',
-      routes: 'Mauern und Routen',
     },
     contacts: {
       title: 'Nützliche Kontakte',
