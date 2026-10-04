@@ -55,6 +55,18 @@ export function RsvpPartyForm({
     onGuestsChange(guests.filter((guest) => guest.clientId !== clientId));
   }
 
+  /** "How many are you?": grows or shrinks the list to that number (the first row always stays). */
+  function setPartySize(size: number) {
+    if (size === guests.length) {
+      return;
+    }
+    onGuestsChange(
+      size > guests.length
+        ? [...guests, ...Array.from({ length: size - guests.length }, buildEmptyGuestLine)]
+        : guests.slice(0, size),
+    );
+  }
+
   function addGuest() {
     if (!canAddGuest) {
       return;
@@ -89,11 +101,23 @@ export function RsvpPartyForm({
 
       {attending ? (
         <div className="rsvp-panel__section">
+          <label className="obw-field" htmlFor="rsvp-party-size">
+            <span className="obw-kicker">{t('rsvp.partySizeLabel')}</span>
+            <select
+              id="rsvp-party-size"
+              className="obw-select"
+              value={guests.length}
+              onChange={(event) => setPartySize(Number(event.target.value))}>
+              {Array.from({ length: partyLimits.max }, (_, index) => (
+                <option key={index + 1} value={index + 1}>
+                  {index + 1}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="obw-body rsvp-panel__hint">{t('rsvp.partySizeHint')}</p>
           <div className="rsvp-panel__party-meta">
             <p className="obw-kicker">{t('rsvp.guestsTitle')}</p>
-            <p className="obw-kicker rsvp-panel__party-count">
-              {t('rsvp.partyCount', { current: guests.length, max: partyLimits.max })}
-            </p>
           </div>
           <p className="obw-body rsvp-panel__hint">{guestsHint ?? t('rsvp.guestsHint')}</p>
 

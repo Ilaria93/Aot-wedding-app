@@ -96,7 +96,7 @@ function GuestRsvpConfirmForm({
   startAttending: boolean;
 }) {
   const { t } = useI18n();
-  const draft = useGuestRsvpDraft(token, invite, t, existingRsvp, startAttending);
+  const draft = useGuestRsvpDraft(token, invite, t, existingRsvp, startAttending, invite.default_party_guests);
 
   // The two ways to land on a saved answer: right after sending it (thanks and
   // a single "Go to the site" button, nothing else) or by reopening the

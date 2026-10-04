@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useRef, useState, type CSSProperties } from 'react';
+import { Copy } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import {
@@ -7,7 +8,9 @@ import {
   WEDDING_VENUE_NAME,
   formatWeddingDateDisplay,
 } from '@/constants/weddingEvent';
+import { copyToClipboard } from '@/components/HoneymoonGiftSection/copyToClipboard';
 import { CoupleContactDialog } from '@/components/Landing/CoupleContactDialog';
+import { formatIbanForDisplay, HONEYMOON_GIFT_BANK_DETAILS } from '@/constants/honeymoonGift';
 import { useI18n } from '@/contexts/I18nContext';
 import type { GreetingKind } from '@/services/inviteApi';
 import { formatInviteGreeting, formatInviteHeadline, isPluralInvite } from './inviteGreeting';
@@ -21,8 +24,11 @@ const revealAt = (delayMs: number) => ({ '--reveal-delay': `${delayMs}ms` }) as 
 // from a blur and rises a little), one after the other down the page. Plain
 // spans and CSS transitions — see .envelope-invite__word.
 const TEXT_START_DELAY_MS = 250;
-const WORD_STEP_MS = 70;
-const LINE_PAUSE_MS = 150;
+const WORD_STEP_MS = 100;
+const LINE_PAUSE_MS = 250;
+// How slowly the page follows the text down while it is written (bigger = softer).
+const SCROLL_EASE_MS = 1400;
+const SCROLL_MAX_PX_PER_S = 48;
 
 function countWords(text: string) {
   return text.split(/\s+/).filter(Boolean).length;
@@ -116,8 +122,18 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isZooming, setIsZooming] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+  const [ibanCopied, setIbanCopied] = useState(false);
+
+  async function handleCopyIban() {
+    if (!(await copyToClipboard(HONEYMOON_GIFT_BANK_DETAILS.iban))) {
+      return;
+    }
+    setIbanCopied(true);
+    window.setTimeout(() => setIbanCopied(false), 2200);
+  }
   const letterHeadingRef = useRef<HTMLHeadingElement>(null);
   const openerVideoRef = useRef<HTMLVideoElement>(null);
+  const letterRef = useRef<HTMLElement>(null);
   // Read from the frame loop below, which must not see stale state.
   const revealedRef = useRef(false);
   const zoomedRef = useRef(false);
@@ -221,6 +237,61 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
     }
   }, [isOpen]);
 
+  // Nobody guesses the letter scrolls: while the text is being written the page
+  // follows it down, easing so the line being revealed stays in view. Any touch,
+  // wheel or key press hands control back to the reader.
+  useEffect(() => {
+    const letter = letterRef.current;
+    if (!isRevealing || !letter) {
+      return;
+    }
+    const startedAt = performance.now();
+    const items = Array.from(letter.querySelectorAll<HTMLElement>('.envelope-invite__word, .envelope-invite__fade')).map(
+      (element) => {
+        const style = element.style;
+        const delay = parseFloat(style.getPropertyValue('--word-delay') || style.getPropertyValue('--reveal-delay')) || 0;
+        return { element, delay };
+      },
+    );
+    const lastDelay = Math.max(0, ...items.map((item) => item.delay));
+    let frame = 0;
+    let position = letter.scrollTop; // fractional: scrollTop itself rounds to whole pixels
+    let lastFrame = startedAt;
+    const stop = () => cancelAnimationFrame(frame);
+    const tick = (now: number) => {
+      const elapsed = now - startedAt;
+      const dt = Math.min(now - lastFrame, 64);
+      lastFrame = now;
+      const letterTop = letter.getBoundingClientRect().top;
+      let bottom = 0;
+      for (const item of items) {
+        if (item.delay <= elapsed) {
+          bottom = Math.max(bottom, item.element.getBoundingClientRect().bottom - letterTop + letter.scrollTop);
+        }
+      }
+      // Exponential easing (time constant SCROLL_EASE_MS): starts gently, glides, never snaps.
+      const wanted = bottom + 72 - letter.clientHeight;
+      const behind = wanted - position > 0.5 && position < letter.scrollHeight - letter.clientHeight - 0.5;
+      if (behind) {
+        const eased = (wanted - position) * (1 - Math.exp(-dt / SCROLL_EASE_MS));
+        position += Math.min(eased, (SCROLL_MAX_PX_PER_S * dt) / 1000);
+        letter.scrollTop = position;
+      }
+      if (behind || elapsed < lastDelay + 1500) {
+        frame = requestAnimationFrame(tick);
+      }
+    };
+    frame = requestAnimationFrame(tick);
+    const events = ['touchstart', 'wheel', 'keydown', 'pointerdown'] as const;
+    events.forEach((name) => letter.addEventListener(name, stop, { passive: true }));
+    window.addEventListener('keydown', stop);
+    return () => {
+      stop();
+      events.forEach((name) => letter.removeEventListener(name, stop));
+      window.removeEventListener('keydown', stop);
+    };
+  }, [isRevealing]);
+
   return (
     <div
       className={`envelope-invite${isRevealing ? ' envelope-invite--revealing' : ''}${isZooming ? ' envelope-invite--zooming' : ''}${isOpen ? ' envelope-invite--open' : ''}`}>
@@ -262,7 +333,7 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
           the text has already started appearing over the video. */}
       <div className="envelope-invite__letter-bg" aria-hidden />
 
-      <article className="envelope-invite__letter" aria-hidden={!isRevealing}>
+      <article ref={letterRef} className="envelope-invite__letter" aria-hidden={!isRevealing}>
         {/* The text comes in word by word (words()); the buttons and the rules above the sections fade in after their text, at revealAt(). */}
         <div className="envelope-invite__letter-body">
           <div className="envelope-invite__letter-content">
@@ -312,6 +383,22 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
                   tabIndex={isOpen ? 0 : -1}>
                   {t(plural ? 'invite.rsvpSection.noPlural' : 'invite.rsvpSection.no')}
                 </Link>
+              </div>
+            </section>
+
+            <section className="envelope-invite__section envelope-invite__section--gift" style={revealAt(cursor + 500)}>
+              <p className="obw-body envelope-invite__gift-text">{words(t(plural ? 'invite.gift.textPlural' : 'invite.gift.text'))}</p>
+              <div className="envelope-invite__gift-details envelope-invite__fade" style={revealAt(cursor)}>
+                <span className="envelope-invite__gift-holder">{HONEYMOON_GIFT_BANK_DETAILS.accountHolder}</span>
+                <strong className="envelope-invite__gift-iban">{formatIbanForDisplay(HONEYMOON_GIFT_BANK_DETAILS.iban)}</strong>
+                <button
+                  type="button"
+                  className="obw-btn obw-btn--secondary envelope-invite__contact envelope-invite__gift-copy"
+                  tabIndex={isOpen ? 0 : -1}
+                  onClick={() => void handleCopyIban()}>
+                  <Copy size={14} aria-hidden />
+                  {ibanCopied ? t('landing.gift.copiedIban') : t('landing.gift.copyIban')}
+                </button>
               </div>
             </section>
 

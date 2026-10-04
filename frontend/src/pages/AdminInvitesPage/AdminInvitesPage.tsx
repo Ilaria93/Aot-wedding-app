@@ -2,6 +2,8 @@ import { FileUp, UserPlus } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { AdminConfirmDialog } from '@/components/AdminModal';
+
 import { copyToClipboard } from '@/components/HoneymoonGiftSection/copyToClipboard';
 import { FilterPills } from '@/components/FilterPills';
 import { Pagination } from '@/components/Pagination';
@@ -54,6 +56,7 @@ export function AdminInvitesPage() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [dialog, setDialog] = useState<PersonDialogMode | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<AdminInviteItem | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [sendingId, setSendingId] = useState<number | null>(null);
   const sendingRef = useRef(false);
@@ -153,11 +156,7 @@ export function AdminInvitesPage() {
   // Deleting is final: an answered invite also loses the answer and the guest's account.
   async function handleDelete(invite: AdminInviteItem) {
     const name = `${invite.first_name} ${invite.last_name}`;
-    const message =
-      invite.answer === 'none'
-        ? t('admin.invites.confirmDelete', { name })
-        : t('admin.invites.confirmDeleteAnswered', { name });
-    if (!window.confirm(message)) return;
+    setDeleteTarget(null);
     setError(null);
     setNotice(null);
     try {
@@ -265,7 +264,7 @@ export function AdminInvitesPage() {
                 onEdit={handleEdit}
                 onEditMember={handleEditMember}
                 onAddMember={handleAddMember}
-                onDelete={(invite) => void handleDelete(invite)}
+                onDelete={setDeleteTarget}
               />
             ))}
           </ul>
@@ -291,6 +290,20 @@ export function AdminInvitesPage() {
           onClose={() => setDialog(null)}
           onSaved={reload}
           onResend={handleResendMatch}
+        />
+      ) : null}
+      {deleteTarget ? (
+        <AdminConfirmDialog
+          titleId="admin-invite-delete-title"
+          title={t('admin.invites.delete')}
+          message={
+            deleteTarget.answer === 'none'
+              ? t('admin.invites.confirmDelete', { name: `${deleteTarget.first_name} ${deleteTarget.last_name}` })
+              : t('admin.invites.confirmDeleteAnswered', { name: `${deleteTarget.first_name} ${deleteTarget.last_name}` })
+          }
+          onConfirm={() => void handleDelete(deleteTarget)}
+          onClose={() => setDeleteTarget(null)}
+          t={t}
         />
       ) : null}
       {importOpen ? <InviteImportDialog onClose={() => setImportOpen(false)} onImported={reload} /> : null}

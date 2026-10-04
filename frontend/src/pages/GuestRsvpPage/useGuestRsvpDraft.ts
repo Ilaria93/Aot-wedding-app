@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import {
   buildAccountHolderGuestLine,
+  buildEmptyGuestLine,
   draftsToGuestPayload,
   guestLinesToDrafts,
 } from '@/components/Rsvp/buildInitialGuestLines';
@@ -51,6 +52,8 @@ export function useGuestRsvpDraft(
   existingRsvp: RsvpMe | null = null,
   /** First answer preselected on the form (the letter's "No" button opens it on No). */
   startAttending = true,
+  /** How many guest cards a first answer starts with (the couple's preset). */
+  defaultPartySize = 1,
 ): UseGuestRsvpDraftResult {
   const { applySession } = useAuth();
   // Lazy: the hook is mounted once per page load, so the saved answer is read a single time.
@@ -71,7 +74,10 @@ export function useGuestRsvpDraft(
   const [guests, setGuests] = useState<RsvpGuestDraft[]>(() =>
     initialConfirmed
       ? guestLinesToDrafts(initialConfirmed.guests, invitePrefill)
-      : [buildAccountHolderGuestLine(invitePrefill)],
+      : [
+          buildAccountHolderGuestLine(invitePrefill),
+          ...Array.from({ length: Math.max(0, defaultPartySize - 1) }, buildEmptyGuestLine),
+        ],
   );
   const [fieldErrors, setFieldErrors] = useState<RsvpGuestFieldError[]>([]);
   const [submitting, setSubmitting] = useState(false);

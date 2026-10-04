@@ -12,7 +12,8 @@ const RECRUITS = [
   { id: 'ilaria', name: 'Ilaria', src: '/assets/wedding/ilaria.webp', roleKey: 'landing.story.brideCaption' },
 ] as const;
 
-const DOSSIER_FIELDS = ['codename', 'enlisted', 'rank', 'specialty', 'weakness', 'weapon', 'quote'] as const;
+// Short on purpose: the other fields (specialty, quote) stay in the translations if they come back.
+const DOSSIER_FIELDS = ['codename', 'enlisted', 'rank', 'weakness', 'weapon'] as const;
 
 const CREST_SRC = '/assets/wedding/stemma.webp';
 
@@ -22,7 +23,7 @@ type PhotoKey =
   | 'tavern' | 'lookout' | 'secret' | 'paris'
   | 'vader' | 'boat' | 'assisi' | 'bridge' | 'sunset' | 'fireplace'
   | 'moto' | 'paestum' | 'costumes' | 'procida' | 'kayak' | 'silly' | 'snow' | 'arch'
-  | 'monument' | 'amarissimo';
+  | 'monument' | 'beverly' | 'zion' | 'vegas' | 'road' | 'amarissimo';
 type PendingKey = 'dog' | 'house';
 
 type Stage = {
@@ -34,25 +35,24 @@ type Stage = {
   pending?: PendingKey[];
 };
 
-/** The story as five mission reports, in order. Add a photo = add its key here. */
+/** The story as five mission reports, in order: at most 5 photos each. Add a photo = add its key here. */
 const STAGES: Stage[] = [
   {
     key: 'contact',
     number: '001',
-    photos: ['band', 'rehearsal', 'stage', 'lineup', 'bassline', 'crowd', 'bandmates'],
+    photos: ['band', 'rehearsal', 'lineup', 'bassline'],
   },
   {
     key: 'enlist',
     number: '002',
-    photos: ['bridge', 'vader', 'boat', 'assisi', 'sunset', 'fireplace', 'tavern', 'lookout', 'secret', 'paris'],
+    photos: ['bridge', 'vader', 'assisi', 'tavern', 'lookout'],
   },
   {
     key: 'battles',
     number: '003',
-    photos: ['silly', 'moto', 'paestum', 'costumes', 'procida', 'kayak', 'snow', 'arch'],
-    pending: ['dog', 'house'],
+    photos: ['silly', 'moto', 'paestum', 'costumes', 'procida'],
   },
-  { key: 'proposal', number: '004', photos: ['monument'] },
+  { key: 'proposal', number: '004', photos: ['monument', 'beverly', 'zion', 'vegas', 'road'] },
   { key: 'final', number: '005', photos: ['amarissimo'] },
 ];
 

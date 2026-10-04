@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from services.invite_greeting_service import build_greeting, max_party_guests
+from services.invite_greeting_service import build_greeting, default_party_guests
 
 
 def _person(first_name="Mario", last_name="Rossi", gender=None, relation=None, family_name=None, party_size=None):
@@ -36,9 +36,10 @@ def test_other_members_do_not_change_the_greeting():
     assert build_greeting(head, [_person(first_name="Zia", relation="other")]) == ("single_m", "Mario")
 
 
-def test_max_party_guests():
+def test_default_party_guests():
     head = _person()
-    assert max_party_guests(head, [], 10) == 10
-    assert max_party_guests(head, [_person(), _person()], 10) == 3
-    assert max_party_guests(head, [_person()] * 20, 10) == 10
-    assert max_party_guests(_person(party_size=4), [_person()], 10) == 4
+    assert default_party_guests(head, [], 10) == 1
+    assert default_party_guests(head, [_person(), _person()], 10) == 3
+    assert default_party_guests(head, [_person()] * 20, 10) == 10
+    assert default_party_guests(_person(party_size=4), [_person()], 10) == 4
+    assert default_party_guests(_person(party_size=40), [], 10) == 10

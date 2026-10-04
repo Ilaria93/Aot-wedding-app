@@ -229,3 +229,24 @@
   background: color-mix(in srgb, #db7fb0 60%, transparent);
   color: var(--obw-bone);
 }
+
+/* Theme teaser: the two details that explain the mission register — a gold uppercase label, then its line. */
+.landing-theme__terms {
+  display: grid;
+  gap: var(--obw-space-md);
+  margin: 0;
+  text-align: center;
+}
+
+.landing-theme__terms dt {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--obw-gold-bright);
+}
+
+.landing-theme__terms dd {
+  margin: 6px 0 0;
+  line-height: 1.55;
+}

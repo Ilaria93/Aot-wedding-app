@@ -38,10 +38,11 @@ def test_invite_lookup_includes_party_limits_from_invite(api_client, invite_toke
     assert response.status_code == 200
     body = response.json()
     assert body["min_party_guests"] == 1
-    assert body["max_party_guests"] == 4
+    assert body["max_party_guests"] == 10
+    assert body["default_party_guests"] == 4
 
 
-def test_invite_lookup_falls_back_to_default_max_when_party_size_unset(api_client):
+def test_invite_lookup_falls_back_to_one_when_party_size_unset(api_client):
     session = SessionLocal()
     session.add(
         InviteLink(
@@ -57,6 +58,7 @@ def test_invite_lookup_falls_back_to_default_max_when_party_size_unset(api_clien
     response = api_client.get("/invites/no-party-size")
     assert response.status_code == 200
     assert response.json()["max_party_guests"] == 10
+    assert response.json()["default_party_guests"] == 1
 
 
 def test_guest_rsvp_unknown_token_returns_404(api_client):
