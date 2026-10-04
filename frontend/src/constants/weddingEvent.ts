@@ -207,16 +207,6 @@ export function formatWeddingHeroDateLine(locale: AppLocale): string {
   return `${toRomanNumeral(day)} · ${monthLabel} · ${toRomanNumeral(year)}`;
 }
 
-/** Ceremony time only for editorial cards. */
-export function formatWeddingTimeDisplay(locale: AppLocale): string {
-  return new Intl.DateTimeFormat(localeMap[locale], {
-    timeZone: WEDDING_TIMEZONE,
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZoneName: 'short',
-  }).format(new Date(getWeddingTimestampMs()));
-}
-
 /** Ceremony date only for editorial cards. */
 export function formatWeddingDateDisplay(locale: AppLocale): string {
   return new Intl.DateTimeFormat(localeMap[locale], {

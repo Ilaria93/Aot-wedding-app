@@ -128,12 +128,14 @@ export const fr = {
       dossier: {
         title: "Dossier d'enrôlement",
         labels: {
+          name: 'Nom',
           codename: 'Nom de code',
           enlisted: 'Enrôlement',
           rank: 'Grade',
           specialty: 'Spécialité',
           weakness: 'Point faible',
           weapon: 'Arme préférée',
+          quote: 'Cri de guerre',
         },
         davide: {
           codename: 'Le Guitariste',
@@ -182,11 +184,12 @@ export const fr = {
         silly: 'Moral des troupes : au top',
         snow: 'Au-delà des murs de glace',
         arch: 'Répétition générale',
+        monument: 'Monument Valley',
+        amarissimo: 'Amarissimo Cala Celeste',
       },
       pending: {
         dog: "L'escouade au complet",
         house: 'Mur après mur',
-        monument: 'Monument Valley',
       },
       stages: {
         contact: {
@@ -205,13 +208,13 @@ export const fr = {
           date: '2020 – 2025',
           title: 'Les batailles',
           body:
-            "De vraies batailles ont suivi : un chien, des changements de travail, des disputes, le covid et une cohabitation forcée, une maison à reconquérir mur après mur, deux ans de repli derrière les lignes de leurs parents. Mais le Bataillon d'exploration n'abandonne jamais.",
+            "De vraies batailles ont suivi : un chien, des changements de travail, le covid et une cohabitation forcée, une maison à rénover mur après mur, deux ans de repli derrière les lignes de leurs parents. Mais le Bataillon d'exploration n'abandonne jamais.",
         },
         proposal: {
           date: 'Octobre 2025',
           title: 'La demande',
           body:
-            'À Monument Valley, Davide a posé un genou à terre. Vous connaissez la réponse.',
+            'Un merveilleux voyage à travers les États-Unis, avec de nombreux nouveaux compagnons d’aventure. Et soudain, au beau milieu de Monument Valley, la demande : inattendue, pleine d’émotion, avec tant de larmes... La réponse, vous la connaissez déjà.',
         },
         final: {
           date: '31 mai 2027',
@@ -222,24 +225,27 @@ export const fr = {
       },
     },
     ceremony: {
-      heading: 'Participez à leur cérémonie intime',
+      heading: 'Participez à notre cérémonie intime',
       city: 'Ravenne',
-      venue: 'Lido Adriano · Amarissimo Cala Celeste',
-      body: 'Cérémonie en bord de mer avec vue sur la côte romagnole. Nous avons hâte de célébrer ce jour avec vous.',
+      venueName: 'Amarissimo Cala Celeste',
+      venueArea: 'Lido Adriano',
+      startLabel: 'Début de la cérémonie',
+      startTime: '17h00',
+      arrivalLabel: 'Arrivée conseillée',
+      arrivalTime: '16h30',
+      body: 'La cérémonie aura lieu sur la plage, avec vue sur la côte romagnole. Nous avons hâte de célébrer ce jour avec vous.',
       artworkPlaceholder: 'Photo principale / illustration du couple',
     },
     rsvp: {
       eyebrow: 'Réponse mission',
       heading: 'Confirmez votre présence',
-      body: 'Une réservation par famille ou groupe : jusqu’à 10 invités, avec menu et intolérances pour chaque personne.',
+      body: 'Tu recevras l’invitation sur ton téléphone, une invitation par famille : il te suffira de l’ouvrir et d’indiquer ta réponse.',
       stepOneLabel: 'Présence',
-      stepOneDesc: 'Indiquez si vous participerez — oui ou non — avant la date limite.',
+      stepOneDesc: 'Indiquez si vous participerez, oui ou non, avant le 1er avril 2027.',
       stepTwoLabel: 'Votre groupe',
       stepTwoDesc: 'Ajoutez les invités avec noms, menus et notes pour la cuisine.',
-      deadlineNote: 'Modifications ouvertes jusqu’au 6 mai 2027',
       visualTag: 'Briefing opérationnel',
       visualTitle: 'Party RSVP',
-      visualCaption: 'Un compte, une réservation, toute la famille ensemble.',
       inviteNote: 'Vous avez reçu votre invitation personnelle sur WhatsApp ? Ouvrez le lien pour confirmer.',
       requestButton: 'Vous ne trouvez pas votre invitation ? Demandez-la',
     },
@@ -264,13 +270,12 @@ export const fr = {
       eyebrow: 'Notre rêve',
       title: 'Direction le Japon',
       intro:
-        'Votre présence est le plus beau cadeau que nous puissions recevoir. Si vous souhaitez nous faire un petit geste en plus, une contribution nous aidera à vivre la lune de miel dont nous rêvons : temples anciens, paysages magnifiques et beaucoup de ramen à partager.',
+        'Votre présence est le plus beau cadeau que nous puissions recevoir. Si vous souhaitez nous faire un petit geste en plus, votre contribution nous aidera à réaliser notre rêve secret : une lune de miel au Japon. Des animés, des temples anciens, des paysages magnifiques et beaucoup de ramen à savourer ensemble.',
       gratitude: 'Chaque attention, petite ou grande, sera accueillie avec une profonde gratitude.',
       coordinatesTitle: 'Coordonnées bancaires',
       accountHolder: 'Titulaire du compte',
       iban: 'IBAN',
       bic: 'BIC/SWIFT',
-      reference: 'Libellé du virement',
       copyIban: "Copier l'IBAN",
       copiedIban: 'IBAN copié',
     },
@@ -550,7 +555,7 @@ export const fr = {
   tema: {
     eyebrow: 'Opération Pirulini',
     title: 'Le thème de notre mariage',
-    subtitle: 'Notre mariage s\'inspire de L\'Attaque des Titans, l\'anime qui nous a scotchés au canapé pendant des années. Ici, on te raconte pourquoi, et on te donne tout ce qu\'il faut pour arriver préparé.',
+    subtitle: 'Nous nous sommes inspirés de L\'Attaque des Titans, l\'anime qui nous a scotchés au canapé pendant des années. Ici, on te raconte pourquoi, et on te donne tout ce qu\'il faut pour arriver préparé.',
     crestTitle: 'Le blason',
     crestBody: 'Nous l\'avons dessiné nous-mêmes. La silhouette est celle du bouclier des blasons des régiments de L\'Attaque des Titans, mais à la place des ailes du Bataillon d\'exploration il y a deux calopsittes aux ailes entrelacées : c\'est nous, Ilaria la jaune et Davide le gris.',
     watchTitle: 'Où la regarder',
@@ -944,7 +949,7 @@ export const fr = {
       "Votre présence à nos côtés compterait beaucoup pour nous. Venez comme vous êtes, avec l'envie de danser jusqu'au bout de la nuit.",
     rsvpSection: {
       title: 'Faites-le nous savoir',
-      note: 'Merci de confirmer votre présence avant le 6 mai 2027.',
+      note: 'Merci de confirmer votre présence avant le 1er mai 2027.',
       yes: 'Nous serons là',
       contact: 'Écrivez-nous',
     },

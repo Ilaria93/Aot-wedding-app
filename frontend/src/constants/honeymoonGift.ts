@@ -1,9 +1,8 @@
 /** Bank details for honeymoon contributions — update with your real coordinates. */
 export const HONEYMOON_GIFT_BANK_DETAILS = {
-  accountHolder: 'Davide e Ilaria',
-  iban: 'IT00X0000000000000000000000',
-  bic: 'XXXXITXX',
-  paymentReference: 'Matrimonio Davide & Ilaria',
+  accountHolder: 'Davide Voza, Ilaria Pascucci',
+  iban: 'IT46F0311510801000000014234',
+  bic: 'FIDMIT3FXXX',
 } as const;
 
 /** Formats an IBAN string into readable groups for display. */

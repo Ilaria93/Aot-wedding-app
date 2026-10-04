@@ -128,12 +128,14 @@ export const it = {
       dossier: {
         title: 'Fascicolo di arruolamento',
         labels: {
+          name: 'Nome',
           codename: 'Nome in codice',
           enlisted: 'Arruolamento',
           rank: 'Grado',
           specialty: 'Specialità',
           weakness: 'Punto debole',
           weapon: 'Arma preferita',
+          quote: 'Frase di battaglia',
         },
         davide: {
           codename: 'Il Chitarrista',
@@ -142,7 +144,7 @@ export const it = {
           specialty: 'Riff improvvisati',
           weakness: 'La sveglia del mattino',
           weapon: 'Chitarra elettrica',
-          quote: '“Ho già prenotato.”',
+          quote: '“Ho prenotato!”',
         },
         ilaria: {
           codename: 'La Bassista',
@@ -182,11 +184,12 @@ export const it = {
         silly: 'Morale delle truppe: altissimo',
         snow: 'Oltre le mura di ghiaccio',
         arch: 'Prove generali',
+        monument: 'Monument Valley',
+        amarissimo: 'Amarissimo Cala Celeste',
       },
       pending: {
         dog: 'La squadra al completo',
         house: 'Muro dopo muro',
-        monument: 'Monument Valley',
       },
       stages: {
         contact: {
@@ -205,13 +208,13 @@ export const it = {
           date: '2020 – 2025',
           title: 'Le battaglie',
           body:
-            'Sono seguite battaglie vere: un cane, cambi di lavoro, litigi, il covid e una convivenza forzata, una casa da riconquistare muro dopo muro, due anni di ritirata nelle retrovie dei genitori. Ma il Corpo di Ricerca non si arrende.',
+            'Sono seguite battaglie vere: un cane, cambi di lavoro, il covid e una convivenza forzata, una casa da ristrutturare muro dopo muro, due anni di ritirata nelle retrovie dei genitori. Ma il Corpo di Ricerca non si arrende.',
         },
         proposal: {
           date: 'Ottobre 2025',
           title: 'La proposta',
           body:
-            'Alla Monument Valley, Davide si è inginocchiato. La risposta la conoscete.',
+            'Un meraviglioso viaggio attraverso gli Stati Uniti, insieme a tanti nuovi compagni di avventura. E all’improvviso, in mezzo alla Monument Valley, la proposta: inaspettata, carica di emozione, con tante lacrime... La risposta, la conoscete già.',
         },
         final: {
           date: '31 maggio 2027',
@@ -222,24 +225,27 @@ export const it = {
       },
     },
     ceremony: {
-      heading: 'Partecipa alla loro intima cerimonia',
+      heading: 'Partecipa alla nostra intima cerimonia',
       city: 'Ravenna',
-      venue: 'Lido Adriano · Amarissimo Cala Celeste',
-      body: 'Cerimonia sul mare con vista sulla costiera romagnola. Vi aspettiamo per celebrare insieme questo giorno speciale.',
+      venueName: 'Amarissimo Cala Celeste',
+      venueArea: 'Lido Adriano',
+      startLabel: 'Inizio cerimonia',
+      startTime: '17:00',
+      arrivalLabel: 'Arrivo consigliato',
+      arrivalTime: '16:30',
+      body: 'La cerimonia si terrà in spiaggia, con vista sulla costiera romagnola. Vi aspettiamo per celebrare insieme questo giorno speciale.',
       artworkPlaceholder: 'Foto hero / artwork coppia',
     },
     rsvp: {
       eyebrow: 'Risposta missione',
       heading: 'Conferma la tua presenza',
-      body: 'Una prenotazione per famiglia o gruppo: fino a 10 partecipanti, con menu e intolleranze per ogni persona.',
+      body: 'Riceverai l’invito sul telefono, un invito per famiglia, ti basterà aprirlo e segnare la tua risposta.',
       stepOneLabel: 'Presenza',
-      stepOneDesc: 'Indica se parteciperai — sì o no — entro la deadline.',
+      stepOneDesc: 'Indica se parteciperai, sì o no, entro il 01 aprile 2027.',
       stepTwoLabel: 'Il tuo gruppo',
       stepTwoDesc: 'Aggiungi gli invitati con nome, menu e note per la cucina.',
-      deadlineNote: 'Modifiche aperte fino al 6 maggio 2027',
       visualTag: 'Briefing operativo',
       visualTitle: 'Party RSVP',
-      visualCaption: 'Un account, una prenotazione, tutta la famiglia insieme.',
       inviteNote: 'Hai ricevuto il tuo invito personale su WhatsApp? Apri il link per confermare.',
       requestButton: 'Non trovi il tuo invito? Richiedilo',
     },
@@ -264,13 +270,12 @@ export const it = {
       eyebrow: 'Il nostro sogno',
       title: 'Verso il Giappone',
       intro:
-        'La vostra presenza è il regalo più bello che possiamo ricevere. Se però desiderate farci un pensiero, un contributo ci aiuterà a vivere la luna di miele che sogniamo: templi antichi, paesaggi meravigliosi e tanti ramen insieme.',
+        'La vostra presenza è il regalo più bello che possiamo ricevere. Se però desiderate farci un pensiero, un vostro contributo ci aiuterà a realizzare il nostro sogno nel cassetto: la luna di miele in Giappone. Anime, templi antichi, paesaggi meravigliosi e tanti ramen da gustare insieme.',
       gratitude: 'Ogni gesto, piccolo o grande, sarà accolto con immensa gratitudine.',
       coordinatesTitle: 'Coordinate per il bonifico',
       accountHolder: 'Intestatario',
       iban: 'IBAN',
       bic: 'BIC/SWIFT',
-      reference: 'Causale',
       copyIban: 'Copia IBAN',
       copiedIban: 'IBAN copiato',
     },
@@ -548,7 +553,7 @@ export const it = {
   tema: {
     eyebrow: 'Operazione Pirulini',
     title: 'Il tema del nostro matrimonio',
-    subtitle: 'Il nostro matrimonio è ispirato all\'Attacco dei giganti (Attack on Titan), l\'anime che ci ha tenuti incollati al divano per anni. Qui ti raccontiamo perché, e ti diamo tutto quello che serve per arrivare preparato.',
+    subtitle: 'Ci siamo ispirati all\'Attacco dei giganti (Attack on Titan), l\'anime che ci ha tenuti incollati al divano per anni. Qui ti raccontiamo perché, e ti diamo tutto quello che serve per arrivare preparato.',
     crestTitle: 'Lo stemma',
     crestBody: 'Lo abbiamo disegnato noi. La sagoma è quella dello scudo degli stemmi dei reparti dell\'Attacco dei giganti, ma al posto delle ali del Corpo di Ricerca ci sono due calopsite con le ali intrecciate: siamo noi, Ilaria la gialla e Davide il grigio.',
     watchTitle: 'Dove vederlo',
@@ -942,7 +947,7 @@ export const it = {
       'Ci farebbe felice avervi accanto in questa giornata. Portate solo voi stessi e la voglia di ballare fino a tardi.',
     rsvpSection: {
       title: 'Fatecelo sapere',
-      note: 'Confermate la vostra presenza entro il 6 maggio 2027.',
+      note: 'Confermate la vostra presenza entro il 1 maggio 2027.',
       yes: 'Ci saremo',
       contact: 'Scriveteci',
     },

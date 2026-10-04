@@ -128,12 +128,14 @@ export const en = {
       dossier: {
         title: 'Enlistment dossier',
         labels: {
+          name: 'Name',
           codename: 'Codename',
           enlisted: 'Enlisted',
           rank: 'Rank',
           specialty: 'Specialty',
           weakness: 'Weak spot',
           weapon: 'Weapon of choice',
+          quote: 'Battle cry',
         },
         davide: {
           codename: 'The Guitarist',
@@ -182,11 +184,12 @@ export const en = {
         silly: 'Troop morale: sky-high',
         snow: 'Beyond the ice walls',
         arch: 'Dress rehearsal',
+        monument: 'Monument Valley',
+        amarissimo: 'Amarissimo Cala Celeste',
       },
       pending: {
         dog: 'The full squad',
         house: 'Wall by wall',
-        monument: 'Monument Valley',
       },
       stages: {
         contact: {
@@ -205,13 +208,13 @@ export const en = {
           date: '2020 – 2025',
           title: 'The battles',
           body:
-            "Real battles followed: a dog, job changes, arguments, covid and a forced lockdown together, a house to reclaim wall by wall, two years of retreat behind their parents' lines. But the Survey Corps never gives up.",
+            "Real battles followed: a dog, job changes, covid and a forced lockdown together, a house to renovate wall by wall, two years of retreat behind their parents' lines. But the Survey Corps never gives up.",
         },
         proposal: {
           date: 'October 2025',
           title: 'The proposal',
           body:
-            'At Monument Valley, Davide got down on one knee. You know the answer.',
+            'A wonderful journey across the United States, together with many new companions in adventure. And suddenly, in the middle of Monument Valley, the proposal: unexpected, full of emotion, with so many tears... The answer, you already know.',
         },
         final: {
           date: '31 May 2027',
@@ -222,24 +225,27 @@ export const en = {
       },
     },
     ceremony: {
-      heading: 'Join their intimate ceremony',
+      heading: 'Join our intimate ceremony',
       city: 'Ravenna',
-      venue: 'Lido Adriano · Amarissimo Cala Celeste',
-      body: 'A seaside ceremony overlooking the Romagna coast. We cannot wait to celebrate this day with you.',
+      venueName: 'Amarissimo Cala Celeste',
+      venueArea: 'Lido Adriano',
+      startLabel: 'Ceremony starts',
+      startTime: '5:00 pm',
+      arrivalLabel: 'Suggested arrival',
+      arrivalTime: '4:30 pm',
+      body: 'The ceremony will be held on the beach, overlooking the Romagna coast. We cannot wait to celebrate this day with you.',
       artworkPlaceholder: 'Hero photo / couple artwork',
     },
     rsvp: {
       eyebrow: 'Mission response',
       heading: 'Confirm your attendance',
-      body: 'One booking per family or group: up to 10 guests, with meal and intolerance choices for each person.',
+      body: 'You will receive the invite on your phone, one invite per family: just open it and mark your answer.',
       stepOneLabel: 'Attendance',
-      stepOneDesc: 'Say whether you will attend — yes or no — before the deadline.',
+      stepOneDesc: 'Say whether you will attend, yes or no, by 1 April 2027.',
       stepTwoLabel: 'Your group',
       stepTwoDesc: 'Add guests with names, meals, and kitchen notes.',
-      deadlineNote: 'Edits open until 6 May 2027',
       visualTag: 'Operations briefing',
       visualTitle: 'Party RSVP',
-      visualCaption: 'One account, one booking, the whole family together.',
       inviteNote: 'Got your personal invite on WhatsApp? Open the link to confirm.',
       requestButton: "Can't find your invite? Request it",
     },
@@ -264,13 +270,12 @@ export const en = {
       eyebrow: 'Our dream',
       title: 'Towards Japan',
       intro:
-        'Your presence is the greatest gift we could receive. If you would like to give us something extra, a contribution will help us live the honeymoon we dream of: ancient temples, breathtaking landscapes, and plenty of ramen together.',
+        'Your presence is the greatest gift we could receive. If you would like to give us something extra, your contribution will help us make our long-held dream come true: a honeymoon in Japan. Anime, ancient temples, breathtaking landscapes and plenty of ramen to enjoy together.',
       gratitude: 'Every gesture, big or small, will be received with heartfelt gratitude.',
       coordinatesTitle: 'Bank transfer details',
       accountHolder: 'Account holder',
       iban: 'IBAN',
       bic: 'BIC/SWIFT',
-      reference: 'Payment reference',
       copyIban: 'Copy IBAN',
       copiedIban: 'IBAN copied',
     },
@@ -546,7 +551,7 @@ export const en = {
   tema: {
     eyebrow: 'Operation Pirulini',
     title: 'The theme of our wedding',
-    subtitle: 'Our wedding is inspired by Attack on Titan, the anime that kept us glued to the sofa for years. Here we tell you why, and give you everything you need to arrive prepared.',
+    subtitle: 'We were inspired by Attack on Titan, the anime that kept us glued to the sofa for years. Here we tell you why, and give you everything you need to arrive prepared.',
     crestTitle: 'The crest',
     crestBody: 'We designed it ourselves. The outline is the shield of the regiment crests in Attack on Titan, but instead of the Survey Corps wings there are two cockatiels with their wings intertwined: that is us, Ilaria the yellow one and Davide the grey one.',
     watchTitle: 'Where to watch it',
@@ -939,7 +944,7 @@ export const en = {
     intro: "It would mean the world to have you with us. Bring only yourselves and the will to dance until late.",
     rsvpSection: {
       title: 'Let us know',
-      note: 'Please confirm your attendance by 6 May 2027.',
+      note: 'Please confirm your attendance by 1 May 2027.',
       yes: "We'll be there",
       contact: 'Write to us',
     },

@@ -473,14 +473,14 @@
   padding: var(--obw-space-lg) var(--obw-space-md);
   border: 1px solid var(--obw-border);
   border-radius: var(--obw-radius);
-  background: color-mix(in srgb, var(--obw-void) 46%, transparent);
+  background: color-mix(in srgb, var(--obw-void) 54%, transparent);
   backdrop-filter: var(--obw-veil-blur);
   color: var(--obw-text);
 }
 
 .obw-card--dark {
   border-color: var(--obw-border-dark);
-  background: color-mix(in srgb, var(--obw-void) 62%, transparent);
+  background: color-mix(in srgb, var(--obw-void) 70%, transparent);
   box-shadow: var(--obw-shadow-dark);
   color: var(--obw-bone);
 }
@@ -919,7 +919,7 @@
 
 .obw-nav__brand-title {
   font-family: var(--font-display);
-  font-size: 24px;
+  font-size: 27px;
   font-weight: 400;
   letter-spacing: 0.02em;
   padding-left: 0.02em;

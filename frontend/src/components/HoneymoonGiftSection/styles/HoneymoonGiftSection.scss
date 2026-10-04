@@ -34,11 +34,6 @@
   color: var(--obw-bone);
 }
 
-.gift__tags {
-  justify-content: center;
-  margin-top: var(--obw-space-md);
-}
-
 .gift__coordinates {
   display: grid;
   gap: var(--obw-space-sm);
@@ -56,6 +51,11 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0 clamp(1rem, 4vw, 2.5rem);
+}
+
+/* Account holder on its own line; IBAN and BIC side by side below it. */
+.gift__rows .obw-gift-row:first-child {
+  grid-column: 1 / -1;
 }
 
 @media (max-width: 560px) {

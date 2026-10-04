@@ -128,12 +128,14 @@ export const de = {
       dossier: {
         title: 'Rekrutierungsakte',
         labels: {
+          name: 'Name',
           codename: 'Codename',
           enlisted: 'Rekrutiert',
           rank: 'Rang',
           specialty: 'Spezialgebiet',
           weakness: 'Schwachstelle',
           weapon: 'Lieblingswaffe',
+          quote: 'Schlachtruf',
         },
         davide: {
           codename: 'Der Gitarrist',
@@ -182,11 +184,12 @@ export const de = {
         silly: 'Moral der Truppe: bestens',
         snow: 'Jenseits der Eismauern',
         arch: 'Generalprobe',
+        monument: 'Monument Valley',
+        amarissimo: 'Amarissimo Cala Celeste',
       },
       pending: {
         dog: 'Die vollständige Truppe',
         house: 'Mauer für Mauer',
-        monument: 'Monument Valley',
       },
       stages: {
         contact: {
@@ -205,13 +208,13 @@ export const de = {
           date: '2020 – 2025',
           title: 'Die Schlachten',
           body:
-            'Es folgten echte Schlachten: ein Hund, Jobwechsel, Streit, Corona und ein erzwungenes Zusammenleben, ein Haus, das Mauer für Mauer zurückerobert werden musste, zwei Jahre Rückzug hinter die Linien der Eltern. Doch der Aufklärungstrupp gibt niemals auf.',
+            'Es folgten echte Schlachten: ein Hund, Jobwechsel, Corona und ein erzwungenes Zusammenleben, ein Haus, das Mauer für Mauer renoviert werden musste, zwei Jahre Rückzug hinter die Linien der Eltern. Doch der Aufklärungstrupp gibt niemals auf.',
         },
         proposal: {
           date: 'Oktober 2025',
           title: 'Der Antrag',
           body:
-            'Im Monument Valley ging Davide auf die Knie. Die Antwort kennt ihr.',
+            'Eine wunderbare Reise quer durch die Vereinigten Staaten, zusammen mit vielen neuen Abenteuergefährten. Und plötzlich, mitten im Monument Valley, der Antrag: unerwartet, voller Emotionen, mit vielen Tränen... Die Antwort kennt ihr schon.',
         },
         final: {
           date: '31. Mai 2027',
@@ -222,24 +225,27 @@ export const de = {
       },
     },
     ceremony: {
-      heading: 'Nehmt an ihrer intimen Zeremonie teil',
+      heading: 'Nehmt an unserer intimen Zeremonie teil',
       city: 'Ravenna',
-      venue: 'Lido Adriano · Amarissimo Cala Celeste',
-      body: 'Zeremonie am Meer mit Blick auf die Küste der Romagna. Wir freuen uns, diesen Tag mit euch zu feiern.',
+      venueName: 'Amarissimo Cala Celeste',
+      venueArea: 'Lido Adriano',
+      startLabel: 'Beginn der Zeremonie',
+      startTime: '17:00 Uhr',
+      arrivalLabel: 'Empfohlene Ankunft',
+      arrivalTime: '16:30 Uhr',
+      body: 'Die Zeremonie findet am Strand statt, mit Blick auf die Küste der Romagna. Wir freuen uns, diesen Tag mit euch zu feiern.',
       artworkPlaceholder: 'Hero-Foto / Artwork des Paares',
     },
     rsvp: {
       eyebrow: 'Missionsantwort',
       heading: 'Bestätige deine Teilnahme',
-      body: 'Eine Buchung pro Familie oder Gruppe: bis zu 10 Gäste mit Menü und Unverträglichkeiten pro Person.',
+      body: 'Du erhältst die Einladung auf dein Handy, eine Einladung pro Familie: Öffne sie einfach und gib deine Antwort an.',
       stepOneLabel: 'Teilnahme',
-      stepOneDesc: 'Gib an, ob du teilnimmst — ja oder nein — vor der Deadline.',
+      stepOneDesc: 'Gib an, ob du teilnimmst, ja oder nein, bis zum 1. April 2027.',
       stepTwoLabel: 'Deine Gruppe',
       stepTwoDesc: 'Füge Gäste mit Namen, Menü und Küchenhinweisen hinzu.',
-      deadlineNote: 'Änderungen offen bis 6. Mai 2027',
       visualTag: 'Operations-Briefing',
       visualTitle: 'Party RSVP',
-      visualCaption: 'Ein Konto, eine Buchung, die ganze Familie zusammen.',
       inviteNote: 'Hast du deine persönliche Einladung per WhatsApp bekommen? Öffne den Link, um zuzusagen.',
       requestButton: 'Einladung nicht gefunden? Hier anfordern',
     },
@@ -264,13 +270,12 @@ export const de = {
       eyebrow: 'Unser Traum',
       title: 'Auf nach Japan',
       intro:
-        'Eure Anwesenheit ist das schönste Geschenk, das wir bekommen können. Wenn ihr uns zusätzlich etwas Gutes tun möchtet, hilft uns ein Beitrag dabei, die Flitterwochen zu erleben, von denen wir träumen: alte Tempel, wunderschöne Landschaften und viel Ramen zu zweit.',
+        'Eure Anwesenheit ist das schönste Geschenk, das wir bekommen können. Wenn ihr uns zusätzlich etwas Gutes tun möchtet, hilft uns euer Beitrag dabei, unseren lang gehegten Traum zu verwirklichen: Flitterwochen in Japan. Anime, alte Tempel, wunderschöne Landschaften und viel Ramen, die wir gemeinsam genießen.',
       gratitude: 'Jede Geste, ob groß oder klein, wird mit großer Dankbarkeit angenommen.',
       coordinatesTitle: 'Bankverbindung',
       accountHolder: 'Kontoinhaber',
       iban: 'IBAN',
       bic: 'BIC/SWIFT',
-      reference: 'Verwendungszweck',
       copyIban: 'IBAN kopieren',
       copiedIban: 'IBAN kopiert',
     },
@@ -551,7 +556,7 @@ export const de = {
   tema: {
     eyebrow: 'Operation Pirulini',
     title: 'Das Thema unserer Hochzeit',
-    subtitle: 'Unsere Hochzeit ist von Attack on Titan inspiriert, dem Anime, der uns jahrelang ans Sofa gefesselt hat. Hier erzählen wir dir, warum, und geben dir alles, was du brauchst, um vorbereitet zu kommen.',
+    subtitle: 'Wir haben uns von Attack on Titan inspirieren lassen, dem Anime, der uns jahrelang ans Sofa gefesselt hat. Hier erzählen wir dir, warum, und geben dir alles, was du brauchst, um vorbereitet zu kommen.',
     crestTitle: 'Das Wappen',
     crestBody: 'Wir haben es selbst entworfen. Die Form ist der Schild der Regimentswappen aus Attack on Titan, aber statt der Flügel des Aufklärungstrupps sind dort zwei Nymphensittiche mit verschlungenen Flügeln: das sind wir, Ilaria der gelbe und Davide der graue.',
     watchTitle: 'Wo man sie sehen kann',
@@ -945,7 +950,7 @@ export const de = {
       'Es würde uns sehr freuen, euch an unserer Seite zu haben. Bringt nur euch selbst mit und die Lust, bis spät zu tanzen.',
     rsvpSection: {
       title: 'Sagt uns Bescheid',
-      note: 'Bitte bestätigt eure Teilnahme bis zum 6. Mai 2027.',
+      note: 'Bitte bestätigt eure Teilnahme bis zum 1. Mai 2027.',
       yes: 'Wir kommen',
       contact: 'Schreibt uns',
     },

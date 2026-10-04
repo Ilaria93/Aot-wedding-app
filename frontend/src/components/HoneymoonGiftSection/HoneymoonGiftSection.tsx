@@ -1,4 +1,4 @@
-import { Copy, Heart, Plane } from 'lucide-react';
+import { Copy } from 'lucide-react';
 import { useState } from 'react';
 
 import {
@@ -54,15 +54,6 @@ export function HoneymoonGiftSection() {
           <div className="gift__message">
             <p className="obw-body">{t('landing.gift.intro')}</p>
             <p className="obw-body obw-body--flush">{t('landing.gift.gratitude')}</p>
-            <div className="obw-tag-row gift__tags">
-              <span className="obw-tag obw-tag--on-paper">
-                <Plane size={14} aria-hidden />
-                {t('landing.gift.eyebrow')}
-              </span>
-              <span className="obw-tag obw-tag--on-paper">
-                <Heart size={14} aria-hidden />
-              </span>
-            </div>
           </div>
 
           <div className="gift__coordinates">
@@ -71,10 +62,6 @@ export function HoneymoonGiftSection() {
               <BankDetailRow
                 label={t('landing.gift.accountHolder')}
                 value={HONEYMOON_GIFT_BANK_DETAILS.accountHolder}
-              />
-              <BankDetailRow
-                label={t('landing.gift.reference')}
-                value={HONEYMOON_GIFT_BANK_DETAILS.paymentReference}
               />
               <BankDetailRow label={t('landing.gift.iban')} value={formattedIban} monospace />
               <BankDetailRow label={t('landing.gift.bic')} value={HONEYMOON_GIFT_BANK_DETAILS.bic} monospace />
