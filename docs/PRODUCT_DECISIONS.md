@@ -67,7 +67,7 @@ Riferimenti: `backend/settings.py`, `frontend/src/services/authSession.ts`, `api
 
 - Un **account** = una **prenotazione di gruppo** (party) legata all’invito cartaceo.
 - L’utente si **registra**, poi indica **quanti partecipano** e inserisce **manualmente** i dati di ciascuno.
-- **Modifica consentita** fino a **25 giorni prima** del matrimonio → deadline **6 maggio 2027**.
+- **Modifica consentita** fino a il 1 aprile → deadline **1 aprile 2027**.
 - Dopo la deadline: **nessuna modifica** (blocco totale — avviso cucina ~2 settimane prima dell’evento).
 - Motivo deadline: comunicare i numeri finali alla cucina con margine sufficiente.
 
@@ -177,7 +177,7 @@ Alternativa equivalente: tabella `rsvp_guests` con FK a `rsvps.id`.
 - [ ] Due select menu + campo testo per persona
 - [ ] Fazione auto-assegnata e bilanciata (gruppo omogeneo)
 - [ ] Modifica (`PATCH /rsvp/me` o equivalente)
-- [ ] Blocco deadline **25 giorni** (6 maggio 2027)
+- [ ] Blocco deadline (1 aprile 2027)
 - [ ] Email conferma + magic link modifica
 - [ ] Admin: conteggi fazione per spille / export
 - [ ] Copy/i18n (rimuovere riferimenti “token invito”; aggiornare nomi fazione custom)
@@ -262,7 +262,7 @@ Mix **briefing militare** + **matrimonio elegante AoT**: non rivista di nozze ge
 ## 9. Ordine di implementazione
 
 1. Placeholder hero + direzione visiva AoT-matrimonio (mix briefing + elegante)
-2. RSVP: party fino a 10, due select menu + testo, fazione auto-bilanciata, modifica, deadline **6 maggio 2027**
+2. RSVP: party fino a 10, due select menu + testo, fazione auto-bilanciata, modifica, deadline **1 aprile 2027**
 3. Email conferma + magic link modifica RSVP
 4. Flusso register → RSVP continuo + login allineato
 5. Pagine Album, Travel, Profile, Admin + export fazioni per spille

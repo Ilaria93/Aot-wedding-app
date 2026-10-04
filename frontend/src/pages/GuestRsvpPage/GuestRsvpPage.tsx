@@ -1,5 +1,5 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { RsvpConfirmedSummary } from '@/components/Rsvp/RsvpConfirmedSummary';
@@ -31,6 +31,8 @@ function GuestRsvpShell({ children, pinned = false }: { children: ReactNode; pin
 /** First, unauthenticated RSVP confirmation reached from the WhatsApp invite link. */
 export function GuestRsvpPage() {
   const { token } = useParams<{ token: string }>();
+  const [searchParams] = useSearchParams();
+  const startAttending = searchParams.get('risposta') !== 'no';
   const { t } = useI18n();
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [invite, setInvite] = useState<InviteLink | null>(null);
@@ -79,20 +81,22 @@ export function GuestRsvpPage() {
   // row in a lazy useState initializer that never re-runs, so mounting it
   // before `invite` arrived would lock in empty names — which the form then
   // renders disabled and validation skips, so every submit 422'd server-side.
-  return <GuestRsvpConfirmForm token={token} invite={invite} existingRsvp={existingRsvp} />;
+  return <GuestRsvpConfirmForm token={token} invite={invite} existingRsvp={existingRsvp} startAttending={startAttending} />;
 }
 
 function GuestRsvpConfirmForm({
   token,
   invite,
   existingRsvp,
+  startAttending,
 }: {
   token: string;
   invite: InviteLink;
   existingRsvp: RsvpMe | null;
+  startAttending: boolean;
 }) {
   const { t } = useI18n();
-  const draft = useGuestRsvpDraft(token, invite, t, existingRsvp);
+  const draft = useGuestRsvpDraft(token, invite, t, existingRsvp, startAttending);
 
   // The two ways to land on a saved answer: right after sending it (thanks and
   // a single "Go to the site" button, nothing else) or by reopening the

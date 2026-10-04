@@ -16,7 +16,7 @@ tier.
 **Compromesso accettato:** il piano free di Render "addormenta" il backend
 dopo ~15 minuti di inattività — la prima richiesta dopo la pausa impiega
 30-50s. Per un sito con traffico basso e diluito su mesi (matrimonio il
-6-7 maggio 2027, vedi `RSVP_EDIT_DEADLINE` in `backend/settings.py`) è
+31 maggio 2027, modifiche RSVP fino al 1 aprile: vedi `RSVP_EDIT_DEADLINE` in `backend/settings.py`) è
 accettabile. Se si vuole eliminarlo nelle ultime settimane prima
 dell'evento, si passa al piano Render a pagamento (~7$/mese) solo per quel
 periodo.
