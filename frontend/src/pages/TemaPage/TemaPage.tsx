@@ -69,6 +69,7 @@ export function TemaPage() {
           <p className="obw-kicker">{t('tema.aotLead')}</p>
           <p className="obw-body obw-body--flush">{t('tema.aotBody')}</p>
           <p className="obw-body obw-body--flush">{t('tema.aotBody2')}</p>
+          <p className="obw-body obw-body--flush">{t('tema.aotBody3')}</p>
           <p className="tema-page__note">{t('tema.aotFacts')}</p>
         </TemaSection>
 
@@ -87,7 +88,6 @@ export function TemaPage() {
               <p className="obw-body obw-body--flush">{t('tema.whyDavideBody')}</p>
             </div>
           </div>
-          <p className="obw-body obw-body--flush tema-page__closing">{t('tema.whyClosing')}</p>
         </TemaSection>
 
         <TemaSection title={t('tema.crestTitle')}>

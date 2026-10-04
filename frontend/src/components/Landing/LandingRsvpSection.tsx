@@ -48,8 +48,6 @@ export function LandingRsvpSection() {
               ))}
             </ol>
 
-            <p className="obw-body landing-rsvp__invite-note">{t('landing.rsvp.inviteNote')}</p>
-
             {/* Guests answer from their personal WhatsApp link; this is for
                 whoever reaches the site without it. */}
             <button type="button" className="obw-btn landing-rsvp__cta" onClick={() => setRequestOpen(true)}>
