@@ -322,8 +322,10 @@ export const it = {
       travelQuestion: 'Dovremo spostarci durante la giornata?',
       travelAnswer: 'No, la cerimonia e la festa si terranno nello stesso luogo.',
       lodgingQuestion: 'Dove posso dormire?',
-      lodgingAnswer: 'Vi consigliamo {{name}}, a Lido Adriano.',
+      lodgingAnswer: 'Noi alloggeremo al residence {{name}}, a Lido Adriano: se volete stare con noi, prenotate lì.',
       lodgingLink: 'Scopri il villaggio e prenota',
+      hotelAnswer: 'Se preferite qualcosa di più curato, vi consigliamo l’{{name}}.',
+      hotelLink: 'Scopri l’hotel e prenota',
       foodQuestion: 'Come comunico allergie o esigenze alimentari?',
       foodAnswer:
         'Potrai farlo direttamente nel form RSVP, così tutte le note restano collegate al tuo invito personale.',
@@ -334,7 +336,8 @@ export const it = {
     contacts: {
       title: 'Contatti utili',
       coupleKicker: 'Gli sposi',
-      lodgingKicker: 'Dove prenotare',
+      lodgingKicker: 'Dove alloggeremo noi',
+      lodgingHotelKicker: 'Per qualcosa di più curato',
       callWho: 'Chi vuoi chiamare?',
       whatsappWho: 'A chi vuoi scrivere?',
     },

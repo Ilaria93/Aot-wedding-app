@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { ContactCard } from '@/components/ContactCard';
 import { getLogisticsContactCategoryLabel, LOGISTICS_CONTACT_CATEGORY_IDS } from '@/constants/logistics';
 import { CoupleContactDialog, type CoupleContactMode } from '@/components/Landing/CoupleContactDialog';
-import { WEDDING_COUPLE_CONTACT, WEDDING_COUPLE_PEOPLE, WEDDING_LODGING } from '@/constants/weddingEvent';
+import { WEDDING_COUPLE_CONTACT, WEDDING_COUPLE_PEOPLE, WEDDING_LODGING, WEDDING_LODGING_HOTEL } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
 import { fetchPublicLogisticsContacts, type LogisticsContactItem } from '@/services/logisticsContactsApi';
 
@@ -60,6 +60,9 @@ export function LandingContactsSection() {
           </div>
           <div className="obw-card obw-card--dark">
             <ContactCard contact={WEDDING_LODGING} kicker={t('landing.contacts.lodgingKicker')} />
+          </div>
+          <div className="obw-card obw-card--dark">
+            <ContactCard contact={WEDDING_LODGING_HOTEL} kicker={t('landing.contacts.lodgingHotelKicker')} />
           </div>
           {contacts.map((contact) => (
             <div key={contact.id} className="obw-card obw-card--dark">

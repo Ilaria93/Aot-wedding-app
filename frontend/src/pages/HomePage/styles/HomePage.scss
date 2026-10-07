@@ -257,3 +257,7 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+.obw-faq-list__item p + p {
+  margin-top: 0.75rem;
+}

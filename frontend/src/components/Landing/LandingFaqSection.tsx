@@ -1,4 +1,4 @@
-import { WEDDING_LODGING } from '@/constants/weddingEvent';
+import { WEDDING_LODGING, WEDDING_LODGING_HOTEL } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
 
 /** Landing FAQ section. */
@@ -25,6 +25,12 @@ export function LandingFaqSection() {
             {t('landing.faq.lodgingAnswer', { name: WEDDING_LODGING.label })}{' '}
             <a className="obw-faq-list__link" href={WEDDING_LODGING.website} target="_blank" rel="noreferrer">
               {t('landing.faq.lodgingLink')}
+            </a>
+          </p>
+          <p>
+            {t('landing.faq.hotelAnswer', { name: WEDDING_LODGING_HOTEL.label })}{' '}
+            <a className="obw-faq-list__link" href={WEDDING_LODGING_HOTEL.website} target="_blank" rel="noreferrer">
+              {t('landing.faq.hotelLink')}
             </a>
           </p>
         </article>
