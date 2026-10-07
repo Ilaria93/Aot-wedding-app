@@ -336,8 +336,8 @@ export const it = {
     contacts: {
       title: 'Contatti utili',
       coupleKicker: 'Gli sposi',
-      lodgingKicker: 'Dove alloggeremo noi',
-      lodgingHotelKicker: 'Per qualcosa di più curato',
+      lodgingKicker: 'Alloggio · Residence',
+      lodgingHotelKicker: 'Alloggio · Hotel',
       callWho: 'Chi vuoi chiamare?',
       whatsappWho: 'A chi vuoi scrivere?',
     },

@@ -336,8 +336,8 @@ export const en = {
     contacts: {
       title: 'Useful contacts',
       coupleKicker: 'The couple',
-      lodgingKicker: 'Where we will be staying',
-      lodgingHotelKicker: 'For something nicer',
+      lodgingKicker: 'Stay · Residence',
+      lodgingHotelKicker: 'Stay · Hotel',
       callWho: 'Who would you like to call?',
       whatsappWho: 'Who would you like to message?',
     },
