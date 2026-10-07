@@ -1,5 +1,5 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
 
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { RsvpConfirmedSummary } from '@/components/Rsvp/RsvpConfirmedSummary';
@@ -33,6 +33,11 @@ export function GuestRsvpPage() {
   const { token } = useParams<{ token: string }>();
   const [searchParams] = useSearchParams();
   const startAttending = searchParams.get('risposta') !== 'no';
+  // Set by the invite letter right after it saved a "no": show the thank-you page, not the form.
+  const routeState = useLocation().state as { thanks?: boolean; yes?: boolean } | null;
+  const showThanks = Boolean(routeState?.thanks);
+  // "Ci sarò" on the letter already answered Yes: the form below only collects the details.
+  const yesChosen = Boolean(routeState?.yes);
   const { t } = useI18n();
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [invite, setInvite] = useState<InviteLink | null>(null);
@@ -81,7 +86,7 @@ export function GuestRsvpPage() {
   // row in a lazy useState initializer that never re-runs, so mounting it
   // before `invite` arrived would lock in empty names — which the form then
   // renders disabled and validation skips, so every submit 422'd server-side.
-  return <GuestRsvpConfirmForm token={token} invite={invite} existingRsvp={existingRsvp} startAttending={startAttending} />;
+  return <GuestRsvpConfirmForm token={token} invite={invite} existingRsvp={existingRsvp} startAttending={startAttending} showThanks={showThanks} yesChosen={yesChosen} />;
 }
 
 function GuestRsvpConfirmForm({
@@ -89,14 +94,18 @@ function GuestRsvpConfirmForm({
   invite,
   existingRsvp,
   startAttending,
+  showThanks,
+  yesChosen,
 }: {
   token: string;
   invite: InviteLink;
   existingRsvp: RsvpMe | null;
   startAttending: boolean;
+  showThanks: boolean;
+  yesChosen: boolean;
 }) {
   const { t } = useI18n();
-  const draft = useGuestRsvpDraft(token, invite, t, existingRsvp, startAttending, invite.default_party_guests);
+  const draft = useGuestRsvpDraft(token, invite, t, existingRsvp, startAttending, invite.default_party_guests, showThanks);
 
   // The two ways to land on a saved answer: right after sending it (thanks and
   // a single "Go to the site" button, nothing else) or by reopening the
@@ -175,6 +184,7 @@ function GuestRsvpConfirmForm({
         guestsHint={t('guestRsvp.guestsHint')}
         addGuestLabel={`+ ${t('guestRsvp.addGuest')}`}
         notAttendingHint={t('guestRsvp.notAttendingHint')}
+        attendingLocked={yesChosen && !isEditMode && draft.attending}
         onAttendingChange={draft.setAttending}
         onGuestsChange={draft.setGuests}
         onSubmit={() => void draft.submit()}

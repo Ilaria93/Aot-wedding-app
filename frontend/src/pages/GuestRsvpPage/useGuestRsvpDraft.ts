@@ -54,6 +54,8 @@ export function useGuestRsvpDraft(
   startAttending = true,
   /** How many guest cards a first answer starts with (the couple's preset). */
   defaultPartySize = 1,
+  /** Land on the thank-you page (the answer was just saved from the invite letter). */
+  showThanks = false,
 ): UseGuestRsvpDraftResult {
   const { applySession } = useAuth();
   // Lazy: the hook is mounted once per page load, so the saved answer is read a single time.
@@ -67,7 +69,7 @@ export function useGuestRsvpDraft(
       : null,
   );
   const [confirmedRsvp, setConfirmedRsvp] = useState<ConfirmedRsvpState | null>(initialConfirmed);
-  const [justSubmitted, setJustSubmitted] = useState(false);
+  const [justSubmitted, setJustSubmitted] = useState(showThanks);
   const [editable, setEditable] = useState(existingRsvp?.editable ?? true);
   const [viewMode, setViewMode] = useState<'summary' | 'form'>(initialConfirmed ? 'summary' : 'form');
   const [attending, setAttendingState] = useState(initialConfirmed?.attending ?? startAttending);

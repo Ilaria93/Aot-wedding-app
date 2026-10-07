@@ -54,3 +54,17 @@
   justify-content: center;
   gap: 8px;
 }
+
+/* "Are you sure?" variant: a sentence, then the buttons stacked. */
+.couple-contact__text {
+  margin: 0 0 var(--obw-space-md);
+  line-height: 1.5;
+}
+
+.couple-contact__options--stack {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.couple-contact__error {
+  margin: 0 0 var(--obw-space-sm);
+}
