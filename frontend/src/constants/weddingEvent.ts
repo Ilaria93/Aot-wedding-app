@@ -18,6 +18,21 @@ export const WEDDING_COUPLE_PEOPLE: ReadonlyArray<{ name: string; phone: string 
   { name: 'Ilaria', phone: '+393289034256' },
   { name: 'Davide', phone: '+393406014839' },
 ];
+/** Where the couple stays (a residence/village): guests can book there too. Shown in the home page's contacts and FAQ. */
+export const WEDDING_LODGING = {
+  label: 'Long Beach Village',
+  website: 'https://www.lidoadriano.com/scheda-hotel_it.php?id=2',
+  // Booking desk numbers published on that page (same ones as its "Contattaci al telefono" / "Scrivi su WhatsApp").
+  phone: '+390544494339',
+  whatsapp_phone: '+393279696145',
+} as const;
+/** The nicer alternative for guests who want more comfort than the residence. Same booking desk. */
+export const WEDDING_LODGING_HOTEL = {
+  label: 'Hotel Le Dune',
+  website: 'https://www.lidoadriano.com/scheda-hotel_it.php?id=4',
+  phone: WEDDING_LODGING.phone,
+  whatsapp_phone: WEDDING_LODGING.whatsapp_phone,
+} as const;
 export const WEDDING_OPERATION_NAME = 'Operazione Pirulini' as const;
 export const WEDDING_VENUE_NAME = 'Lido Adriano' as const;
 export const WEDDING_VENUE_AREA = 'Amarissimo Cala Celeste' as const;
