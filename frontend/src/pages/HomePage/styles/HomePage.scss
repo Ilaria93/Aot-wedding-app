@@ -250,3 +250,10 @@
   margin: 6px 0 0;
   line-height: 1.55;
 }
+
+/* Link inside an FAQ answer. */
+.obw-faq-list__link {
+  color: var(--obw-gold-bright);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

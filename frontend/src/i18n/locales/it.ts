@@ -321,6 +321,9 @@ export const it = {
         'Sì, davanti alla spiaggia c’è un ampio parcheggio e una comoda passerella in legno per accedere al lido.',
       travelQuestion: 'Dovremo spostarci durante la giornata?',
       travelAnswer: 'No, la cerimonia e la festa si terranno nello stesso luogo.',
+      lodgingQuestion: 'Dove posso dormire?',
+      lodgingAnswer: 'Vi consigliamo {{name}}, a Lido Adriano.',
+      lodgingLink: 'Scopri l’hotel e prenota',
       foodQuestion: 'Come comunico allergie o esigenze alimentari?',
       foodAnswer:
         'Potrai farlo direttamente nel form RSVP, così tutte le note restano collegate al tuo invito personale.',
@@ -331,6 +334,7 @@ export const it = {
     contacts: {
       title: 'Contatti utili',
       coupleKicker: 'Gli sposi',
+      lodgingKicker: 'Dove prenotare',
       callWho: 'Chi vuoi chiamare?',
       whatsappWho: 'A chi vuoi scrivere?',
     },

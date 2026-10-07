@@ -321,6 +321,9 @@ export const en = {
         'Yes, there is a large car park in front of the beach and a convenient wooden boardwalk leading to the beach club.',
       travelQuestion: 'Will we need to move around during the day?',
       travelAnswer: 'No, the ceremony and the party will both take place at the same venue.',
+      lodgingQuestion: 'Where can I stay?',
+      lodgingAnswer: 'We recommend {{name}}, in Lido Adriano.',
+      lodgingLink: 'See the hotel and book',
       foodQuestion: 'How do I share allergies or dietary needs?',
       foodAnswer:
         'You will be able to do it directly in the RSVP form, so every note stays linked to your personal invitation.',
@@ -331,6 +334,7 @@ export const en = {
     contacts: {
       title: 'Useful contacts',
       coupleKicker: 'The couple',
+      lodgingKicker: 'Where to book',
       callWho: 'Who would you like to call?',
       whatsappWho: 'Who would you like to message?',
     },
