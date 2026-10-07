@@ -323,7 +323,7 @@ export const it = {
       travelAnswer: 'No, la cerimonia e la festa si terranno nello stesso luogo.',
       lodgingQuestion: 'Dove posso dormire?',
       lodgingAnswer: 'Vi consigliamo {{name}}, a Lido Adriano.',
-      lodgingLink: 'Scopri l’hotel e prenota',
+      lodgingLink: 'Scopri il villaggio e prenota',
       foodQuestion: 'Come comunico allergie o esigenze alimentari?',
       foodAnswer:
         'Potrai farlo direttamente nel form RSVP, così tutte le note restano collegate al tuo invito personale.',

@@ -323,7 +323,7 @@ export const en = {
       travelAnswer: 'No, the ceremony and the party will both take place at the same venue.',
       lodgingQuestion: 'Where can I stay?',
       lodgingAnswer: 'We recommend {{name}}, in Lido Adriano.',
-      lodgingLink: 'See the hotel and book',
+      lodgingLink: 'See the village and book',
       foodQuestion: 'How do I share allergies or dietary needs?',
       foodAnswer:
         'You will be able to do it directly in the RSVP form, so every note stays linked to your personal invitation.',
