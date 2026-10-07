@@ -422,3 +422,19 @@
     0 0 14px color-mix(in srgb, var(--obw-bone) 90%, transparent),
     0 0 24px color-mix(in srgb, var(--obw-bone) 80%, transparent);
 }
+
+/* "Add to calendar" under the date and time. */
+.envelope-invite__calendar {
+  display: flex;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+/* One line under the two answers: "Ci sarò" still asks for names. */
+.envelope-invite__rsvp-hint {
+  margin: 0;
+  max-width: 24rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  text-align: center;
+}

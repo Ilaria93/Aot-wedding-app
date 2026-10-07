@@ -43,7 +43,8 @@ export function validateInviteForm(values: InviteFormValues): Partial<Record<Inv
   if (values.role === 'member') {
     if (values.headId === null) errors.headId = 'required';
     if (!values.relation) errors.relation = 'required';
-  } else if (values.partySize.trim() && !/^[1-9][0-9]*$/.test(values.partySize.trim())) {
+  } else if (values.partySize.trim() && !/^([1-9]|10)$/.test(values.partySize.trim())) {
+    // 10 is the most one invite can answer for (MAX_PARTY_GUESTS in the backend).
     errors.partySize = 'partySizeInvalid';
   }
   return errors;

@@ -280,6 +280,22 @@ export function InvitePersonDialog({
         {!isMember ? (
           <>
             <label className="invite-form__field">
+              <span>{t('admin.invites.partySizeLabel')}</span>
+              <select
+                value={values.partySize}
+                aria-invalid={Boolean(errors.partySize)}
+                onChange={(event) => update('partySize', event.target.value)}>
+                <option value="">{t('admin.invites.partySizeAuto')}</option>
+                {Array.from({ length: 10 }, (_, index) => (
+                  <option key={index + 1} value={String(index + 1)}>
+                    {index + 1}
+                  </option>
+                ))}
+              </select>
+              <small className="invite-form__hint">{t('admin.invites.partySizeHint')}</small>
+              {errorText('partySize') ? <small>{errorText('partySize')}</small> : null}
+            </label>
+            <label className="invite-form__field">
               <span>{t('admin.invites.familyName')}</span>
               <input
                 value={values.familyName}
@@ -287,16 +303,6 @@ export function InvitePersonDialog({
                 onChange={(event) => update('familyName', event.target.value)}
               />
               <small className="invite-form__hint">{t('admin.invites.familyNameHint')}</small>
-            </label>
-            <label className="invite-form__field">
-              <span>{t('admin.invites.partySizeLabel')}</span>
-              <input
-                inputMode="numeric"
-                value={values.partySize}
-                aria-invalid={Boolean(errors.partySize)}
-                onChange={(event) => update('partySize', event.target.value)}
-              />
-              {errorText('partySize') ? <small>{errorText('partySize')}</small> : null}
             </label>
           </>
         ) : null}

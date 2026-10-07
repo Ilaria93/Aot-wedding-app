@@ -133,8 +133,13 @@
   padding: 0 clamp(0.75rem, 3vw, 1.5rem);
 }
 
-.landing-ceremony__time--secondary {
+/* Arrival comes first (left), the ceremony itself second (right). */
+.landing-ceremony__time {
   grid-column: 3;
+}
+
+.landing-ceremony__time--secondary {
+  grid-column: 1;
 }
 
 .landing-ceremony__time dt {
@@ -260,4 +265,30 @@
 
 .obw-faq-list__item p + p {
   margin-top: 0.75rem;
+}
+
+/* "Open on the map" and "Add to calendar", side by side and equal in width, even on a narrow phone. */
+.landing-ceremony__actions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+}
+
+.landing-ceremony__actions .obw-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  justify-content: center;
+  gap: 8px;
+  padding-inline: 10px;
+  text-align: center;
+  line-height: 1.25;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.landing-ceremony__map-link {
+  display: inline-flex;
+  align-items: center;
 }

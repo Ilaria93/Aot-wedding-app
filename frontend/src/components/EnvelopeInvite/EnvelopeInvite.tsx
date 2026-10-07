@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Copy } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import {
   WEDDING_CITY,
@@ -9,9 +9,13 @@ import {
   formatWeddingDateDisplay,
 } from '@/constants/weddingEvent';
 import { copyToClipboard } from '@/components/HoneymoonGiftSection/copyToClipboard';
+import { AddToCalendarButton } from '@/components/AddToCalendarButton';
 import { CoupleContactDialog } from '@/components/Landing/CoupleContactDialog';
+import { DeclineDialog } from './DeclineDialog';
 import { formatIbanForDisplay, HONEYMOON_GIFT_BANK_DETAILS } from '@/constants/honeymoonGift';
+import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
+import { confirmGuestRsvp } from '@/services/guestAccessApi';
 import type { GreetingKind } from '@/services/inviteApi';
 import { formatInviteGreeting, formatInviteHeadline, isPluralInvite } from './inviteGreeting';
 
@@ -123,6 +127,26 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
   const [isZooming, setIsZooming] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [ibanCopied, setIbanCopied] = useState(false);
+  const navigate = useNavigate();
+  const { applySession } = useAuth();
+  const [declineOpen, setDeclineOpen] = useState(false);
+  const [declining, setDeclining] = useState(false);
+  const [declineError, setDeclineError] = useState<string | null>(null);
+
+  // "No" is answered right here, after one "are you sure?": no need to open the site. The saved answer
+  // can still be changed by reopening the link (the answer page offers "Modifica" until the deadline).
+  async function handleDecline() {
+    setDeclining(true);
+    setDeclineError(null);
+    try {
+      const result = await confirmGuestRsvp(token, { attending: false, guests: [] });
+      await applySession(result.user);
+      navigate(`/invito/${token}/rsvp`, { state: { thanks: true } });
+    } catch {
+      setDeclineError(t('invite.decline.error'));
+      setDeclining(false);
+    }
+  }
 
   async function handleCopyIban() {
     if (!(await copyToClipboard(HONEYMOON_GIFT_BANK_DETAILS.iban))) {
@@ -357,6 +381,9 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
               <p className="obw-body envelope-invite__details">
                 {words(t('invite.dateAndTime', { date: formatWeddingDateDisplay(locale) }))}
               </p>
+              <div className="envelope-invite__fade envelope-invite__calendar" style={revealAt(cursor)}>
+                <AddToCalendarButton tabIndex={isOpen ? 0 : -1} />
+              </div>
             </div>
             <div className="envelope-invite__block">
               <p className="obw-body envelope-invite__body-text">{words(t(plural ? 'invite.closingPlural' : 'invite.closing'))}</p>
@@ -374,16 +401,21 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
                 <Link
                   className="obw-btn obw-btn--primary envelope-invite__cta"
                   to={`/invito/${token}/rsvp`}
+                  state={{ yes: true }}
                   tabIndex={isOpen ? 0 : -1}>
                   {t(plural ? 'invite.rsvpSection.yesPlural' : 'invite.rsvpSection.yes')}
                 </Link>
-                <Link
+                <button
+                  type="button"
                   className="obw-btn obw-btn--secondary envelope-invite__decline"
-                  to={`/invito/${token}/rsvp?risposta=no`}
-                  tabIndex={isOpen ? 0 : -1}>
+                  tabIndex={isOpen ? 0 : -1}
+                  onClick={() => setDeclineOpen(true)}>
                   {t(plural ? 'invite.rsvpSection.noPlural' : 'invite.rsvpSection.no')}
-                </Link>
+                </button>
               </div>
+              <p className="obw-body envelope-invite__rsvp-hint envelope-invite__fade" style={revealAt(cursor)}>
+                {t(plural ? 'invite.rsvpSection.yesHintPlural' : 'invite.rsvpSection.yesHint')}
+              </p>
             </section>
 
             <section className="envelope-invite__section envelope-invite__section--gift" style={revealAt(cursor + 500)}>
@@ -430,6 +462,17 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
           dialog as the site's contacts. A native <dialog>, so it sits above the
           letter's fixed layers. */}
       <CoupleContactDialog mode={contactOpen ? 'whatsapp' : null} onClose={() => setContactOpen(false)} />
+      <DeclineDialog
+        open={declineOpen}
+        plural={plural}
+        busy={declining}
+        error={declineError}
+        onConfirm={() => void handleDecline()}
+        onClose={() => {
+          setDeclineOpen(false);
+          setDeclineError(null);
+        }}
+      />
     </div>
   );
 }

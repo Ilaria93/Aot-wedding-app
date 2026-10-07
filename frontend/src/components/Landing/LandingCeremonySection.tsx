@@ -1,4 +1,7 @@
-import { formatWeddingDateDisplay } from '@/constants/weddingEvent';
+import { MapPin } from 'lucide-react';
+
+import { AddToCalendarButton } from '@/components/AddToCalendarButton';
+import { formatWeddingDateDisplay, WEDDING_MAPS_URL } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
 
 /** Landing ceremony section — date, time and venue in a card under the title. */
@@ -13,13 +16,13 @@ export function LandingCeremonySection() {
         <div className="obw-card obw-card--dark landing-box landing-ceremony__details obw-stack-center">
           <p className="landing-ceremony__date">{formatWeddingDateDisplay(locale)}</p>
           <dl className="landing-ceremony__times">
-            <div className="landing-ceremony__time">
-              <dt>{t('landing.ceremony.startLabel')}</dt>
-              <dd>{t('landing.ceremony.startTime')}</dd>
-            </div>
             <div className="landing-ceremony__time landing-ceremony__time--secondary">
               <dt>{t('landing.ceremony.arrivalLabel')}</dt>
               <dd>{t('landing.ceremony.arrivalTime')}</dd>
+            </div>
+            <div className="landing-ceremony__time">
+              <dt>{t('landing.ceremony.startLabel')}</dt>
+              <dd>{t('landing.ceremony.startTime')}</dd>
             </div>
           </dl>
           <div className="landing-ceremony__place">
@@ -29,6 +32,17 @@ export function LandingCeremonySection() {
             </p>
           </div>
           <p className="obw-body obw-body--flush">{t('landing.ceremony.body')}</p>
+          <div className="landing-ceremony__actions">
+            <a
+              className="obw-btn obw-btn--secondary landing-ceremony__map-link"
+              href={WEDDING_MAPS_URL}
+              target="_blank"
+              rel="noreferrer">
+              <MapPin size={16} aria-hidden />
+              {t('landing.ceremony.mapLink')}
+            </a>
+            <AddToCalendarButton />
+          </div>
         </div>
       </div>
     </section>

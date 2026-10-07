@@ -75,7 +75,7 @@ class AdminInviteCreate(_PersonFields):
     head_id: Optional[int] = None
     relation: Optional[Relation] = None
     family_name: Optional[str] = None
-    party_size: Optional[int] = Field(default=None, ge=1)
+    party_size: Optional[int] = Field(default=None, ge=1, le=10)
 
 
 class AdminInviteUpdate(_PersonFields):
@@ -85,7 +85,7 @@ class AdminInviteUpdate(_PersonFields):
     phone: Optional[str] = Field(default=None, max_length=40)
     relation: Optional[Relation] = None
     family_name: Optional[str] = None
-    party_size: Optional[int] = Field(default=None, ge=1)
+    party_size: Optional[int] = Field(default=None, ge=1, le=10)
 
 
 class InviteMatchHead(BaseModel):

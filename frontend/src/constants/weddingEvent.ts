@@ -38,6 +38,10 @@ export const WEDDING_VENUE_NAME = 'Lido Adriano' as const;
 export const WEDDING_VENUE_AREA = 'Amarissimo Cala Celeste' as const;
 export const WEDDING_VENUE_SHORT = 'Cala Celeste' as const;
 export const WEDDING_CITY = 'Ravenna' as const;
+/** What Google Maps searches for: the venue itself. */
+export const WEDDING_MAP_QUERY = 'Amarissimo Cala Celeste, Lido Adriano, Ravenna' as const;
+/** Opens the venue in Google Maps (app or browser). */
+export const WEDDING_MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(WEDDING_MAP_QUERY)}`;
 export const WEDDING_TIMEZONE = 'Europe/Rome' as const;
 
 export const WEDDING_LOCAL = {

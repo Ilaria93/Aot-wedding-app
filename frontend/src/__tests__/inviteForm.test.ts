@@ -33,6 +33,8 @@ describe('validateInviteForm', () => {
     expect(validateInviteForm({ ...head, partySize: '5' })).toEqual({});
     expect(validateInviteForm({ ...head, partySize: '0' })).toEqual({ partySize: 'partySizeInvalid' });
     expect(validateInviteForm({ ...head, partySize: '2.5' })).toEqual({ partySize: 'partySizeInvalid' });
+    expect(validateInviteForm({ ...head, partySize: '11' })).toEqual({ partySize: 'partySizeInvalid' });
+    expect(validateInviteForm({ ...head, partySize: '10' })).toEqual({});
   });
 });
 
