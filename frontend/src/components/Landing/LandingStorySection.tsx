@@ -17,13 +17,17 @@ const DOSSIER_FIELDS = ['codename', 'enlisted', 'rank', 'weakness', 'weapon'] as
 
 const CREST_SRC = '/assets/wedding/stemma.webp';
 
-type StageKey = 'contact' | 'enlist' | 'battles' | 'proposal' | 'final';
+type StageKey = 'contact' | 'enlist' | 'battles' | 'world' | 'proposal' | 'final';
 type PhotoKey =
   | 'band' | 'crowd' | 'stage' | 'lineup' | 'rehearsal' | 'bassline' | 'bandmates'
   | 'tavern' | 'lookout' | 'secret' | 'paris'
   | 'vader' | 'boat' | 'assisi' | 'bridge' | 'sunset' | 'fireplace'
   | 'moto' | 'paestum' | 'costumes' | 'procida' | 'kayak' | 'silly' | 'snow' | 'arch'
-  | 'monument' | 'beverly' | 'zion' | 'vegas' | 'road' | 'amarissimo';
+  | 'monument' | 'beverly' | 'zion' | 'vegas' | 'road' | 'amarissimo'
+  | 'shoreLeave' | 'celebration' | 'celtic' | 'hearts' | 'maratea' | 'sea' | 'peak' | 'summit' | 'rations'
+  | 'eiffel' | 'colosseum' | 'burano' | 'sardinia' | 'sardiniaCliffs' | 'porto' | 'sintra' | 'windmill'
+  | 'dunes' | 'castle' | 'forrest' | 'springfield'
+  | 'embrace' | 'ring';
 type PendingKey = 'dog' | 'house';
 
 type Stage = {
@@ -35,7 +39,7 @@ type Stage = {
   pending?: PendingKey[];
 };
 
-/** The story as five mission reports, in order: at most 5 photos each. Add a photo = add its key here. */
+/** The story as six mission reports, in order. Add a photo = add its key here. */
 const STAGES: Stage[] = [
   {
     key: 'contact',
@@ -45,15 +49,26 @@ const STAGES: Stage[] = [
   {
     key: 'enlist',
     number: '002',
-    photos: ['bridge', 'vader', 'assisi', 'tavern', 'lookout'],
+    photos: [
+      'bridge', 'vader', 'assisi', 'tavern', 'lookout',
+      'shoreLeave', 'celebration', 'celtic', 'sea', 'peak',
+    ],
   },
   {
     key: 'battles',
     number: '003',
-    photos: ['silly', 'moto', 'paestum', 'costumes', 'procida'],
+    photos: ['silly', 'moto', 'paestum', 'costumes', 'maratea', 'hearts', 'summit', 'rations'],
   },
-  { key: 'proposal', number: '004', photos: ['monument', 'beverly', 'zion', 'vegas', 'road'] },
-  { key: 'final', number: '005', photos: ['amarissimo'] },
+  {
+    key: 'world',
+    number: '004',
+    photos: [
+      'colosseum', 'eiffel', 'burano', 'sardinia', 'sardiniaCliffs', 'porto', 'sintra',
+      'windmill', 'dunes', 'castle', 'forrest', 'springfield',
+    ],
+  },
+  { key: 'proposal', number: '005', photos: ['monument', 'embrace', 'ring', 'beverly', 'zion', 'vegas', 'road'] },
+  { key: 'final', number: '006', photos: ['amarissimo'] },
 ];
 
 function stageLightboxItems(stage: Stage, t: TranslateFn): LightboxItem[] {

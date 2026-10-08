@@ -26,12 +26,14 @@ export function LandingFaqSection() {
             <a className="obw-faq-list__link" href={WEDDING_LODGING.website} target="_blank" rel="noreferrer">
               {t('landing.faq.lodgingLink')}
             </a>
+            .
           </p>
           <p>
-            {t('landing.faq.hotelAnswer', { name: WEDDING_LODGING_HOTEL.label })}{' '}
+            {t('landing.faq.hotelAnswerBefore')}
             <a className="obw-faq-list__link" href={WEDDING_LODGING_HOTEL.website} target="_blank" rel="noreferrer">
-              {t('landing.faq.hotelLink')}
+              {WEDDING_LODGING_HOTEL.label}
             </a>
+            {t('landing.faq.hotelAnswerAfter')}
           </p>
         </article>
         <article className="obw-faq-list__item">
@@ -41,6 +43,10 @@ export function LandingFaqSection() {
         <article className="obw-faq-list__item">
           <h3>{t('landing.faq.phoneQuestion')}</h3>
           <p>{t('landing.faq.phoneAnswer')}</p>
+        </article>
+        <article className="obw-faq-list__item">
+          <h3>{t('landing.faq.servicesQuestion')}</h3>
+          <p>{t('landing.faq.servicesAnswer')}</p>
         </article>
       </div>
     </section>
