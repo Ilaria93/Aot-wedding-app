@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef, useState, type CSSProperties } from 'react';
-import { Copy } from 'lucide-react';
+import { ChevronDown, Copy } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import {
@@ -129,6 +129,8 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
   const [ibanCopied, setIbanCopied] = useState(false);
   const navigate = useNavigate();
   const { applySession } = useAuth();
+  // True until the reader scrolls: shows the "keep going" chevron for people who stopped the auto-scroll.
+  const [atTop, setAtTop] = useState(true);
   const [declineOpen, setDeclineOpen] = useState(false);
   const [declining, setDeclining] = useState(false);
   const [declineError, setDeclineError] = useState<string | null>(null);
@@ -357,7 +359,11 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
           the text has already started appearing over the video. */}
       <div className="envelope-invite__letter-bg" aria-hidden />
 
-      <article ref={letterRef} className="envelope-invite__letter" aria-hidden={!isRevealing}>
+      <article
+        ref={letterRef}
+        className="envelope-invite__letter"
+        aria-hidden={!isRevealing}
+        onScroll={(event) => setAtTop(event.currentTarget.scrollTop < 24)}>
         {/* The text comes in word by word (words()); the buttons and the rules above the sections fade in after their text, at revealAt(). */}
         <div className="envelope-invite__letter-body">
           <div className="envelope-invite__letter-content">
@@ -457,6 +463,17 @@ export function EnvelopeInvite({ token, greetingKind, greetingName, greetingName
           </div>
         </div>
       </article>
+
+      {/* Blinking gold chevron at the bottom right of the first screen; it goes away as soon as the letter scrolls. */}
+      {isOpen && atTop ? (
+        <button
+          type="button"
+          className="envelope-invite__scroll-hint"
+          aria-label={t('invite.scrollHint')}
+          onClick={() => letterRef.current?.scrollBy({ top: window.innerHeight * 0.8, behavior: 'smooth' })}>
+          <ChevronDown size={30} strokeWidth={2.25} aria-hidden />
+        </button>
+      ) : null}
 
       {/* "Who do you want to write to?" — the same one-button-per-spouse WhatsApp
           dialog as the site's contacts. A native <dialog>, so it sits above the
