@@ -1030,6 +1030,7 @@ export const it = {
     },
     openAria: "Apri l'invito",
     tapHint: 'Tocca il sigillo per aprire',
+    scrollHint: 'Scorri per continuare',
     notFoundTitle: 'Invito non trovato.',
     notFoundBody: 'Il link potrebbe essere scaduto o scritto in modo scorretto.',
     notFoundBackHome: 'Vai al sito del matrimonio',
