@@ -133,3 +133,28 @@ def test_import_returns_created_heads_for_the_script(api_client, admin_headers):
         assert all(member.token is None for head in heads for member in head.members)
     finally:
         db.close()
+
+
+LEGEND = (
+    "COLONNA,OBBLIGATORIO,VALORI ACCETTATI\n"
+    "first_name,sì,testo\n"
+    "relation,no,\"spouse, partner, child, other\"\n"
+    "\n"
+)
+
+
+def test_legend_above_the_header_is_ignored_and_errors_use_file_lines(api_client, admin_headers):
+    content = LEGEND + HEADER + "Anna,Neri,f,,,,,\n,Rossi,m,,,,,\nPaolo,Verdi,m,,,,,\n"
+    report = _upload(api_client, content).json()
+    assert report["created"] == 2
+    # The header is on line 5, so the nameless row is on line 7.
+    assert [error["row"] for error in report["errors"]] == [7]
+
+
+def test_extra_columns_are_ignored(api_client, admin_headers):
+    content = HEADER.strip() + ",riga_excel,da_controllare\nAnna,Neri,f,,,,,,12,una nota\n"
+    assert _upload(api_client, content).json() == {"created": 1, "skipped_duplicates": [], "errors": []}
+
+
+def test_a_file_with_only_a_legend_is_rejected(api_client, admin_headers):
+    assert _upload(api_client, LEGEND).status_code == 422

@@ -21,6 +21,8 @@ linked to that head and has no link of its own. A group is either a family
 (spouse/children) or partners, never both. `gender` is m or f. `party_size`
 pre-fills the max guest count of the head's RSVP form.
 
+Lines above the header (a legend, notes) and extra columns are ignored.
+
 People already in the table (same name or same phone) are skipped, so the same
 file can be loaded again with new rows at the bottom. Writes
 <file>_output.csv next to the input with a link for every new head.
@@ -38,10 +40,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from database.base import SessionLocal  # noqa: E402
-# InviteLink.user relationship resolves "User" by name at query time — this
-# import is required so SQLAlchemy's mapper registry knows the class exists,
-# even though nothing here calls User directly.
+# Relationships resolve their targets by class name when SQLAlchemy configures
+# the mappers (InviteLink.user, RSVP.guests, RSVP.table). These imports make
+# sure every model is registered even though nothing here uses them directly.
+from models.rsvp_guest_model import RsvpGuest  # noqa: E402,F401
+from models.rsvp_model import RSVP  # noqa: E402,F401
 from models.user_model import User  # noqa: E402,F401
+from models.wedding_table_model import WeddingTable  # noqa: E402,F401
 from services.invite_import_service import ImportFileError, import_invites, parse_csv  # noqa: E402
 
 DEFAULT_BASE_URL = "http://localhost:5173"

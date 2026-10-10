@@ -1,5 +1,6 @@
 import csv
 import io
+import re
 from typing import Optional
 
 from sqlalchemy import func
@@ -16,6 +17,8 @@ from services.admin_invite_service import (
 )
 
 MAX_ROWS = 1000
+# Key under which parse_csv stores the line of each row in the original file.
+LINE_KEY = "__line"
 EXPECTED_COLUMNS = ("first_name", "last_name", "gender", "relation", "head", "family_name", "phone", "party_size")
 
 # Italian spellings accepted next to the canonical values.
@@ -31,25 +34,37 @@ class ImportFileError(Exception):
     pass
 
 
+def _find_header(lines: list[str]) -> int:
+    """Index of the header line: the first one that has both first_name and
+    last_name as cells. Lines above it (a legend table, notes) are ignored."""
+    for index, line in enumerate(lines):
+        cells = {cell.strip().lower() for cell in re.split(r"[,;]", line)}
+        if {"first_name", "last_name"} <= cells:
+            return index
+    raise ImportFileError("The header must contain first_name and last_name.")
+
+
 def parse_csv(raw: bytes) -> list[dict[str, str]]:
-    """Rows of a guest-list CSV. Accepts a UTF-8 BOM (Excel) and `,` or `;`
-    as separator; header names are matched case-insensitively."""
+    """Rows of a guest-list CSV. Accepts a UTF-8 BOM (Excel), `,` or `;` as
+    separator, a legend/notes block above the header, and unknown extra
+    columns. Header names are matched case-insensitively. Each row carries its
+    line in the file under LINE_KEY, so errors point at the real line."""
     try:
         text = raw.decode("utf-8-sig")
     except UnicodeDecodeError as error:
         raise ImportFileError("The file must be UTF-8 encoded.") from error
-    header = text.split("\n", 1)[0]
-    delimiter = ";" if header.count(";") > header.count(",") else ","
-    reader = csv.DictReader(io.StringIO(text), delimiter=delimiter)
-    if not reader.fieldnames:
+    if not text.strip():
         raise ImportFileError("The file is empty.")
-    fields = {(name or "").strip().lower() for name in reader.fieldnames}
-    if not {"first_name", "last_name"} <= fields:
-        raise ImportFileError("The header must contain first_name and last_name.")
-    rows = [
-        {(key or "").strip().lower(): (value or "").strip() for key, value in row.items() if key}
-        for row in reader
-    ]
+    lines = text.splitlines()
+    header_index = _find_header(lines)
+    header = lines[header_index]
+    delimiter = ";" if header.count(";") > header.count(",") else ","
+    reader = csv.DictReader(io.StringIO("\n".join(lines[header_index:])), delimiter=delimiter)
+    rows = []
+    for row in reader:
+        parsed = {(key or "").strip().lower(): (value or "").strip() for key, value in row.items() if key}
+        parsed[LINE_KEY] = str(header_index + reader.line_num)
+        rows.append(parsed)
     if len(rows) > MAX_ROWS:
         raise ImportFileError(f"Too many rows (max {MAX_ROWS}).")
     return rows
@@ -120,7 +135,7 @@ def import_invites(db: Session, rows: list[dict[str, str]]) -> tuple[ImportRepor
             fail(number, _error_text(error))
             return None
 
-    numbered = list(enumerate(rows, start=2))  # row 1 is the header
+    numbered = [(int(row.get(LINE_KEY) or index), row) for index, row in enumerate(rows, start=2)]
     for number, row in numbered:
         if row.get("relation") or not row.get("head"):
             continue
