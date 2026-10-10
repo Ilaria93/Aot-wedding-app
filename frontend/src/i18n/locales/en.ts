@@ -973,6 +973,10 @@ export const en = {
   },
   calendar: {
     add: 'Add to calendar',
+    chooseTitle: "Open the calendar?",
+    chooseText: "The event will open in your phone's calendar. If you use another calendar, download the file.",
+    defaultOption: "Yes, open in the calendar",
+    fileOption: "No, download the file",
     title: "Davide and Ilaria's wedding",
     description:
       'Recommended arrival at {{arrival}}, ceremony starts at {{ceremony}}.\n\nWhere: {{venue}}\nMap: {{mapUrl}}\n\nWhere to stay: we will be at the {{residence}} residence ({{residenceUrl}}). For something nicer: {{hotel}} ({{hotelUrl}}).\n\nAll the info: {{siteUrl}}',

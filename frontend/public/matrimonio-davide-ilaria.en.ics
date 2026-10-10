@@ -1,0 +1,32 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Davide e Ilaria//Wedding//IT
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:wedding-2027-05-31@davide-e-ilaria
+DTSTAMP:20261001T000000Z
+DTSTART:20270531T143000Z
+DTEND:20270601T000000Z
+SUMMARY:Davide and Ilaria's wedding
+LOCATION:Amarissimo Cala Celeste\, Lido Adriano\, Ravenna
+DESCRIPTION:Recommended arrival at 4:30 pm\, ceremony starts at 5:00 pm.\
+ n\nWhere: Amarissimo Cala Celeste\, Lido Adriano\, Ravenna\nMap: https://
+ www.google.com/maps/search/?api=1&query=Amarissimo%20Cala%20Celeste%2C%20
+ Lido%20Adriano%2C%20Ravenna\n\nWhere to stay: we will be at the Long Beac
+ h Village residence (https://www.lidoadriano.com/scheda-hotel_it.php?id=2
+ ). For something nicer: Hotel Le Dune (https://www.lidoadriano.com/scheda
+ -hotel_it.php?id=4).\n\nAll the info: https://www.davideeilaria.it
+URL:https://www.davideeilaria.it
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Davide and Ilaria's wedding
+TRIGGER:-P7D
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Davide and Ilaria's wedding
+TRIGGER:-P1D
+END:VALARM
+END:VEVENT
+END:VCALENDAR
