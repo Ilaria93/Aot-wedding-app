@@ -21,6 +21,8 @@ linked to that head and has no link of its own. A group is either a family
 (spouse/children) or partners, never both. `gender` is m or f. `party_size`
 pre-fills the max guest count of the head's RSVP form.
 
+Lines above the header (a legend, notes) and extra columns are ignored.
+
 People already in the table (same name or same phone) are skipped, so the same
 file can be loaded again with new rows at the bottom. Writes
 <file>_output.csv next to the input with a link for every new head.
