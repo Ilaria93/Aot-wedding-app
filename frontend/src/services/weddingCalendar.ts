@@ -106,13 +106,3 @@ const isApple = () => /iPhone|iPad|iPod|Macintosh/i.test(navigator.userAgent);
 export function openWeddingCalendar(t: TranslateFn, locale: 'it' | 'en') {
   window.location.href = isApple() ? `/${CALENDAR_FILE[locale]}` : buildGoogleCalendarUrl(t, SITE_URL);
 }
-
-/** The other way, same on every phone: save the .ics as a file, for whatever calendar app the guest uses. */
-export function downloadCalendarFile(locale: 'it' | 'en') {
-  const link = document.createElement('a');
-  link.href = `/${CALENDAR_FILE[locale]}`;
-  link.download = 'matrimonio-davide-ilaria.ics';
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-}

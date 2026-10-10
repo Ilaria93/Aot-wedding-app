@@ -975,10 +975,6 @@ export const it = {
   },
   calendar: {
     add: 'Aggiungi al calendario',
-    chooseTitle: "Aprire il calendario?",
-    chooseText: "L'evento verrà aperto con il calendario del tuo telefono. Se usi un altro calendario, scarica il file.",
-    defaultOption: "Sì, apri sul calendario",
-    fileOption: "No, scarica il file",
     title: 'Matrimonio di Davide e Ilaria',
     description:
       'Arrivo consigliato alle {{arrival}}, inizio cerimonia alle {{ceremony}}.\n\nDove: {{venue}}\nMappa: {{mapUrl}}\n\nAlloggio: noi saremo al residence {{residence}} ({{residenceUrl}}). Per qualcosa di più curato: {{hotel}} ({{hotelUrl}}).\n\nTutte le info: {{siteUrl}}',
