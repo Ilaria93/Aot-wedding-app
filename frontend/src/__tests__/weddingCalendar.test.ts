@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildWeddingIcs } from '@/services/weddingCalendar';
+import { readFileSync } from 'node:fs';
+
+import { buildGoogleCalendarUrl, buildWeddingIcs, CALENDAR_FILE, SITE_URL } from '@/services/weddingCalendar';
 import { translations } from '@/i18n/translations';
 
 function translator(locale: 'it' | 'en') {
@@ -36,5 +38,22 @@ describe('buildWeddingIcs', () => {
     expect(ics.startsWith('BEGIN:VCALENDAR\r\n')).toBe(true);
     expect(ics.endsWith('END:VCALENDAR')).toBe(true);
     expect(ics.split('\r\n').every((line) => line.length <= 75)).toBe(true);
+  });
+});
+
+describe('direct-open calendar', () => {
+  it('the static .ics files served to Apple devices match what the code builds (run `npm run calendar` if this fails)', () => {
+    for (const locale of ['it', 'en'] as const) {
+      const built = buildWeddingIcs(translator(locale) as never, SITE_URL, Date.UTC(2026, 9, 1));
+      expect(readFileSync(`public/${CALENDAR_FILE[locale]}`, 'utf8')).toBe(built);
+    }
+  });
+
+  it('builds a pre-filled Google Calendar link with the same times and place', () => {
+    const url = new URL(buildGoogleCalendarUrl(translator('it') as never, 'https://example.test'));
+    expect(url.origin + url.pathname).toBe('https://calendar.google.com/calendar/render');
+    expect(url.searchParams.get('dates')).toBe('20270531T143000Z/20270601T000000Z');
+    expect(url.searchParams.get('location')).toBe('Amarissimo Cala Celeste, Lido Adriano, Ravenna');
+    expect(url.searchParams.get('details')).toContain('Long Beach Village');
   });
 });
