@@ -42,12 +42,8 @@ def build_greeting(head: InviteLink, members: Iterable[InviteLink]) -> tuple[str
     return "single", head.first_name
 
 
-def max_party_guests(head: InviteLink, members: Iterable[InviteLink], site_default: int) -> int:
-    """Upper bound for the RSVP form: the explicit party size, else the size of
-    the group (head + members) capped at the site limit, else the site default."""
-    if head.party_size:
-        return head.party_size
-    group = 1 + len(list(members))
-    if group > 1:
-        return min(group, site_default)
-    return site_default
+def default_party_guests(head: InviteLink, members: Iterable[InviteLink], site_max: int) -> int:
+    """How many people the RSVP form starts with: the size the couple set (a
+    starting point the guest can change up to the site limit), else the size of
+    the group (head + members), else 1."""
+    return min(head.party_size or 1 + len(list(members)), site_max)

@@ -1,4 +1,4 @@
-import { Contact, Home, Image as ImageIcon, LogOut, Menu, Send, X } from 'lucide-react';
+import { BookHeart, Contact, Gift, Home, Image as ImageIcon, LogOut, MapPin, Menu, Send, X, Mail } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { ComponentType } from 'react';
@@ -26,16 +26,26 @@ const ADMIN_ROUTES: { to: string; i18nKey: 'admin.nav.rsvp' | 'admin.nav.contact
 
 // Same order as the sections on the home page — keep the two in step.
 const HOME_ANCHORS = [
+  { href: '#theme', i18nKey: 'navigation.tabs.tema' },
   { href: '#story', i18nKey: 'landing.nav.story' },
   { href: '#ceremony', i18nKey: 'landing.nav.ceremony' },
   // Gallery temporarily hidden from the home page — uncomment together with <GallerySection /> in HomePage.
   // { href: '#gallery', i18nKey: 'landing.nav.gallery' },
   { href: '#rsvp', i18nKey: 'landing.nav.rsvp' },
   { href: '#gift', i18nKey: 'landing.nav.gift' },
-  { href: '#theme', i18nKey: 'navigation.tabs.tema' },
   { href: '#faq', i18nKey: 'landing.nav.faq' },
   { href: '#contacts', i18nKey: 'landing.nav.contacts' },
 ] as const;
+
+/** The five sections guests look for most, pinned to the bottom of the screen on phones; every other section stays in the menu. */
+const BOTTOM_NAV = [
+  { href: '#story', icon: BookHeart },
+  { href: '#ceremony', icon: MapPin },
+  { href: '#rsvp', icon: Mail },
+  { href: '#gift', icon: Gift },
+  { href: '#contacts', icon: Contact },
+] as const;
+const BOTTOM_NAV_HREFS: readonly string[] = BOTTOM_NAV.map((item) => item.href);
 
 type NavItem = {
   key: string;
@@ -132,6 +142,10 @@ export function AppTopBar() {
      Every other screen needs its navigation from the first pixel. */
   const isVisible = !isHome || isScrolled;
   const navItems = getNavItems(isHome, canManageWedding, t);
+  // The bottom bar only exists on the guest-facing pages that have these sections (the invite letter and RSVP
+  // screens are full-screen flows of their own).
+  const showBottomNav = !canManageWedding && (isHome || location.pathname === '/tema');
+  const menuItems = showBottomNav ? navItems.filter((item) => !BOTTOM_NAV_HREFS.includes(item.key)) : navItems;
   const closeMobileNav = () => setMobileNavOpen(false);
   // One pill style everywhere; guests get the soft translucent variant, the
   // couple's control panel keeps the bright gold one.
@@ -174,6 +188,12 @@ export function AppTopBar() {
   useEffect(() => {
     setMobileNavOpen(false);
   }, [location.pathname]);
+
+  // Leaves room under the page for the bottom bar (see .guest-bottom-nav).
+  useEffect(() => {
+    document.body.classList.toggle('has-guest-bottom-nav', showBottomNav);
+    return () => document.body.classList.remove('has-guest-bottom-nav');
+  }, [showBottomNav]);
 
   useEffect(() => {
     if (!mobileNavOpen) {
@@ -253,6 +273,27 @@ export function AppTopBar() {
 
       {/* Blurs the page behind the open menu; a tap on it closes the menu. In
           body, not here: the header's backdrop-filter would trap a fixed child. */}
+      {showBottomNav
+        ? createPortal(
+            <nav className={`guest-bottom-nav${isVisible ? ' is-visible' : ''}`} aria-hidden={!isVisible} aria-label={t('navigation.menu.primary')}>
+              {BOTTOM_NAV.map((entry) => {
+                const item = navItems.find((candidate) => candidate.key === entry.href);
+                if (!item) return null;
+                return (
+                  <a
+                    key={entry.href}
+                    href={item.target}
+                    tabIndex={isVisible ? 0 : -1}
+                    className={`guest-bottom-nav__item${entry.href === activeAnchor ? ' is-active' : ''}`}>
+                    <entry.icon size={20} aria-hidden />
+                    <span>{item.label}</span>
+                  </a>
+                );
+              })}
+            </nav>,
+            document.body,
+          )
+        : null}
       {mobileNavOpen
         ? createPortal(<div className="site-header__scrim" aria-hidden onClick={closeMobileNav} />, document.body)
         : null}
@@ -261,7 +302,7 @@ export function AppTopBar() {
           id="site-header-mobile-panel"
           className="site-header__mobile-panel obw-fade-up"
           aria-label={t('navigation.menu.primary')}>
-          {navItems.map((item) => (
+          {menuItems.map((item) => (
             <NavItemLink
               key={item.key}
               item={item}

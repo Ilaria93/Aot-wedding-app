@@ -1,5 +1,5 @@
-import { CalendarCheck, LogIn, LogOut, Settings } from 'lucide-react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { LogIn, LogOut } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,13 +9,17 @@ type AppUserMenuContentProps = {
   onNavigate: () => void;
 };
 
-/** RSVP, account and language actions — shared by the desktop dropdown and the mobile nav panel. */
+/**
+ * The same menu for every visitor: the couple's login (or, once signed in as
+ * the couple, sign-out) and the language switcher. Guests who confirmed from
+ * their invite link keep a hidden session but get no account section — they
+ * have no profile or RSVP screen to go back to. Shared by the desktop dropdown
+ * and the mobile nav panel.
+ */
 export function AppUserMenuContent({ onNavigate }: AppUserMenuContentProps) {
-  const { user, isAuthenticated, canManageWedding, signOut } = useAuth();
+  const { canManageWedding, signOut } = useAuth();
   const { t } = useI18n();
   const navigate = useNavigate();
-  const location = useLocation();
-  const isHome = location.pathname === '/';
 
   async function handleSignOut() {
     onNavigate();
@@ -25,61 +29,18 @@ export function AppUserMenuContent({ onNavigate }: AppUserMenuContentProps) {
 
   return (
     <>
-      {isAuthenticated && !canManageWedding ? (
-        <>
-          <div className="app-user-menu__section">
-            {isHome ? (
-              <a
-                href="#rsvp"
-                role="menuitem"
-                className="app-user-menu__action app-user-menu__action--rsvp"
-                onClick={onNavigate}>
-                <CalendarCheck size={15} aria-hidden />
-                {t('navigation.stack.rsvp')}
-              </a>
-            ) : (
-              <Link
-                to="/rsvp"
-                role="menuitem"
-                className="app-user-menu__action app-user-menu__action--rsvp"
-                onClick={onNavigate}>
-                <CalendarCheck size={15} aria-hidden />
-                {t('navigation.stack.rsvp')}
-              </Link>
-            )}
-          </div>
-
-          {user ? (
-            <div className="app-user-menu__header">
-              <p className="app-user-menu__name">
-                {user.first_name} {user.last_name}
-              </p>
-              {user.email ? <p className="app-user-menu__meta">{user.email}</p> : null}
-            </div>
-          ) : null}
-        </>
-      ) : null}
-
       <div className="app-user-menu__section">
         <p className="app-user-menu__section-label">{t('navigation.userMenu.sectionAccount')}</p>
         <div className="app-user-menu__actions">
-          {isAuthenticated ? (
-            <>
-              {!canManageWedding ? (
-                <Link to="/profile" role="menuitem" className="app-user-menu__action" onClick={onNavigate}>
-                  <Settings size={15} aria-hidden />
-                  {t('navigation.tabs.profile')}
-                </Link>
-              ) : null}
-              <button
-                type="button"
-                role="menuitem"
-                className="app-user-menu__action app-user-menu__action--danger"
-                onClick={() => void handleSignOut()}>
-                <LogOut size={15} aria-hidden />
-                {t('common.signOut')}
-              </button>
-            </>
+          {canManageWedding ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="app-user-menu__action app-user-menu__action--danger"
+              onClick={() => void handleSignOut()}>
+              <LogOut size={15} aria-hidden />
+              {t('common.signOut')}
+            </button>
           ) : (
             <Link to="/auth/login" role="menuitem" className="app-user-menu__action" onClick={onNavigate}>
               <LogIn size={15} aria-hidden />

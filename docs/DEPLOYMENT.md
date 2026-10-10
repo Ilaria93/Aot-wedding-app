@@ -16,18 +16,23 @@ tier.
 **Compromesso accettato:** il piano free di Render "addormenta" il backend
 dopo ~15 minuti di inattività — la prima richiesta dopo la pausa impiega
 30-50s. Per un sito con traffico basso e diluito su mesi (matrimonio il
-6-7 maggio 2027, vedi `RSVP_EDIT_DEADLINE` in `backend/settings.py`) è
+31 maggio 2027, modifiche RSVP fino al 1 aprile: vedi `RSVP_EDIT_DEADLINE` in `backend/settings.py`) è
 accettabile. Se si vuole eliminarlo nelle ultime settimane prima
 dell'evento, si passa al piano Render a pagamento (~7$/mese) solo per quel
 periodo.
 
 ## Cosa serve modificare nel codice
 
-**Niente.** Il codice è già interamente pilotato da env vars: CORS
-(`CORS_ALLOW_ORIGINS`), URL del backend nel frontend (`VITE_API_URL`,
-`frontend/src/constants/apiConfig.ts`), stringa di connessione DB
-(`DATABASE_URL`), credenziali S3. Nessun `localhost` hardcoded trovato in
-`frontend/src`.
+**Niente**, a parte un indirizzo: il frontend in produzione chiama sempre
+`/api`, e [`frontend/vercel.json`](../frontend/vercel.json) lo inoltra al
+backend su Render (cambia la riga `destination` se cambia l'URL di Render).
+Così il browser parla solo con l'indirizzo del sito e i cookie di sessione sono
+"di prima parte": chiamando direttamente il dominio di Render Safari
+(iPhone/Mac) li blocca e il login finisce in "Missing access token". In
+sviluppo `VITE_API_URL` (`frontend/src/constants/apiConfig.ts`) punta al
+backend locale. Il resto è pilotato da env vars: CORS
+(`CORS_ALLOW_ORIGINS`), stringa di connessione DB (`DATABASE_URL`),
+credenziali S3.
 
 L'unica aggiunta è [`render.yaml`](../render.yaml) nella root del repo: un
 Blueprint che dice a Render come buildare/avviare il backend (root dir
@@ -57,8 +62,10 @@ inserire a mano nella dashboard Render — non sono committati.
    - Copia l'URL pubblico assegnato da Render (es.
      `https://aot-wedding-backend.onrender.com`)
 4. **Vercel** → import del repo, **Root Directory = `frontend`**
-   (monorepo, va impostato a mano — Vercel non lo indovina). Env var:
-   - `VITE_API_URL` → URL Render del punto 3
+   (monorepo, va impostato a mano — Vercel non lo indovina). Nessuna env var
+   per l'API: l'URL di Render sta in `frontend/vercel.json` (riga
+   `destination`). Se c'è ancora un `VITE_API_URL` di prima, può restare, in
+   produzione viene ignorato.
 5. Torna su Render e aggiorna `CORS_ALLOW_ORIGINS` con il dominio Vercel
    assegnato (es. `https://aot-wedding.vercel.app`).
 6. Verifica: apri il dominio Vercel, entra come sposi, vai su **Inviti**,

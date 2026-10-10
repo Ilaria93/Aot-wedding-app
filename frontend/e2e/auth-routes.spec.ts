@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-const protectedPaths = ['/profile', '/rsvp', '/travel', '/admin'] as const;
+const protectedPaths = ['/rsvp', '/travel', '/admin'] as const;
 
 test.describe('auth guard', () => {
   for (const path of protectedPaths) {

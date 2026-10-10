@@ -1,6 +1,6 @@
 from typing import Literal, Optional
 
-from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Query, Response, UploadFile
 from sqlalchemy.orm import Session
 
 from database.base import get_db
@@ -18,6 +18,7 @@ from services.admin_invite_service import (
     InviteLockedError,
     InviteNotFoundError,
     create_person,
+    delete_invite,
     find_matches,
     get_admin_invite,
     list_admin_invites,
@@ -52,8 +53,7 @@ def lookup_invites(first_name: str = "", last_name: str = "", phone: Optional[st
         raise HTTPException(status_code=422, detail=str(error)) from error
 
 
-# Adds a head (no head_id) or a person linked to a head. There is no delete:
-# an invite the guest may already have received must never disappear.
+# Adds a head (no head_id) or a person linked to a head.
 @router.post("/invites", response_model=AdminInviteResponse, status_code=201)
 def create_invite(
     payload: AdminInviteCreate,
@@ -105,6 +105,17 @@ def update_invite(invite_id: int, payload: AdminInviteUpdate, db: Session = Depe
     except InvalidInviteError as error:
         raise HTTPException(status_code=422, detail=str(error)) from error
     return to_admin_invite(db, person.head or person)
+
+
+# Removes the head and the whole group, plus the answer and guest account if
+# they already replied (the admin page asks for confirmation first).
+@router.delete("/invites/{invite_id}", status_code=204)
+def remove_invite(invite_id: int, db: Session = Depends(get_db)):
+    try:
+        delete_invite(db, invite_id)
+    except InviteNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+    return Response(status_code=204)
 
 
 # The head's invite addressed to one person of the group.

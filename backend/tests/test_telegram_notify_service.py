@@ -99,3 +99,41 @@ def test_describe_matches():
     )
     unsent = InviteMatch(id=1, first_name="Christian", last_name="Rossi", head=InviteMatchHead(id=1, first_name="Christian", last_name="Rossi"))
     assert "invito non ancora inviato" in telegram_notify_service.describe_matches([unsent])
+
+
+def _capture_post(monkeypatch):
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "bot-token")
+    monkeypatch.setenv("TELEGRAM_CHAT_ID", "42")
+    monkeypatch.setenv("SITE_URL", "https://site")
+    sent = {}
+
+    def fake_post(url, json, timeout):
+        sent.update(json=json)
+        return httpx.Response(200, request=httpx.Request("POST", url))
+
+    monkeypatch.setattr(telegram_notify_service.httpx, "post", fake_post)
+    return sent
+
+
+def test_guest_rsvp_attending_message(monkeypatch):
+    sent = _capture_post(monkeypatch)
+    telegram_notify_service.notify_guest_rsvp("Mario", "Rossi", True, ["Mario Rossi", "Giulia Rossi"])
+    text = sent["json"]["text"]
+    assert "Mario Rossi ha confermato: 2 persone" in text
+    assert "Mario Rossi, Giulia Rossi" in text
+    assert text.endswith("https://site/admin/rsvp")
+
+
+def test_guest_rsvp_declined_message(monkeypatch):
+    sent = _capture_post(monkeypatch)
+    telegram_notify_service.notify_guest_rsvp("Luca", "Prova", False, [])
+    assert sent["json"]["text"] == "❌ Luca Prova non potrà venire\nhttps://site/admin/rsvp"
+
+
+def test_guest_rsvp_skips_when_not_configured(monkeypatch):
+    monkeypatch.delenv("TELEGRAM_BOT_TOKEN", raising=False)
+    monkeypatch.delenv("TELEGRAM_CHAT_ID", raising=False)
+    calls = []
+    monkeypatch.setattr(telegram_notify_service.httpx, "post", lambda *a, **k: calls.append(a))
+    telegram_notify_service.notify_guest_rsvp("Mario", "Rossi", True, ["Mario Rossi"])
+    assert calls == []

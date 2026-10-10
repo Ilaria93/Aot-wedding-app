@@ -4,6 +4,14 @@
   margin-bottom: var(--obw-space-lg);
 }
 
+/* The outer box takes the home page's light glass (artwork showing through);
+   the guest cards inside it stay dark. */
+.admin-invites__section.obw-portal-panel {
+  background: color-mix(in srgb, var(--obw-void) 34%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
 .admin-invites__section-title {
   margin: 0;
 }
@@ -43,21 +51,38 @@
   gap: var(--obw-space-sm);
 }
 
+/* Name on the left and the buttons on the right of the first row; the one-line
+   info (phone, party size, sent, answer) runs under both. On a narrow card
+   everything stacks: name, info, buttons. */
 .admin-invites__card-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--obw-space-sm);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 4px var(--obw-space-sm);
+}
+
+@media (max-width: 899px) {
+  .admin-invites__card-head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-invites__card-head .admin-invites__actions {
+    grid-column: 1;
+    grid-row: 3;
+    justify-content: flex-start;
+    margin-top: var(--obw-space-xs);
+  }
 }
 
 .admin-invites__row-info {
-  display: grid;
-  gap: 4px;
-  min-width: 0;
+  /* Its children (name, info line) sit directly in the card-head grid. */
+  display: contents;
 }
 
 .admin-invites__name {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
   margin: 0;
   font-family: var(--font-sans);
   font-size: 1.05rem;
@@ -66,12 +91,19 @@
 }
 
 /* The greeting the guest will read on the envelope: "Cara famiglia Rossi,". */
-.admin-invites__greeting {
-  margin: 0;
-  font-family: var(--font-editorial);
-  font-style: italic;
-  font-size: 0.9rem;
-  color: var(--obw-gold-bright);
+.admin-invites__card-head .admin-invites__meta {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+.admin-invites__meta.admin-invites__meta--row {
+  gap: 4px 18px;
+}
+
+.admin-invites__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .admin-invites__meta {
@@ -84,14 +116,28 @@
   color: color-mix(in srgb, var(--obw-bone) 72%, var(--obw-stone));
 }
 
+/* Top right of the card, next to the name. */
 .admin-invites__actions {
   display: flex;
   flex-wrap: wrap;
+  grid-column: 2;
+  grid-row: 1;
+  justify-content: flex-end;
   gap: 8px;
 }
 
 .admin-invites__card .obw-portal-btn {
+  gap: 8px;
+  padding: 11px 16px;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
   text-decoration: none;
+  white-space: nowrap;
+}
+
+/* Icon-only delete button: a square, not a wide label button. */
+.admin-invites__card .admin-invites__delete {
+  padding: 11px 12px;
 }
 
 .admin-invites__members {
@@ -133,12 +179,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-}
-
-.admin-invites__locked {
-  margin: 0;
-  font-size: 0.8rem;
-  color: color-mix(in srgb, var(--obw-bone) 60%, var(--obw-stone));
 }
 
 /* Add / edit form (inside AdminModal). */

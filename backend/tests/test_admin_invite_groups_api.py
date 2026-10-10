@@ -50,7 +50,7 @@ def test_family_group_greeting_and_message(api_client, admin_headers):
     assert row["greeting_kind"] == "family"
     assert row["greeting_name"] == "Rossi"
     assert [member["first_name"] for member in row["members"]] == ["Arianna", "Matteo"]
-    assert _message(row["whatsapp_url"]).startswith("Cara famiglia Rossi!")
+    assert _message(row["whatsapp_url"]).startswith("Ciao famiglia Rossi!")
 
 
 def test_partners_make_a_couple(api_client, admin_headers):
@@ -58,7 +58,7 @@ def test_partners_make_a_couple(api_client, admin_headers):
     assert _create(api_client, head_id=head["id"], relation="partner", first_name="Luca", last_name="Verdi").status_code == 201
     [row] = api_client.get("/admin/invites").json()
     assert row["greeting_kind"] == "couple"
-    assert _message(row["whatsapp_url"]).startswith("Cari Chiara e Luca!")
+    assert _message(row["whatsapp_url"]).startswith("Ciao Chiara e Luca!")
 
 
 def test_family_and_partners_cannot_mix(api_client, admin_headers):
@@ -149,9 +149,11 @@ def test_update_before_send(api_client, admin_headers):
     assert api_client.patch("/admin/invites/9999", json={"first_name": "X"}).status_code == 404
 
 
-def test_no_delete_route(api_client, admin_headers):
+def test_delete_removes_the_head_and_its_members(api_client, admin_headers):
     head = _head(api_client)
-    assert api_client.delete(f"/admin/invites/{head['id']}").status_code == 405
+    _member(api_client, head["id"], "spouse")
+    assert api_client.delete(f"/admin/invites/{head['id']}").status_code == 204
+    assert api_client.get("/admin/invites").json() == []
 
 
 def test_list_shows_only_heads_and_search_finds_members(api_client, admin_headers):
@@ -173,7 +175,7 @@ def test_whatsapp_link_to_a_member(api_client, admin_headers):
     assert response.status_code == 200
     url = response.json()["whatsapp_url"]
     assert urlparse(url).path == "/393332222222"
-    assert _message(url).startswith("Cara famiglia Rossi!")
+    assert _message(url).startswith("Ciao famiglia Rossi!")
     assert api_client.get(f"/admin/invites/{head['id']}/whatsapp/{no_phone}").status_code == 422
     assert api_client.get(f"/admin/invites/{head['id']}/whatsapp/9999").status_code == 404
 
@@ -188,7 +190,8 @@ def test_public_invite_exposes_greeting_and_group_size(api_client, admin_headers
     assert body["greeting_kind"] == "family"
     assert body["greeting_name"] == "Rossi"
     assert body["greeting_names"] == ["Rossi"]
-    assert body["max_party_guests"] == 3
+    assert body["max_party_guests"] == 10
+    assert body["default_party_guests"] == 3
     assert "phone" not in body
 
 

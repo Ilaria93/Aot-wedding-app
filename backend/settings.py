@@ -135,8 +135,8 @@ def read_video_max_upload_bytes() -> int:
 
 
 def read_rsvp_edit_deadline() -> datetime:
-    """Last moment (exclusive) when RSVP edits are allowed — end of 6 May 2027 Europe/Rome."""
-    raw_value = os.getenv("RSVP_EDIT_DEADLINE", "2027-05-07T00:00:00+02:00").strip()
+    """Last moment (exclusive) when RSVP edits are allowed — end of 1 April 2027 Europe/Rome."""
+    raw_value = os.getenv("RSVP_EDIT_DEADLINE", "2027-04-02T00:00:00+02:00").strip()
     return datetime.fromisoformat(raw_value)
 
 

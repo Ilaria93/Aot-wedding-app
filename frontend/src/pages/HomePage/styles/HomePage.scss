@@ -61,11 +61,11 @@
 .landing-page .obw-card {
   position: relative;
   border-radius: 14px;
-  background: color-mix(in srgb, var(--obw-void) 34%, transparent);
+  background: color-mix(in srgb, var(--obw-void) 42%, transparent);
 }
 
 .landing-page .obw-card--dark {
-  background: color-mix(in srgb, var(--obw-void) 48%, transparent);
+  background: color-mix(in srgb, var(--obw-void) 56%, transparent);
 }
 
 .landing-page .obw-card::before {
@@ -93,15 +93,101 @@
   padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1.25rem, 3vw, 2.5rem);
 }
 
-/* Ceremony details: the default 0.75rem meta was too small to read here. */
-.landing-ceremony__details .obw-meta {
-  margin-bottom: 2px;
-  font-family: var(--font-sans);
-  font-size: clamp(0.85rem, 1.3vw, 1rem);
+/* Ceremony details: a clear hierarchy instead of a stack of equal lines —
+   serif date, the two times side by side with big numerals, then the venue
+   name over a small location line. */
+.landing-ceremony__date {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.3rem, 2.4vw, 1.6rem);
   font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--obw-bone);
+}
+
+.landing-ceremony__times {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+  max-width: 26rem;
+  margin: var(--obw-space-xs) 0;
+}
+
+/* Gold divider between the two times. */
+.landing-ceremony__times::before {
+  content: '';
+  grid-column: 2;
+  grid-row: 1;
+  width: 1px;
+  height: 70%;
+  background: color-mix(in srgb, var(--obw-gold) 55%, transparent);
+}
+
+.landing-ceremony__time {
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 clamp(0.75rem, 3vw, 1.5rem);
+}
+
+/* Arrival comes first (left), the ceremony itself second (right). */
+.landing-ceremony__time {
+  grid-column: 3;
+}
+
+.landing-ceremony__time--secondary {
+  grid-column: 1;
+}
+
+.landing-ceremony__time dt {
+  font-family: var(--font-sans);
+  font-size: clamp(0.66rem, 1.1vw, 0.74rem);
+  font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  color: color-mix(in srgb, var(--obw-gold) 85%, var(--obw-bone));
+}
+
+.landing-ceremony__time dd {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4.6vw, 2.6rem);
+  font-weight: 600;
+  line-height: 1;
   color: var(--obw-bone);
+}
+
+.landing-ceremony__time--secondary dd {
+  color: color-mix(in srgb, var(--obw-bone) 75%, transparent);
+}
+
+.landing-ceremony__place {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.landing-ceremony__venue {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+  font-weight: 600;
+  font-style: italic;
+  color: var(--obw-bone);
+}
+
+.landing-ceremony__area {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(0.72rem, 1.2vw, 0.82rem);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--obw-bone) 80%, transparent);
 }
 
 .landing-ceremony__details .obw-body {
@@ -147,4 +233,62 @@
   border-color: #db7fb0;
   background: color-mix(in srgb, #db7fb0 60%, transparent);
   color: var(--obw-bone);
+}
+
+/* Theme teaser: the two details that explain the mission register — a gold uppercase label, then its line. */
+.landing-theme__terms {
+  display: grid;
+  gap: var(--obw-space-md);
+  margin: 0;
+  text-align: center;
+}
+
+.landing-theme__terms dt {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--obw-gold-bright);
+}
+
+.landing-theme__terms dd {
+  margin: 6px 0 0;
+  line-height: 1.55;
+}
+
+/* Link inside an FAQ answer. */
+.obw-faq-list__link {
+  color: var(--obw-gold-bright);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.obw-faq-list__item p + p {
+  margin-top: 0.75rem;
+}
+
+/* "Open on the map" and "Add to calendar", side by side and equal in width, even on a narrow phone. */
+.landing-ceremony__actions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+}
+
+.landing-ceremony__actions .obw-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  justify-content: center;
+  gap: 8px;
+  padding-inline: 10px;
+  text-align: center;
+  line-height: 1.25;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.landing-ceremony__map-link {
+  display: inline-flex;
+  align-items: center;
 }

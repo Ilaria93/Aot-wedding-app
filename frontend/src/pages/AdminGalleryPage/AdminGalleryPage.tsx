@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-import { AdminModal } from '@/components/AdminModal';
+import { AdminConfirmDialog, AdminModal } from '@/components/AdminModal';
 import { AlbumUploadPanel } from '@/components/Album/AlbumUploadPanel';
 import { FilterPills, type FilterPillOption } from '@/components/FilterPills';
 import { PageAlert } from '@/components/PageShell';
@@ -112,6 +112,7 @@ export function AdminGalleryPage() {
   const [gridLoading, setGridLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<PublicPhotoAlbumItem | null>(null);
   const [favoriteBusyId, setFavoriteBusyId] = useState<number | null>(null);
   const [search, setSearch] = useState('');
   const [tagFilter, setTagFilter] = useState<PhotoTagId | 'all'>('all');
@@ -208,10 +209,7 @@ export function AdminGalleryPage() {
   }
 
   async function handleDelete(photo: PublicPhotoAlbumItem) {
-    if (!window.confirm(t('admin.photos.confirmDelete'))) {
-      return;
-    }
-
+    setDeleteTarget(null);
     try {
       setDeletingId(photo.id);
       await deleteAdminPhoto(photo.id);
@@ -378,7 +376,7 @@ export function AdminGalleryPage() {
                   onToggleFavorite={() => void handleToggleFavorite(photo)}
                   onOpen={() => setPreviewIndex(index)}
                   onEdit={() => handleOpenEdit(photo)}
-                  onDelete={() => void handleDelete(photo)}
+                  onDelete={() => setDeleteTarget(photo)}
                 />
               ))}
       </div>
@@ -426,6 +424,17 @@ export function AdminGalleryPage() {
             {t('admin.photos.syncLogButton')}
           </button>
         </div>
+      ) : null}
+
+      {deleteTarget ? (
+        <AdminConfirmDialog
+          titleId="admin-photo-delete-title"
+          title={t('admin.photos.delete')}
+          message={t('admin.photos.confirmDelete')}
+          onConfirm={() => void handleDelete(deleteTarget)}
+          onClose={() => setDeleteTarget(null)}
+          t={t}
+        />
       ) : null}
 
       {isAddModalOpen ? (

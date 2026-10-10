@@ -5,7 +5,9 @@ from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from models.invite_link_model import InviteLink
+from models.refresh_token_session_model import RefreshTokenSession
 from models.rsvp_model import RSVP
+from models.user_model import User
 from schemas.admin_invite_schema import (
     AdminInviteCreate,
     AdminInviteMember,
@@ -248,6 +250,27 @@ def mark_invite_sent(db: Session, invite_id: int) -> AdminInviteResponse:
     db.commit()
     db.refresh(head)
     return to_admin_invite(db, head)
+
+
+def delete_invite(db: Session, invite_id: int) -> None:
+    """Removes a head and the whole group linked to them. If the guest already
+    answered, their RSVP (with its guest lines), sessions and the guest account
+    behind it go too: nothing is left pointing at the deleted invite."""
+    head = _get_head(db, invite_id)
+    user_ids = [person.user_id for person in [head, *head.members] if person.user_id is not None]
+    for member in list(head.members):
+        db.delete(member)
+    db.delete(head)
+    db.flush()
+    if user_ids:
+        for rsvp in db.query(RSVP).filter(RSVP.user_id.in_(user_ids)).all():
+            db.delete(rsvp)
+        db.query(RefreshTokenSession).filter(RefreshTokenSession.user_id.in_(user_ids)).delete(
+            synchronize_session=False
+        )
+        db.flush()
+        db.query(User).filter(User.id.in_(user_ids)).delete(synchronize_session=False)
+    db.commit()
 
 
 def whatsapp_url_for_person(db: Session, head_id: int, person_id: int) -> str:

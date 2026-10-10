@@ -105,44 +105,25 @@
   text-shadow: var(--obw-text-halo);
 }
 
-.mission-hero__scroll-mouse {
-  display: flex;
-  justify-content: center;
-  width: 22px;
-  height: 36px;
-  padding-top: 6px;
-  border: 1.5px solid var(--obw-bone);
-  border-radius: 11px;
+.mission-hero__scroll-arrow {
+  color: var(--obw-bone);
   filter: drop-shadow(0 0 3px rgba(28, 14, 13, 0.85));
+  animation: mission-hero-scroll-bob 1.8s ease-in-out infinite;
 }
 
-.mission-hero__scroll-wheel {
-  width: 3px;
-  height: 7px;
-  border-radius: 2px;
-  background: var(--obw-bone);
-  animation: mission-hero-scroll-pulse 1.8s ease-in-out infinite;
-}
-
-@keyframes mission-hero-scroll-pulse {
-  0% {
-    transform: translateY(0);
-    opacity: 0.9;
-  }
-
-  70% {
-    transform: translateY(14px);
-    opacity: 0;
-  }
-
+@keyframes mission-hero-scroll-bob {
+  0%,
   100% {
     transform: translateY(0);
-    opacity: 0;
+  }
+
+  50% {
+    transform: translateY(6px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mission-hero__scroll-wheel {
+  .mission-hero__scroll-arrow {
     animation: none;
   }
 }

@@ -20,6 +20,13 @@
   letter-spacing: 0.12em;
 }
 
+/* "You reached the maximum" note under the last guest: centred with room above,
+   instead of glued to the card. */
+.rsvp-panel .rsvp-panel__limit {
+  margin-top: var(--obw-space-lg);
+  text-align: center;
+}
+
 .rsvp-guest-list {
   display: grid;
   gap: var(--obw-space-md);
@@ -76,10 +83,28 @@
   letter-spacing: 0.14em;
 }
 
+/* Icon-only button that removes this guest line. */
 .rsvp-guest-card__remove {
+  display: grid;
   flex-shrink: 0;
-  padding-inline: 0;
-  min-height: auto;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--obw-border-dark);
+  border-radius: 8px;
+  background: none;
+  color: color-mix(in srgb, var(--obw-bone) 75%, transparent);
+  cursor: pointer;
+  transition:
+    border-color var(--obw-duration-fast) ease,
+    color var(--obw-duration-fast) ease;
+}
+
+.rsvp-guest-card__remove:hover,
+.rsvp-guest-card__remove:focus-visible {
+  border-color: var(--obw-gold);
+  color: var(--obw-gold-bright);
 }
 
 .rsvp-guest-card__grid {

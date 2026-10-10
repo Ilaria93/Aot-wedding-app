@@ -1,12 +1,13 @@
-import { Leaf, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { ContactCard } from '@/components/ContactCard';
 import { getLogisticsContactCategoryLabel, LOGISTICS_CONTACT_CATEGORY_IDS } from '@/constants/logistics';
 import { CoupleContactDialog, type CoupleContactMode } from '@/components/Landing/CoupleContactDialog';
-import { WEDDING_COUPLE_CONTACT, WEDDING_COUPLE_PEOPLE } from '@/constants/weddingEvent';
+import { WEDDING_COUPLE_CONTACT, WEDDING_COUPLE_PEOPLE, WEDDING_LODGING } from '@/constants/weddingEvent';
 import { useI18n } from '@/contexts/I18nContext';
 import { fetchPublicLogisticsContacts, type LogisticsContactItem } from '@/services/logisticsContactsApi';
+
+import './styles/LandingContactsSection.scss';
 
 /** Contacts the couple manages in admin (public, active ones), in category order. */
 function sortByCategory(contacts: LogisticsContactItem[]) {
@@ -42,19 +43,12 @@ export function LandingContactsSection() {
   return (
     <section className="obw-section obw-fade-up" id="contacts">
       <div className="obw-container">
-        <div className="obw-section-header">
+        <header className="landing-contacts__head">
           <h2 className="obw-display obw-display--lg">{t('landing.contacts.title')}</h2>
-          <div className="obw-tag-row obw-tag-row--end" aria-hidden>
-            <span className="obw-tag obw-tag--on-paper">
-              <Leaf size={14} />
-            </span>
-            <span className="obw-tag obw-tag--on-paper">
-              <Star size={14} />
-            </span>
-          </div>
-        </div>
+          <span className="obw-rule obw-rule--center" aria-hidden="true" />
+        </header>
 
-        <div className="obw-grid-3 landing-contacts__grid">
+        <div className="landing-contacts__grid">
           {/* The couple always leads, whatever the admin list holds. */}
           <div className="obw-card obw-card--dark">
             <ContactCard
@@ -63,6 +57,9 @@ export function LandingContactsSection() {
               interceptedActions={['phone', 'whatsapp']}
               onInterceptedAction={(id) => setCoupleMode(id as CoupleContactMode)}
             />
+          </div>
+          <div className="obw-card obw-card--dark">
+            <ContactCard contact={WEDDING_LODGING} kicker={t('landing.contacts.lodgingKicker')} />
           </div>
           {contacts.map((contact) => (
             <div key={contact.id} className="obw-card obw-card--dark">

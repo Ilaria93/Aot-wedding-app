@@ -12,6 +12,14 @@ type RsvpPartyFormProps = {
   submitting: boolean;
   isEditMode: boolean;
   fieldErrors: RsvpGuestFieldError[];
+  /** Overrides the default "first row is your account" hint, which only fits a logged-in guest. */
+  guestsHint?: string;
+  /** Overrides the "add guest" button label (the guest page uses a shorter one). */
+  addGuestLabel?: string;
+  /** "Yes" was already chosen on the invite letter: show it as settled instead of asking Yes/No again. */
+  attendingLocked?: boolean;
+  /** Overrides the text shown when "No" is selected. */
+  notAttendingHint?: string;
   /** Read from the backend — see useRsvpDraft — never hardcoded here. */
   partyLimits: RsvpPartyLimits;
   onAttendingChange: (attending: boolean) => void;
@@ -28,6 +36,10 @@ export function RsvpPartyForm({
   isEditMode,
   fieldErrors,
   partyLimits,
+  guestsHint,
+  addGuestLabel,
+  notAttendingHint,
+  attendingLocked = false,
   onAttendingChange,
   onGuestsChange,
   onSubmit,
@@ -46,6 +58,18 @@ export function RsvpPartyForm({
     onGuestsChange(guests.filter((guest) => guest.clientId !== clientId));
   }
 
+  /** "How many are you?": grows or shrinks the list to that number (the first row always stays). */
+  function setPartySize(size: number) {
+    if (size === guests.length) {
+      return;
+    }
+    onGuestsChange(
+      size > guests.length
+        ? [...guests, ...Array.from({ length: size - guests.length }, buildEmptyGuestLine)]
+        : guests.slice(0, size),
+    );
+  }
+
   function addGuest() {
     if (!canAddGuest) {
       return;
@@ -54,40 +78,59 @@ export function RsvpPartyForm({
   }
 
   return (
-    <section className="obw-card obw-card--interactive rsvp-panel obw-fade-up">
-      <header className="rsvp-panel__header">
-        <p className="obw-kicker">{t('rsvp.formTitle')}</p>
-        <h2 className="obw-display obw-display--sm">{t('rsvp.attendQuestion')}</h2>
-      </header>
+    <section className="obw-card obw-card--dark obw-card--interactive rsvp-panel obw-fade-up">
+      {attendingLocked ? (
+        <header className="rsvp-panel__header">
+          <h2 className="obw-display obw-display--sm">{t('guestRsvp.lockedYes')}</h2>
+        </header>
+      ) : (
+        <header className="rsvp-panel__header">
+          <h2 className="obw-display obw-display--sm">{t('rsvp.attendQuestion')}</h2>
+        </header>
+      )}
 
-      <div className="obw-choice-row" role="group" aria-label={t('rsvp.attendQuestion')}>
-        <button
-          type="button"
-          className={`obw-choice${attending ? ' is-active' : ''}`}
-          onClick={() => onAttendingChange(true)}
-          aria-pressed={attending}>
-          <span className="obw-choice__radio" aria-hidden="true" />
-          <span className="obw-choice__label">{t('common.yes')}</span>
-        </button>
-        <button
-          type="button"
-          className={`obw-choice${!attending ? ' is-active' : ''}`}
-          onClick={() => onAttendingChange(false)}
-          aria-pressed={!attending}>
-          <span className="obw-choice__radio" aria-hidden="true" />
-          <span className="obw-choice__label">{t('common.no')}</span>
-        </button>
-      </div>
+      {attendingLocked ? null : (
+        <div className="obw-choice-row" role="group" aria-label={t('rsvp.attendQuestion')}>
+          <button
+            type="button"
+            className={`obw-choice${attending ? ' is-active' : ''}`}
+            onClick={() => onAttendingChange(true)}
+            aria-pressed={attending}>
+            <span className="obw-choice__radio" aria-hidden="true" />
+            <span className="obw-choice__label">{t('common.yes')}</span>
+          </button>
+          <button
+            type="button"
+            className={`obw-choice${!attending ? ' is-active' : ''}`}
+            onClick={() => onAttendingChange(false)}
+            aria-pressed={!attending}>
+            <span className="obw-choice__radio" aria-hidden="true" />
+            <span className="obw-choice__label">{t('common.no')}</span>
+          </button>
+        </div>
+      )}
 
       {attending ? (
         <div className="rsvp-panel__section">
+          <label className="obw-field" htmlFor="rsvp-party-size">
+            <span className="obw-kicker">{t('rsvp.partySizeLabel')}</span>
+            <select
+              id="rsvp-party-size"
+              className="obw-select"
+              value={guests.length}
+              onChange={(event) => setPartySize(Number(event.target.value))}>
+              {Array.from({ length: partyLimits.max }, (_, index) => (
+                <option key={index + 1} value={index + 1}>
+                  {index + 1}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="obw-body rsvp-panel__hint">{t('rsvp.partySizeHint')}</p>
           <div className="rsvp-panel__party-meta">
             <p className="obw-kicker">{t('rsvp.guestsTitle')}</p>
-            <p className="obw-kicker rsvp-panel__party-count">
-              {t('rsvp.partyCount', { current: guests.length, max: partyLimits.max })}
-            </p>
           </div>
-          <p className="obw-body rsvp-panel__hint">{t('rsvp.guestsHint')}</p>
+          <p className="obw-body rsvp-panel__hint">{guestsHint ?? t('rsvp.guestsHint')}</p>
 
           <div className="rsvp-guest-list">
             {guests.map((guest, index) => (
@@ -106,15 +149,24 @@ export function RsvpPartyForm({
             <button
               type="button"
               className="obw-btn obw-btn--secondary rsvp-panel__add-guest"
-              onClick={addGuest}>
-              {t('rsvp.addGuest')}
+              onClick={(event) => {
+                // A mouse/touch click shouldn't leave the button highlighted
+                // (focus ring); detail is 0 for keyboard, which keeps its focus.
+                if (event.detail > 0) {
+                  event.currentTarget.blur();
+                }
+                addGuest();
+              }}>
+              {addGuestLabel ?? t('rsvp.addGuest')}
             </button>
           ) : (
-            <p className="obw-body rsvp-panel__hint">{t('rsvp.maxGuestsReached')}</p>
+            <p className="obw-body rsvp-panel__hint rsvp-panel__limit">
+              {t('rsvp.maxGuestsReached', { max: partyLimits.max })}
+            </p>
           )}
         </div>
       ) : (
-        <p className="obw-body">{t('rsvp.notAttendingHint')}</p>
+        <p className="obw-body rsvp-panel__not-attending">{notAttendingHint ?? t('rsvp.notAttendingHint')}</p>
       )}
 
       <div className="rsvp-panel__actions">

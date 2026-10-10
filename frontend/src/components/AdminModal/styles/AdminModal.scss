@@ -64,3 +64,19 @@
   gap: 8px;
   margin-top: 4px;
 }
+
+.admin-modal__danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1 1 auto;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--obw-burgundy) 60%, transparent);
+  border-radius: 6px;
+  background: transparent;
+  color: color-mix(in srgb, var(--obw-burgundy) 70%, white);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}

@@ -38,10 +38,11 @@ def test_invite_lookup_includes_party_limits_from_invite(api_client, invite_toke
     assert response.status_code == 200
     body = response.json()
     assert body["min_party_guests"] == 1
-    assert body["max_party_guests"] == 4
+    assert body["max_party_guests"] == 10
+    assert body["default_party_guests"] == 4
 
 
-def test_invite_lookup_falls_back_to_default_max_when_party_size_unset(api_client):
+def test_invite_lookup_falls_back_to_one_when_party_size_unset(api_client):
     session = SessionLocal()
     session.add(
         InviteLink(
@@ -57,6 +58,7 @@ def test_invite_lookup_falls_back_to_default_max_when_party_size_unset(api_clien
     response = api_client.get("/invites/no-party-size")
     assert response.status_code == 200
     assert response.json()["max_party_guests"] == 10
+    assert response.json()["default_party_guests"] == 1
 
 
 def test_guest_rsvp_unknown_token_returns_404(api_client):
@@ -130,3 +132,34 @@ def test_invite_rsvp_returns_saved_answer(api_client, invite_token):
 
 def test_invite_rsvp_unknown_token_is_404(api_client):
     assert api_client.get("/invites/nope/rsvp").status_code == 404
+
+
+def test_guest_rsvp_notifies_the_couple_on_telegram(api_client, invite_token, monkeypatch):
+    from routes import guest_rsvp_route
+
+    sent = []
+    monkeypatch.setattr(guest_rsvp_route, "notify_guest_rsvp", lambda *args: sent.append(args))
+    response = api_client.post(
+        f"/invites/{invite_token}/rsvp",
+        json={"attending": True, "guests": [_guest_line(), _guest_line("Giulia", "Rossi")]},
+    )
+    assert response.status_code == 200
+    assert sent == [("Mario", "Rossi", True, ["Mario Rossi", "Giulia Rossi"])]
+
+
+def test_guest_rsvp_decline_notifies_too(api_client, invite_token, monkeypatch):
+    from routes import guest_rsvp_route
+
+    sent = []
+    monkeypatch.setattr(guest_rsvp_route, "notify_guest_rsvp", lambda *args: sent.append(args))
+    api_client.post(f"/invites/{invite_token}/rsvp", json={"attending": False, "guests": []})
+    assert sent == [("Mario", "Rossi", False, [])]
+
+
+def test_guest_rsvp_unknown_token_does_not_notify(api_client, monkeypatch):
+    from routes import guest_rsvp_route
+
+    sent = []
+    monkeypatch.setattr(guest_rsvp_route, "notify_guest_rsvp", lambda *args: sent.append(args))
+    api_client.post("/invites/nope/rsvp", json={"attending": False, "guests": []})
+    assert sent == []

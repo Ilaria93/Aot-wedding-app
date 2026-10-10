@@ -19,7 +19,6 @@ export function LandingRsvpSection() {
           <p className="obw-kicker">{t('landing.rsvp.visualTag')}</p>
           <h2 className="obw-display obw-display--lg">{t('landing.rsvp.visualTitle')}</h2>
           <span className="obw-rule obw-rule--center" aria-hidden="true" />
-          <p className="obw-body obw-body--flush landing-rsvp__subtitle">{t('landing.rsvp.visualCaption')}</p>
         </header>
 
         <div className="obw-card obw-card--dark obw-card--interactive landing-rsvp__briefing">
@@ -48,12 +47,6 @@ export function LandingRsvpSection() {
                 </li>
               ))}
             </ol>
-
-            <p className="obw-kicker obw-kicker--light landing-rsvp__deadline">
-              {t('landing.rsvp.deadlineNote')}
-            </p>
-
-            <p className="obw-body landing-rsvp__invite-note">{t('landing.rsvp.inviteNote')}</p>
 
             {/* Guests answer from their personal WhatsApp link; this is for
                 whoever reaches the site without it. */}

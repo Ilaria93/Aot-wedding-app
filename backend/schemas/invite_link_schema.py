@@ -16,3 +16,5 @@ class InviteLinkResponse(BaseModel):
     greeting_names: list[str]
     min_party_guests: int
     max_party_guests: int
+    # What the form starts with (the couple's preset or the group size); editable up to the max.
+    default_party_guests: int

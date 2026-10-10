@@ -1,9 +1,12 @@
+import logging
+
 from fastapi import Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from database.base import get_db
 from models.user_model import User
 from services.auth_cookie_service import ACCESS_TOKEN_COOKIE
+from services.auth_diagnostics import log_auth_event
 from services.auth_service import (
     AuthPermissionError,
     AuthValidationError,
@@ -16,6 +19,7 @@ from services.auth_service import (
 def require_current_user(request: Request, db: Session = Depends(get_db)) -> User:
     access_token = request.cookies.get(ACCESS_TOKEN_COOKIE)
     if not access_token:
+        log_auth_event("request without access_token cookie", request, logging.WARNING)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Missing access token.",

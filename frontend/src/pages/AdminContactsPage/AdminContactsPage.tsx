@@ -2,6 +2,7 @@ import { Clock, Eye, EyeOff, Globe, IdCard, Mail, Pencil, Phone, Save, Store, Tr
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { AdminConfirmDialog } from '@/components/AdminModal';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { PageAlert } from '@/components/PageShell';
 import { FilterPills } from '@/components/FilterPills';
@@ -122,6 +123,7 @@ export function AdminContactsPage() {
   const [contacts, setContacts] = useState<LogisticsContactItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<LogisticsContactItem | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [search, setSearch] = useState('');
@@ -207,9 +209,7 @@ export function AdminContactsPage() {
   }
 
   async function handleDelete(contact: LogisticsContactItem) {
-    if (!window.confirm(t('admin.contacts.confirmDelete'))) {
-      return;
-    }
+    setDeleteTarget(null);
     try {
       await deleteAdminLogisticsContact(contact.id);
       await loadContacts();
@@ -234,7 +234,7 @@ export function AdminContactsPage() {
   const heroStatsSlot = useAdminHeroStatsSlot();
 
   if (loading) {
-    return <LoadingScreen label={t('common.loading')} />;
+    return <LoadingScreen overlay label={t('common.loading')} />;
   }
 
   return (
@@ -393,7 +393,7 @@ export function AdminContactsPage() {
                 {
                   icon: Trash2,
                   label: t('admin.contacts.delete'),
-                  onClick: () => void handleDelete(contact),
+                  onClick: () => setDeleteTarget(contact),
                   danger: true,
                 },
               ];
@@ -419,6 +419,16 @@ export function AdminContactsPage() {
         )}
         </div>
       </div>
+      {deleteTarget ? (
+        <AdminConfirmDialog
+          titleId="admin-contact-delete-title"
+          title={t('admin.contacts.delete')}
+          message={t('admin.contacts.confirmDelete')}
+          onConfirm={() => void handleDelete(deleteTarget)}
+          onClose={() => setDeleteTarget(null)}
+          t={t}
+        />
+      ) : null}
     </>
   );
 }

@@ -1,3 +1,5 @@
+import { ChevronDown } from 'lucide-react';
+
 import { MissionDocumentSeal } from '@/components/MissionDocumentHero/MissionDocumentSeal';
 import {
   formatWeddingHeroDate,
@@ -35,9 +37,7 @@ export function MissionDocumentHero() {
 
               <div className="mission-hero__scroll-cue" aria-hidden>
                 <span className="mission-hero__scroll-label">{t('landing.mission.scrollCue')}</span>
-                <span className="mission-hero__scroll-mouse">
-                  <span className="mission-hero__scroll-wheel" />
-                </span>
+                <ChevronDown className="mission-hero__scroll-arrow" size={26} strokeWidth={1.75} />
               </div>
             </div>
           </div>

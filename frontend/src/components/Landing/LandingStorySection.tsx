@@ -12,17 +12,23 @@ const RECRUITS = [
   { id: 'ilaria', name: 'Ilaria', src: '/assets/wedding/ilaria.webp', roleKey: 'landing.story.brideCaption' },
 ] as const;
 
-const DOSSIER_FIELDS = ['codename', 'enlisted', 'rank', 'specialty', 'weakness', 'weapon'] as const;
+// Short on purpose: the other fields (specialty, quote) stay in the translations if they come back.
+const DOSSIER_FIELDS = ['codename', 'enlisted', 'rank', 'weakness', 'weapon'] as const;
 
 const CREST_SRC = '/assets/wedding/stemma.webp';
 
-type StageKey = 'contact' | 'enlist' | 'battles' | 'proposal' | 'final';
+type StageKey = 'contact' | 'enlist' | 'battles' | 'world' | 'proposal' | 'final';
 type PhotoKey =
   | 'band' | 'crowd' | 'stage' | 'lineup' | 'rehearsal' | 'bassline' | 'bandmates'
   | 'tavern' | 'lookout' | 'secret' | 'paris'
   | 'vader' | 'boat' | 'assisi' | 'bridge' | 'sunset' | 'fireplace'
-  | 'moto' | 'paestum' | 'costumes' | 'procida' | 'kayak' | 'silly' | 'snow' | 'arch';
-type PendingKey = 'dog' | 'house' | 'monument';
+  | 'moto' | 'paestum' | 'costumes' | 'procida' | 'kayak' | 'silly' | 'snow' | 'arch'
+  | 'monument' | 'beverly' | 'zion' | 'vegas' | 'road' | 'amarissimo'
+  | 'shoreLeave' | 'celebration' | 'celtic' | 'hearts' | 'maratea' | 'sea' | 'peak' | 'summit' | 'rations'
+  | 'eiffel' | 'colosseum' | 'burano' | 'sardinia' | 'sardiniaCliffs' | 'porto' | 'sintra' | 'windmill'
+  | 'dunes' | 'castle' | 'forrest' | 'springfield'
+  | 'embrace' | 'ring';
+type PendingKey = 'dog' | 'house';
 
 type Stage = {
   key: StageKey;
@@ -33,26 +39,36 @@ type Stage = {
   pending?: PendingKey[];
 };
 
-/** The story as five mission reports, in order. Add a photo = add its key here. */
+/** The story as six mission reports, in order. Add a photo = add its key here. */
 const STAGES: Stage[] = [
   {
     key: 'contact',
     number: '001',
-    photos: ['band', 'rehearsal', 'stage', 'lineup', 'bassline', 'crowd', 'bandmates'],
+    photos: ['band', 'rehearsal', 'lineup', 'bassline'],
   },
   {
     key: 'enlist',
     number: '002',
-    photos: ['bridge', 'vader', 'boat', 'assisi', 'sunset', 'fireplace', 'tavern', 'lookout', 'secret', 'paris'],
+    photos: [
+      'bridge', 'vader', 'assisi', 'tavern', 'lookout',
+      'shoreLeave', 'celebration', 'celtic', 'sea', 'peak',
+    ],
   },
   {
     key: 'battles',
     number: '003',
-    photos: ['silly', 'moto', 'paestum', 'costumes', 'procida', 'kayak', 'snow', 'arch'],
-    pending: ['dog', 'house'],
+    photos: ['silly', 'moto', 'paestum', 'costumes', 'maratea', 'hearts', 'summit', 'rations'],
   },
-  { key: 'proposal', number: '004', photos: [], pending: ['monument'] },
-  { key: 'final', number: '005', photos: [] },
+  {
+    key: 'world',
+    number: '004',
+    photos: [
+      'colosseum', 'eiffel', 'burano', 'sardinia', 'sardiniaCliffs', 'porto', 'sintra',
+      'windmill', 'dunes', 'castle', 'forrest', 'springfield',
+    ],
+  },
+  { key: 'proposal', number: '005', photos: ['monument', 'embrace', 'ring', 'beverly', 'zion', 'vegas', 'road'] },
+  { key: 'final', number: '006', photos: ['amarissimo'] },
 ];
 
 function stageLightboxItems(stage: Stage, t: TranslateFn): LightboxItem[] {
@@ -184,8 +200,11 @@ export function LandingStorySection() {
                   <p className="landing-story__stage-meta">
                     {t(recruit.roleKey)} · {t('landing.story.dossier.title')}
                   </p>
-                  <h3 className="obw-display landing-story__stage-title">{recruit.name}</h3>
                   <dl className="landing-story__dossier-fields">
+                    <div className="landing-story__dossier-field">
+                      <dt>{t('landing.story.dossier.labels.name')}</dt>
+                      <dd>{recruit.name}</dd>
+                    </div>
                     {DOSSIER_FIELDS.map((field) => (
                       <div key={field} className="landing-story__dossier-field">
                         <dt>{t(`landing.story.dossier.labels.${field}`)}</dt>
@@ -193,7 +212,6 @@ export function LandingStorySection() {
                       </div>
                     ))}
                   </dl>
-                  <p className="landing-story__dossier-quote">{t(`landing.story.dossier.${recruit.id}.quote`)}</p>
                 </div>
               </article>
             ))}

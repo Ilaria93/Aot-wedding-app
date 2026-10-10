@@ -80,16 +80,6 @@
   color: var(--obw-bone);
 }
 
-.landing-story__dossier-quote {
-  margin: 14px 0 0;
-  /* Serif italic: Geist has no italic cut. */
-  font-family: var(--font-serif);
-  font-size: clamp(1.02rem, 1.4vw, 1.15rem);
-  font-style: italic;
-  text-align: center;
-  color: color-mix(in srgb, var(--obw-bone) 85%, transparent);
-}
-
 /* Report 001 sits between the two recruits' separate lines, which then curve
    together (SVG) into the single timeline line where report 002 begins. */
 .landing-story__fork {

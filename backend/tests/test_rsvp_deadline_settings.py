@@ -28,3 +28,10 @@ def test_is_rsvp_editable_accepts_naive_deadline_as_rome_time(monkeypatch):
     just_after = datetime(2027, 5, 7, 1, 0, tzinfo=ZoneInfo("Europe/Rome"))
     assert is_rsvp_editable(just_before) is True
     assert is_rsvp_editable(just_after) is False
+
+
+def test_default_deadline_is_the_end_of_1_april_2027(monkeypatch):
+    monkeypatch.delenv("RSVP_EDIT_DEADLINE", raising=False)
+    rome = ZoneInfo("Europe/Rome")
+    assert is_rsvp_editable(datetime(2027, 4, 1, 23, 59, tzinfo=rome)) is True
+    assert is_rsvp_editable(datetime(2027, 4, 2, 0, 0, tzinfo=rome)) is False

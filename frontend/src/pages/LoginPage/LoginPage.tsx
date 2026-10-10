@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { RememberMeToggle } from '@/components/RememberMeToggle';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
@@ -33,6 +34,13 @@ export function LoginPage() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  // Signing in can take a few seconds (the backend may be waking up): show the
+  // crest instead of a frozen form. A wrong code brings the form back with the
+  // error and the typed code still in place.
+  if (submitting) {
+    return <LoadingScreen overlay label={t('login.submitLoading')} />;
   }
 
   return (

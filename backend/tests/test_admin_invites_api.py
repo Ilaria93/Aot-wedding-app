@@ -2,6 +2,7 @@ from datetime import datetime
 from database.base import SessionLocal
 from models.invite_link_model import InviteLink
 from models.rsvp_model import RSVP
+from models.refresh_token_session_model import RefreshTokenSession
 from models.user_model import User
 
 
@@ -74,3 +75,52 @@ def test_mark_sent_twice_keeps_first_timestamp(api_client, admin_headers):
     second = api_client.post(f"/admin/invites/{invite_id}/mark-sent").json()["sent_at"]
     assert first is not None
     assert second == first
+
+
+def test_delete_removes_head_and_group(api_client, admin_headers):
+    head_id = _add_invite(token="del-head")
+    db = SessionLocal()
+    db.add(InviteLink(first_name="Giulia", last_name="Rossi", head_id=head_id, relation="spouse", created_at=datetime.utcnow()))
+    db.commit()
+    db.close()
+
+    assert api_client.delete(f"/admin/invites/{head_id}").status_code == 204
+    assert api_client.get("/admin/invites").json() == []
+    db = SessionLocal()
+    assert db.query(InviteLink).count() == 0
+    db.close()
+
+
+def test_delete_also_removes_the_answer_and_guest_account(api_client, admin_headers):
+    invite_id = _add_invite(token="del-answered")
+    _answer(invite_id, attending=True)
+    db = SessionLocal()
+    guest_id = db.query(InviteLink).filter(InviteLink.id == invite_id).one().user_id
+    db.add(
+        RefreshTokenSession(
+            user_id=guest_id,
+            jti="guest-session",
+            refresh_token_hash="x",
+            created_at=datetime.utcnow(),
+            expires_at=datetime.utcnow(),
+        )
+    )
+    db.commit()
+    db.close()
+
+    assert api_client.delete(f"/admin/invites/{invite_id}").status_code == 204
+    db = SessionLocal()
+    assert db.query(RSVP).count() == 0
+    assert db.query(User).filter(User.id == guest_id).count() == 0
+    assert db.query(RefreshTokenSession).filter(RefreshTokenSession.user_id == guest_id).count() == 0
+    # The admin's own session and account are untouched.
+    assert db.query(User).filter(User.role == "admin").count() == 1
+    db.close()
+
+
+def test_delete_unknown_invite_is_404(api_client, admin_headers):
+    assert api_client.delete("/admin/invites/999999").status_code == 404
+
+
+def test_delete_requires_admin(api_client, user_headers):
+    assert api_client.delete("/admin/invites/1").status_code == 403
