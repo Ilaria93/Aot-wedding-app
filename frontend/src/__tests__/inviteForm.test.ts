@@ -89,7 +89,7 @@ describe('parseAddParams', () => {
 });
 
 describe('group member rows (edit dialog)', () => {
-  const member = { id: 7, first_name: 'Sara', last_name: 'Verdi', phone: '+393332222222', gender: 'f' as const, relation: 'partner' as const };
+  const member = { id: 7, first_name: 'Sara', last_name: 'Verdi', phone: '+393332222222', gender: 'f' as const, relation: 'partner' as const, sent_at: null, answer: 'none' as const, invite_url: null };
 
   it('round-trips an existing member without losing the gender it does not show', () => {
     const row = memberRowFromMember(member);

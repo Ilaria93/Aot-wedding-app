@@ -1,10 +1,10 @@
-import type { ComponentType } from 'react';
-import { Link } from 'react-router-dom';
-import './styles/StatCards.scss';
+import type { ComponentType } from "react";
+import { Link } from "react-router-dom";
+import "./styles/StatCards.scss";
 
-export type StatCardTone = 'gold' | 'bone' | 'stone';
+export type StatCardTone = "gold" | "bone" | "stone";
 
-type StatCardIcon = ComponentType<{ size?: number; 'aria-hidden'?: boolean }>;
+type StatCardIcon = ComponentType<{ size?: number; "aria-hidden"?: boolean }>;
 
 export type StatCardData = {
   id: string;
@@ -38,30 +38,46 @@ export function StatCards({ cards }: StatCardsProps) {
   return (
     <div className="stat-cards">
       {cards.map((card) => {
-        const Wrapper = card.to ? Link : 'div';
-        return (
-        <Wrapper key={card.id} {...(card.to ? { to: card.to } : {})} className={`stat-card stat-card--${card.tone}${card.to ? ' stat-card--link' : ''}`}>
-          <div className="stat-card__head">
-            <span className="stat-card__label">{card.label}</span>
-            {card.hideIndicator ? null : card.icon ? (
-              <card.icon size={16} aria-hidden />
-            ) : (
-              <span className="stat-card__dot" aria-hidden />
-            )}
-          </div>
-          <p className="stat-card__value">
-            {card.value}
-            {card.valueIcon ? <card.valueIcon size={16} aria-hidden /> : null}
-            {card.unit ? <span className="stat-card__unit">{card.unit}</span> : null}
-          </p>
-          {card.progress !== undefined ? (
-            <div className="stat-card__progress-track">
-              <div className="stat-card__progress-fill" style={{ width: `${Math.min(100, Math.max(0, card.progress))}%` }} />
+        const className = `stat-card stat-card--${card.tone}${card.to ? " stat-card--link" : ""}`;
+        const body = (
+          <>
+            <div className="stat-card__head">
+              <span className="stat-card__label">{card.label}</span>
+              {card.hideIndicator ? null : card.icon ? (
+                <card.icon size={16} aria-hidden />
+              ) : (
+                <span className="stat-card__dot" aria-hidden />
+              )}
             </div>
-          ) : card.subtitle ? (
-            <p className="stat-card__subtitle">{card.subtitle}</p>
-          ) : null}
-        </Wrapper>
+            <p className="stat-card__value">
+              {card.value}
+              {card.valueIcon ? <card.valueIcon size={16} aria-hidden /> : null}
+              {card.unit ? (
+                <span className="stat-card__unit">{card.unit}</span>
+              ) : null}
+            </p>
+            {card.progress !== undefined ? (
+              <div className="stat-card__progress-track">
+                <div
+                  className="stat-card__progress-fill"
+                  style={{
+                    width: `${Math.min(100, Math.max(0, card.progress))}%`,
+                  }}
+                />
+              </div>
+            ) : card.subtitle ? (
+              <p className="stat-card__subtitle">{card.subtitle}</p>
+            ) : null}
+          </>
+        );
+        return card.to ? (
+          <Link key={card.id} to={card.to} className={className}>
+            {body}
+          </Link>
+        ) : (
+          <div key={card.id} className={className}>
+            {body}
+          </div>
         );
       })}
     </div>

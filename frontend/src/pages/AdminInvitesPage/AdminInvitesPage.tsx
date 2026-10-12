@@ -1,4 +1,4 @@
-import { FileUp, UserPlus } from 'lucide-react';
+import { Download, FileUp, UserPlus } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
@@ -22,6 +22,7 @@ import {
   type AdminInviteItem,
   type InviteMatch,
   type InviteMember,
+  fetchInvitesCsv,
 } from '@/services/adminInvitesApi';
 import { InviteCard } from './InviteCard';
 import { InviteImportDialog } from './InviteImportDialog';
@@ -201,6 +202,20 @@ export function AdminInvitesPage() {
     await reload();
   }
 
+  async function handleExport() {
+    setError(null);
+    try {
+      const url = URL.createObjectURL(await fetchInvitesCsv());
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'invitati.csv';
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      setError(t('admin.invites.actionFailed'));
+    }
+  }
+
   async function handleCopy(url: string) {
     setError(null);
     if (await copyToClipboard(url)) {
@@ -249,6 +264,10 @@ export function AdminInvitesPage() {
             <button type="button" className="obw-portal-btn obw-portal-btn--secondary" onClick={() => setImportOpen(true)}>
               <FileUp size={14} aria-hidden />
               {t('admin.invites.importCsv')}
+            </button>
+            <button type="button" className="obw-portal-btn obw-portal-btn--secondary" onClick={handleExport}>
+              <Download size={14} aria-hidden />
+              {t('admin.invites.exportCsv')}
             </button>
           </div>
         </div>

@@ -10,6 +10,8 @@ function invite(overrides: Partial<AdminInviteItem>): AdminInviteItem {
     last_name: 'Rossi',
     phone: '+393331234567',
     sent_at: null,
+    own_sent_at: null,
+    individual: false,
     answer: 'none',
     invite_url: 'https://site/invito/t',
     whatsapp_url: 'https://wa.me/393331234567?text=x',

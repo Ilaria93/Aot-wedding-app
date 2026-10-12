@@ -44,13 +44,20 @@ import {
 import type { MealChoiceId } from '@/services/rsvpApi';
 import './styles/AdminRsvpPage.scss';
 
+const STAT_LABELS = {
+  confirmed: 'admin.stats.confirmedCard',
+  pending: 'admin.stats.pendingCard',
+  declined: 'admin.stats.declinedCard',
+  toSend: 'admin.stats.toSendCard',
+} as const;
+
 // One card per key RSVP metric: people as the big number, invites underneath.
 function buildStatCards(stats: AdminRsvpStats, t: TranslateFn): StatCardData[] {
   const { attending, waiting, declined, to_send } = stats.invites;
-  const card = (id: string, tone: StatCardData['tone'], bucket: { invites: number; persons: number }, extra: Partial<StatCardData> = {}): StatCardData => ({
+  const card = (id: 'confirmed' | 'pending' | 'declined' | 'toSend', tone: StatCardData['tone'], bucket: { invites: number; persons: number }, extra: Partial<StatCardData> = {}): StatCardData => ({
     id,
     tone,
-    label: t(`admin.stats.${id}Card`),
+    label: t(STAT_LABELS[id]),
     value: bucket.persons,
     unit: t('admin.stats.personsUnit'),
     subtitle: t('admin.stats.invitesSubtitle', { count: bucket.invites }),

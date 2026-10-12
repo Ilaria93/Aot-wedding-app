@@ -33,7 +33,7 @@ from services.admin_invite_service import (
     update_person,
     whatsapp_url_for_person,
 )
-from services.invite_import_service import ImportFileError, import_invites, parse_csv
+from services.invite_import_service import ImportFileError, export_invites_csv, import_invites, parse_csv
 
 router = APIRouter(prefix="/admin", dependencies=[Depends(require_admin_user)])
 
@@ -47,6 +47,16 @@ def list_invites(
     db: Session = Depends(get_db),
 ):
     return list_admin_invites(db, filter, search)
+
+
+# The whole table as a CSV, in the format the import reads back.
+@router.get("/invites/export")
+def export_invites(db: Session = Depends(get_db)):
+    return Response(
+        export_invites_csv(db),
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": 'attachment; filename="invitati.csv"'},
+    )
 
 
 # Who is already in the table with this name or phone (members included), so
