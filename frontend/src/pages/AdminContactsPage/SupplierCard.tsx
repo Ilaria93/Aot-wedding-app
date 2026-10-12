@@ -13,11 +13,14 @@ export type SupplierCardInfoItem = {
 export type SupplierCardAction = {
   label: string;
   url: string;
+  /** Longer explanation shown on hover. */
+  tip?: string;
 };
 
 export type SupplierCardManageAction = {
   icon: SupplierCardIcon;
   label: string;
+  tip?: string;
   onClick: () => void;
   danger?: boolean;
 };
@@ -65,12 +68,12 @@ export function SupplierCard({
         </div>
         <div className="admin-contacts__supplier-actions">
           {callAction ? (
-            <a className="admin-contacts__supplier-icon-btn" href={callAction.url} aria-label={callAction.label}>
+            <a className="admin-contacts__supplier-icon-btn" href={callAction.url} aria-label={callAction.label} data-tip={callAction.tip}>
               <Phone size={16} aria-hidden />
             </a>
           ) : null}
           {messageAction ? (
-            <a className="admin-contacts__supplier-icon-btn" href={messageAction.url} aria-label={messageAction.label}>
+            <a className="admin-contacts__supplier-icon-btn" href={messageAction.url} aria-label={messageAction.label} data-tip={messageAction.tip}>
               <MessageCircle size={16} aria-hidden />
             </a>
           ) : null}
@@ -111,6 +114,7 @@ export function SupplierCard({
               key={action.label}
               className={`admin-contacts__supplier-icon-btn${action.danger ? ' admin-contacts__supplier-icon-btn--danger' : ''}`}
               aria-label={action.label}
+              data-tip={action.tip}
               onClick={action.onClick}>
               <action.icon size={16} aria-hidden />
             </button>

@@ -78,6 +78,7 @@ export function PhotoCard({
               className={`admin-photo-card__action-btn admin-photo-card__action-btn--favorite${photo.is_favorite ? ' is-active' : ''}`}
               aria-pressed={photo.is_favorite}
               aria-label={photo.is_favorite ? t('admin.photos.unfavoriteButton') : t('admin.photos.favoriteButton')}
+              data-tip={t(photo.is_favorite ? 'admin.photos.tipUnfavorite' : 'admin.photos.tipFavorite')}
               disabled={favoriteBusy}
               onClick={onToggleFavorite}>
               <Star size={14} fill={photo.is_favorite ? 'currentColor' : 'none'} aria-hidden />
@@ -86,6 +87,7 @@ export function PhotoCard({
               type="button"
               className="admin-photo-card__action-btn"
               aria-label={t('admin.photos.editButton')}
+              data-tip={t('admin.photos.tipEdit')}
               onClick={onEdit}>
               <Pencil size={14} aria-hidden />
             </button>
@@ -93,6 +95,7 @@ export function PhotoCard({
               type="button"
               className="admin-photo-card__action-btn admin-photo-card__action-btn--delete"
               aria-label={t('admin.photos.delete')}
+              data-tip={t('admin.photos.tipDelete')}
               disabled={deleteBusy}
               onClick={onDelete}>
               <Trash2 size={14} aria-hidden />
