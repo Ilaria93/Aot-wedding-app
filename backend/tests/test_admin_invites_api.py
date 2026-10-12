@@ -48,8 +48,8 @@ def test_filters_and_search(api_client, admin_headers):
     _answer(answered, attending=True)
 
     ids = lambda q: [row["id"] for row in api_client.get(f"/admin/invites{q}").json()]
-    assert ids("?filter=to_send") == [to_send, answered]
-    assert ids("?filter=sent") == [sent]
+    assert ids("?filter=to_send") == [to_send]
+    assert ids("?filter=waiting") == [sent]
     assert ids("?filter=answered") == [answered]
     assert ids("?search=brun") == [sent]
     assert ids("?search=0000003") == [answered]

@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import { Link } from 'react-router-dom';
 import './styles/StatCards.scss';
 
 export type StatCardTone = 'gold' | 'bone' | 'stone';
@@ -19,6 +20,8 @@ export type StatCardData = {
   icon?: StatCardIcon;
   /** Suppresses the icon/dot in the head, leaving just the label. */
   hideIndicator?: boolean;
+  /** Makes the whole card a link (e.g. to the list it counts). */
+  to?: string;
 };
 
 type StatCardsProps = {
@@ -34,8 +37,10 @@ type StatCardsProps = {
 export function StatCards({ cards }: StatCardsProps) {
   return (
     <div className="stat-cards">
-      {cards.map((card) => (
-        <div key={card.id} className={`stat-card stat-card--${card.tone}`}>
+      {cards.map((card) => {
+        const Wrapper = card.to ? Link : 'div';
+        return (
+        <Wrapper key={card.id} {...(card.to ? { to: card.to } : {})} className={`stat-card stat-card--${card.tone}${card.to ? ' stat-card--link' : ''}`}>
           <div className="stat-card__head">
             <span className="stat-card__label">{card.label}</span>
             {card.hideIndicator ? null : card.icon ? (
@@ -56,8 +61,9 @@ export function StatCards({ cards }: StatCardsProps) {
           ) : card.subtitle ? (
             <p className="stat-card__subtitle">{card.subtitle}</p>
           ) : null}
-        </div>
-      ))}
+        </Wrapper>
+        );
+      })}
     </div>
   );
 }

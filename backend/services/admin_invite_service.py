@@ -254,12 +254,14 @@ def list_admin_invites(db: Session, filter: Optional[str], search: Optional[str]
         head_ids = {row.head_id or row.id for row in matching.all()}
         query = query.filter(InviteLink.id.in_(head_ids))
     invites = [to_admin_invite(db, head) for head in query.order_by(InviteLink.id).all()]
+    # The three filters never overlap: whoever answered is "answered", whatever is left is sent or not yet.
+    answered = lambda invite: invite.answer != "none" or any(m.answer != "none" for m in invite.members)
     if filter == "to_send":
-        return [invite for invite in invites if invite.sent_at is None]
-    if filter == "sent":
-        return [invite for invite in invites if invite.sent_at is not None]
+        return [invite for invite in invites if invite.sent_at is None and not answered(invite)]
+    if filter == "waiting":
+        return [invite for invite in invites if invite.sent_at is not None and not answered(invite)]
     if filter == "answered":
-        return [invite for invite in invites if invite.answer != "none" or any(m.answer != "none" for m in invite.members)]
+        return [invite for invite in invites if answered(invite)]
     return invites
 
 

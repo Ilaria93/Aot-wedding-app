@@ -277,3 +277,17 @@ def test_a_member_may_have_only_a_first_name_but_the_head_may_not(api_client, ad
     assert row["members"][0]["last_name"] == ""
     assert api_client.post("/admin/invites", json={"first_name": "Solo", "last_name": ""}).status_code in (400, 422)
     assert api_client.patch(f"/admin/invites/{head['id']}", json={"last_name": ""}).status_code in (400, 422)
+
+
+def test_stats_count_invites_and_the_people_they_stand_for(api_client, admin_headers):
+    solo = _create(api_client, first_name="Solo", last_name="Uno", phone="333 5550001").json()
+    family = _create(api_client, first_name="Fam", last_name="Due", phone="333 5550002", party_size=4).json()
+    couple = _couple(api_client)
+    api_client.post(f"/admin/invites/{couple}/individual")
+    api_client.post(f"/admin/invites/{family['id']}/mark-sent")
+
+    invites = api_client.get("/admin/rsvp-stats").json()["invites"]
+    assert invites["total"] == 4  # solo + family + the two of the individual couple
+    assert invites["to_send"] == {"invites": 3, "persons": 3}
+    assert invites["waiting"] == {"invites": 1, "persons": 4}
+    assert invites["attending"]["invites"] == 0 and solo

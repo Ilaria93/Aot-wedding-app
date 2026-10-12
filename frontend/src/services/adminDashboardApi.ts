@@ -12,7 +12,16 @@ export type AdminUserListItem = {
   faction?: string | null;
 };
 
+export type InviteBucket = { invites: number; persons: number };
+
 export type AdminRsvpStats = {
+  invites: {
+    total: number;
+    to_send: InviteBucket;
+    waiting: InviteBucket;
+    attending: InviteBucket;
+    declined: InviteBucket;
+  };
   total_users: number;
   total_confirmed: number;
   total_attending: number;
