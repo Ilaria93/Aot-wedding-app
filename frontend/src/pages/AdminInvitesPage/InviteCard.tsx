@@ -1,8 +1,10 @@
-import { Copy, MessageCircle, Pencil, Phone, RotateCw, Send, Trash2, UserPlus } from 'lucide-react';
+import { Copy, MessageCircle, Pencil, Phone, RotateCw, Send, Trash2, UserPlus, Users } from 'lucide-react';
+import { useState } from 'react';
 
 import { useI18n } from '@/contexts/I18nContext';
 import type { AdminInviteItem, InviteMember } from '@/services/adminInvitesApi';
 import { RELATION_KEYS } from './inviteForm';
+import { inviteRecipients } from './inviteRecipients';
 
 type InviteCardProps = {
   invite: AdminInviteItem;
@@ -31,6 +33,17 @@ export function InviteCard({
   onDelete,
 }: InviteCardProps) {
   const { t } = useI18n();
+  // "Send to all": browsers open one WhatsApp tab per tap, so each tap sends to the next person in the group.
+  const recipients = inviteRecipients(invite);
+  const [sentCount, setSentCount] = useState(0);
+  const nextRecipient = recipients[sentCount % recipients.length];
+
+  function sendToNext() {
+    if (nextRecipient.kind === 'head') onSend(invite);
+    else onSendToMember(invite, nextRecipient.member);
+    setSentCount((count) => count + 1);
+  }
+
   const answerLabel =
     invite.answer === 'attending'
       ? t('admin.invites.answerAttending')
@@ -69,6 +82,14 @@ export function InviteCard({
             {invite.sent_at ? <RotateCw size={14} aria-hidden /> : <Send size={14} aria-hidden />}
             {invite.sent_at ? t('admin.invites.resend') : t('admin.invites.send')}
           </button>
+          {recipients.length > 1 ? (
+            <button type="button" className="obw-portal-btn" disabled={busy} onClick={sendToNext}>
+              <Users size={14} aria-hidden />
+              {sentCount % recipients.length === 0
+                ? t('admin.invites.sendAll', { count: recipients.length })
+                : t('admin.invites.sendNext', { name: nextRecipient.name })}
+            </button>
+          ) : null}
           <button type="button" className="obw-portal-btn obw-portal-btn--secondary" onClick={() => onCopy(invite)}>
             <Copy size={14} aria-hidden />
             {t('admin.invites.copyLink')}
