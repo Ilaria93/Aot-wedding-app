@@ -848,6 +848,7 @@ export const it = {
       filterSpecialDiet: 'Diete speciali ({{count}})',
       filterChildren: 'Bambini ({{count}})',
       confirmedBadge: 'Confermato',
+      withHolder: 'Con {{value}}',
       companionsLabel: 'Accompagnatore: {{value}}',
       childTag: 'Bambino',
       notesLabel: 'Note: {{value}}',

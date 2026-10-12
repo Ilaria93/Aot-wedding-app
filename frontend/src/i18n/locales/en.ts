@@ -846,6 +846,7 @@ export const en = {
       filterSpecialDiet: 'Special diets ({{count}})',
       filterChildren: 'Children ({{count}})',
       confirmedBadge: 'Confirmed',
+      withHolder: 'With {{value}}',
       companionsLabel: 'Plus one: {{value}}',
       childTag: 'Child',
       notesLabel: 'Note: {{value}}',
