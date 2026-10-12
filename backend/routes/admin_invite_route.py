@@ -11,6 +11,7 @@ from schemas.admin_invite_schema import (
     AdminInviteUpdate,
     ChangeHeadRequest,
     ImportReport,
+    LinkPersonRequest,
     InviteMatch,
 )
 from services.admin_invite_service import (
@@ -22,6 +23,7 @@ from services.admin_invite_service import (
     delete_invite,
     change_head,
     delete_member,
+    link_person,
     find_matches,
     get_admin_invite,
     list_admin_invites,
@@ -153,6 +155,19 @@ def mark_sent(invite_id: int, person_id: Optional[int] = Query(default=None), db
         return mark_invite_sent(db, invite_id, person_id)
     except InviteNotFoundError as error:
         raise HTTPException(status_code=404, detail=str(error)) from error
+
+
+# Links a person already in the table to this group (before anything is sent or answered).
+@router.post("/invites/{invite_id}/link", response_model=AdminInviteResponse)
+def link_invite_person(invite_id: int, payload: LinkPersonRequest, db: Session = Depends(get_db)):
+    try:
+        return link_person(db, invite_id, payload.person_id, payload.relation)
+    except InviteNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+    except InviteLockedError as error:
+        raise HTTPException(status_code=409, detail={"code": "locked", "message": str(error)}) from error
+    except InvalidInviteError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
 
 
 # Makes someone else in the group the head (the invite goes out from their phone); only before it is sent/answered.

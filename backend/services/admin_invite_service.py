@@ -279,6 +279,32 @@ def mark_invite_sent(db: Session, invite_id: int, person_id: Optional[int] = Non
     return to_admin_invite(db, head)
 
 
+def link_person(db: Session, head_id: int, person_id: int, relation: str) -> AdminInviteResponse:
+    """Links a person already in the table (a head of their own, alone) to this head's group, e.g. the mother
+    added separately from the father. Only while neither invite went out or was answered. The person's own
+    invite disappears: from now on they ride on the head's link, with the family name and party size the head has."""
+    head = _get_head(db, head_id)
+    person = _get_head(db, person_id)
+    if head.id == person.id:
+        raise InvalidInviteError("A person can't be linked to themselves.")
+    if _is_locked(head) or _is_locked(person) or is_individual_invite(head) or is_individual_invite(person):
+        raise InviteLockedError("Invite already sent")
+    if any(row.user_id is not None for row in (head, person, *head.members)):
+        raise InviteLockedError("Someone already answered this invite")
+    if person.members:
+        raise InvalidInviteError("This person already has a group of their own: remove them from it first.")
+    check_group(head.family_name, [member.relation for member in head.members] + [relation])
+
+    person.head_id = head.id
+    person.relation = relation
+    person.token = None
+    person.family_name = None
+    person.party_size = None
+    db.commit()
+    db.refresh(head)
+    return to_admin_invite(db, head)
+
+
 def change_head(db: Session, head_id: int, new_head_id: int) -> AdminInviteResponse:
     """Makes a member of the group the head: the invite then goes out from their phone. The old head becomes a
     member (spouse/partner stay as they were, anything else becomes "other"); the link, family name and party size
