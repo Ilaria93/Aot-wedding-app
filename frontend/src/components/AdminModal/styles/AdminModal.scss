@@ -13,6 +13,10 @@
 .admin-modal {
   width: 100%;
   max-width: 360px;
+  // A long form scrolls inside the box instead of running past the screen edges.
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 22px;
   border-radius: 16px;
   background: #211c1b;
