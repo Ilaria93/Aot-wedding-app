@@ -40,8 +40,8 @@ def build_whatsapp_url(
 def build_head_whatsapp_url(head, phone: Optional[str] = None) -> str:
     """wa.me link for a head's invite. `phone` overrides where it goes (e.g. a
     spouse who asked for the link); by default it targets the head's own."""
-    from services.invite_greeting_service import build_greeting
+    from services.invite_greeting_service import invite_greeting
     from services.invite_link_service import build_invite_url
 
-    kind, name = build_greeting(head, head.members)
+    kind, name, _ = invite_greeting(head)
     return build_whatsapp_url(phone or head.phone, kind, name, build_invite_url(head.token))

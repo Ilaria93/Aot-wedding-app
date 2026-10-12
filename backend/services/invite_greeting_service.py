@@ -35,11 +35,34 @@ def build_greeting(head: InviteLink, members: Iterable[InviteLink]) -> tuple[str
     if partners:
         return "couple", _join_names([head.first_name, *partners])
 
-    if head.gender == "m":
-        return "single_m", head.first_name
-    if head.gender == "f":
-        return "single_f", head.first_name
-    return "single", head.first_name
+    return single_greeting(head)
+
+
+def single_greeting(person: InviteLink) -> tuple[str, str]:
+    """The greeting for one person alone: Caro/Cara/Cara-o {first name}, never the family or the couple."""
+    if person.gender == "m":
+        return "single_m", person.first_name
+    if person.gender == "f":
+        return "single_f", person.first_name
+    return "single", person.first_name
+
+
+def is_individual_invite(invite: InviteLink) -> bool:
+    """True when the group was sent as one invite per person: a member then has a link of their own (only heads
+    normally do), and the head's invite is for the head alone."""
+    if invite.head_id is not None:
+        return invite.token is not None
+    return any(member.token is not None for member in invite.members)
+
+
+def invite_greeting(invite: InviteLink) -> tuple[str, str, list[str]]:
+    """(kind, name, names) as the guest opening this invite sees it: the whole group for a shared invite, just
+    the one person for an individual one."""
+    if is_individual_invite(invite):
+        kind, name = single_greeting(invite)
+        return kind, name, [name]
+    kind, name = build_greeting(invite, invite.members)
+    return kind, name, greeting_names(kind, name, invite, invite.members)
 
 
 def default_party_guests(head: InviteLink, members: Iterable[InviteLink], site_max: int) -> int:

@@ -5,7 +5,7 @@ from database.base import get_db
 from schemas.guest_access_schema import GuestRsvpConfirmResponse
 from schemas.rsvp_confirmation_schema import RSVPSubmitRequest
 from services.auth_cookie_service import set_auth_cookies
-from services.guest_access_service import GuestInviteNotFoundError, confirm_guest_rsvp
+from services.guest_access_service import GuestInviteNotFoundError, GuestPartyTooLargeError, confirm_guest_rsvp
 from services.rsvp_service import RsvpDeadlineError
 from services.telegram_notify_service import notify_guest_rsvp
 
@@ -27,6 +27,8 @@ def confirm_rsvp_via_invite(
         session, rsvp = confirm_guest_rsvp(db, token, payload)
     except GuestInviteNotFoundError as error:
         raise HTTPException(status_code=404, detail=str(error)) from error
+    except GuestPartyTooLargeError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
     except RsvpDeadlineError as error:
         raise HTTPException(status_code=403, detail=str(error)) from error
     set_auth_cookies(response, session)

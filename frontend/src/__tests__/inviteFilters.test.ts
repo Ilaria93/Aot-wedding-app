@@ -45,12 +45,19 @@ describe('filterInvites', () => {
     expect(filterInvites(all, 'answered', '').map((i) => i.id)).toEqual([3, 5]);
   });
 
+  it('answered also counts a group where only a member answered (individual invites)', () => {
+    const member = (answer: 'none' | 'attending') => ({ id: 70, first_name: 'Luca', last_name: 'Verdi', phone: null, gender: null, relation: 'partner' as const, sent_at: null, answer, invite_url: 'u' });
+    const onlyMemberAnswered = invite({ id: 7, individual: true, members: [member('attending')] });
+    const nobodyAnswered = invite({ id: 8, individual: true, members: [member('none')] });
+    expect(filterInvites([onlyMemberAnswered, nobodyAnswered], 'answered', '').map((i) => i.id)).toEqual([7]);
+  });
+
   it('a search hit on a member shows the whole group', () => {
     const family = invite({
       id: 6,
       first_name: 'Christian',
       members: [
-        { id: 60, first_name: 'Arianna', last_name: 'Rossi', phone: '+393332222222', gender: 'f', relation: 'spouse' },
+        { id: 60, first_name: 'Arianna', last_name: 'Rossi', phone: '+393332222222', gender: 'f', relation: 'spouse', sent_at: null, answer: 'none', invite_url: null },
       ],
     });
     expect(filterInvites([...all, family], 'to_send', 'arianna').map((i) => i.id)).toEqual([6]);

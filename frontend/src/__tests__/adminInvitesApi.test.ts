@@ -8,6 +8,7 @@ import {
   importInvitesCsv,
   isLockedError,
   lookupInvites,
+  makeInviteIndividual,
   markInviteSent,
   updateInvite,
   type CreateInvitePayload,
@@ -74,7 +75,19 @@ describe('adminInvitesApi', () => {
   it('marks an invite sent', async () => {
     post.mockResolvedValue({ data: { id: 3 } });
     await markInviteSent(3);
-    expect(post).toHaveBeenCalledWith('/admin/invites/3/mark-sent');
+    expect(post).toHaveBeenCalledWith('/admin/invites/3/mark-sent', undefined, { params: undefined });
+  });
+
+  it('marks one person of an individual group as sent', async () => {
+    post.mockResolvedValue({ data: { id: 3 } });
+    await markInviteSent(3, 7);
+    expect(post).toHaveBeenCalledWith('/admin/invites/3/mark-sent', undefined, { params: { person_id: 7 } });
+  });
+
+  it('switches a group to one invite per person', async () => {
+    post.mockResolvedValue({ data: { id: 3, individual: true } });
+    await expect(makeInviteIndividual(3)).resolves.toMatchObject({ individual: true });
+    expect(post).toHaveBeenCalledWith('/admin/invites/3/individual');
   });
 
   it('fetches the WhatsApp link addressed to a member', async () => {

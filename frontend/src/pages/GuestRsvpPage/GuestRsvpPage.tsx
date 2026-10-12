@@ -166,7 +166,7 @@ function GuestRsvpConfirmForm({
           {invite.first_name} {invite.last_name}
         </h1>
         <span className="obw-rule obw-rule--center" aria-hidden="true" />
-        <p className="obw-body obw-body--flush">{t('guestRsvp.intro')}</p>
+        <p className="obw-body obw-body--flush">{t(invite.max_party_guests === 1 ? 'guestRsvp.introSolo' : 'guestRsvp.intro')}</p>
       </header>
 
       {draft.error ? <p className="auth-form__error">{draft.error}</p> : null}

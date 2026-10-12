@@ -8,6 +8,7 @@ from models.user_model import User
 from schemas.auth_schema import AuthSessionResponse
 from schemas.rsvp_confirmation_schema import RSVPSubmitRequest, RsvpSubmitResponse
 from services.auth_token_service import issue_auth_session
+from services.invite_greeting_service import is_individual_invite
 from services.rsvp_service import (
     assert_rsvp_editable_window,
     confirm_rsvp_for_user,
@@ -17,6 +18,10 @@ from services.rsvp_service import (
 
 class GuestInviteNotFoundError(Exception):
     """Raised when the invite token does not match any invite_links row."""
+
+
+class GuestPartyTooLargeError(Exception):
+    """An individual invite answers for one person only."""
 
 
 def get_or_create_guest_user(db: Session, invite_link: InviteLink) -> User:
@@ -53,6 +58,9 @@ def confirm_guest_rsvp(
     invite_link = db.query(InviteLink).filter(InviteLink.token == token).first()
     if not invite_link:
         raise GuestInviteNotFoundError("Invite not found")
+
+    if is_individual_invite(invite_link) and len(payload.guests) > 1:
+        raise GuestPartyTooLargeError("An individual invite answers for one person only.")
 
     # Deadline first: get_or_create_guest_user commits (creates the guest and
     # permanently binds the invite to it), so a later check would leave those

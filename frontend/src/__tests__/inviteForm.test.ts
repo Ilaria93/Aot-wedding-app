@@ -3,6 +3,9 @@ import { describe, expect, it } from 'vitest';
 import {
   EMPTY_INVITE_FORM,
   buildCreatePayload,
+  emptyMemberRow,
+  memberRowFromMember,
+  memberRowToForm,
   parseAddParams,
   validateInviteForm,
   type InviteFormValues,
@@ -82,5 +85,21 @@ describe('parseAddParams', () => {
     expect(parseAddParams('')).toBeNull();
     expect(parseAddParams('?first_name=Mario')).toBeNull();
     expect(parseAddParams('?add=1&phone=%2B39333')).toBeNull();
+  });
+});
+
+describe('group member rows (edit dialog)', () => {
+  const member = { id: 7, first_name: 'Sara', last_name: 'Verdi', phone: '+393332222222', gender: 'f' as const, relation: 'partner' as const };
+
+  it('round-trips an existing member without losing the gender it does not show', () => {
+    const row = memberRowFromMember(member);
+    expect(row).toMatchObject({ id: 7, firstName: 'Sara', phone: '+393332222222', gender: 'f', relation: 'partner' });
+    expect(buildCreatePayload(memberRowToForm(row, 3))).toMatchObject({ head_id: 3, relation: 'partner', gender: 'f', first_name: 'Sara' });
+  });
+
+  it('a new row starts with the head surname and needs a name and a relation', () => {
+    const row = emptyMemberRow('Rossi');
+    expect(row).toMatchObject({ id: null, lastName: 'Rossi', relation: '' });
+    expect(validateInviteForm(memberRowToForm(row, 3))).toEqual({ firstName: 'required', relation: 'required' });
   });
 });
