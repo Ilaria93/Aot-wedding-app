@@ -288,6 +288,7 @@ export const it = {
       intro: 'Lasciaci nome e numero: Davide e Ilaria ti manderanno il tuo invito personale su WhatsApp.',
       firstName: 'Nome',
       lastName: 'Cognome',
+      lastNameOptional: 'Cognome (facoltativo)',
       phone: 'Telefono',
       privacy: 'Useremo il numero solo per mandarti l’invito su WhatsApp.',
       submit: 'Invia richiesta',

@@ -266,3 +266,14 @@ def test_linking_is_refused_once_sent_or_answered(api_client, admin_headers):
     other = _create(api_client, first_name="Eva", last_name="Blu", phone="333 8888888").json()
     assert _rsvp(api_client, _token(answered["invite_url"]), ["Ugo"]).status_code == 200
     assert api_client.post(f"/admin/invites/{other['id']}/link", json={"person_id": answered["id"], "relation": "spouse"}).status_code == 409
+
+
+def test_a_member_may_have_only_a_first_name_but_the_head_may_not(api_client, admin_headers):
+    head = _create(api_client).json()
+    ok = api_client.post("/admin/invites", json={"first_name": "Giovanni", "last_name": "", "head_id": head["id"], "relation": "partner"})
+    assert ok.status_code == 201
+    row = _row(api_client)
+    assert row["greeting_kind"] == "couple" and row["greeting_names"] == ["Chiara", "Giovanni"]
+    assert row["members"][0]["last_name"] == ""
+    assert api_client.post("/admin/invites", json={"first_name": "Solo", "last_name": ""}).status_code in (400, 422)
+    assert api_client.patch(f"/admin/invites/{head['id']}", json={"last_name": ""}).status_code in (400, 422)

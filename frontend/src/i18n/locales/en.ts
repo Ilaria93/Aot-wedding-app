@@ -288,6 +288,7 @@ export const en = {
       intro: 'Leave us your name and number: Davide and Ilaria will send your personal invite on WhatsApp.',
       firstName: 'First name',
       lastName: 'Last name',
+      lastNameOptional: 'Last name (optional)',
       phone: 'Phone',
       privacy: 'We will only use your number to send you the invite on WhatsApp.',
       submit: 'Send request',
