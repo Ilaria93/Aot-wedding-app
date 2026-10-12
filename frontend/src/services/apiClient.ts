@@ -14,6 +14,24 @@ export const apiClient = axios.create({
   },
 });
 
+// How many calls are in flight, for the spinner (components/RequestSpinner). Registered before the refresh
+// interceptor below so a retried call is counted once per attempt.
+let pending = 0;
+const listeners = new Set<(count: number) => void>();
+const track = (delta: number) => {
+  pending = Math.max(0, pending + delta);
+  listeners.forEach((listener) => listener(pending));
+};
+export function subscribeToPendingRequests(listener: (count: number) => void) {
+  listeners.add(listener);
+  return () => void listeners.delete(listener);
+}
+apiClient.interceptors.request.use((config) => (track(1), config));
+apiClient.interceptors.response.use(
+  (response) => (track(-1), response),
+  (error) => (track(-1), Promise.reject(error)),
+);
+
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {

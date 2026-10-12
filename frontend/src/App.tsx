@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { AuthGuard } from '@/components/AuthGuard/index';
+import { RequestSpinner } from '@/components/RequestSpinner';
 import { ScrollManager } from '@/components/ScrollManager';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { I18nProvider } from '@/contexts/I18nContext';
@@ -28,6 +29,7 @@ export function App() {
       <AuthProvider>
         <BrowserRouter>
           <ScrollManager />
+          <RequestSpinner />
           <Routes>
             <Route element={<AuthGuard />}>
               <Route element={<AuthStackLayout />}>
