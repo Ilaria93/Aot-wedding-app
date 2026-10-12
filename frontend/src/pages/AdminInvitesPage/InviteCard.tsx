@@ -30,9 +30,9 @@ export function InviteCard({
   onDeleteMember,
 }: InviteCardProps) {
   const { t } = useI18n();
-  // A group opens the send dialog while there is a choice to make (how to send it) or one chat per person to
-  // open; a shared invite that is already out is simply resent, and a single person is sent straight away.
-  const opensSendDialog = invite.members.length > 0 && (invite.individual || invite.editable);
+  // A group always opens the send dialog (how to send it, which phone, or one chat per person); a single person
+  // is sent straight away.
+  const opensSendDialog = invite.members.length > 0;
   // An individual group is sent person by person: the head's line shows the head's own state.
   const headSentAt = invite.individual ? invite.own_sent_at : invite.sent_at;
   const answerText = (answer: AdminInviteItem['answer']) =>

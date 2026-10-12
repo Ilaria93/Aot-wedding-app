@@ -9,6 +9,10 @@ Relation = Literal["spouse", "partner", "child", "other"]
 GreetingKind = Literal["family", "couple", "single_m", "single_f", "single"]
 
 
+class ChangeHeadRequest(BaseModel):
+    new_head_id: int
+
+
 class AdminInviteMember(BaseModel):
     id: int
     first_name: str

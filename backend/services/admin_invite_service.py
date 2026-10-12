@@ -279,6 +279,43 @@ def mark_invite_sent(db: Session, invite_id: int, person_id: Optional[int] = Non
     return to_admin_invite(db, head)
 
 
+def change_head(db: Session, head_id: int, new_head_id: int) -> AdminInviteResponse:
+    """Makes a member of the group the head: the invite then goes out from their phone. The old head becomes a
+    member (spouse/partner stay as they were, anything else becomes "other"); the link, family name and party size
+    move to the new head. Only while nothing went out or was answered: after that the link is already in use."""
+    head = _get_head(db, head_id)
+    if _is_locked(head) or is_individual_invite(head):
+        raise InviteLockedError("Invite already sent")
+    new_head = next((member for member in head.members if member.id == new_head_id), None)
+    if new_head is None:
+        raise InviteNotFoundError("Member not found")
+    if any(person.user_id is not None for person in [head, *head.members]):
+        raise InviteLockedError("Someone already answered this invite")
+
+    others = [member for member in head.members if member.id != new_head.id]
+    old_head_relation = new_head.relation if new_head.relation in ("spouse", "partner") else "other"
+    check_group(head.family_name, [old_head_relation, *(member.relation for member in others)])
+
+    token = head.token
+    head.token = None
+    db.flush()
+    new_head.head_id = None
+    new_head.relation = None
+    new_head.token = token
+    new_head.family_name = head.family_name
+    new_head.party_size = head.party_size
+    head.family_name = None
+    head.party_size = None
+    db.flush()
+    head.head_id = new_head.id
+    head.relation = old_head_relation
+    for member in others:
+        member.head_id = new_head.id
+    db.commit()
+    db.refresh(new_head)
+    return to_admin_invite(db, new_head)
+
+
 def make_individual(db: Session, head_id: int) -> AdminInviteResponse:
     """Switches a group to one invite per person: every member gets a link of their own (the head already has
     one). Decided at the first send: a group already sent as a shared invite can't change, its link is out."""

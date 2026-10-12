@@ -23,6 +23,45 @@ export function InviteSendDialog({ invite, busy, onSendShared, onSendIndividuall
   const { t, locale } = useI18n();
   const formatDate = (iso: string) => new Date(iso).toLocaleDateString(locale);
 
+  // A shared invite that is already out (the group can't change any more): resend it, or send the very same
+  // invite to another phone of the group: one link, one answer for everyone.
+  if (!invite.individual && !invite.editable) {
+    const phones = [
+      { id: invite.id, name: `${invite.first_name} ${invite.last_name}`, phone: invite.phone, resend: true, send: () => onSendHead(invite) },
+      ...invite.members.map((member) => ({
+        id: member.id,
+        name: `${member.first_name} ${member.last_name}`,
+        phone: member.phone,
+        resend: false,
+        send: () => onSendMember(invite, member),
+      })),
+    ];
+    return (
+      <AdminModal titleId="invite-send-title" title={t('admin.invites.sendChoiceTitle')} onClose={onClose} t={t}>
+        <p className="admin-modal__body">{t('admin.invites.sendSharedHint')}</p>
+        <ul className="admin-invites__send-list">
+          {phones.map((person) => (
+            <li key={person.id}>
+              <span>{person.name}</span>
+              {person.phone ? (
+                <button type="button" className="obw-portal-btn obw-portal-btn--secondary" disabled={busy} onClick={person.send}>
+                  {person.resend ? t('admin.invites.resend') : t('admin.invites.sendShort')}
+                </button>
+              ) : (
+                <small>{t('admin.invites.noPhone')}</small>
+              )}
+            </li>
+          ))}
+        </ul>
+        <div className="admin-modal__actions">
+          <button type="button" className="obw-portal-btn obw-portal-btn--secondary" onClick={onClose}>
+            {t('admin.invites.close')}
+          </button>
+        </div>
+      </AdminModal>
+    );
+  }
+
   if (!invite.individual) {
     return (
       <AdminModal titleId="invite-send-title" title={t('admin.invites.sendChoiceTitle')} onClose={onClose} t={t}>

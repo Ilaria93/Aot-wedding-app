@@ -9,6 +9,7 @@ from schemas.admin_invite_schema import (
     AdminInviteCreate,
     AdminInviteResponse,
     AdminInviteUpdate,
+    ChangeHeadRequest,
     ImportReport,
     InviteMatch,
 )
@@ -19,6 +20,7 @@ from services.admin_invite_service import (
     InviteNotFoundError,
     create_person,
     delete_invite,
+    change_head,
     delete_member,
     find_matches,
     get_admin_invite,
@@ -151,6 +153,19 @@ def mark_sent(invite_id: int, person_id: Optional[int] = Query(default=None), db
         return mark_invite_sent(db, invite_id, person_id)
     except InviteNotFoundError as error:
         raise HTTPException(status_code=404, detail=str(error)) from error
+
+
+# Makes someone else in the group the head (the invite goes out from their phone); only before it is sent/answered.
+@router.post("/invites/{invite_id}/head", response_model=AdminInviteResponse)
+def change_invite_head(invite_id: int, payload: ChangeHeadRequest, db: Session = Depends(get_db)):
+    try:
+        return change_head(db, invite_id, payload.new_head_id)
+    except InviteNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+    except InviteLockedError as error:
+        raise HTTPException(status_code=409, detail={"code": "locked", "message": str(error)}) from error
+    except InvalidInviteError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error
 
 
 # Switches a group to one invite per person (a link, a greeting and an answer each); decided at the first send.
