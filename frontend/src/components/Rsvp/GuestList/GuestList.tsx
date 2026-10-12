@@ -34,63 +34,52 @@ type MetaItem = {
   tone: MetaTone;
 };
 
-// One inline row per guest card — companions, table, and every diet/allergy/
-// note the party carries, using only the data the entry already has.
-function buildMetaItems(entry: AdminRsvpEntry, t: TranslateFn): MetaItem[] {
-  const guests = partyGuests(entry);
+type Guest = AdminRsvpEntry["account_holder"];
+
+// One inline row per person: who they come with, what they eat (diet, allergy, notes) and whether they are a child.
+// Each person has their own card because their needs can differ; the table is the party's, shared by its cards.
+function buildMetaItems(entry: AdminRsvpEntry, guest: Guest, isHolder: boolean, t: TranslateFn): MetaItem[] {
   const items: MetaItem[] = [];
 
-  items.push(
-    entry.companions.length > 0
-      ? {
-          key: "companions",
-          icon: Users,
-          text: t("admin.rsvpEntries.companionsLabel", {
-            value:
-              entry.companions.length > 1
-                ? `${formatGuestName(entry.companions[0])} (+${entry.companions.length - 1})`
-                : formatGuestName(entry.companions[0]),
-          }),
-          tone: "gold",
-        }
-      : { key: "companions", icon: UserX, text: t("admin.rsvpEntries.noCompanions"), tone: "muted" },
-  );
-
-  const mealTags = Array.from(new Set(guests.map((guest) => guest.meal_choice)));
-  if (mealTags.length === 1 && mealTags[0] === "standard") {
-    items.push({ key: "meal-standard", icon: Utensils, text: t("rsvp.mealChoices.standard"), tone: "muted" });
-  } else {
-    for (const mealId of mealTags) {
-      if (mealId === "standard") continue;
-      items.push({
-        key: `meal-${mealId}`,
-        icon: Utensils,
-        text: t(`rsvp.mealChoices.${mealId}`),
-        tone: MEAL_TAG_TONE[mealId] === "green" ? "green" : "gold",
-      });
-    }
-  }
-
-  const intoleranceTags = Array.from(
-    new Set(guests.map((guest) => guest.intolerance).filter((value) => value !== "none")),
-  );
-  for (const intoleranceId of intoleranceTags) {
+  if (!isHolder) {
     items.push({
-      key: `intolerance-${intoleranceId}`,
-      icon: Utensils,
-      text: t(`rsvp.intolerances.${intoleranceId}`),
+      key: "with",
+      icon: Users,
+      text: t("admin.rsvpEntries.withHolder", { value: formatGuestName(entry.account_holder) }),
       tone: "gold",
     });
+  } else if (entry.companions.length > 0) {
+    items.push({
+      key: "companions",
+      icon: Users,
+      text: t("admin.rsvpEntries.companionsLabel", {
+        value:
+          entry.companions.length > 1
+            ? `${formatGuestName(entry.companions[0])} (+${entry.companions.length - 1})`
+            : formatGuestName(entry.companions[0]),
+      }),
+      tone: "gold",
+    });
+  } else {
+    items.push({ key: "companions", icon: UserX, text: t("admin.rsvpEntries.noCompanions"), tone: "muted" });
   }
 
-  const noteTags = Array.from(
-    new Set(guests.map((guest) => guest.dietary_notes).filter((value): value is string => Boolean(value))),
-  );
-  for (const note of noteTags) {
-    items.push({ key: `note-${note}`, icon: StickyNote, text: t("admin.rsvpEntries.notesLabel", { value: note }), tone: "gold" });
+  items.push({
+    key: "meal",
+    icon: Utensils,
+    text: t(`rsvp.mealChoices.${guest.meal_choice}`),
+    tone: guest.meal_choice === "standard" ? "muted" : MEAL_TAG_TONE[guest.meal_choice] === "green" ? "green" : "gold",
+  });
+
+  if (guest.intolerance !== "none") {
+    items.push({ key: "intolerance", icon: Utensils, text: t(`rsvp.intolerances.${guest.intolerance}`), tone: "gold" });
   }
 
-  if (entry.has_child) {
+  if (guest.dietary_notes) {
+    items.push({ key: "note", icon: StickyNote, text: t("admin.rsvpEntries.notesLabel", { value: guest.dietary_notes }), tone: "gold" });
+  }
+
+  if (guest.is_child) {
     items.push({ key: "child", icon: Baby, text: t("admin.rsvpEntries.childTag"), tone: "blue" });
   }
 
@@ -101,20 +90,20 @@ function buildMetaItems(entry: AdminRsvpEntry, t: TranslateFn): MetaItem[] {
 export function GuestList({ entries, tables, assigningRsvpId, onAssignTable, t }: GuestListProps) {
   // Only one row's table menu is ever open — a single ref to that wrapper is
   // enough to detect an outside click and close it.
-  const [openRsvpId, setOpenRsvpId] = useState<number | null>(null);
+  const [openCardKey, setOpenCardKey] = useState<string | null>(null);
   const openFieldRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    if (openRsvpId === null) return undefined;
+    if (openCardKey === null) return undefined;
 
     function handlePointerDown(event: MouseEvent) {
       if (openFieldRef.current && !openFieldRef.current.contains(event.target as Node)) {
-        setOpenRsvpId(null);
+        setOpenCardKey(null);
       }
     }
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") setOpenRsvpId(null);
+      if (event.key === "Escape") setOpenCardKey(null);
     }
 
     document.addEventListener("mousedown", handlePointerDown);
@@ -123,28 +112,30 @@ export function GuestList({ entries, tables, assigningRsvpId, onAssignTable, t }
       document.removeEventListener("mousedown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [openRsvpId]);
+  }, [openCardKey]);
 
   function selectTable(rsvpId: number, tableId: string) {
     onAssignTable(rsvpId, tableId);
-    setOpenRsvpId(null);
+    setOpenCardKey(null);
   }
 
   return (
     <>
-      {entries.map((entry) => {
-        const metaItems = buildMetaItems(entry, t);
-        const isOpen = openRsvpId === entry.rsvp_id;
+      {entries.flatMap((entry) =>
+        partyGuests(entry).map((guest, index) => {
+        const cardKey = `${entry.rsvp_id}-${index}`;
+        const metaItems = buildMetaItems(entry, guest, index === 0, t);
+        const isOpen = openCardKey === cardKey;
 
         return (
-          <article key={entry.user_id} className="obw-portal-panel admin-rsvp__guest-card">
+          <article key={cardKey} className="obw-portal-panel admin-rsvp__guest-card">
             <div className="admin-rsvp__guest-main">
               <div className="admin-rsvp__guest-name-row">
                 <div className="admin-rsvp__guest-name-group">
                   <span className="admin-rsvp__avatar" aria-hidden>
-                    {entry.account_holder.first_name.charAt(0).toUpperCase()}
+                    {guest.first_name.charAt(0).toUpperCase()}
                   </span>
-                  <span className="admin-rsvp__guest-name">{formatGuestName(entry.account_holder)}</span>
+                  <span className="admin-rsvp__guest-name">{formatGuestName(guest)}</span>
                 </div>
                 <span className="admin-rsvp__confirmed-badge">
                   <span className="admin-rsvp__confirmed-dot" aria-hidden />
@@ -170,7 +161,7 @@ export function GuestList({ entries, tables, assigningRsvpId, onAssignTable, t }
                     disabled={assigningRsvpId === entry.rsvp_id}
                     aria-haspopup="listbox"
                     aria-expanded={isOpen}
-                    onClick={() => setOpenRsvpId(isOpen ? null : entry.rsvp_id)}
+                    onClick={() => setOpenCardKey(isOpen ? null : cardKey)}
                   >
                     {entry.table_label ?? t("admin.rsvpEntries.assignTableButton")}
                     <ChevronDown size={13} className="admin-rsvp__table-chevron" aria-hidden />
@@ -204,7 +195,8 @@ export function GuestList({ entries, tables, assigningRsvpId, onAssignTable, t }
             </div>
           </article>
         );
-      })}
+        }),
+      )}
     </>
   );
 }
