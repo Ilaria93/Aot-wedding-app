@@ -667,6 +667,8 @@ export const it = {
       send: 'Invia su WhatsApp',
       resend: 'Rimanda',
       sendTo: 'Manda il link a {{name}}',
+      sendAll: 'Invia a tutti e {{count}}',
+      sendNext: 'Ora invia a {{name}}',
       copyLink: 'Copia link',
       linkCopied: 'Link copiato',
       edit: 'Modifica',
