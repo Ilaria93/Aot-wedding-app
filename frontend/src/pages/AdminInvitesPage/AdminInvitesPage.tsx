@@ -257,15 +257,15 @@ export function AdminInvitesPage() {
         <div className="admin-invites__toolbar">
           <h2 className="obw-portal-kicker admin-invites__section-title">{t('admin.invites.listTitle')}</h2>
           <div className="admin-invites__toolbar-actions">
-            <button type="button" className="obw-portal-btn" onClick={() => setDialog({ kind: 'add' })}>
+            <button type="button" className="obw-portal-btn" data-tip={t('admin.invites.tipAdd')} onClick={() => setDialog({ kind: 'add' })}>
               <UserPlus size={14} aria-hidden />
               {t('admin.invites.addPerson')}
             </button>
-            <button type="button" className="obw-portal-btn obw-portal-btn--secondary" onClick={() => setImportOpen(true)}>
+            <button type="button" className="obw-portal-btn obw-portal-btn--secondary" data-tip={t('admin.invites.tipImport')} onClick={() => setImportOpen(true)}>
               <FileUp size={14} aria-hidden />
               {t('admin.invites.importCsv')}
             </button>
-            <button type="button" className="obw-portal-btn obw-portal-btn--secondary" onClick={handleExport}>
+            <button type="button" className="obw-portal-btn obw-portal-btn--secondary" data-tip={t('admin.invites.tipExport')} onClick={handleExport}>
               <Download size={14} aria-hidden />
               {t('admin.invites.exportCsv')}
             </button>

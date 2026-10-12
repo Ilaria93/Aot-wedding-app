@@ -72,6 +72,7 @@ export function InviteCard({
             type="button"
             className={`obw-portal-btn${invite.sent_at ? ' obw-portal-btn--secondary' : ''}`}
             disabled={busy}
+            data-tip={t(invite.sent_at ? 'admin.invites.tipResend' : 'admin.invites.tipSend')}
             onClick={() => (opensSendDialog ? onOpenSend(invite) : onSend(invite))}>
             {invite.sent_at ? <RotateCw size={14} aria-hidden /> : <Send size={14} aria-hidden />}
             {invite.sent_at ? t('admin.invites.resend') : t('admin.invites.send')}
@@ -81,7 +82,7 @@ export function InviteCard({
             type="button"
             className="obw-portal-btn obw-portal-btn--secondary admin-invites__icon"
             aria-label={t('admin.invites.copyLink')}
-            title={t('admin.invites.copyLink')}
+            data-tip={t('admin.invites.tipCopy')}
             onClick={() => onCopy(invite.invite_url)}>
             <Copy size={16} aria-hidden />
           </button>
@@ -90,7 +91,7 @@ export function InviteCard({
               type="button"
               className="obw-portal-btn obw-portal-btn--secondary admin-invites__icon"
               aria-label={t('admin.invites.edit')}
-              title={t('admin.invites.edit')}
+              data-tip={t('admin.invites.tipEdit')}
               onClick={() => onEdit(invite)}>
               <Pencil size={16} aria-hidden />
             </button>
@@ -99,7 +100,7 @@ export function InviteCard({
             type="button"
             className="obw-portal-btn obw-portal-btn--secondary admin-invites__icon admin-invites__delete"
             aria-label={t('admin.invites.delete')}
-            title={t('admin.invites.delete')}
+            data-tip={t('admin.invites.tipDelete')}
             disabled={busy}
             onClick={() => onDelete(invite)}>
             <Trash2 size={16} aria-hidden />
@@ -132,7 +133,7 @@ export function InviteCard({
                       type="button"
                       className="obw-portal-btn obw-portal-btn--secondary admin-invites__icon"
                       aria-label={t('admin.invites.copyLink')}
-                      title={t('admin.invites.copyLink')}
+                      data-tip={t('admin.invites.tipMemberCopy')}
                       onClick={() => onCopy(member.invite_url as string)}>
                       <Copy size={16} aria-hidden />
                     </button>
@@ -143,7 +144,7 @@ export function InviteCard({
                         type="button"
                         className="obw-portal-btn obw-portal-btn--secondary admin-invites__icon"
                         aria-label={t('admin.invites.edit')}
-                        title={t('admin.invites.edit')}
+                        data-tip={t('admin.invites.tipMemberEdit')}
                         onClick={() => onEdit(invite)}>
                         <Pencil size={16} aria-hidden />
                       </button>
@@ -151,7 +152,7 @@ export function InviteCard({
                         type="button"
                         className="obw-portal-btn obw-portal-btn--secondary admin-invites__icon admin-invites__delete"
                         aria-label={t('admin.invites.deleteMember')}
-                        title={t('admin.invites.deleteMember')}
+                        data-tip={t('admin.invites.tipMemberDelete')}
                         onClick={() => onDeleteMember(invite, member)}>
                         <Trash2 size={16} aria-hidden />
                       </button>
