@@ -128,6 +128,12 @@ export async function markInviteSent(inviteId: number, personId?: number): Promi
   return data;
 }
 
+// Makes someone else in the group the head, so the invite goes out from their phone (before it is sent/answered).
+export async function changeInviteHead(headId: number, newHeadId: number): Promise<AdminInviteItem> {
+  const { data } = await apiClient.post<AdminInviteItem>(`/admin/invites/${headId}/head`, { new_head_id: newHeadId });
+  return data;
+}
+
 // Switches a group to one invite per person (decided at the first send); gives everyone a link of their own.
 export async function makeInviteIndividual(headId: number): Promise<AdminInviteItem> {
   const { data } = await apiClient.post<AdminInviteItem>(`/admin/invites/${headId}/individual`);

@@ -134,3 +134,73 @@ def test_someone_added_to_an_individual_group_gets_their_own_link(api_client, ad
         json={"first_name": "Sara", "last_name": "Rossi", "head_id": head_id, "relation": "other"},
     ).json()
     assert all(member["invite_url"] for member in added["members"])
+
+
+# --- changing the head of a group ---------------------------------------------------------------
+
+
+def _family(api_client):
+    head = _create(api_client, first_name="Mario", last_name="Rossi", gender="m", phone="333 1111111", family_name="Rossi", party_size=3).json()
+    for first_name, relation, phone in (("Anna", "spouse", "333 2222222"), ("Teo", "child", None)):
+        api_client.post(
+            "/admin/invites",
+            json={"first_name": first_name, "last_name": "Rossi", "phone": phone, "head_id": head["id"], "relation": relation},
+        )
+    return head
+
+
+def test_changing_the_head_moves_the_link_and_the_head_data(api_client, admin_headers):
+    head = _family(api_client)
+    anna_id = next(member["id"] for member in _row(api_client)["members"] if member["first_name"] == "Anna")
+
+    response = api_client.post(f"/admin/invites/{head['id']}/head", json={"new_head_id": anna_id})
+    assert response.status_code == 200
+    row = _row(api_client)
+    assert row["id"] == anna_id and row["first_name"] == "Anna"
+    assert row["invite_url"] == head["invite_url"]  # the same link, now Anna's
+    assert (row["family_name"], row["party_size"]) == ("Rossi", 3)
+    assert {(m["first_name"], m["relation"]) for m in row["members"]} == {("Mario", "spouse"), ("Teo", "child")}
+    assert api_client.get(f"/invites/{_token(row['invite_url'])}").json()["greeting_kind"] == "family"
+    # The message now goes out from Anna's phone.
+    assert urlparse(row["whatsapp_url"]).path == "/393332222222"
+
+
+def test_a_partner_stays_a_partner_when_the_head_changes(api_client, admin_headers):
+    head_id = _couple(api_client)
+    luca_id = _row(api_client)["members"][0]["id"]
+    api_client.post(f"/admin/invites/{head_id}/head", json={"new_head_id": luca_id})
+    row = _row(api_client)
+    assert row["first_name"] == "Luca"
+    assert [(m["first_name"], m["relation"]) for m in row["members"]] == [("Chiara", "partner")]
+    assert row["greeting_kind"] == "couple" and row["greeting_names"] == ["Luca", "Chiara"]
+
+
+def test_the_head_cannot_change_once_sent_answered_or_split(api_client, admin_headers):
+    head_id = _couple(api_client)
+    luca_id = _row(api_client)["members"][0]["id"]
+
+    # Someone already answered through the link.
+    assert _rsvp(api_client, _token(_row(api_client)["invite_url"]), ["Chiara"]).status_code == 200
+    assert api_client.post(f"/admin/invites/{head_id}/head", json={"new_head_id": luca_id}).status_code == 409
+
+    other = _create(api_client, first_name="Gianni", last_name="Neri", phone="333 5555555").json()
+    other_member = api_client.post(
+        "/admin/invites",
+        json={"first_name": "Rita", "last_name": "Neri", "head_id": other["id"], "relation": "spouse"},
+    ).json()["members"][0]["id"]
+    api_client.post(f"/admin/invites/{other['id']}/mark-sent")
+    assert api_client.post(f"/admin/invites/{other['id']}/head", json={"new_head_id": other_member}).status_code == 409
+
+    split = _create(api_client, first_name="Piero", last_name="Blu", phone="333 6666666").json()
+    split_member = api_client.post(
+        "/admin/invites",
+        json={"first_name": "Lia", "last_name": "Blu", "head_id": split["id"], "relation": "partner"},
+    ).json()["members"][0]["id"]
+    api_client.post(f"/admin/invites/{split['id']}/individual")
+    assert api_client.post(f"/admin/invites/{split['id']}/head", json={"new_head_id": split_member}).status_code == 409
+
+
+def test_changing_the_head_to_someone_outside_the_group_is_not_found(api_client, admin_headers):
+    head = _family(api_client)
+    assert api_client.post(f"/admin/invites/{head['id']}/head", json={"new_head_id": head["id"]}).status_code == 404
+    assert api_client.post(f"/admin/invites/{head['id']}/head", json={"new_head_id": 9999}).status_code == 404

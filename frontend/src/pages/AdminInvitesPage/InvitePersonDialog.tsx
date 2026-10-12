@@ -5,6 +5,7 @@ import { AdminModal } from '@/components/AdminModal';
 import { useI18n } from '@/contexts/I18nContext';
 import { getApiStatusCode } from '@/services/apiErrors';
 import {
+  changeInviteHead,
   createInvite,
   getDuplicateMatches,
   isLockedError,
@@ -66,6 +67,8 @@ export function InvitePersonDialog({
   const [memberRows, setMemberRows] = useState<GroupMemberRow[]>(mode.kind === 'edit' ? (mode.members ?? []) : []);
   const [memberErrors, setMemberErrors] = useState<Partial<Record<InviteFormField, string>>[]>([]);
   const editsGroup = mode.kind === 'edit' && mode.members !== undefined;
+  // Who receives the invite: the current head unless the admin picks someone else from the group.
+  const [newHeadId, setNewHeadId] = useState<number>(mode.kind === 'edit' ? mode.personId : 0);
 
   // A Telegram link opens the form prefilled: say right away if they are already in the table.
   const prefill = mode.kind === 'add' ? mode.prefill : undefined;
@@ -134,6 +137,8 @@ export function InvitePersonDialog({
             setMemberRows([...rows]);
           }
         }
+        // Last, once everyone's data is saved: the roles swap and the ids of head and member trade places.
+        if (newHeadId !== mode.personId) await changeInviteHead(mode.personId, newHeadId);
       } else {
         await createInvite(buildCreatePayload(values), confirmDuplicate);
       }
@@ -338,6 +343,24 @@ export function InvitePersonDialog({
         {editsGroup ? (
           <div className="invite-form__group">
             <p className="obw-portal-kicker">{t('admin.invites.groupTitle')}</p>
+            {memberRows.some((row) => row.id !== null) ? (
+              <label className="invite-form__field">
+                <span>{t('admin.invites.headChoice')}</span>
+                <select value={newHeadId} onChange={(event) => setNewHeadId(Number(event.target.value))}>
+                  <option value={mode.kind === 'edit' ? mode.personId : 0}>
+                    {values.firstName} {values.lastName}
+                  </option>
+                  {memberRows
+                    .filter((row) => row.id !== null)
+                    .map((row) => (
+                      <option key={row.id} value={row.id as number}>
+                        {row.firstName} {row.lastName}
+                      </option>
+                    ))}
+                </select>
+                <small className="invite-form__hint">{t('admin.invites.headChoiceHint')}</small>
+              </label>
+            ) : null}
             {memberRows.map((row, index) => {
               const rowErrors = memberErrors[index] ?? {};
               return (

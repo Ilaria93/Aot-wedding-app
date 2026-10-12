@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  changeInviteHead,
   createInvite,
   fetchAdminInvites,
   fetchPersonWhatsappUrl,
@@ -82,6 +83,12 @@ describe('adminInvitesApi', () => {
     post.mockResolvedValue({ data: { id: 3 } });
     await markInviteSent(3, 7);
     expect(post).toHaveBeenCalledWith('/admin/invites/3/mark-sent', undefined, { params: { person_id: 7 } });
+  });
+
+  it('makes another person of the group the head', async () => {
+    post.mockResolvedValue({ data: { id: 7 } });
+    await changeInviteHead(3, 7);
+    expect(post).toHaveBeenCalledWith('/admin/invites/3/head', { new_head_id: 7 });
   });
 
   it('switches a group to one invite per person', async () => {
