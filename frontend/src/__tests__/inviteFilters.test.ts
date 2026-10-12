@@ -37,8 +37,8 @@ describe('filterInvites', () => {
     expect(filterInvites(all, 'to_send', '').map((i) => i.id)).toEqual([1, 4]);
   });
 
-  it('sent keeps invites with sent_at', () => {
-    expect(filterInvites(all, 'sent', '').map((i) => i.id)).toEqual([2, 3, 5]);
+  it('waiting keeps sent invites nobody answered yet', () => {
+    expect(filterInvites(all, 'waiting', '').map((i) => i.id)).toEqual([2]);
   });
 
   it('answered keeps invites with any answer', () => {
@@ -65,7 +65,7 @@ describe('filterInvites', () => {
   });
 
   it('searches first name, last name and phone, case-insensitively and trimmed', () => {
-    expect(filterInvites(all, 'sent', '  bianchi ').map((i) => i.id)).toEqual([3]);
+    expect(filterInvites(all, 'answered', '  bianchi ').map((i) => i.id)).toEqual([3]);
     expect(filterInvites(all, 'to_send', '3331234').map((i) => i.id)).toEqual([1]);
     expect(filterInvites(all, 'to_send', '333 123').map((i) => i.id)).toEqual([1]);
     expect(filterInvites(all, 'to_send', 'ZIA').map((i) => i.id)).toEqual([4]);
@@ -74,6 +74,6 @@ describe('filterInvites', () => {
 
 describe('countInvites', () => {
   it('counts each filter on the unsearched list', () => {
-    expect(countInvites(all)).toEqual({ to_send: 2, sent: 3, answered: 2 });
+    expect(countInvites(all)).toEqual({ to_send: 2, waiting: 1, answered: 2 });
   });
 });

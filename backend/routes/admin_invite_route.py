@@ -42,7 +42,7 @@ router = APIRouter(prefix="/admin", dependencies=[Depends(require_admin_user)])
 # linked to them under `members`.
 @router.get("/invites", response_model=list[AdminInviteResponse])
 def list_invites(
-    filter: Optional[Literal["to_send", "sent", "answered"]] = None,
+    filter: Optional[Literal["to_send", "waiting", "answered"]] = None,
     search: Optional[str] = None,
     db: Session = Depends(get_db),
 ):

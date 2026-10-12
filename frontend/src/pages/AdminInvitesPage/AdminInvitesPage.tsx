@@ -28,7 +28,7 @@ import { InviteImportDialog } from './InviteImportDialog';
 import { InviteSendDialog } from './InviteSendDialog';
 import { InvitePersonDialog, type PersonDialogMode } from './InvitePersonDialog';
 import { EMPTY_INVITE_FORM, memberRowFromMember, parseAddParams, type InviteFormValues } from './inviteForm';
-import { countInvites, filterInvites, type InviteFilter } from './inviteFilters';
+import { countInvites, countInviteUnits, filterInvites, INVITE_FILTERS, type InviteFilter } from './inviteFilters';
 import './styles/AdminInvitesPage.scss';
 
 function formFromPerson(
@@ -56,7 +56,10 @@ export function AdminInvitesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-  const [filter, setFilter] = useState<InviteFilter>('to_send');
+  const [filter, setFilter] = useState<InviteFilter>(() => {
+    const asked = searchParams.get('filter') as InviteFilter;
+    return INVITE_FILTERS.includes(asked) ? asked : 'to_send';
+  });
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [dialog, setDialog] = useState<PersonDialogMode | null>(null);
@@ -252,7 +255,7 @@ export function AdminInvitesPage() {
         <FilterPills<InviteFilter>
           options={[
             { id: 'to_send', label: t('admin.invites.filterToSend', { count: counts.to_send }) },
-            { id: 'sent', label: t('admin.invites.filterSent', { count: counts.sent }) },
+            { id: 'waiting', label: t('admin.invites.filterWaiting', { count: counts.waiting }) },
             { id: 'answered', label: t('admin.invites.filterAnswered', { count: counts.answered }) },
           ]}
           active={filter}
@@ -261,6 +264,7 @@ export function AdminInvitesPage() {
             setPage(1);
           }}
         />
+        <p className="obw-body obw-body--flush">{t('admin.invites.totalInvites', { count: countInviteUnits(invites) })}</p>
         <SearchBar
           value={search}
           onChange={(next) => {

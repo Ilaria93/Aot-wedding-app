@@ -1,13 +1,21 @@
 import type { AdminInviteItem } from '@/services/adminInvitesApi';
 
-export type InviteFilter = 'to_send' | 'sent' | 'answered';
+export type InviteFilter = 'to_send' | 'waiting' | 'answered';
 
-// Same rules as the backend's list_admin_invites filter.
+export const INVITE_FILTERS: InviteFilter[] = ['to_send', 'waiting', 'answered'];
+
+const hasAnswer = (invite: AdminInviteItem) => invite.answer !== 'none' || invite.members.some((member) => member.answer !== 'none');
+
+// Same rules as the backend's list_admin_invites filter; they never overlap.
 const MATCHES: Record<InviteFilter, (invite: AdminInviteItem) => boolean> = {
-  to_send: (invite) => invite.sent_at === null,
-  sent: (invite) => invite.sent_at !== null,
-  answered: (invite) => invite.answer !== 'none' || invite.members.some((member) => member.answer !== 'none'),
+  to_send: (invite) => invite.sent_at === null && !hasAnswer(invite),
+  waiting: (invite) => invite.sent_at !== null && !hasAnswer(invite),
+  answered: hasAnswer,
 };
+
+/** Invites as the couple counts them: one per shared group, one per person in an individual group. */
+export const countInviteUnits = (invites: AdminInviteItem[]) =>
+  invites.reduce((sum, invite) => sum + (invite.individual ? 1 + invite.members.length : 1), 0);
 
 type Person = { first_name: string; last_name: string; phone: string | null };
 
@@ -32,7 +40,7 @@ export function filterInvites(invites: AdminInviteItem[], filter: InviteFilter, 
 export function countInvites(invites: AdminInviteItem[]): Record<InviteFilter, number> {
   return {
     to_send: invites.filter(MATCHES.to_send).length,
-    sent: invites.filter(MATCHES.sent).length,
+    waiting: invites.filter(MATCHES.waiting).length,
     answered: invites.filter(MATCHES.answered).length,
   };
 }

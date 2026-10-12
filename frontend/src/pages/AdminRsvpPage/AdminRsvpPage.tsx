@@ -44,45 +44,24 @@ import {
 import type { MealChoiceId } from '@/services/rsvpApi';
 import './styles/AdminRsvpPage.scss';
 
-// One card per key RSVP metric.
-function buildStatCards(stats: AdminRsvpStats, pendingCount: number, t: TranslateFn): StatCardData[] {
-  const totalInvited = stats.total_users;
-  const percentOf = (value: number) => (totalInvited > 0 ? Math.round((value / totalInvited) * 100) : 0);
+// One card per key RSVP metric: people as the big number, invites underneath.
+function buildStatCards(stats: AdminRsvpStats, t: TranslateFn): StatCardData[] {
+  const { attending, waiting, declined, to_send } = stats.invites;
+  const card = (id: string, tone: StatCardData['tone'], bucket: { invites: number; persons: number }, extra: Partial<StatCardData> = {}): StatCardData => ({
+    id,
+    tone,
+    label: t(`admin.stats.${id}Card`),
+    value: bucket.persons,
+    unit: t('admin.stats.personsUnit'),
+    subtitle: t('admin.stats.invitesSubtitle', { count: bucket.invites }),
+    ...extra,
+  });
 
   return [
-    {
-      id: 'confirmed',
-      tone: 'gold',
-      label: t('admin.stats.confirmedCard'),
-      value: stats.total_attending,
-      unit: t('admin.stats.guestsUnit'),
-      subtitle: t('admin.stats.confirmedCardSubtitle', { percent: percentOf(stats.total_attending) }),
-    },
-    {
-      id: 'pending',
-      tone: 'bone',
-      label: t('admin.stats.pendingCard'),
-      value: pendingCount,
-      unit: t('admin.stats.pendingUnit'),
-      subtitle: t('admin.stats.pendingCardSubtitle', { percent: percentOf(pendingCount) }),
-    },
-    {
-      id: 'declined',
-      tone: 'stone',
-      label: t('admin.stats.declinedCard'),
-      value: stats.total_not_attending,
-      unit: t('admin.stats.declinedUnit'),
-      subtitle: t('admin.stats.declinedCardSubtitle', { percent: percentOf(stats.total_not_attending) }),
-    },
-    {
-      id: 'seats',
-      tone: 'bone',
-      label: t('admin.stats.totalSeatsCard'),
-      value: stats.total_participants,
-      unit: t('admin.stats.seatsUnit'),
-      subtitle: t('admin.stats.totalSeatsCardSubtitle', { count: stats.total_children }),
-      icon: Utensils,
-    },
+    card('confirmed', 'gold', attending),
+    card('pending', 'bone', waiting, { to: '/admin/invites?filter=waiting' }),
+    card('declined', 'stone', declined),
+    card('toSend', 'bone', to_send, { to: '/admin/invites?filter=to_send' }),
   ];
 }
 
@@ -337,14 +316,13 @@ export function AdminRsvpPage() {
   }
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  const pendingCount = stats ? Math.max(0, stats.total_users - stats.total_confirmed) : 0;
 
   const menuSummary = useMemo(
     () => MEAL_CHOICE_SUMMARY_IDS.map((mealId) => ({ mealId, count: stats?.by_meal_choice?.[mealId] ?? 0 })),
     [stats],
   );
 
-  const statCards = useMemo(() => (stats ? buildStatCards(stats, pendingCount, t) : []), [stats, pendingCount, t]);
+  const statCards = useMemo(() => (stats ? buildStatCards(stats, t) : []), [stats, t]);
   const heroStatsSlot = useAdminHeroStatsSlot();
 
   const filterOptions: FilterPillOption<AdminRsvpEntryFilter>[] = [
