@@ -291,3 +291,12 @@ def test_stats_count_invites_and_the_people_they_stand_for(api_client, admin_hea
     assert invites["to_send"] == {"invites": 3, "persons": 3}
     assert invites["waiting"] == {"invites": 1, "persons": 4}
     assert invites["attending"]["invites"] == 0 and solo
+
+
+def test_export_reads_back_through_the_import(api_client, admin_headers):
+    _couple(api_client)
+    csv_text = api_client.get("/admin/invites/export").text
+    assert csv_text.splitlines()[0].startswith("first_name,last_name")
+    assert "Luca,Verdi,m,partner,Chiara Bianchi" in csv_text
+    report = api_client.post("/admin/invites/import", files={"file": ("x.csv", csv_text.encode(), "text/csv")}).json()
+    assert report["created"] == 0 and len(report["skipped_duplicates"]) == 2

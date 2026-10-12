@@ -173,3 +173,16 @@ def _error_text(error: Exception) -> str:
         first = error.errors()[0]  # pydantic ValidationError
         return f"{first['loc'][-1]}: {first['msg']}" if first.get("loc") else first["msg"]
     return str(error)
+
+
+def export_invites_csv(db: Session) -> str:
+    """Everyone in the table as a CSV the import accepts again (same columns): heads first, each followed by the
+    people linked to them, who name their head."""
+    out = io.StringIO()
+    writer = csv.writer(out)
+    writer.writerow(EXPECTED_COLUMNS)
+    for head in db.query(InviteLink).filter(InviteLink.head_id.is_(None)).order_by(InviteLink.id).all():
+        writer.writerow([head.first_name, head.last_name, head.gender or "", "", "", head.family_name or "", head.phone or "", head.party_size or ""])
+        for member in head.members:
+            writer.writerow([member.first_name, member.last_name, member.gender or "", member.relation, f"{head.first_name} {head.last_name}", "", member.phone or "", ""])
+    return out.getvalue()

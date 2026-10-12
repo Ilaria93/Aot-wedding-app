@@ -288,7 +288,6 @@ export const en = {
       intro: 'Leave us your name and number: Davide and Ilaria will send your personal invite on WhatsApp.',
       firstName: 'First name',
       lastName: 'Last name',
-      lastNameOptional: 'Last name (optional)',
       phone: 'Phone',
       privacy: 'We will only use your number to send you the invite on WhatsApp.',
       submit: 'Send request',
@@ -659,6 +658,7 @@ export const en = {
     invites: {
       listTitle: 'All invites',
       filterToSend: 'To send ({{count}})',
+      lastNameOptional: 'Last name (optional)',
       filterWaiting: 'Waiting for a reply ({{count}})',
       totalInvites: '{{count}} invites in all',
       filterAnswered: 'Answered ({{count}})',
@@ -738,6 +738,7 @@ export const en = {
       duplicateNotSent: 'invite not sent yet',
       addAnyway: 'Add anyway',
       importCsv: 'Import CSV',
+      exportCsv: 'Export contacts',
       importTitle: 'Import the guest list',
       importHelp: 'CSV file with the columns first_name, last_name, gender, relation, head, family_name, phone, party_size. People already in the table are skipped.',
       importChoose: 'Choose the file',

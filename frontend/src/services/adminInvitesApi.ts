@@ -152,6 +152,11 @@ export async function fetchPersonWhatsappUrl(headId: number, personId: number): 
   return data.whatsapp_url;
 }
 
+export async function fetchInvitesCsv(): Promise<Blob> {
+  const { data } = await apiClient.get<Blob>('/admin/invites/export', { responseType: 'blob' });
+  return data;
+}
+
 export async function importInvitesCsv(file: File): Promise<ImportReport> {
   const body = new FormData();
   body.append('file', file);

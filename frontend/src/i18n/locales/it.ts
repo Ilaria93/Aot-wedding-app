@@ -288,7 +288,6 @@ export const it = {
       intro: 'Lasciaci nome e numero: Davide e Ilaria ti manderanno il tuo invito personale su WhatsApp.',
       firstName: 'Nome',
       lastName: 'Cognome',
-      lastNameOptional: 'Cognome (facoltativo)',
       phone: 'Telefono',
       privacy: 'Useremo il numero solo per mandarti l’invito su WhatsApp.',
       submit: 'Invia richiesta',
@@ -661,6 +660,7 @@ export const it = {
     invites: {
       listTitle: 'Tutti gli inviti',
       filterToSend: 'Da inviare ({{count}})',
+      lastNameOptional: 'Cognome (facoltativo)',
       filterWaiting: 'In attesa di risposta ({{count}})',
       totalInvites: '{{count}} inviti in tutto',
       filterAnswered: 'Hanno risposto ({{count}})',
@@ -740,6 +740,7 @@ export const it = {
       duplicateNotSent: 'invito non ancora inviato',
       addAnyway: 'Aggiungi comunque',
       importCsv: 'Importa CSV',
+      exportCsv: 'Esporta contatti',
       importTitle: 'Importa elenco invitati',
       importHelp: 'File CSV con le colonne first_name, last_name, gender, relation, head, family_name, phone, party_size. Chi è già in tabella viene saltato.',
       importChoose: 'Scegli il file',
