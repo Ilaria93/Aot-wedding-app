@@ -204,3 +204,65 @@ def test_changing_the_head_to_someone_outside_the_group_is_not_found(api_client,
     head = _family(api_client)
     assert api_client.post(f"/admin/invites/{head['id']}/head", json={"new_head_id": head["id"]}).status_code == 404
     assert api_client.post(f"/admin/invites/{head['id']}/head", json={"new_head_id": 9999}).status_code == 404
+
+
+# --- linking two people already in the table ----------------------------------------------------
+
+
+def _two_singles(api_client):
+    father = _create(api_client, first_name="Mario", last_name="Rossi", gender="m", phone="333 1111111", family_name="Rossi", party_size=3).json()
+    mother = _create(api_client, first_name="Anna", last_name="Rossi", gender="f", phone="333 2222222", party_size=2).json()
+    return father, mother
+
+
+def _rows(api_client):
+    return {row["first_name"]: row for row in api_client.get("/admin/invites").json()}
+
+
+def test_linking_a_person_already_in_the_table_joins_them_to_the_group(api_client, admin_headers):
+    father, mother = _two_singles(api_client)
+    response = api_client.post(f"/admin/invites/{father['id']}/link", json={"person_id": mother["id"], "relation": "spouse"})
+    assert response.status_code == 200
+
+    rows = _rows(api_client)
+    assert list(rows) == ["Mario"]  # Anna no longer has an invite of her own
+    group = rows["Mario"]
+    assert [(m["first_name"], m["relation"]) for m in group["members"]] == [("Anna", "spouse")]
+    assert group["invite_url"] == father["invite_url"]
+    assert (group["family_name"], group["party_size"]) == ("Rossi", 3)  # the head's, not Anna's
+    assert group["greeting_kind"] == "family"
+    # Anna's old link is gone.
+    assert api_client.get(f"/invites/{_token(mother['invite_url'])}").status_code == 404
+
+
+def test_linking_follows_the_group_rules(api_client, admin_headers):
+    father, mother = _two_singles(api_client)
+    third = _create(api_client, first_name="Gigi", last_name="Neri", phone="333 3333333").json()
+    api_client.post(f"/admin/invites/{father['id']}/link", json={"person_id": mother["id"], "relation": "spouse"})
+    # A second spouse, or a fiancé mixed into a family, is refused.
+    assert api_client.post(f"/admin/invites/{father['id']}/link", json={"person_id": third["id"], "relation": "spouse"}).status_code == 422
+    assert api_client.post(f"/admin/invites/{father['id']}/link", json={"person_id": third["id"], "relation": "partner"}).status_code == 422
+    assert api_client.post(f"/admin/invites/{father['id']}/link", json={"person_id": third["id"], "relation": "child"}).status_code == 200
+
+
+def test_linking_is_refused_for_yourself_members_and_unknown_people(api_client, admin_headers):
+    father, mother = _two_singles(api_client)
+    assert api_client.post(f"/admin/invites/{father['id']}/link", json={"person_id": father["id"], "relation": "spouse"}).status_code == 422
+    assert api_client.post(f"/admin/invites/{father['id']}/link", json={"person_id": 9999, "relation": "spouse"}).status_code == 404
+    assert api_client.post("/admin/invites/9999/link", json={"person_id": mother["id"], "relation": "spouse"}).status_code == 404
+
+    # Someone who already has a group of their own can't be linked.
+    api_client.post("/admin/invites", json={"first_name": "Teo", "last_name": "Rossi", "head_id": mother["id"], "relation": "child"})
+    assert api_client.post(f"/admin/invites/{father['id']}/link", json={"person_id": mother["id"], "relation": "spouse"}).status_code == 422
+
+
+def test_linking_is_refused_once_sent_or_answered(api_client, admin_headers):
+    father, mother = _two_singles(api_client)
+    api_client.post(f"/admin/invites/{mother['id']}/mark-sent")
+    assert api_client.post(f"/admin/invites/{father['id']}/link", json={"person_id": mother["id"], "relation": "spouse"}).status_code == 409
+    assert api_client.post(f"/admin/invites/{mother['id']}/link", json={"person_id": father["id"], "relation": "spouse"}).status_code == 409
+
+    answered = _create(api_client, first_name="Ugo", last_name="Blu", phone="333 7777777").json()
+    other = _create(api_client, first_name="Eva", last_name="Blu", phone="333 8888888").json()
+    assert _rsvp(api_client, _token(answered["invite_url"]), ["Ugo"]).status_code == 200
+    assert api_client.post(f"/admin/invites/{other['id']}/link", json={"person_id": answered["id"], "relation": "spouse"}).status_code == 409

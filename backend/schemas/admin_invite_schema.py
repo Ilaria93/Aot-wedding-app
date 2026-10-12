@@ -13,6 +13,11 @@ class ChangeHeadRequest(BaseModel):
     new_head_id: int
 
 
+class LinkPersonRequest(BaseModel):
+    person_id: int
+    relation: Relation
+
+
 class AdminInviteMember(BaseModel):
     id: int
     first_name: str

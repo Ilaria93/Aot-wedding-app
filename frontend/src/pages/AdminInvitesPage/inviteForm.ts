@@ -61,6 +61,8 @@ export type GroupMemberRow = {
   /** Not editable here, but kept so saving a row never wipes it. */
   gender: '' | Gender;
   relation: '' | Relation;
+  /** Set on a row that links a person already in the table (their id, 0 until chosen): no new person is created. */
+  linkFrom?: number;
 };
 
 export function memberRowFromMember(member: InviteMember): GroupMemberRow {
@@ -77,6 +79,11 @@ export function memberRowFromMember(member: InviteMember): GroupMemberRow {
 /** A blank row for "add person": same surname as the head, the relation still to choose. */
 export function emptyMemberRow(headLastName: string): GroupMemberRow {
   return { id: null, firstName: '', lastName: headLastName, phone: '', gender: '', relation: '' };
+}
+
+/** A row to link someone already in the table: the person is picked from a list, then their relation. */
+export function emptyLinkRow(): GroupMemberRow {
+  return { id: null, firstName: '', lastName: '', phone: '', gender: '', relation: '', linkFrom: 0 };
 }
 
 /** The member row as the regular form values, so it is validated and sent like any linked person. */

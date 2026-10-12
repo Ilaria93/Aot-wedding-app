@@ -128,6 +128,12 @@ export async function markInviteSent(inviteId: number, personId?: number): Promi
   return data;
 }
 
+// Links a person already in the table (alone, not yet sent) to this group, with their relation to the head.
+export async function linkInvitePerson(headId: number, personId: number, relation: Relation): Promise<AdminInviteItem> {
+  const { data } = await apiClient.post<AdminInviteItem>(`/admin/invites/${headId}/link`, { person_id: personId, relation });
+  return data;
+}
+
 // Makes someone else in the group the head, so the invite goes out from their phone (before it is sent/answered).
 export async function changeInviteHead(headId: number, newHeadId: number): Promise<AdminInviteItem> {
   const { data } = await apiClient.post<AdminInviteItem>(`/admin/invites/${headId}/head`, { new_head_id: newHeadId });

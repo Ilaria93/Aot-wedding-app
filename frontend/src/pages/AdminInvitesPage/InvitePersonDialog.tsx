@@ -1,4 +1,4 @@
-import { Trash2, UserPlus } from 'lucide-react';
+import { Link2, Trash2, UserPlus } from 'lucide-react';
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 
 import { AdminModal } from '@/components/AdminModal';
@@ -9,6 +9,7 @@ import {
   createInvite,
   getDuplicateMatches,
   isLockedError,
+  linkInvitePerson,
   lookupInvites,
   updateInvite,
   type AdminInviteItem,
@@ -19,6 +20,7 @@ import {
   EMPTY_INVITE_FORM,
   RELATION_KEYS,
   buildCreatePayload,
+  emptyLinkRow,
   emptyMemberRow,
   memberRowToForm,
   validateInviteForm,
@@ -106,6 +108,29 @@ export function InvitePersonDialog({
     return t('admin.invites.errorRequired');
   };
 
+  // People already in the table that can still join this group: alone, nothing sent or answered, not picked yet.
+  const pickedIds = memberRows.map((row) => row.linkFrom).filter(Boolean);
+  const linkable = editableHeads.filter(
+    (head) =>
+      mode.kind === 'edit' &&
+      head.id !== mode.personId &&
+      head.members.length === 0 &&
+      !head.individual &&
+      head.answer === 'none' &&
+      !pickedIds.includes(head.id),
+  );
+  const linkChoices = (own: number) => editableHeads.filter((head) => head.id === own || linkable.some((l) => l.id === head.id));
+
+  function pickLinked(index: number, personId: number) {
+    const person = editableHeads.find((head) => head.id === personId);
+    updateMember(index, {
+      linkFrom: personId,
+      firstName: person?.first_name ?? '',
+      lastName: person?.last_name ?? '',
+      phone: person?.phone ?? '',
+    });
+  }
+
   function updateMember(index: number, patch: Partial<GroupMemberRow>) {
     setMemberRows((rows) => rows.map((row, i) => (i === index ? { ...row, ...patch } : row)));
   }
@@ -129,6 +154,11 @@ export function InvitePersonDialog({
           if (rows[index].id !== null) {
             const { head_id: _memberHead, ...memberChanges } = payload;
             await updateInvite(rows[index].id as number, memberChanges);
+          } else if (rows[index].linkFrom) {
+            // Someone already in the table: their own invite becomes part of this group (same row, same id).
+            await linkInvitePerson(mode.personId, rows[index].linkFrom as number, rows[index].relation as Relation);
+            rows[index] = { ...rows[index], id: rows[index].linkFrom as number };
+            setMemberRows([...rows]);
           } else {
             const updatedHead = await createInvite(payload, confirmDuplicate);
             // The newest person of the group is the one just added. Remember its id: if a later row fails
@@ -363,8 +393,44 @@ export function InvitePersonDialog({
             ) : null}
             {memberRows.map((row, index) => {
               const rowErrors = memberErrors[index] ?? {};
+              const isLink = row.linkFrom !== undefined && row.id === null;
               return (
                 <div className="invite-form__member" key={row.id ?? `new-${index}`}>
+                  {isLink ? (
+                    <div className="invite-form__row">
+                      <label className="invite-form__field">
+                        <span>{t('admin.invites.linkPick')}</span>
+                        <select
+                          value={row.linkFrom}
+                          aria-invalid={Boolean(rowErrors.firstName)}
+                          onChange={(event) => pickLinked(index, Number(event.target.value))}>
+                          <option value={0}>{t('admin.invites.linkPlaceholder')}</option>
+                          {linkChoices(row.linkFrom ?? 0).map((head) => (
+                            <option key={head.id} value={head.id}>
+                              {head.first_name} {head.last_name}
+                            </option>
+                          ))}
+                        </select>
+                        {rowErrors.firstName ? <small>{t('admin.invites.errorRequired')}</small> : null}
+                      </label>
+                      <label className="invite-form__field">
+                        <span>{t('admin.invites.relationLabel')}</span>
+                        <select
+                          value={row.relation}
+                          aria-invalid={Boolean(rowErrors.relation)}
+                          onChange={(event) => updateMember(index, { relation: event.target.value as GroupMemberRow['relation'] })}>
+                          <option value="">{t('admin.invites.relationPlaceholder')}</option>
+                          {RELATIONS.map((relation) => (
+                            <option key={relation} value={relation}>
+                              {t(RELATION_KEYS[relation])}
+                            </option>
+                          ))}
+                        </select>
+                        {rowErrors.relation ? <small>{t('admin.invites.errorRequired')}</small> : null}
+                      </label>
+                    </div>
+                  ) : (
+                  <>
                   <div className="invite-form__row">
                     <label className="invite-form__field">
                       <span>{t('admin.invites.firstName')}</span>
@@ -413,6 +479,8 @@ export function InvitePersonDialog({
                       {rowErrors.relation ? <small>{t('admin.invites.errorRequired')}</small> : null}
                     </label>
                   </div>
+                  </>
+                  )}
                   {row.id === null ? (
                     <button
                       type="button"
@@ -433,6 +501,15 @@ export function InvitePersonDialog({
               <UserPlus size={14} aria-hidden />
               {t('admin.invites.addPerson')}
             </button>
+            {linkable.length > 0 ? (
+              <button
+                type="button"
+                className="obw-portal-btn obw-portal-btn--secondary"
+                onClick={() => setMemberRows((rows) => [...rows, emptyLinkRow()])}>
+                <Link2 size={14} aria-hidden />
+                {t('admin.invites.linkPerson')}
+              </button>
+            ) : null}
           </div>
         ) : null}
 
