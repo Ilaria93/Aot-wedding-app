@@ -335,3 +335,47 @@
   }
 }
 
+
+// Hover/focus tooltip with the detail of what a button does (text comes from data-tip).
+[data-tip] {
+  position: relative;
+}
+
+[data-tip]:hover::after,
+[data-tip]:focus-visible::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: 60;
+  width: max-content;
+  max-width: 220px;
+  padding: 8px 10px;
+  border: 1px solid var(--obw-border);
+  border-radius: 8px;
+  background: #2b2321;
+  color: var(--obw-bone);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  white-space: normal;
+  pointer-events: none;
+}
+
+.admin-invites__icon[data-tip]:hover::after,
+.admin-invites__icon[data-tip]:focus-visible::after,
+.admin-contacts__supplier-manage-row [data-tip]:hover::after,
+.admin-contacts__supplier-actions [data-tip]:hover::after,
+.admin-photo-card__actions [data-tip]:hover::after {
+  right: 0;
+  left: auto;
+}
+
+// The card clips what sticks out of it, so the tooltips of the top-right icons open downwards.
+.admin-contacts__supplier-actions [data-tip]:hover::after {
+  top: calc(100% + 8px);
+  bottom: auto;
+}

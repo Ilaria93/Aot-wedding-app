@@ -384,15 +384,17 @@ export function AdminContactsPage() {
               const callAction = actions.find((action) => action.id === 'phone');
               const messageAction = actions.find((action) => action.id === 'whatsapp');
               const manageActions = [
-                { icon: Pencil, label: t('admin.contacts.edit'), onClick: () => startEdit(contact) },
+                { icon: Pencil, label: t('admin.contacts.edit'), tip: t('admin.contacts.tipEdit'), onClick: () => startEdit(contact) },
                 {
                   icon: contact.is_active ? EyeOff : Eye,
                   label: contact.is_active ? t('admin.contacts.hide') : t('admin.contacts.activate'),
+                  tip: t(contact.is_active ? 'admin.contacts.tipHide' : 'admin.contacts.tipActivate'),
                   onClick: () => void handleToggleActive(contact),
                 },
                 {
                   icon: Trash2,
                   label: t('admin.contacts.delete'),
+                  tip: t('admin.contacts.tipDelete'),
                   onClick: () => setDeleteTarget(contact),
                   danger: true,
                 },
@@ -409,8 +411,8 @@ export function AdminContactsPage() {
                   roleName={contact.contact_person || '—'}
                   infoItems={supplierInfoItems(contact)}
                   note={contact.notes}
-                  callAction={callAction}
-                  messageAction={messageAction}
+                  callAction={callAction && { ...callAction, tip: t('admin.contacts.tipCall', { name: contact.label }) }}
+                  messageAction={messageAction && { ...messageAction, tip: t('admin.contacts.tipMessage', { name: contact.label }) }}
                   manageActions={manageActions}
                 />
               );
