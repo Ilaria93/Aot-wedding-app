@@ -8,7 +8,7 @@ export type Relation = 'spouse' | 'partner' | 'child' | 'other';
 export type { GreetingKind } from '@/services/inviteApi';
 import type { GreetingKind } from '@/services/inviteApi';
 
-/** Someone linked to a head: rides on the head's invite, has no link of their own. */
+/** Someone linked to a head. In a shared invite they ride on the head's link; in an individual group they have their own. */
 export type InviteMember = {
   id: number;
   first_name: string;
@@ -16,6 +16,10 @@ export type InviteMember = {
   phone: string | null;
   gender: Gender | null;
   relation: Relation;
+  /** Individual groups only. */
+  sent_at: string | null;
+  answer: InviteAnswer;
+  invite_url: string | null;
 };
 
 /** A head: the person who receives the invite, with the people linked to them. */
@@ -27,8 +31,14 @@ export type AdminInviteItem = {
   gender: Gender | null;
   family_name: string | null;
   party_size: number | null;
+  /** When the whole group was sent: for an individual group, once every person has been. */
   sent_at: string | null;
+  /** The head's own send time (an individual group can be only partly sent). */
+  own_sent_at: string | null;
+  /** The head's own answer; each member's is on the member. */
   answer: InviteAnswer;
+  /** One invite per person: own link, own greeting, own answer. */
+  individual: boolean;
   invite_url: string;
   /** Built by the backend with the personal message already written. */
   whatsapp_url: string;
@@ -105,9 +115,22 @@ export async function deleteInvite(id: number): Promise<void> {
   await apiClient.delete(`/admin/invites/${id}`);
 }
 
-// Called right after the admin opens the WhatsApp link.
-export async function markInviteSent(inviteId: number): Promise<AdminInviteItem> {
-  const { data } = await apiClient.post<AdminInviteItem>(`/admin/invites/${inviteId}/mark-sent`);
+// Removes one person from a group (only before the invite is sent).
+export async function deleteInviteMember(headId: number, memberId: number): Promise<void> {
+  await apiClient.delete(`/admin/invites/${headId}/members/${memberId}`);
+}
+
+// Called right after the admin opens the WhatsApp link. `personId`: whose own invite it was (individual groups).
+export async function markInviteSent(inviteId: number, personId?: number): Promise<AdminInviteItem> {
+  const { data } = await apiClient.post<AdminInviteItem>(`/admin/invites/${inviteId}/mark-sent`, undefined, {
+    params: personId === undefined ? undefined : { person_id: personId },
+  });
+  return data;
+}
+
+// Switches a group to one invite per person (decided at the first send); gives everyone a link of their own.
+export async function makeInviteIndividual(headId: number): Promise<AdminInviteItem> {
+  const { data } = await apiClient.post<AdminInviteItem>(`/admin/invites/${headId}/individual`);
   return data;
 }
 

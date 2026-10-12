@@ -47,6 +47,8 @@ export function RsvpPartyForm({
 }: RsvpPartyFormProps) {
   const { t } = useI18n();
   const canAddGuest = attending && guests.length < partyLimits.max;
+  // An individual invite answers for one person only: nothing about group size to show.
+  const soloInvite = partyLimits.max === 1;
 
   function updateGuest(clientId: string, patch: Partial<RsvpGuestDraft>) {
     onGuestsChange(
@@ -112,25 +114,27 @@ export function RsvpPartyForm({
 
       {attending ? (
         <div className="rsvp-panel__section">
-          <label className="obw-field" htmlFor="rsvp-party-size">
-            <span className="obw-kicker">{t('rsvp.partySizeLabel')}</span>
-            <select
-              id="rsvp-party-size"
-              className="obw-select"
-              value={guests.length}
-              onChange={(event) => setPartySize(Number(event.target.value))}>
-              {Array.from({ length: partyLimits.max }, (_, index) => (
-                <option key={index + 1} value={index + 1}>
-                  {index + 1}
-                </option>
-              ))}
-            </select>
-          </label>
-          <p className="obw-body rsvp-panel__hint">{t('rsvp.partySizeHint')}</p>
+          {soloInvite ? null : (
+            <label className="obw-field" htmlFor="rsvp-party-size">
+              <span className="obw-kicker">{t('rsvp.partySizeLabel')}</span>
+              <select
+                id="rsvp-party-size"
+                className="obw-select"
+                value={guests.length}
+                onChange={(event) => setPartySize(Number(event.target.value))}>
+                {Array.from({ length: partyLimits.max }, (_, index) => (
+                  <option key={index + 1} value={index + 1}>
+                    {index + 1}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          {soloInvite ? null : <p className="obw-body rsvp-panel__hint">{t('rsvp.partySizeHint')}</p>}
           <div className="rsvp-panel__party-meta">
             <p className="obw-kicker">{t('rsvp.guestsTitle')}</p>
           </div>
-          <p className="obw-body rsvp-panel__hint">{guestsHint ?? t('rsvp.guestsHint')}</p>
+          {soloInvite ? null : <p className="obw-body rsvp-panel__hint">{guestsHint ?? t('rsvp.guestsHint')}</p>}
 
           <div className="rsvp-guest-list">
             {guests.map((guest, index) => (
@@ -159,7 +163,7 @@ export function RsvpPartyForm({
               }}>
               {addGuestLabel ?? t('rsvp.addGuest')}
             </button>
-          ) : (
+          ) : soloInvite ? null : (
             <p className="obw-body rsvp-panel__hint rsvp-panel__limit">
               {t('rsvp.maxGuestsReached', { max: partyLimits.max })}
             </p>

@@ -6,7 +6,7 @@ export type InviteFilter = 'to_send' | 'sent' | 'answered';
 const MATCHES: Record<InviteFilter, (invite: AdminInviteItem) => boolean> = {
   to_send: (invite) => invite.sent_at === null,
   sent: (invite) => invite.sent_at !== null,
-  answered: (invite) => invite.answer !== 'none',
+  answered: (invite) => invite.answer !== 'none' || invite.members.some((member) => member.answer !== 'none'),
 };
 
 type Person = { first_name: string; last_name: string; phone: string | null };

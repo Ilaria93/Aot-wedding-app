@@ -156,6 +156,25 @@ def test_delete_removes_the_head_and_its_members(api_client, admin_headers):
     assert api_client.get("/admin/invites").json() == []
 
 
+def test_delete_member_removes_only_that_person(api_client, admin_headers):
+    head = _head(api_client)
+    member_id = _member(api_client, head["id"], "spouse").json()["members"][0]["id"]
+    _member(api_client, head["id"], "child", first_name="Matteo")
+
+    assert api_client.delete(f"/admin/invites/{head['id']}/members/{member_id}").status_code == 204
+    [row] = api_client.get("/admin/invites").json()
+    assert [member["first_name"] for member in row["members"]] == ["Matteo"]
+    assert api_client.delete(f"/admin/invites/{head['id']}/members/{member_id}").status_code == 404
+    assert api_client.delete(f"/admin/invites/{head['id']}/members/{head['id']}").status_code == 404
+
+
+def test_delete_member_is_locked_after_send(api_client, admin_headers):
+    head = _head(api_client)
+    member_id = _member(api_client, head["id"], "spouse").json()["members"][0]["id"]
+    api_client.post(f"/admin/invites/{head['id']}/mark-sent")
+    assert api_client.delete(f"/admin/invites/{head['id']}/members/{member_id}").status_code == 409
+
+
 def test_list_shows_only_heads_and_search_finds_members(api_client, admin_headers):
     head = _head(api_client)
     _member(api_client, head["id"], "spouse")

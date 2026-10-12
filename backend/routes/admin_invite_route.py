@@ -19,9 +19,11 @@ from services.admin_invite_service import (
     InviteNotFoundError,
     create_person,
     delete_invite,
+    delete_member,
     find_matches,
     get_admin_invite,
     list_admin_invites,
+    make_individual,
     mark_invite_sent,
     to_admin_invite,
     update_person,
@@ -118,6 +120,18 @@ def remove_invite(invite_id: int, db: Session = Depends(get_db)):
     return Response(status_code=204)
 
 
+# Removes one person from a group (only before the invite is sent).
+@router.delete("/invites/{head_id}/members/{member_id}", status_code=204)
+def remove_member(head_id: int, member_id: int, db: Session = Depends(get_db)):
+    try:
+        delete_member(db, head_id, member_id)
+    except InviteNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+    except InviteLockedError as error:
+        raise HTTPException(status_code=409, detail={"code": "locked", "message": str(error)}) from error
+    return Response(status_code=204)
+
+
 # The head's invite addressed to one person of the group.
 @router.get("/invites/{head_id}/whatsapp/{person_id}")
 def person_whatsapp(head_id: int, person_id: int, db: Session = Depends(get_db)):
@@ -129,10 +143,24 @@ def person_whatsapp(head_id: int, person_id: int, db: Session = Depends(get_db))
         raise HTTPException(status_code=422, detail=str(error)) from error
 
 
-# Called by the admin page right after it opens the wa.me link.
+# Called by the admin page right after it opens the wa.me link. `person_id` is whose own invite it was when the
+# group is sent one invite per person.
 @router.post("/invites/{invite_id}/mark-sent", response_model=AdminInviteResponse)
-def mark_sent(invite_id: int, db: Session = Depends(get_db)):
+def mark_sent(invite_id: int, person_id: Optional[int] = Query(default=None), db: Session = Depends(get_db)):
     try:
-        return mark_invite_sent(db, invite_id)
+        return mark_invite_sent(db, invite_id, person_id)
     except InviteNotFoundError as error:
         raise HTTPException(status_code=404, detail=str(error)) from error
+
+
+# Switches a group to one invite per person (a link, a greeting and an answer each); decided at the first send.
+@router.post("/invites/{invite_id}/individual", response_model=AdminInviteResponse)
+def individual_invites(invite_id: int, db: Session = Depends(get_db)):
+    try:
+        return make_individual(db, invite_id)
+    except InviteNotFoundError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+    except InviteLockedError as error:
+        raise HTTPException(status_code=409, detail={"code": "locked", "message": str(error)}) from error
+    except InvalidInviteError as error:
+        raise HTTPException(status_code=422, detail=str(error)) from error

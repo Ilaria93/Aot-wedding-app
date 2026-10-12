@@ -13,8 +13,11 @@ import { SearchBar } from '@/components/SearchBar';
 import { useI18n } from '@/contexts/I18nContext';
 import {
   deleteInvite,
+  deleteInviteMember,
   fetchAdminInvites,
   fetchPersonWhatsappUrl,
+  isLockedError,
+  makeInviteIndividual,
   markInviteSent,
   type AdminInviteItem,
   type InviteMatch,
@@ -22,8 +25,9 @@ import {
 } from '@/services/adminInvitesApi';
 import { InviteCard } from './InviteCard';
 import { InviteImportDialog } from './InviteImportDialog';
+import { InviteSendDialog } from './InviteSendDialog';
 import { InvitePersonDialog, type PersonDialogMode } from './InvitePersonDialog';
-import { EMPTY_INVITE_FORM, parseAddParams, type InviteFormValues } from './inviteForm';
+import { EMPTY_INVITE_FORM, memberRowFromMember, parseAddParams, type InviteFormValues } from './inviteForm';
 import { countInvites, filterInvites, type InviteFilter } from './inviteFilters';
 import './styles/AdminInvitesPage.scss';
 
@@ -57,7 +61,10 @@ export function AdminInvitesPage() {
   const [page, setPage] = useState(1);
   const [dialog, setDialog] = useState<PersonDialogMode | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AdminInviteItem | null>(null);
+  const [memberDeleteTarget, setMemberDeleteTarget] = useState<{ invite: AdminInviteItem; member: InviteMember } | null>(null);
   const [importOpen, setImportOpen] = useState(false);
+  // Id of the group being sent to: kept here, not in the card, because the card leaves the 'to send' list after the first tap.
+  const [sendDialogId, setSendDialogId] = useState<number | null>(null);
   const [sendingId, setSendingId] = useState<number | null>(null);
   const sendingRef = useRef(false);
 
@@ -98,7 +105,7 @@ export function AdminInvitesPage() {
 
   // Opens WhatsApp for `headId` and marks the invite sent. The tab is opened inside
   // the click: browsers block window.open after an await.
-  async function sendViaWhatsapp(headId: number, resolveUrl: () => string | Promise<string>) {
+  async function sendViaWhatsapp(headId: number, resolveUrl: () => string | Promise<string>, personId?: number) {
     if (sendingRef.current) return;
     sendingRef.current = true;
     setError(null);
@@ -117,10 +124,10 @@ export function AdminInvitesPage() {
       try {
         if (whatsappTab) {
           whatsappTab.location.href = url;
-          await markInviteSent(headId);
+          await markInviteSent(headId, personId);
         } else {
           // Popup blocked: mark as sent before navigating away from this page.
-          await markInviteSent(headId);
+          await markInviteSent(headId, personId);
           window.location.href = url;
         }
       } catch {
@@ -137,8 +144,18 @@ export function AdminInvitesPage() {
     void sendViaWhatsapp(invite.id, () => invite.whatsapp_url);
   }
 
+  // A member's chat: their own invite in an individual group, otherwise the shared invite sent to their phone.
   function handleSendToMember(invite: AdminInviteItem, member: InviteMember) {
-    void sendViaWhatsapp(invite.id, () => fetchPersonWhatsappUrl(invite.id, member.id));
+    void sendViaWhatsapp(invite.id, () => fetchPersonWhatsappUrl(invite.id, member.id), invite.individual ? member.id : undefined);
+  }
+
+  // First send as one invite per person: everyone gets a link of their own, then the head's goes out right away
+  // (the chat tab is opened inside the click, see sendViaWhatsapp).
+  function handleSendIndividually(invite: AdminInviteItem) {
+    void sendViaWhatsapp(invite.id, async () => {
+      await makeInviteIndividual(invite.id);
+      return fetchPersonWhatsappUrl(invite.id, invite.id);
+    });
   }
 
   // "Rimanda" from the duplicates panel: the match is a head or someone in their group.
@@ -168,9 +185,22 @@ export function AdminInvitesPage() {
     await reload();
   }
 
-  async function handleCopy(invite: AdminInviteItem) {
+  async function handleDeleteMember(target: { invite: AdminInviteItem; member: InviteMember }) {
+    setMemberDeleteTarget(null);
     setError(null);
-    if (await copyToClipboard(invite.invite_url)) {
+    setNotice(null);
+    try {
+      await deleteInviteMember(target.invite.id, target.member.id);
+      setNotice(t('admin.invites.memberDeleted', { name: target.member.first_name }));
+    } catch (caughtError) {
+      setError(isLockedError(caughtError) ? t('admin.invites.lockedError') : t('admin.invites.actionFailed'));
+    }
+    await reload();
+  }
+
+  async function handleCopy(url: string) {
+    setError(null);
+    if (await copyToClipboard(url)) {
       setNotice(t('admin.invites.linkCopied'));
     } else {
       setError(t('admin.invites.actionFailed'));
@@ -186,20 +216,11 @@ export function AdminInvitesPage() {
         familyName: invite.family_name ?? '',
         partySize: invite.party_size ? String(invite.party_size) : '',
       }),
+      members: invite.members.map(memberRowFromMember),
     });
   }
 
-  function handleEditMember(invite: AdminInviteItem, member: InviteMember) {
-    setDialog({
-      kind: 'edit',
-      personId: member.id,
-      values: formFromPerson(member, { role: 'member', headId: invite.id, relation: member.relation }),
-    });
-  }
-
-  function handleAddMember(invite: AdminInviteItem) {
-    setDialog({ kind: 'add', prefill: { role: 'member', headId: invite.id } });
-  }
+  const sendDialogInvite = invites.find((invite) => invite.id === sendDialogId) ?? null;
 
   if (loading) {
     return <LoadingScreen label={t('common.loading')} />;
@@ -259,12 +280,11 @@ export function AdminInvitesPage() {
                 busy={sendingId !== null}
                 formatDate={formatDate}
                 onSend={handleSend}
-                onSendToMember={handleSendToMember}
-                onCopy={(target) => void handleCopy(target)}
+                onOpenSend={(target) => setSendDialogId(target.id)}
+                onCopy={(url) => void handleCopy(url)}
                 onEdit={handleEdit}
-                onEditMember={handleEditMember}
-                onAddMember={handleAddMember}
                 onDelete={setDeleteTarget}
+                onDeleteMember={(target, member) => setMemberDeleteTarget({ invite: target, member })}
               />
             ))}
           </ul>
@@ -303,6 +323,30 @@ export function AdminInvitesPage() {
           }
           onConfirm={() => void handleDelete(deleteTarget)}
           onClose={() => setDeleteTarget(null)}
+          t={t}
+        />
+      ) : null}
+      {sendDialogInvite ? (
+        <InviteSendDialog
+          invite={sendDialogInvite}
+          busy={sendingId !== null}
+          onSendShared={handleSend}
+          onSendIndividually={handleSendIndividually}
+          onSendHead={handleSend}
+          onSendMember={handleSendToMember}
+          onClose={() => setSendDialogId(null)}
+        />
+      ) : null}
+      {memberDeleteTarget ? (
+        <AdminConfirmDialog
+          titleId="admin-member-delete-title"
+          title={t('admin.invites.deleteMember')}
+          message={t('admin.invites.confirmDeleteMember', {
+            name: `${memberDeleteTarget.member.first_name} ${memberDeleteTarget.member.last_name}`,
+            head: `${memberDeleteTarget.invite.first_name} ${memberDeleteTarget.invite.last_name}`,
+          })}
+          onConfirm={() => void handleDeleteMember(memberDeleteTarget)}
+          onClose={() => setMemberDeleteTarget(null)}
           t={t}
         />
       ) : null}

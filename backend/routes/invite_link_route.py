@@ -7,7 +7,7 @@ from constants.rsvp_party import MAX_PARTY_GUESTS, MIN_PARTY_GUESTS
 from database.base import get_db
 from schemas.invite_link_schema import InviteLinkResponse
 from schemas.rsvp_lookup_schema import RsvpMeResponse
-from services.invite_greeting_service import build_greeting, default_party_guests, greeting_names
+from services.invite_greeting_service import default_party_guests, invite_greeting, is_individual_invite
 from services.invite_link_service import get_invite_by_token
 from services.rsvp_service import get_rsvp_for_user
 
@@ -22,16 +22,18 @@ def read_invite(token: str, db: Session = Depends(get_db)):
     invite = get_invite_by_token(db, token)
     if not invite:
         raise HTTPException(status_code=404, detail="Invite not found")
-    greeting_kind, greeting_name = build_greeting(invite, invite.members)
+    greeting_kind, greeting_name, names = invite_greeting(invite)
+    # An individual invite answers for that one person only: no extra guests.
+    individual = is_individual_invite(invite)
     return InviteLinkResponse(
         first_name=invite.first_name,
         last_name=invite.last_name,
         greeting_kind=greeting_kind,
         greeting_name=greeting_name,
-        greeting_names=greeting_names(greeting_kind, greeting_name, invite, invite.members),
+        greeting_names=names,
         min_party_guests=MIN_PARTY_GUESTS,
-        max_party_guests=MAX_PARTY_GUESTS,
-        default_party_guests=default_party_guests(invite, invite.members, MAX_PARTY_GUESTS),
+        max_party_guests=1 if individual else MAX_PARTY_GUESTS,
+        default_party_guests=1 if individual else default_party_guests(invite, invite.members, MAX_PARTY_GUESTS),
     )
 
 

@@ -1,4 +1,4 @@
-import type { CreateInvitePayload, Gender, Relation } from '@/services/adminInvitesApi';
+import type { CreateInvitePayload, Gender, InviteMember, Relation } from '@/services/adminInvitesApi';
 
 export type InviteFormValues = {
   firstName: string;
@@ -51,6 +51,38 @@ export function validateInviteForm(values: InviteFormValues): Partial<Record<Inv
 }
 
 const orNull = (value: string) => value.trim() || null;
+
+/** One person of the group as the edit dialog shows them: `id` is null until a newly added row is saved. */
+export type GroupMemberRow = {
+  id: number | null;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  /** Not editable here, but kept so saving a row never wipes it. */
+  gender: '' | Gender;
+  relation: '' | Relation;
+};
+
+export function memberRowFromMember(member: InviteMember): GroupMemberRow {
+  return {
+    id: member.id,
+    firstName: member.first_name,
+    lastName: member.last_name,
+    phone: member.phone ?? '',
+    gender: member.gender ?? '',
+    relation: member.relation,
+  };
+}
+
+/** A blank row for "add person": same surname as the head, the relation still to choose. */
+export function emptyMemberRow(headLastName: string): GroupMemberRow {
+  return { id: null, firstName: '', lastName: headLastName, phone: '', gender: '', relation: '' };
+}
+
+/** The member row as the regular form values, so it is validated and sent like any linked person. */
+export function memberRowToForm(row: GroupMemberRow, headId: number): InviteFormValues {
+  return { ...EMPTY_INVITE_FORM, firstName: row.firstName, lastName: row.lastName, phone: row.phone, gender: row.gender, role: 'member', headId, relation: row.relation };
+}
 
 export function buildCreatePayload(values: InviteFormValues): CreateInvitePayload {
   const isMember = values.role === 'member';

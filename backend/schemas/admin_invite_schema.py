@@ -16,6 +16,10 @@ class AdminInviteMember(BaseModel):
     phone: Optional[str] = None
     gender: Optional[Gender] = None
     relation: Relation
+    # Only meaningful when the group was sent as one invite per person.
+    sent_at: Optional[datetime] = None
+    answer: InviteAnswer = "none"
+    invite_url: Optional[str] = None
 
 
 class AdminInviteResponse(BaseModel):
@@ -26,8 +30,14 @@ class AdminInviteResponse(BaseModel):
     gender: Optional[Gender] = None
     family_name: Optional[str] = None
     party_size: Optional[int] = None
+    # When the whole group was sent: for an individual group, once every person has been.
     sent_at: Optional[datetime] = None
+    # The head's own send time (differs from sent_at while an individual group is only partly sent).
+    own_sent_at: Optional[datetime] = None
+    # The head's own answer; each member's is on the member (individual groups).
     answer: InviteAnswer
+    # True when the group is sent as one invite per person (own link, own greeting, own answer).
+    individual: bool = False
     invite_url: str
     whatsapp_url: str
     greeting_kind: GreetingKind

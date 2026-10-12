@@ -1,3 +1,4 @@
+import { Trash2, UserPlus } from 'lucide-react';
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 
 import { AdminModal } from '@/components/AdminModal';
@@ -17,7 +18,10 @@ import {
   EMPTY_INVITE_FORM,
   RELATION_KEYS,
   buildCreatePayload,
+  emptyMemberRow,
+  memberRowToForm,
   validateInviteForm,
+  type GroupMemberRow,
   type InviteFormField,
   type InviteFormValues,
 } from './inviteForm';
@@ -27,7 +31,8 @@ const RELATIONS: Relation[] = ['spouse', 'partner', 'child', 'other'];
 /** What the dialog is for: a new person (maybe prefilled or pre-linked) or an edit. */
 export type PersonDialogMode =
   | { kind: 'add'; prefill?: Partial<InviteFormValues> }
-  | { kind: 'edit'; values: InviteFormValues; personId: number };
+  /** `members`: when editing a head, the rest of the group is edited (and added to) in the same dialog. */
+  | { kind: 'edit'; values: InviteFormValues; personId: number; members?: GroupMemberRow[] };
 
 type InvitePersonDialogProps = {
   mode: PersonDialogMode;
@@ -58,6 +63,9 @@ export function InvitePersonDialog({
   const [matches, setMatches] = useState<InviteMatch[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [memberRows, setMemberRows] = useState<GroupMemberRow[]>(mode.kind === 'edit' ? (mode.members ?? []) : []);
+  const [memberErrors, setMemberErrors] = useState<Partial<Record<InviteFormField, string>>[]>([]);
+  const editsGroup = mode.kind === 'edit' && mode.members !== undefined;
 
   // A Telegram link opens the form prefilled: say right away if they are already in the table.
   const prefill = mode.kind === 'add' ? mode.prefill : undefined;
@@ -95,17 +103,37 @@ export function InvitePersonDialog({
     return t('admin.invites.errorRequired');
   };
 
+  function updateMember(index: number, patch: Partial<GroupMemberRow>) {
+    setMemberRows((rows) => rows.map((row, i) => (i === index ? { ...row, ...patch } : row)));
+  }
+
   async function save(confirmDuplicate: boolean) {
     setMessage(null);
     const found = validateInviteForm(values);
     setErrors(found);
-    if (Object.keys(found).length > 0) return;
+    const foundMembers = memberRows.map((row) => validateInviteForm(memberRowToForm(row, mode.kind === 'edit' ? mode.personId : 0)));
+    setMemberErrors(foundMembers);
+    if (Object.keys(found).length > 0 || foundMembers.some((errs) => Object.keys(errs).length > 0)) return;
 
     setSaving(true);
     try {
       if (mode.kind === 'edit') {
         const { head_id: _head, ...changes } = buildCreatePayload(values);
         await updateInvite(mode.personId, changes);
+        const rows = [...memberRows];
+        for (let index = 0; index < rows.length; index += 1) {
+          const payload = buildCreatePayload(memberRowToForm(rows[index], mode.personId));
+          if (rows[index].id !== null) {
+            const { head_id: _memberHead, ...memberChanges } = payload;
+            await updateInvite(rows[index].id as number, memberChanges);
+          } else {
+            const updatedHead = await createInvite(payload, confirmDuplicate);
+            // The newest person of the group is the one just added. Remember its id: if a later row fails
+            // and the admin saves again, this one is updated instead of created twice.
+            rows[index] = { ...rows[index], id: updatedHead.members[updatedHead.members.length - 1].id };
+            setMemberRows([...rows]);
+          }
+        }
       } else {
         await createInvite(buildCreatePayload(values), confirmDuplicate);
       }
@@ -166,7 +194,7 @@ export function InvitePersonDialog({
               );
             })}
           </ul>
-          {!isEdit ? (
+          {!isEdit || memberRows.some((row) => row.id === null) ? (
             <button
               type="button"
               className="obw-portal-btn obw-portal-btn--secondary"
@@ -305,6 +333,84 @@ export function InvitePersonDialog({
               <small className="invite-form__hint">{t('admin.invites.familyNameHint')}</small>
             </label>
           </>
+        ) : null}
+
+        {editsGroup ? (
+          <div className="invite-form__group">
+            <p className="obw-portal-kicker">{t('admin.invites.groupTitle')}</p>
+            {memberRows.map((row, index) => {
+              const rowErrors = memberErrors[index] ?? {};
+              return (
+                <div className="invite-form__member" key={row.id ?? `new-${index}`}>
+                  <div className="invite-form__row">
+                    <label className="invite-form__field">
+                      <span>{t('admin.invites.firstName')}</span>
+                      <input
+                        value={row.firstName}
+                        aria-invalid={Boolean(rowErrors.firstName)}
+                        autoComplete="off"
+                        onChange={(event) => updateMember(index, { firstName: event.target.value })}
+                      />
+                    </label>
+                    <label className="invite-form__field">
+                      <span>{t('admin.invites.lastName')}</span>
+                      <input
+                        value={row.lastName}
+                        aria-invalid={Boolean(rowErrors.lastName)}
+                        autoComplete="off"
+                        onChange={(event) => updateMember(index, { lastName: event.target.value })}
+                      />
+                    </label>
+                  </div>
+                  <div className="invite-form__row">
+                    <label className="invite-form__field">
+                      <span>{t('admin.invites.phone')}</span>
+                      <input
+                        type="tel"
+                        value={row.phone}
+                        aria-invalid={Boolean(rowErrors.phone)}
+                        autoComplete="off"
+                        onChange={(event) => updateMember(index, { phone: event.target.value })}
+                      />
+                      {rowErrors.phone ? <small>{t('admin.invites.errorPhone')}</small> : null}
+                    </label>
+                    <label className="invite-form__field">
+                      <span>{t('admin.invites.relationLabel')}</span>
+                      <select
+                        value={row.relation}
+                        aria-invalid={Boolean(rowErrors.relation)}
+                        onChange={(event) => updateMember(index, { relation: event.target.value as GroupMemberRow['relation'] })}>
+                        <option value="">{t('admin.invites.relationPlaceholder')}</option>
+                        {RELATIONS.map((relation) => (
+                          <option key={relation} value={relation}>
+                            {t(RELATION_KEYS[relation])}
+                          </option>
+                        ))}
+                      </select>
+                      {rowErrors.relation ? <small>{t('admin.invites.errorRequired')}</small> : null}
+                    </label>
+                  </div>
+                  {row.id === null ? (
+                    <button
+                      type="button"
+                      className="obw-portal-btn obw-portal-btn--secondary invite-form__remove"
+                      aria-label={t('admin.invites.removeRow')}
+                      title={t('admin.invites.removeRow')}
+                      onClick={() => setMemberRows((rows) => rows.filter((_, i) => i !== index))}>
+                      <Trash2 size={16} aria-hidden />
+                    </button>
+                  ) : null}
+                </div>
+              );
+            })}
+            <button
+              type="button"
+              className="obw-portal-btn obw-portal-btn--secondary"
+              onClick={() => setMemberRows((rows) => [...rows, emptyMemberRow(values.lastName)])}>
+              <UserPlus size={14} aria-hidden />
+              {t('admin.invites.addPerson')}
+            </button>
+          </div>
         ) : null}
 
         {message ? (
