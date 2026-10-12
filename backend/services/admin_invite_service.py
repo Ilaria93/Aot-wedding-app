@@ -106,6 +106,8 @@ def create_person(db: Session, data: AdminInviteCreate, confirm_duplicate: bool 
             raise DuplicateInviteError(matches)
 
     if data.head_id is None:
+        if not data.last_name:
+            raise InvalidInviteError("The last name is required for the person who receives the invite.")
         if data.relation:
             raise InvalidInviteError("Only people linked to a head have a relation.")
         person = InviteLink(
@@ -152,9 +154,11 @@ def update_person(db: Session, person_id: int, changes: dict) -> InviteLink:
     if _is_locked(head):
         raise InviteLockedError("Invite already sent")
 
-    for required in ("first_name", "last_name"):
-        if required in changes and not changes[required]:
-            raise InvalidInviteError("First and last name are required.")
+    if "first_name" in changes and not changes["first_name"]:
+        raise InvalidInviteError("First name is required.")
+    # A member may have no last name; the head may not.
+    if "last_name" in changes and not changes["last_name"] and person.head_id is None:
+        raise InvalidInviteError("The last name is required for the person who receives the invite.")
     if "phone" in changes:
         changes["phone"] = _clean_phone(changes["phone"])
 

@@ -307,7 +307,7 @@ export function InvitePersonDialog({
             {errorText('firstName') ? <small>{errorText('firstName')}</small> : null}
           </label>
           <label className="invite-form__field">
-            <span>{t('admin.invites.lastName')}</span>
+            <span>{t(values.role === 'member' ? 'admin.invites.lastNameOptional' : 'admin.invites.lastName')}</span>
             <input
               value={values.lastName}
               aria-invalid={Boolean(errors.lastName)}
@@ -442,7 +442,7 @@ export function InvitePersonDialog({
                       />
                     </label>
                     <label className="invite-form__field">
-                      <span>{t('admin.invites.lastName')}</span>
+                      <span>{t('admin.invites.lastNameOptional')}</span>
                       <input
                         value={row.lastName}
                         aria-invalid={Boolean(rowErrors.lastName)}

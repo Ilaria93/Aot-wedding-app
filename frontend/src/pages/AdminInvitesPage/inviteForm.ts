@@ -38,7 +38,8 @@ function isPlausiblePhone(phone: string) {
 export function validateInviteForm(values: InviteFormValues): Partial<Record<InviteFormField, InviteFormError>> {
   const errors: Partial<Record<InviteFormField, InviteFormError>> = {};
   if (!values.firstName.trim()) errors.firstName = 'required';
-  if (!values.lastName.trim()) errors.lastName = 'required';
+  // A person linked to a group may have only a first name (the head receives the invite).
+  if (values.role !== 'member' && !values.lastName.trim()) errors.lastName = 'required';
   if (values.phone.trim() && !isPlausiblePhone(values.phone.trim())) errors.phone = 'phoneInvalid';
   if (values.role === 'member') {
     if (values.headId === null) errors.headId = 'required';

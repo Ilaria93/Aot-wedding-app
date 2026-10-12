@@ -70,11 +70,19 @@ class _PersonFields(BaseModel):
     def strip_text(cls, value):
         return value.strip() if isinstance(value, str) else value
 
-    @field_validator("first_name", "last_name", check_fields=False)
+    @field_validator("first_name", check_fields=False)
     @classmethod
     def not_blank(cls, value: Optional[str]) -> Optional[str]:
         if value is not None and (not value or len(value) > 80):
             raise ValueError("Required, up to 80 characters.")
+        return value
+
+    # Empty is allowed here: only a head needs a last name (checked by the service).
+    @field_validator("last_name", check_fields=False)
+    @classmethod
+    def last_name_length(cls, value: Optional[str]) -> Optional[str]:
+        if value is not None and len(value) > 80:
+            raise ValueError("Up to 80 characters.")
         return value
 
     @field_validator("family_name", check_fields=False)
