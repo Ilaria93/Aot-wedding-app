@@ -486,7 +486,7 @@ export function InvitePersonDialog({
                       type="button"
                       className="obw-portal-btn obw-portal-btn--secondary invite-form__remove"
                       aria-label={t('admin.invites.removeRow')}
-                      title={t('admin.invites.removeRow')}
+                      data-tip={t('admin.invites.removeRow')}
                       onClick={() => setMemberRows((rows) => rows.filter((_, i) => i !== index))}>
                       <Trash2 size={16} aria-hidden />
                     </button>
