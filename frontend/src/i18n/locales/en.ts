@@ -831,6 +831,7 @@ export const en = {
       attending: 'Attending',
       notAttending: 'Not attending',
       toSendCard: 'To send',
+      totalCard: 'Total',
       pendingCard: 'Waiting',
       declinedCard: 'Not coming',
       personsUnit: 'people',

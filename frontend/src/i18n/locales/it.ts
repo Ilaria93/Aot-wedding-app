@@ -833,6 +833,7 @@ export const it = {
       attending: 'Presenti',
       notAttending: 'Assenti',
       toSendCard: 'Da inviare',
+      totalCard: 'Totali',
       pendingCard: 'In attesa',
       declinedCard: 'Non vengono',
       personsUnit: 'persone',
