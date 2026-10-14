@@ -21,8 +21,23 @@
   background: var(--obw-charcoal);
 }
 
+/* Five cards (the dashboard's total plus its four): one row on a wide screen. */
+.stat-card:first-child:nth-last-child(5),
+.stat-card:first-child:nth-last-child(5) ~ .stat-card {
+  flex-basis: calc((100% - 4 * 8px) / 5);
+}
+
 @media (max-width: 768px) {
   .stat-card {
+    flex-basis: calc((100% - 8px) / 2);
+  }
+
+  /* On a phone the total takes a full row, then the four in 2x2. */
+  .stat-card:first-child:nth-last-child(5) {
+    flex-basis: 100%;
+  }
+
+  .stat-card:first-child:nth-last-child(5) ~ .stat-card {
     flex-basis: calc((100% - 8px) / 2);
   }
 }

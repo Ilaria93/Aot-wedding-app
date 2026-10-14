@@ -50,12 +50,13 @@ const STAT_LABELS = {
   pending: 'admin.stats.pendingCard',
   declined: 'admin.stats.declinedCard',
   toSend: 'admin.stats.toSendCard',
+  total: 'admin.stats.totalCard',
 } as const;
 
 // One card per key RSVP metric: people as the big number, invites underneath.
 function buildStatCards(stats: AdminRsvpStats, t: TranslateFn): StatCardData[] {
   const { attending, waiting, declined, to_send } = stats.invites;
-  const card = (id: 'confirmed' | 'pending' | 'declined' | 'toSend', tone: StatCardData['tone'], bucket: { invites: number; persons: number }, extra: Partial<StatCardData> = {}): StatCardData => ({
+  const card = (id: keyof typeof STAT_LABELS, tone: StatCardData['tone'], bucket: { invites: number; persons: number }, extra: Partial<StatCardData> = {}): StatCardData => ({
     id,
     tone,
     label: t(STAT_LABELS[id]),
@@ -65,7 +66,14 @@ function buildStatCards(stats: AdminRsvpStats, t: TranslateFn): StatCardData[] {
     ...extra,
   });
 
+  // Everyone who can still come: confirmed, waiting for an answer and not yet invited (those who declined are out).
+  const total = {
+    invites: attending.invites + waiting.invites + to_send.invites,
+    persons: attending.persons + waiting.persons + to_send.persons,
+  };
+
   return [
+    card('total', 'bone', total),
     card('confirmed', 'gold', attending),
     card('pending', 'bone', waiting, { to: '/admin/invites?filter=waiting' }),
     card('declined', 'stone', declined),
