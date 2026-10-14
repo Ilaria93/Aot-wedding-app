@@ -22,6 +22,7 @@ import { PageAlert } from '@/components/PageShell';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { Pagination } from '@/components/Pagination';
 import { GuestList } from '@/components/Rsvp/GuestList';
+import { countGuests, guestsMatching, partyGuests } from '@/components/Rsvp/guestFilters';
 import { SearchBar } from '@/components/SearchBar';
 import { StatCards, type StatCardData } from '@/components/StatCards';
 import { useI18n } from '@/contexts/I18nContext';
@@ -84,10 +85,6 @@ const MEAL_ICON: Record<MealChoiceId, ComponentType<{ size?: number; strokeWidth
 };
 
 type TableUsage = AdminTable & { assignedCount: number };
-
-function partyGuests(entry: AdminRsvpEntry) {
-  return [entry.account_holder, ...entry.companions];
-}
 
 // Pairs the admin-managed table catalog with how many confirmed guests are
 // actually assigned to each one — capacity comes from the catalog, headcount
@@ -168,11 +165,8 @@ export function AdminRsvpPage() {
         ),
       );
       const allEntries = pages.flatMap((response) => response.items);
-      setCounts({
-        all: allEntriesFirst.total,
-        special_diet: allEntries.filter((entry) => entry.has_special_diet).length,
-        children: allEntries.filter((entry) => entry.has_child).length,
-      });
+      // The pills count people, not parties: a family with one vegetarian is one person under 'special diets'.
+      setCounts(countGuests(allEntries));
       setTableUsage(computeTableUsage(tablesResponse, allEntries));
     } catch (caughtError) {
       setError(getApiErrorMessage(caughtError, t('admin.rsvpEntries.loadFailed')));
@@ -360,7 +354,7 @@ export function AdminRsvpPage() {
               {t('admin.rsvpEntries.sectionTitle')}
             </h2>
             <span className="admin-rsvp__section-count">
-              {t('admin.rsvpEntries.viewedOfConfirmed', { shown: entries.length, total: counts.all })}
+              {t('admin.rsvpEntries.viewedOfConfirmed', { shown: entries.reduce((sum, entry) => sum + guestsMatching(entry, filter).length, 0), total: counts[filter] })}
             </span>
           </div>
 
@@ -372,6 +366,7 @@ export function AdminRsvpPage() {
               <>
                 <GuestList
                   entries={entries}
+                  filter={filter}
                   tables={tables}
                   assigningRsvpId={assigningRsvpId}
                   onAssignTable={handleAssignTableChange}

@@ -3,12 +3,15 @@ import type { ComponentType } from "react";
 import { useEffect, useRef, useState } from "react";
 
 import { type TranslateFn } from "@/i18n/translations";
-import { type AdminRsvpEntry, type AdminTable } from "@/services/adminDashboardApi";
+import { type AdminRsvpEntry, type AdminRsvpEntryFilter, type AdminTable } from "@/services/adminDashboardApi";
 import { MEAL_TAG_TONE } from "@/components/Rsvp/constants";
+import { guestsMatching, partyGuests } from "@/components/Rsvp/guestFilters";
 
 
 interface GuestListProps {
   entries: AdminRsvpEntry[];
+  /** Which people of each party get a card: everyone, only special diets, or only children. */
+  filter: AdminRsvpEntryFilter;
   tables: AdminTable[];
   assigningRsvpId: number | null;
   onAssignTable: (rsvpId: number, tableId: string) => void;
@@ -18,11 +21,6 @@ interface GuestListProps {
 
 function formatGuestName(guest: { first_name: string; last_name: string }): string {
   return `${guest.first_name} ${guest.last_name}`.trim();
-}
-
-
-function partyGuests(entry: AdminRsvpEntry) {
-  return [entry.account_holder, ...entry.companions];
 }
 
 
@@ -87,7 +85,7 @@ function buildMetaItems(entry: AdminRsvpEntry, guest: Guest, isHolder: boolean, 
 }
 
 
-export function GuestList({ entries, tables, assigningRsvpId, onAssignTable, t }: GuestListProps) {
+export function GuestList({ entries, filter, tables, assigningRsvpId, onAssignTable, t }: GuestListProps) {
   // Only one row's table menu is ever open — a single ref to that wrapper is
   // enough to detect an outside click and close it.
   const [openCardKey, setOpenCardKey] = useState<string | null>(null);
@@ -122,7 +120,8 @@ export function GuestList({ entries, tables, assigningRsvpId, onAssignTable, t }
   return (
     <>
       {entries.flatMap((entry) =>
-        partyGuests(entry).map((guest, index) => {
+        partyGuests(entry).flatMap((guest, index) => {
+        if (!guestsMatching(entry, filter).includes(guest)) return [];
         const cardKey = `${entry.rsvp_id}-${index}`;
         const metaItems = buildMetaItems(entry, guest, index === 0, t);
         const isOpen = openCardKey === cardKey;
