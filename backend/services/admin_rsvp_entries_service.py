@@ -69,8 +69,7 @@ def list_confirmed_rsvp_entries(
     rsvps = (
         db.query(RSVP)
         .options(joinedload(RSVP.guests), joinedload(RSVP.table))
-        # An attending answer whose guest lines were deleted by hand has nobody to show: skip it, don't break the page.
-        .filter(RSVP.attending.is_(True), RSVP.guests.any())
+        .filter(RSVP.attending.is_(True))
         .order_by(RSVP.id)
         .all()
     )
