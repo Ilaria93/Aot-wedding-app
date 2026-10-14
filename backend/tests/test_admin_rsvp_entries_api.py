@@ -148,3 +148,18 @@ def test_admin_rsvp_entries_pagination(api_client, admin_headers):
     assert len(body["items"]) == 2
     assert body["page"] == 1
     assert body["page_size"] == 2
+
+
+def test_admin_rsvp_entries_skips_an_answer_whose_guest_lines_were_deleted(api_client, admin_headers):
+    from models.rsvp_guest_model import RsvpGuest
+
+    guest_client = _guest_client("Eren", "Yeager")
+    guest_client.post("/rsvp/confirm", json={"attending": True, "guests": [_guest_line("Eren", "Yeager")]})
+    db = SessionLocal()
+    db.query(RsvpGuest).delete()
+    db.commit()
+    db.close()
+
+    response = api_client.get("/admin/rsvp-entries", headers=admin_headers)
+    assert response.status_code == 200
+    assert response.json()["total"] == 0
