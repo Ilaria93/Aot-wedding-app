@@ -61,7 +61,7 @@ def test_partners_make_a_couple(api_client, admin_headers):
     assert _message(row["whatsapp_url"]).startswith("Ciao Chiara e Luca!")
 
 
-def test_family_and_partners_cannot_mix(api_client, admin_headers):
+def test_a_spouse_and_a_partner_cannot_mix(api_client, admin_headers):
     family = _head(api_client)
     _member(api_client, family["id"], "spouse")
     mixed = _member(api_client, family["id"], "partner", first_name="Giulia")
@@ -69,10 +69,19 @@ def test_family_and_partners_cannot_mix(api_client, admin_headers):
 
     couple = _head(api_client, first_name="Chiara", last_name="Bianchi", phone="333 2222222")
     _create(api_client, head_id=couple["id"], relation="partner", first_name="Luca", last_name="Verdi")
-    assert _member(api_client, couple["id"], "child", first_name="Teo").status_code == 422
     assert _member(api_client, couple["id"], "spouse", first_name="Eva").status_code == 422
-    # A family name on a head with partners is the same mix.
-    assert api_client.patch(f"/admin/invites/{couple['id']}", json={"family_name": "Bianchi"}).status_code == 422
+
+
+def test_partners_can_have_children_and_are_greeted_by_first_names(api_client, admin_headers):
+    couple = _head(api_client, first_name="Chiara", last_name="Bianchi", phone="333 2222222")
+    _create(api_client, head_id=couple["id"], relation="partner", first_name="Alessandro", last_name="Verdi")
+    assert _member(api_client, couple["id"], "child", first_name="Viola").status_code == 201
+    [row] = api_client.get("/admin/invites").json()
+    assert (row["greeting_kind"], row["greeting_names"]) == ("couple", ["Chiara", "Alessandro", "Viola"])
+    # Naming the family explicitly still wins.
+    api_client.patch(f"/admin/invites/{couple['id']}", json={"family_name": "Bianchi Verdi"})
+    [row] = api_client.get("/admin/invites").json()
+    assert row["greeting_kind"] == "family"
 
 
 def test_only_one_spouse(api_client, admin_headers):

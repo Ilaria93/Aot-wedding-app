@@ -729,7 +729,7 @@ export const en = {
       errorRequired: 'Required.',
       errorPhone: 'Invalid phone number.',
       errorPartySize: 'Enter a number from 1 to 10.',
-      invalidGroup: 'Check the data: a group is either a family (spouse, children) or partners, never both, and there is only one spouse.',
+      invalidGroup: "Check the details: a group has only one spouse, who can't be there together with a partner. Children are fine with either.",
       lockedError: 'This invite was already sent: it can no longer be edited, only resent.',
       duplicateTitle: 'Already in the table',
       duplicateBody: 'Someone with this name or phone is already there. Resend the existing invite or add anyway.',

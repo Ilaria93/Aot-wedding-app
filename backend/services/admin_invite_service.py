@@ -15,7 +15,7 @@ from schemas.admin_invite_schema import (
     InviteMatch,
     InviteMatchHead,
 )
-from services.invite_greeting_service import FAMILY_RELATIONS, invite_greeting, is_individual_invite
+from services.invite_greeting_service import invite_greeting, is_individual_invite
 from services.invite_link_service import build_invite_url, generate_unique_token
 from services.invite_message_service import build_head_whatsapp_url
 from services.phone_service import InvalidPhoneError, normalize_phone
@@ -49,12 +49,11 @@ def _clean_phone(raw: Optional[str]) -> Optional[str]:
 
 
 def check_group(family_name: Optional[str], relations: list[Optional[str]]) -> None:
-    """A group is either a family (spouse/children) or a couple of partners."""
+    """A person has one spouse, and a spouse and a partner can't both be in the group; children go with either."""
     if relations.count("spouse") > 1:
         raise InvalidInviteError("A person can have only one spouse.")
-    is_family = bool(family_name) or any(relation in FAMILY_RELATIONS for relation in relations)
-    if is_family and "partner" in relations:
-        raise InvalidInviteError("A group is either a family (spouse, children) or partners, not both.")
+    if "spouse" in relations and "partner" in relations:
+        raise InvalidInviteError("A group can have a spouse or a partner, not both.")
 
 
 def _is_locked(head: InviteLink) -> bool:

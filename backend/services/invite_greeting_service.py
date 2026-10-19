@@ -11,12 +11,17 @@ def _join_names(names: list[str]) -> str:
     return f"{', '.join(names[:-1])} e {names[-1]}"
 
 
+def _couple_names(head: InviteLink, members: Iterable[InviteLink]) -> list[str]:
+    """Head, partners and, when partners are not married to the head, their children: "Chiara, Alessandro e Viola"."""
+    return [head.first_name, *(member.first_name for member in members if member.relation in ("partner", "child"))]
+
+
 def greeting_names(kind: str, name: str, head: InviteLink, members: Iterable[InviteLink]) -> list[str]:
     """The names behind a greeting, for clients that join them in their own
     language ("Chiara e Luca" / "Chiara and Luca"). Only a couple has several."""
     if kind != "couple":
         return [name]
-    return [head.first_name, *(member.first_name for member in members if member.relation == "partner")]
+    return _couple_names(head, members)
 
 
 def build_greeting(head: InviteLink, members: Iterable[InviteLink]) -> tuple[str, str]:
@@ -28,12 +33,12 @@ def build_greeting(head: InviteLink, members: Iterable[InviteLink]) -> tuple[str
     """
     members = list(members)
     relations = {member.relation for member in members}
-    if head.family_name or relations & set(FAMILY_RELATIONS):
+    # Partners (not married) with children are greeted by first names; a spouse, or children alone, make a family.
+    if head.family_name or "spouse" in relations or ("child" in relations and "partner" not in relations):
         return "family", head.family_name or head.last_name
 
-    partners = [member.first_name for member in members if member.relation == "partner"]
-    if partners:
-        return "couple", _join_names([head.first_name, *partners])
+    if "partner" in relations:
+        return "couple", _join_names(_couple_names(head, members))
 
     return single_greeting(head)
 
