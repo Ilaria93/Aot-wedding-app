@@ -731,7 +731,7 @@ export const it = {
       errorRequired: 'Campo obbligatorio.',
       errorPhone: 'Numero di telefono non valido.',
       errorPartySize: 'Inserisci un numero da 1 a 10.',
-      invalidGroup: 'Controlla i dati: un gruppo è una famiglia (coniuge, figli) oppure dei fidanzati, mai entrambi, e il coniuge è uno solo.',
+      invalidGroup: "Controlla i dati: in un gruppo il coniuge è uno solo e non può esserci insieme a un fidanzato/a. I figli vanno bene con entrambi.",
       lockedError: 'Questo invito è già stato inviato: non si può più modificare, solo rimandare.',
       duplicateTitle: 'Già in tabella',
       duplicateBody: 'Esiste già qualcuno con questo nome o telefono. Rimanda l’invito esistente oppure aggiungi comunque.',

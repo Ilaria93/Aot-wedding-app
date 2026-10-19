@@ -64,7 +64,7 @@ def test_row_errors_are_reported_with_their_line(api_client, admin_headers):
         "Ugo,Rossi,m,,,,,tre\n"                         # 9 bad party size
         ",Rossi,m,,,,,\n"                               # 10 missing first name
         "Luca,Verdi,m,partner,Christian Rossi,,,\n"     # 11 ok (partner of Christian)
-        "Eva,Verdi,f,child,Christian Rossi,,,\n"        # 12 family + partner mix
+        "Eva,Verdi,f,spouse,Christian Rossi,,,\n"       # 12 spouse + partner mix
     )
     report = _upload(api_client, content).json()
     assert report["created"] == 2
