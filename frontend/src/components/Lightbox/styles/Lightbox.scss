@@ -1,27 +1,52 @@
-.lightbox-backdrop {
+/* Full-screen viewer: the photo fills the screen on a dark backdrop, controls
+   float over it. */
+.lightbox {
   position: fixed;
   inset: 0;
   z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: color-mix(in srgb, var(--obw-void) 70%, transparent);
-  backdrop-filter: blur(4px);
+  background: color-mix(in srgb, var(--obw-void) 94%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   animation: lightbox-fade 200ms ease both;
 }
 
-/* The viewer is a dark card (.obw-card--dark) framing the media, rounded like
-   the landing cards (portaled to body, so .landing-page .obw-card can't reach it). */
-.lightbox {
-  position: relative;
+/* Fitted: the photo is centred and shown whole. Zoomed: it grows past the
+   stage, which then scrolls (drag/swipe pans). Flex + margin:auto rather than
+   grid centring, which would clip an oversized photo's left/top edge. */
+.lightbox__stage {
+  position: absolute;
+  inset: 0;
   display: flex;
-  flex-direction: column;
-  width: min(100%, 900px);
-  max-height: 90svh;
-  padding: clamp(10px, 1.6vw, 16px);
-  touch-action: pan-y;
+  padding: 64px clamp(12px, 6vw, 80px);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+.lightbox__stage.is-zoomed {
+  padding: 0;
+  overflow: auto;
+}
+
+/* Fills the stage and shows the photo whole (contain), so small photos are
+   scaled up to the screen too. */
+.lightbox__media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  object-fit: contain;
   animation: lightbox-rise 260ms var(--obw-ease-out) both;
+}
+
+img.lightbox__media {
+  cursor: zoom-in;
+}
+
+.lightbox__stage.is-zoomed .lightbox__media {
+  flex-shrink: 0;
+  height: auto;
+  cursor: zoom-out;
+  animation: none;
 }
 
 .lightbox__close,
@@ -35,15 +60,15 @@
   height: 44px;
   border: 1px solid var(--obw-border-dark);
   border-radius: 999px;
-  background: var(--obw-charcoal);
+  background: color-mix(in srgb, var(--obw-charcoal) 85%, transparent);
   color: var(--obw-bone);
   box-shadow: var(--obw-shadow-dark);
   cursor: pointer;
 }
 
 .lightbox__close {
-  top: -16px;
-  right: -16px;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
 }
 
 .lightbox__nav {
@@ -52,25 +77,19 @@
 }
 
 .lightbox__nav--prev {
-  left: -18px;
+  left: max(12px, env(safe-area-inset-left));
 }
 
 .lightbox__nav--next {
-  right: -18px;
-}
-
-.lightbox__media {
-  /* Fixed frame: every photo fits inside it (contain), so the card no longer
-     resizes from one image to the next. */
-  width: 100%;
-  height: min(72svh, 620px);
-  border-radius: 8px;
-  object-fit: contain;
-  background: var(--obw-void);
+  right: max(12px, env(safe-area-inset-right));
 }
 
 .lightbox__caption {
-  margin: 12px 0 2px;
+  position: absolute;
+  inset: auto 0 0;
+  margin: 0;
+  padding: 28px 16px max(16px, env(safe-area-inset-bottom));
+  background: linear-gradient(transparent, color-mix(in srgb, var(--obw-void) 85%, transparent));
   font-family: var(--font-sans);
   font-size: 0.8rem;
   font-weight: 500;
@@ -78,20 +97,24 @@
   text-align: center;
   text-transform: uppercase;
   color: var(--obw-gold);
+  pointer-events: none;
 }
 
-/* Phones: a tall frame left big black bands around landscape photos; a square
-   one stays fixed too and wastes less space. */
+/* Phones: edge to edge, arrows lower so they don't cover the photo's middle. */
 @media (max-width: 640px) {
-  .lightbox__media {
-    height: auto;
-    aspect-ratio: 1;
+  .lightbox__stage {
+    padding: 64px 0 56px;
   }
-}
 
-/* Two classes so it outranks the design system's .obw-card radius. */
-.obw-card.lightbox {
-  border-radius: 14px;
+  .lightbox__nav {
+    top: auto;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    transform: none;
+  }
+
+  .lightbox__caption {
+    padding-inline: 64px;
+  }
 }
 
 @keyframes lightbox-fade {
@@ -103,13 +126,13 @@
 @keyframes lightbox-rise {
   from {
     opacity: 0;
-    transform: translateY(12px) scale(0.97);
+    transform: scale(0.97);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lightbox-backdrop,
-  .lightbox {
+  .lightbox,
+  .lightbox__media {
     animation: none;
   }
 }
