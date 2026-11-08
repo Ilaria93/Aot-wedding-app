@@ -62,6 +62,12 @@
 }
 
 @media (max-width: 768px) {
+  /* Phones drop the page's own side padding (.obw-page--app), so the panel
+     keeps its gutter here. */
+  .admin-layout__content {
+    padding-inline: 16px;
+  }
+
   /* Mockup centers the hero text on mobile only — desktop keeps it left-aligned.
      Reset flex-basis here: the 320px/420px basis values above size each
      column's WIDTH in row direction, but column direction reinterprets
