@@ -6,8 +6,11 @@
   object-fit: cover;
 }
 
-.site-header__menu-btn,
 .site-header__section-btn {
+  display: none;
+}
+
+.site-header__menu-btn {
   display: none;
   align-items: center;
   justify-content: center;
@@ -43,6 +46,8 @@
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
   cursor: pointer;
 }
 
