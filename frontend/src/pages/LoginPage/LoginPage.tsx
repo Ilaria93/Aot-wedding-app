@@ -13,7 +13,7 @@ import './styles/LoginPage.scss';
 export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const redirectTarget = (location.state as LoginLocationState | null)?.from ?? '/';
+  const redirectTarget = (location.state as LoginLocationState | null)?.from ?? '/admin/rsvp';
   const { signIn } = useAuth();
   const { t } = useI18n();
   const [secret, setSecret] = useState('');

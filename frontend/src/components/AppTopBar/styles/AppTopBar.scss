@@ -1,3 +1,25 @@
+/* The couple's crest: their menu button on phones, decoration on desktop. */
+.site-header__crest-btn {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: none;
+  cursor: pointer;
+  transition: border-color var(--obw-duration-fast) ease, background var(--obw-duration-fast) ease;
+}
+
+.site-header__crest-btn.is-open {
+  border-color: color-mix(in srgb, #db7fb0 70%, transparent);
+  background: color-mix(in srgb, #db7fb0 38%, transparent);
+}
+
+@media (min-width: 769px) {
+  .site-header__crest-btn {
+    pointer-events: none;
+  }
+}
+
 .site-header__crest {
   flex-shrink: 0;
   width: 32px;

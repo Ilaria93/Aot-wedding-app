@@ -17,6 +17,7 @@ export const it = {
     userMenu: {
       openLabel: 'Menu account',
       coupleLogin: 'Sei sposo/a? Accedi qui',
+      couplePanel: 'Pannello sposi',
       sectionAccount: 'Account',
       sectionPreferences: 'Preferenze',
     },
@@ -652,7 +653,7 @@ export const it = {
   },
   admin: {
     nav: {
-      rsvp: 'Home',
+      rsvp: 'Riepilogo',
       contacts: 'Contatti',
       gallery: 'Galleria',
       invites: 'Inviti',

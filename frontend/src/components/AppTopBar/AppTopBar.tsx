@@ -1,4 +1,4 @@
-import { BookHeart, Contact, Gift, Home, Image as ImageIcon, LogOut, MapPin, Menu, Send, X, Mail } from 'lucide-react';
+import { BookHeart, Contact, Gift, Home, Image as ImageIcon, LayoutDashboard, LogOut, MapPin, Menu, Send, X, Mail } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { ComponentType } from 'react';
@@ -17,8 +17,14 @@ import './styles/AppTopBar.scss';
 
 type NavIcon = ComponentType<{ size?: number; 'aria-hidden'?: boolean }>;
 
-const ADMIN_ROUTES: { to: string; i18nKey: 'admin.nav.rsvp' | 'admin.nav.contacts' | 'admin.nav.gallery' | 'admin.nav.invites'; icon: NavIcon }[] = [
-  { to: '/admin/rsvp', i18nKey: 'admin.nav.rsvp', icon: Home },
+const ADMIN_ROUTES: {
+  to: string;
+  i18nKey: 'navigation.tabs.home' | 'admin.nav.rsvp' | 'admin.nav.contacts' | 'admin.nav.gallery' | 'admin.nav.invites';
+  icon: NavIcon;
+}[] = [
+  // "Home" is the guest site itself, so the couple can see it without logging out.
+  { to: '/', i18nKey: 'navigation.tabs.home', icon: Home },
+  { to: '/admin/rsvp', i18nKey: 'admin.nav.rsvp', icon: LayoutDashboard },
   { to: '/admin/invites', i18nKey: 'admin.nav.invites', icon: Send },
   { to: '/admin/contacts', i18nKey: 'admin.nav.contacts', icon: Contact },
   { to: '/admin/gallery', i18nKey: 'admin.nav.gallery', icon: ImageIcon },
@@ -61,8 +67,8 @@ type NavItem = {
  * this screen", so the desktop bar and the mobile panel can't drift apart.
  */
 function getNavItems(isHome: boolean, canManageWedding: boolean, t: TranslateFn): NavItem[] {
-  // The couple only ever manages the wedding, never browses it as a guest —
-  // off the home page they get just their three control-panel sections.
+  // Off the home page the couple get their control-panel sections (plus Home,
+  // the guest site); on the home page they browse it like a guest.
   if (canManageWedding && !isHome) {
     return ADMIN_ROUTES.map((route) => ({
       key: route.to,
@@ -115,6 +121,7 @@ function NavItemLink({ item, className, activeClassName, isActive, onNavigate }:
   return (
     <NavLink
       to={item.target}
+      end={item.target === '/'}
       className={({ isActive }) => `${className}${isActive && activeClassName ? ` ${activeClassName}` : ''}`}
       onClick={onNavigate}>
       {content}
@@ -129,8 +136,7 @@ export function AppTopBar() {
   const { t } = useI18n();
   const { canManageWedding, signOut } = useAuth();
   const isHome = location.pathname === '/';
-  // Admin already has its own mobile nav (bottom tab bar, see AdminMobileNav)
-  // — the hamburger here would just duplicate it.
+  // In the admin the crest opens the mobile menu, so no separate hamburger.
   const isAdmin = location.pathname.startsWith('/admin');
   // The couple's desktop nav folds sign-out into the pill row instead of a
   // separate account dropdown — there's nothing else in that menu for them.
@@ -264,7 +270,16 @@ export function AppTopBar() {
           )}
 
           {showSignOutPill ? (
-            <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest" />
+            // On phones the crest is the admin's menu button; on desktop it is decoration.
+            <button
+              type="button"
+              className={`site-header__crest-btn${mobileNavOpen ? ' is-open' : ''}`}
+              aria-expanded={mobileNavOpen}
+              aria-controls="site-header-mobile-panel"
+              aria-label={mobileNavOpen ? t('navigation.menu.close') : t('navigation.menu.open')}
+              onClick={() => setMobileNavOpen((current) => !current)}>
+              <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest" />
+            </button>
           ) : (
             <AppUserMenu />
           )}

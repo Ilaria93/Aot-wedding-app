@@ -1,5 +1,5 @@
-import { LogIn, LogOut } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { LogIn, LogOut, LayoutDashboard } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useAuth } from '@/contexts/AuthContext';
@@ -20,6 +20,7 @@ export function AppUserMenuContent({ onNavigate }: AppUserMenuContentProps) {
   const { canManageWedding, signOut } = useAuth();
   const { t } = useI18n();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   async function handleSignOut() {
     onNavigate();
@@ -32,6 +33,13 @@ export function AppUserMenuContent({ onNavigate }: AppUserMenuContentProps) {
       <div className="app-user-menu__section">
         <p className="app-user-menu__section-label">{t('navigation.userMenu.sectionAccount')}</p>
         <div className="app-user-menu__actions">
+          {/* From the guest site, a way back to the panel; inside it the nav already has it. */}
+          {canManageWedding && !pathname.startsWith('/admin') ? (
+            <Link to="/admin/rsvp" role="menuitem" className="app-user-menu__action" onClick={onNavigate}>
+              <LayoutDashboard size={15} aria-hidden />
+              {t('navigation.userMenu.couplePanel')}
+            </Link>
+          ) : null}
           {canManageWedding ? (
             <button
               type="button"

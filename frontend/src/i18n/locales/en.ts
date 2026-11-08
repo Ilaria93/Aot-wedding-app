@@ -17,6 +17,7 @@ export const en = {
     userMenu: {
       openLabel: 'Account menu',
       coupleLogin: 'Bride or groom? Log in here',
+      couplePanel: 'Couple panel',
       sectionAccount: 'Account',
       sectionPreferences: 'Preferences',
     },
@@ -650,7 +651,7 @@ export const en = {
   },
   admin: {
     nav: {
-      rsvp: 'Home',
+      rsvp: 'Overview',
       contacts: 'Contacts',
       gallery: 'Gallery',
       invites: 'Invites',
