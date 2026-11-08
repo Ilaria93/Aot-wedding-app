@@ -93,8 +93,8 @@
   }
 }
 
-/* The panel's section boxes: a lighter fill than the site's near-black portal
-   cards, outlined in the lilac of the crest. :root lifts it over each page's
+/* The panel's section boxes: the portal cards' own fill, made see-through so
+   they read lighter, outlined in the lilac of the crest. :root lifts it over each page's
    own rule. The Inviti outer box keeps its see-through glass. */
 :root .admin-layout__content :is(
     .obw-portal-panel:not(.admin-invites__section),
@@ -106,5 +106,7 @@
   ),
 :root .admin-rsvp__toolbar {
   border-color: color-mix(in srgb, #db7fb0 70%, transparent);
-  background: linear-gradient(160deg, color-mix(in srgb, #db7fb0 8%, transparent), transparent), var(--obw-paper-deep);
+  background:
+    linear-gradient(160deg, var(--obw-veil), rgba(18, 10, 9, 0.35)),
+    color-mix(in srgb, var(--obw-charcoal) 55%, transparent);
 }
