@@ -18,7 +18,8 @@ export const WEDDING_COUPLE_PEOPLE: ReadonlyArray<{ name: string; phone: string 
   { name: 'Ilaria', phone: '+393289034256' },
   { name: 'Davide', phone: '+393406014839' },
 ];
-/** Where the couple stays (a residence/village): guests can book there too. Shown in the home page's contacts and FAQ. */
+/** Where the couple stays (a residence/village): guests can book there too. Named in the FAQ and the calendar
+ * notes; its contact card is an admin-managed supplier (category 'lodging', seeded by migration 0016). */
 export const WEDDING_LODGING = {
   label: 'Long Beach Village',
   website: 'https://www.lidoadriano.com/scheda-hotel_it.php?id=2',

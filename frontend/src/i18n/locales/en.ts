@@ -86,6 +86,7 @@ export const en = {
     garrison: 'Garrison',
   },
   logisticsCategories: {
+    lodging: 'Stay',
     location: 'Venue & Reception',
     beauty: 'Beauty',
     transfer: 'Transport',
@@ -375,7 +376,6 @@ export const en = {
     contacts: {
       title: 'Useful contacts',
       coupleKicker: 'The couple',
-      lodgingKicker: 'Stay · Residence',
       callWho: 'Who would you like to call?',
       whatsappWho: 'Who would you like to message?',
     },
