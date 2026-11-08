@@ -105,7 +105,7 @@
     .admin-contacts__supplier-card
   ),
 :root .admin-rsvp__toolbar {
-  border-color: color-mix(in srgb, #db7fb0 70%, transparent);
+  border-color: color-mix(in srgb, #db7fb0 25%, transparent);
   background:
     linear-gradient(160deg, var(--obw-veil), rgba(18, 10, 9, 0.35)),
     color-mix(in srgb, var(--obw-charcoal) 55%, transparent);
