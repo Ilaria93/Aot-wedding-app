@@ -304,10 +304,14 @@ export function AppTopBar() {
               <p className="app-user-menu__section-label">{t('navigation.menu.sectionMore')}</p>
               <div className="app-user-menu__actions">
                 {DETAIL_PAGES.map((page) => (
-                  <Link key={page.to} to={page.to} className="app-user-menu__action" onClick={closeMobileNav}>
+                  <NavLink
+                    key={page.to}
+                    to={page.to}
+                    className={({ isActive }) => `app-user-menu__action${isActive ? ' is-active' : ''}`}
+                    onClick={closeMobileNav}>
                     <page.icon size={15} aria-hidden />
                     {t(page.i18nKey)}
-                  </Link>
+                  </NavLink>
                 ))}
               </div>
             </div>

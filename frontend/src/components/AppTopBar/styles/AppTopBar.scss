@@ -127,6 +127,12 @@
   color: var(--obw-bone);
 }
 
+/* The detail page you are on, lit like the active home section. */
+.site-header__mobile-panel .app-user-menu__action.is-active {
+  background: color-mix(in srgb, #db7fb0 38%, transparent);
+  color: var(--obw-bone);
+}
+
 .site-header__mobile-panel .language-switcher__chip {
   border-color: var(--obw-border-dark);
   border-radius: 8px;
