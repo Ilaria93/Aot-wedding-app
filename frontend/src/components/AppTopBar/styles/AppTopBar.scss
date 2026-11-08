@@ -11,7 +11,7 @@
   display: none;
 }
 
-/* Phone header: a gold tag naming the current section (a label shaped like
+/* Phone header: a lilac tag naming the current section (a label shaped like
    the desktop pills, as tall as the crest), then the outlined crest, which
    opens the menu. */
 .site-header__section-tag {
@@ -20,8 +20,9 @@
   height: 40px;
   padding: 0 14px;
   border-radius: 10px;
-  background: #f2ca50;
-  color: #000;
+  /* The lilac of the menu's active item (petals, #db7fb0). */
+  background: color-mix(in srgb, #db7fb0 38%, transparent);
+  color: var(--obw-bone);
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 500;
@@ -31,15 +32,15 @@
 
 .site-header__crest-btn {
   padding: 3px;
-  border: 1px solid color-mix(in srgb, var(--obw-bone) 45%, transparent);
+  border: 1px solid color-mix(in srgb, #db7fb0 70%, transparent);
   border-radius: 10px;
   background: none;
   cursor: pointer;
-  transition: border-color var(--obw-duration-fast) ease;
+  transition: background var(--obw-duration-fast) ease;
 }
 
 .site-header__crest-btn.is-open {
-  border-color: #f2ca50;
+  background: color-mix(in srgb, #db7fb0 38%, transparent);
 }
 
 /* Mobile menu: a dark card like the landing's (14px corners, blur over the

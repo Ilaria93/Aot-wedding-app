@@ -132,7 +132,7 @@ export function AppTopBar() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeAnchor, setActiveAnchor] = useState('');
-  // Phones name where you are in a gold tag beside the crest (the menu button):
+  // Phones name where you are in a lilac tag beside the crest (the menu button):
   // the couple's panel section, or for guests the home section on screen.
   const adminRoute = ADMIN_ROUTES.find((route) => route.to !== '/' && location.pathname.startsWith(route.to));
   const guestAnchor = HOME_ANCHORS.find((anchor) =>
