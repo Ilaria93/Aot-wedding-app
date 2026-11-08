@@ -6,7 +6,6 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 
 const SHOW_AFTER_SCROLL = 88;
 
-import { AdminMobileNav } from '@/components/AdminMobileNav';
 import { AppUserMenu } from '@/components/AppUserMenu';
 import { AppUserMenuContent } from '@/components/AppUserMenu/AppUserMenuContent';
 import { ScreenBackButton } from '@/components/ScreenBackButton';
@@ -136,11 +135,13 @@ export function AppTopBar() {
   const { t } = useI18n();
   const { canManageWedding, signOut } = useAuth();
   const isHome = location.pathname === '/';
-  const isAdmin = location.pathname.startsWith('/admin');
   // The couple's desktop nav folds sign-out into the pill row instead of a
   // separate account dropdown — there's nothing else in that menu for them.
-  // On phones they get the bottom tab bar (AdminMobileNav), so no hamburger.
+  // On phones their menu opens from the gold section pill, so no hamburger.
   const showSignOutPill = canManageWedding;
+  // The couple's current section, named in that pill; guest pages count as Home.
+  const currentRoute =
+    ADMIN_ROUTES.find((route) => route.to !== '/' && location.pathname.startsWith(route.to)) ?? ADMIN_ROUTES[0];
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeAnchor, setActiveAnchor] = useState('');
@@ -195,13 +196,11 @@ export function AppTopBar() {
     setMobileNavOpen(false);
   }, [location.pathname]);
 
-  // Leaves room under the page for the bottom bar (see .guest-bottom-nav). The
-  // admin pages pad themselves for the couple's bar; the guest pages need this.
-  const reserveBottomBar = showBottomNav || (canManageWedding && !isAdmin);
+  // Leaves room under the page for the bottom bar (see .guest-bottom-nav).
   useEffect(() => {
-    document.body.classList.toggle('has-guest-bottom-nav', reserveBottomBar);
+    document.body.classList.toggle('has-guest-bottom-nav', showBottomNav);
     return () => document.body.classList.remove('has-guest-bottom-nav');
-  }, [reserveBottomBar]);
+  }, [showBottomNav]);
 
   useEffect(() => {
     if (!mobileNavOpen) {
@@ -272,7 +271,21 @@ export function AppTopBar() {
           )}
 
           {showSignOutPill ? (
-            <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest" />
+            <>
+              <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest site-header__crest--desktop" />
+              {/* Phones: the section they are in plus the crest, one gold button that opens their menu. */}
+              <button
+                type="button"
+                className={`site-header__section-btn${mobileNavOpen ? ' is-open' : ''}`}
+                aria-expanded={mobileNavOpen}
+                aria-controls="site-header-mobile-panel"
+                aria-label={mobileNavOpen ? t('navigation.menu.close') : t('navigation.menu.open')}
+                onClick={() => setMobileNavOpen((current) => !current)}>
+                <currentRoute.icon size={16} aria-hidden />
+                <span>{t(currentRoute.i18nKey)}</span>
+                <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest" />
+              </button>
+            </>
           ) : (
             <AppUserMenu />
           )}
@@ -302,8 +315,6 @@ export function AppTopBar() {
             document.body,
           )
         : null}
-      {/* In body: the header's backdrop-filter would trap a fixed child. */}
-      {canManageWedding ? createPortal(<AdminMobileNav />, document.body) : null}
       {mobileNavOpen
         ? createPortal(<div className="site-header__scrim" aria-hidden onClick={closeMobileNav} />, document.body)
         : null}

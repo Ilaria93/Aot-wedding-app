@@ -11,7 +11,7 @@ import './styles/AdminLayout.scss';
 
 /** Shared shell for every admin section — access gate and hero (plain,
  * left-aligned, no card/background — see useAdminHeroContent for per-route
- * copy). The couple's phone tab bar lives in AppTopBar (AdminMobileNav). */
+ * copy). On phones the couple's menu opens from the top bar's section pill. */
 export function AdminLayout() {
   const { canManageWedding, isAuthenticated, isBootstrapping } = useAuth();
   const { t } = useI18n();
