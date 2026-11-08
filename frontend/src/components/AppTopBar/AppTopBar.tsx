@@ -1,4 +1,4 @@
-import { BookHeart, Contact, Gift, Home, Image as ImageIcon, LayoutDashboard, LogOut, MapPin, Menu, Send, X, Mail } from 'lucide-react';
+import { BookHeart, CircleHelp, Contact, Gift, Home, Image as ImageIcon, LayoutDashboard, LogOut, MapPin, Send, Shield, Mail } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { ComponentType } from 'react';
@@ -31,27 +31,18 @@ const ADMIN_ROUTES: {
 ];
 
 // Same order as the sections on the home page — keep the two in step.
+// Icons only show in the phone section tag.
 const HOME_ANCHORS = [
-  { href: '#theme', i18nKey: 'navigation.tabs.tema' },
-  { href: '#story', i18nKey: 'landing.nav.story' },
-  { href: '#ceremony', i18nKey: 'landing.nav.ceremony' },
+  { href: '#theme', i18nKey: 'navigation.tabs.tema', icon: Shield },
+  { href: '#story', i18nKey: 'landing.nav.story', icon: BookHeart },
+  { href: '#ceremony', i18nKey: 'landing.nav.ceremony', icon: MapPin },
   // Gallery temporarily hidden from the home page — uncomment together with <GallerySection /> in HomePage.
-  // { href: '#gallery', i18nKey: 'landing.nav.gallery' },
-  { href: '#rsvp', i18nKey: 'landing.nav.rsvp' },
-  { href: '#gift', i18nKey: 'landing.nav.gift' },
-  { href: '#faq', i18nKey: 'landing.nav.faq' },
-  { href: '#contacts', i18nKey: 'landing.nav.contacts' },
+  // { href: '#gallery', i18nKey: 'landing.nav.gallery', icon: ImageIcon },
+  { href: '#rsvp', i18nKey: 'landing.nav.rsvp', icon: Mail },
+  { href: '#gift', i18nKey: 'landing.nav.gift', icon: Gift },
+  { href: '#faq', i18nKey: 'landing.nav.faq', icon: CircleHelp },
+  { href: '#contacts', i18nKey: 'landing.nav.contacts', icon: Contact },
 ] as const;
-
-/** The five sections guests look for most, pinned to the bottom of the screen on phones; every other section stays in the menu. */
-const BOTTOM_NAV = [
-  { href: '#story', icon: BookHeart },
-  { href: '#ceremony', icon: MapPin },
-  { href: '#rsvp', icon: Mail },
-  { href: '#gift', icon: Gift },
-  { href: '#contacts', icon: Contact },
-] as const;
-const BOTTOM_NAV_HREFS: readonly string[] = BOTTOM_NAV.map((item) => item.href);
 
 type NavItem = {
   key: string;
@@ -137,22 +128,26 @@ export function AppTopBar() {
   const isHome = location.pathname === '/';
   // The couple's desktop nav folds sign-out into the pill row instead of a
   // separate account dropdown — there's nothing else in that menu for them.
-  // On phones their menu opens from the gold section pill, so no hamburger.
   const showSignOutPill = canManageWedding;
-  // The couple's current section, named in that pill; guest pages count as Home.
-  const currentRoute =
-    ADMIN_ROUTES.find((route) => route.to !== '/' && location.pathname.startsWith(route.to)) ?? ADMIN_ROUTES[0];
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeAnchor, setActiveAnchor] = useState('');
+  // Phones name where you are in a gold tag beside the crest (the menu button):
+  // the couple's panel section, or for guests the home section on screen.
+  const adminRoute = ADMIN_ROUTES.find((route) => route.to !== '/' && location.pathname.startsWith(route.to));
+  const guestAnchor = HOME_ANCHORS.find((anchor) =>
+    location.pathname === '/tema' ? anchor.href === '#theme' : anchor.href === activeAnchor,
+  );
+  const currentSection =
+    canManageWedding && adminRoute
+      ? { icon: adminRoute.icon, label: t(adminRoute.i18nKey) }
+      : !canManageWedding && guestAnchor
+        ? { icon: guestAnchor.icon, label: t(guestAnchor.i18nKey) }
+        : { icon: Home, label: t('navigation.tabs.home') };
   /* Only the home page hides the bar: there it would cover the hero cover art.
      Every other screen needs its navigation from the first pixel. */
   const isVisible = !isHome || isScrolled;
   const navItems = getNavItems(isHome, canManageWedding, t);
-  // The bottom bar only exists on the guest-facing pages that have these sections (the invite letter and RSVP
-  // screens are full-screen flows of their own).
-  const showBottomNav = !canManageWedding && (isHome || location.pathname === '/tema');
-  const menuItems = showBottomNav ? navItems.filter((item) => !BOTTOM_NAV_HREFS.includes(item.key)) : navItems;
   const closeMobileNav = () => setMobileNavOpen(false);
   // One pill style everywhere; guests get the soft translucent variant, the
   // couple's control panel keeps the bright gold one.
@@ -160,8 +155,9 @@ export function AppTopBar() {
   const desktopNavClassName = `obw-nav__links obw-nav__links--pill${showSignOutPill ? '' : ' obw-nav__links--soft'}`;
 
   async function handleSignOut() {
-    await signOut();
+    // Leave first: signing out on an admin page would bounce to the login.
     navigate('/');
+    await signOut();
   }
 
   useEffect(() => {
@@ -195,12 +191,6 @@ export function AppTopBar() {
   useEffect(() => {
     setMobileNavOpen(false);
   }, [location.pathname]);
-
-  // Leaves room under the page for the bottom bar (see .guest-bottom-nav).
-  useEffect(() => {
-    document.body.classList.toggle('has-guest-bottom-nav', showBottomNav);
-    return () => document.body.classList.remove('has-guest-bottom-nav');
-  }, [showBottomNav]);
 
   useEffect(() => {
     if (!mobileNavOpen) {
@@ -258,65 +248,32 @@ export function AppTopBar() {
             ) : null}
           </nav>
 
-          {canManageWedding ? null : (
-            <button
-              type="button"
-              className={`site-header__menu-btn${mobileNavOpen ? ' is-open' : ''}`}
-              aria-expanded={mobileNavOpen}
-              aria-controls="site-header-mobile-panel"
-              aria-label={mobileNavOpen ? t('navigation.menu.close') : t('navigation.menu.open')}
-              onClick={() => setMobileNavOpen((current) => !current)}>
-              {mobileNavOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
-          )}
-
           {showSignOutPill ? (
-            <>
-              <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest site-header__crest--desktop" />
-              {/* Phones: a gold tag naming the section they are in, and the crest opens their menu. */}
-              <span className="site-header__section-tag">
-                <currentRoute.icon size={14} aria-hidden />
-                {t(currentRoute.i18nKey)}
-              </span>
-              <button
-                type="button"
-                className={`site-header__crest-btn${mobileNavOpen ? ' is-open' : ''}`}
-                aria-expanded={mobileNavOpen}
-                aria-controls="site-header-mobile-panel"
-                aria-label={mobileNavOpen ? t('navigation.menu.close') : t('navigation.menu.open')}
-                onClick={() => setMobileNavOpen((current) => !current)}>
-                <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest" />
-              </button>
-            </>
+            <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest site-header__crest--desktop" />
           ) : (
             <AppUserMenu />
           )}
+
+          {/* Phones: a tag naming the current section (styled like the desktop pills, not clickable)
+              and the crest, which opens the menu. */}
+          <span className="site-header__section-tag">
+            <currentSection.icon size={16} aria-hidden />
+            {currentSection.label}
+          </span>
+          <button
+            type="button"
+            className={`site-header__crest-btn${mobileNavOpen ? ' is-open' : ''}`}
+            aria-expanded={mobileNavOpen}
+            aria-controls="site-header-mobile-panel"
+            aria-label={mobileNavOpen ? t('navigation.menu.close') : t('navigation.menu.open')}
+            onClick={() => setMobileNavOpen((current) => !current)}>
+            <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest" />
+          </button>
         </div>
       </div>
 
       {/* Blurs the page behind the open menu; a tap on it closes the menu. In
           body, not here: the header's backdrop-filter would trap a fixed child. */}
-      {showBottomNav
-        ? createPortal(
-            <nav className={`guest-bottom-nav${isVisible ? ' is-visible' : ''}`} aria-hidden={!isVisible} aria-label={t('navigation.menu.primary')}>
-              {BOTTOM_NAV.map((entry) => {
-                const item = navItems.find((candidate) => candidate.key === entry.href);
-                if (!item) return null;
-                return (
-                  <a
-                    key={entry.href}
-                    href={item.target}
-                    tabIndex={isVisible ? 0 : -1}
-                    className={`guest-bottom-nav__item${entry.href === activeAnchor ? ' is-active' : ''}`}>
-                    <entry.icon size={20} aria-hidden />
-                    <span>{item.label}</span>
-                  </a>
-                );
-              })}
-            </nav>,
-            document.body,
-          )
-        : null}
       {mobileNavOpen
         ? createPortal(<div className="site-header__scrim" aria-hidden onClick={closeMobileNav} />, document.body)
         : null}
@@ -325,7 +282,7 @@ export function AppTopBar() {
           id="site-header-mobile-panel"
           className="site-header__mobile-panel obw-fade-up"
           aria-label={t('navigation.menu.primary')}>
-          {menuItems.map((item) => (
+          {navItems.map((item) => (
             <NavItemLink
               key={item.key}
               item={item}
