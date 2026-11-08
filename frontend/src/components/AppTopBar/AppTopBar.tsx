@@ -6,6 +6,7 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 
 const SHOW_AFTER_SCROLL = 88;
 
+import { AdminMobileNav } from '@/components/AdminMobileNav';
 import { AppUserMenu } from '@/components/AppUserMenu';
 import { AppUserMenuContent } from '@/components/AppUserMenu/AppUserMenuContent';
 import { ScreenBackButton } from '@/components/ScreenBackButton';
@@ -67,9 +68,8 @@ type NavItem = {
  * this screen", so the desktop bar and the mobile panel can't drift apart.
  */
 function getNavItems(isHome: boolean, canManageWedding: boolean, t: TranslateFn): NavItem[] {
-  // Off the home page the couple get their control-panel sections (plus Home,
-  // the guest site); on the home page they browse it like a guest.
-  if (canManageWedding && !isHome) {
+  // Once logged in the couple keep their own nav on every page, guest site included.
+  if (canManageWedding) {
     return ADMIN_ROUTES.map((route) => ({
       key: route.to,
       label: t(route.i18nKey),
@@ -136,11 +136,11 @@ export function AppTopBar() {
   const { t } = useI18n();
   const { canManageWedding, signOut } = useAuth();
   const isHome = location.pathname === '/';
-  // In the admin the crest opens the mobile menu, so no separate hamburger.
   const isAdmin = location.pathname.startsWith('/admin');
   // The couple's desktop nav folds sign-out into the pill row instead of a
   // separate account dropdown — there's nothing else in that menu for them.
-  const showSignOutPill = canManageWedding && !isHome;
+  // On phones they get the bottom tab bar (AdminMobileNav), so no hamburger.
+  const showSignOutPill = canManageWedding;
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeAnchor, setActiveAnchor] = useState('');
@@ -195,11 +195,13 @@ export function AppTopBar() {
     setMobileNavOpen(false);
   }, [location.pathname]);
 
-  // Leaves room under the page for the bottom bar (see .guest-bottom-nav).
+  // Leaves room under the page for the bottom bar (see .guest-bottom-nav). The
+  // admin pages pad themselves for the couple's bar; the guest pages need this.
+  const reserveBottomBar = showBottomNav || (canManageWedding && !isAdmin);
   useEffect(() => {
-    document.body.classList.toggle('has-guest-bottom-nav', showBottomNav);
+    document.body.classList.toggle('has-guest-bottom-nav', reserveBottomBar);
     return () => document.body.classList.remove('has-guest-bottom-nav');
-  }, [showBottomNav]);
+  }, [reserveBottomBar]);
 
   useEffect(() => {
     if (!mobileNavOpen) {
@@ -257,7 +259,7 @@ export function AppTopBar() {
             ) : null}
           </nav>
 
-          {isAdmin ? null : (
+          {canManageWedding ? null : (
             <button
               type="button"
               className={`site-header__menu-btn${mobileNavOpen ? ' is-open' : ''}`}
@@ -270,16 +272,7 @@ export function AppTopBar() {
           )}
 
           {showSignOutPill ? (
-            // On phones the crest is the admin's menu button; on desktop it is decoration.
-            <button
-              type="button"
-              className={`site-header__crest-btn${mobileNavOpen ? ' is-open' : ''}`}
-              aria-expanded={mobileNavOpen}
-              aria-controls="site-header-mobile-panel"
-              aria-label={mobileNavOpen ? t('navigation.menu.close') : t('navigation.menu.open')}
-              onClick={() => setMobileNavOpen((current) => !current)}>
-              <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest" />
-            </button>
+            <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest" />
           ) : (
             <AppUserMenu />
           )}
@@ -309,6 +302,8 @@ export function AppTopBar() {
             document.body,
           )
         : null}
+      {/* In body: the header's backdrop-filter would trap a fixed child. */}
+      {canManageWedding ? createPortal(<AdminMobileNav />, document.body) : null}
       {mobileNavOpen
         ? createPortal(<div className="site-header__scrim" aria-hidden onClick={closeMobileNav} />, document.body)
         : null}

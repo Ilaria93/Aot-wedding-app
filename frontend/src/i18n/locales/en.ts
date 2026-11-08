@@ -17,7 +17,6 @@ export const en = {
     userMenu: {
       openLabel: 'Account menu',
       coupleLogin: 'Bride or groom? Log in here',
-      couplePanel: 'Couple panel',
       sectionAccount: 'Account',
       sectionPreferences: 'Preferences',
     },

@@ -17,7 +17,6 @@ export const it = {
     userMenu: {
       openLabel: 'Menu account',
       coupleLogin: 'Sei sposo/a? Accedi qui',
-      couplePanel: 'Pannello sposi',
       sectionAccount: 'Account',
       sectionPreferences: 'Preferenze',
     },
