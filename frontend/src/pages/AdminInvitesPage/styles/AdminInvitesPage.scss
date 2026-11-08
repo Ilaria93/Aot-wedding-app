@@ -27,6 +27,12 @@
   border-bottom: 1px solid var(--obw-border);
 }
 
+.admin-invites__toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 /* Phones get the short button labels ("Aggiungi", "Esporta"). */
 .admin-invites__label-short {
   display: none;
@@ -49,18 +55,14 @@
   }
 
   .admin-invites__toolbar-actions .obw-portal-btn {
-    justify-content: center;
+    padding-inline: 10px;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
   }
 
   .admin-invites__toolbar-actions .obw-portal-btn:last-child {
     grid-column: 1 / -1;
   }
-}
-
-.admin-invites__toolbar-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
 }
 
 .admin-invites__notice {
