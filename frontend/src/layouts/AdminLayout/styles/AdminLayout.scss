@@ -1,3 +1,9 @@
+/* No wrapping card: each section is its own dark box on the page padding.
+   min-width: 0 keeps a wide child from stretching it past the screen edge. */
+.admin-layout__content {
+  min-width: 0;
+}
+
 /* Plain hero — no card/box/background. Two columns: title block on the
    left, page-specific stat cards on the right; stacked below 768px. */
 .admin-layout__hero-row {
@@ -56,35 +62,10 @@
 }
 
 @media (max-width: 768px) {
-  /* Mobile only: the whole admin page sits inside one bordered, dark card
-     with gold corner brackets — same motif as .obw-portal-card. Desktop
-     stays plain/borderless (see .admin-layout__hero-row reset above). */
+  /* Phones drop the page's own side padding (.obw-page--app), so the panel
+     keeps its gutter here. */
   .admin-layout__content {
-    position: relative;
-    margin: 12px;
-    padding: 1.5rem 1.25rem calc(72px + 1.5rem);
-    border: 1px solid var(--obw-border);
-    border-radius: 14px;
-    background: linear-gradient(160deg, var(--obw-veil), rgba(18, 10, 9, 0.55)), var(--obw-charcoal);
-    box-shadow: var(--obw-shadow-dark);
-  }
-
-  .admin-layout__content::before {
-    content: '';
-    position: absolute;
-    inset: 12px;
-    pointer-events: none;
-    border-radius: 6px;
-    opacity: 0.45;
-    background:
-      linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 16px 1px no-repeat,
-      linear-gradient(var(--obw-gold), var(--obw-gold)) left top / 1px 16px no-repeat,
-      linear-gradient(var(--obw-gold), var(--obw-gold)) right top / 16px 1px no-repeat,
-      linear-gradient(var(--obw-gold), var(--obw-gold)) right top / 1px 16px no-repeat,
-      linear-gradient(var(--obw-gold), var(--obw-gold)) left bottom / 16px 1px no-repeat,
-      linear-gradient(var(--obw-gold), var(--obw-gold)) left bottom / 1px 16px no-repeat,
-      linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 16px 1px no-repeat,
-      linear-gradient(var(--obw-gold), var(--obw-gold)) right bottom / 1px 16px no-repeat;
+    padding-inline: 16px;
   }
 
   /* Mockup centers the hero text on mobile only — desktop keeps it left-aligned.
@@ -110,4 +91,22 @@
   .admin-layout__hero-meta {
     justify-content: center;
   }
+}
+
+/* The panel's section boxes: the portal cards' own fill, made see-through so
+   they read lighter, outlined in the lilac of the crest. :root lifts it over each page's
+   own rule. The Inviti outer box keeps its see-through glass. */
+:root .admin-layout__content :is(
+    .obw-portal-panel:not(.admin-invites__section),
+    .obw-portal-card,
+    .stat-card,
+    .admin-gallery__live-banner,
+    .admin-photo-card,
+    .admin-contacts__supplier-card
+  ),
+:root .admin-rsvp__toolbar {
+  border-color: color-mix(in srgb, #db7fb0 25%, transparent);
+  background:
+    linear-gradient(160deg, var(--obw-veil), rgba(18, 10, 9, 0.35)),
+    color-mix(in srgb, var(--obw-charcoal) 55%, transparent);
 }

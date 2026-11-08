@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict, field_validator
 
 
 class LogisticsContactCategoryEnum(str, Enum):
+    lodging = "lodging"
     location = "location"
     beauty = "beauty"
     transfer = "transfer"

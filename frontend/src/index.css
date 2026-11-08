@@ -173,3 +173,69 @@ section[id] {
   white-space: nowrap;
   border: 0;
 }
+
+/* Couple's panel on phones: no text below 14px (the small labels were hard
+   to read). Only admin classes, so the guest site keeps its own sizes; each
+   selector is the rule that set the small size, prefixed with :root so it
+   wins whatever order the stylesheets load. */
+@media (max-width: 640px) {
+  /* Shared panel pieces */
+  :root .obw-portal-kicker,
+  :root .obw-portal-btn,
+  :root :is(.admin-layout__content, .admin-modal-backdrop) .obw-portal-field__label,
+  :root .admin-layout__hero-code,
+  :root .stat-card__label,
+  :root .stat-card__unit,
+  :root .stat-card__subtitle,
+  :root .filter-pills__item,
+  :root .pagination__btn,
+  :root .admin-modal__danger,
+  :root :is(.admin-layout__content, .admin-modal-backdrop) .rsvp-guest-card__badge,
+  :root :is(.admin-layout__content, .admin-modal-backdrop) .rsvp-field-error,
+  /* Riepilogo */
+  :root .admin-rsvp__section-count,
+  :root .admin-rsvp__confirmed-badge,
+  :root .admin-rsvp__guest-meta,
+  :root .admin-rsvp__table-menu-item,
+  :root .admin-rsvp__kitchen-label,
+  :root .admin-rsvp__table-panel-kicker,
+  :root .admin-rsvp__table-name,
+  :root .admin-rsvp__table-counter,
+  :root .admin-rsvp__map-button,
+  :root .admin-rsvp__menu-item-label,
+  :root .admin-rsvp__children-label,
+  :root .admin-rsvp__new-table-input,
+  :root .admin-rsvp__new-table-submit,
+  :root .admin-rsvp__table-edit-actions .obw-portal-btn,
+  :root .admin-rsvp__table-edit-delete,
+  /* Inviti */
+  :root .admin-invites__meta,
+  :root .admin-invites__card .obw-portal-btn,
+  :root .invite-form__roles legend,
+  :root .invite-form__field > span,
+  :root .invite-form__field small,
+  :root .admin-invites__send-option span,
+  :root .admin-invites__send-list em,
+  /* Contatti */
+  :root .admin-contacts__form-eyebrow,
+  :root .admin-contacts__field-label,
+  :root .admin-contacts__submit-btn,
+  :root .admin-contacts__cancel-link,
+  :root .admin-contacts__supplier-pill,
+  :root .admin-contacts__supplier-info-item,
+  :root .admin-contacts__supplier-note,
+  /* Galleria */
+  :root .admin-gallery__live-toggle-text strong,
+  :root .admin-gallery__live-toggle-text span:last-child,
+  :root .admin-gallery__control-btn,
+  :root .admin-gallery__live-banner-tag,
+  :root .admin-gallery__backup-badge,
+  :root .admin-gallery__backup-text,
+  :root .admin-photo-card__tag,
+  :root .admin-photo-card__time,
+  :root .admin-photo-card__caption,
+  :root .admin-photo-card__status,
+  :root .admin-photo-card--add {
+    font-size: 14px;
+  }
+}

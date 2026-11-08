@@ -16,6 +16,18 @@
   min-width: 0;
 }
 
+/* One column: the filters come first, then the add form, then the list. */
+@media (max-width: 999px) {
+  .admin-contacts__list-col {
+    display: contents;
+  }
+
+  .admin-contacts__toolbar {
+    order: -1;
+    margin-bottom: 0;
+  }
+}
+
 .admin-contacts__form-eyebrow {
   display: inline-flex;
   align-items: center;

@@ -22,12 +22,47 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--obw-space-sm);
+  /* Divider between the actions and the filters below. */
+  padding-bottom: var(--obw-space-md);
+  border-bottom: 1px solid var(--obw-border);
 }
 
 .admin-invites__toolbar-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+/* Phones get the short button labels ("Aggiungi", "Esporta"). */
+.admin-invites__label-short {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .admin-invites__label-long {
+    display: none;
+  }
+
+  .admin-invites__label-short {
+    display: inline;
+  }
+
+  /* Two rows: Aggiungi + Importa CSV, then Esporta across the full width. */
+  .admin-invites__toolbar-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .admin-invites__toolbar-actions .obw-portal-btn {
+    padding-inline: 10px;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .admin-invites__toolbar-actions .obw-portal-btn:last-child {
+    grid-column: 1 / -1;
+  }
 }
 
 .admin-invites__notice {
@@ -69,8 +104,18 @@
   .admin-invites__card-head .admin-invites__actions {
     grid-column: 1;
     grid-row: 3;
-    justify-content: flex-start;
+    flex-wrap: nowrap;
     margin-top: var(--obw-space-xs);
+  }
+
+  /* Buttons share the full width: Invia/Rimanda twice an icon button. */
+  .admin-invites__card-head .admin-invites__actions > .obw-portal-btn {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .admin-invites__card-head .admin-invites__actions > .obw-portal-btn:first-child {
+    flex-grow: 2;
   }
 }
 
