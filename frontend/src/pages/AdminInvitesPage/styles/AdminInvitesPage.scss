@@ -22,6 +22,24 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--obw-space-sm);
+  /* Divider between the actions and the filters below. */
+  padding-bottom: var(--obw-space-md);
+  border-bottom: 1px solid var(--obw-border);
+}
+
+/* Phones get the short button labels ("Aggiungi", "Esporta"). */
+.admin-invites__label-short {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .admin-invites__label-long {
+    display: none;
+  }
+
+  .admin-invites__label-short {
+    display: inline;
+  }
 }
 
 .admin-invites__toolbar-actions {

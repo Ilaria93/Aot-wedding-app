@@ -259,7 +259,8 @@ export function AdminInvitesPage() {
           <div className="admin-invites__toolbar-actions">
             <button type="button" className="obw-portal-btn" data-tip={t('admin.invites.tipAdd')} onClick={() => setDialog({ kind: 'add' })}>
               <UserPlus size={14} aria-hidden />
-              {t('admin.invites.addPerson')}
+              <span className="admin-invites__label-long">{t('admin.invites.addPerson')}</span>
+              <span className="admin-invites__label-short">{t('admin.invites.addShort')}</span>
             </button>
             <button type="button" className="obw-portal-btn obw-portal-btn--secondary" data-tip={t('admin.invites.tipImport')} onClick={() => setImportOpen(true)}>
               <FileUp size={14} aria-hidden />
@@ -267,7 +268,8 @@ export function AdminInvitesPage() {
             </button>
             <button type="button" className="obw-portal-btn obw-portal-btn--secondary" data-tip={t('admin.invites.tipExport')} onClick={handleExport}>
               <Download size={14} aria-hidden />
-              {t('admin.invites.exportCsv')}
+              <span className="admin-invites__label-long">{t('admin.invites.exportCsv')}</span>
+              <span className="admin-invites__label-short">{t('admin.invites.exportShort')}</span>
             </button>
           </div>
         </div>
