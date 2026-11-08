@@ -173,3 +173,57 @@ section[id] {
   white-space: nowrap;
   border: 0;
 }
+
+/* Phones: no text below 14px (guests found the small labels hard to read).
+   One block for the whole site; each selector is the rule that set the small
+   size, prefixed with :root so it wins whatever order the stylesheets load. */
+@media (max-width: 640px) {
+  /* Shared building blocks */
+  :root .obw-kicker,
+  :root .obw-btn,
+  :root .obw-meta,
+  :root .obw-field-label,
+  :root .field-label,
+  :root .obw-choice__title,
+  :root .obw-choice__desc,
+  :root .obw-summary__label,
+  :root .obw-nav__brand-sub,
+  :root .action-button,
+  :root .app-user-menu__section-label,
+  :root .language-switcher__chip,
+  :root .lightbox__caption,
+  /* Home */
+  :root .mission-hero__scroll-label,
+  :root .landing-story__stage-meta,
+  :root .landing-story__stage-count,
+  :root .landing-story__dossier-field dt,
+  :root .landing-ceremony__area,
+  :root .landing-ceremony__time dt,
+  :root .landing-ceremony__actions .obw-btn,
+  :root .landing-theme__terms dt,
+  :root .obw-gift-row span,
+  :root .gift__card .gift__rows .obw-gift-row span,
+  :root .invite-request__field label,
+  :root .invite-request__privacy,
+  /* Theme page */
+  :root .tema-page__note,
+  :root .tema-page__terms dt,
+  /* Invite letter and guest RSVP */
+  :root .envelope-invite__letter .envelope-invite__of,
+  :root .envelope-invite__rsvp-actions .obw-btn,
+  :root .envelope-invite__hint,
+  :root .envelope-invite__gift-holder,
+  :root .envelope-invite__gift-iban,
+  :root .envelope-invite__rsvp-hint,
+  :root .guest-rsvp-page .rsvp-guest-summary__name,
+  :root .rsvp-guest-card__badge,
+  :root .rsvp-field-error {
+    font-size: 14px;
+  }
+
+  /* At 14px the dossier's labels no longer fit beside their values: stack them. */
+  :root .landing-story__dossier-field {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
