@@ -104,8 +104,18 @@
   .admin-invites__card-head .admin-invites__actions {
     grid-column: 1;
     grid-row: 3;
-    justify-content: flex-start;
+    flex-wrap: nowrap;
     margin-top: var(--obw-space-xs);
+  }
+
+  /* Buttons share the full width: Invia/Rimanda twice an icon button. */
+  .admin-invites__card-head .admin-invites__actions > .obw-portal-btn {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .admin-invites__card-head .admin-invites__actions > .obw-portal-btn:first-child {
+    flex-grow: 2;
   }
 }
 
