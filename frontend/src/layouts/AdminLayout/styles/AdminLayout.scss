@@ -92,3 +92,19 @@
     justify-content: center;
   }
 }
+
+/* The panel's section boxes: a lighter fill than the site's near-black portal
+   cards, outlined in the lilac of the crest. :root lifts it over each page's
+   own rule. The Inviti outer box keeps its see-through glass. */
+:root .admin-layout__content :is(
+    .obw-portal-panel:not(.admin-invites__section),
+    .obw-portal-card,
+    .stat-card,
+    .admin-gallery__live-banner,
+    .admin-photo-card,
+    .admin-contacts__supplier-card
+  ),
+:root .admin-rsvp__toolbar {
+  border-color: color-mix(in srgb, #db7fb0 70%, transparent);
+  background: linear-gradient(160deg, color-mix(in srgb, #db7fb0 8%, transparent), transparent), var(--obw-paper-deep);
+}
