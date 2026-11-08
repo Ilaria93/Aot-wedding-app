@@ -40,6 +40,21 @@
   .admin-invites__label-short {
     display: inline;
   }
+
+  /* Two rows: Aggiungi + Importa CSV, then Esporta across the full width. */
+  .admin-invites__toolbar-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  .admin-invites__toolbar-actions .obw-portal-btn {
+    justify-content: center;
+  }
+
+  .admin-invites__toolbar-actions .obw-portal-btn:last-child {
+    grid-column: 1 / -1;
+  }
 }
 
 .admin-invites__toolbar-actions {

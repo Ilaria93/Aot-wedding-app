@@ -75,7 +75,14 @@ export function InviteCard({
             data-tip={t(invite.sent_at ? 'admin.invites.tipResend' : 'admin.invites.tipSend')}
             onClick={() => (opensSendDialog ? onOpenSend(invite) : onSend(invite))}>
             {invite.sent_at ? <RotateCw size={14} aria-hidden /> : <Send size={14} aria-hidden />}
-            {invite.sent_at ? t('admin.invites.resend') : t('admin.invites.send')}
+            {invite.sent_at ? (
+              t('admin.invites.resend')
+            ) : (
+              <>
+                <span className="admin-invites__label-long">{t('admin.invites.send')}</span>
+                <span className="admin-invites__label-short">{t('admin.invites.sendShort')}</span>
+              </>
+            )}
           </button>
           {/* Everything else is an icon: label on hover and for screen readers. */}
           <button
