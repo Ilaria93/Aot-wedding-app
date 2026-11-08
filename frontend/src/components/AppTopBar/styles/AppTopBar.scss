@@ -6,7 +6,8 @@
   object-fit: cover;
 }
 
-.site-header__section-btn {
+.site-header__section-tag,
+.site-header__crest-btn {
   display: none;
 }
 
@@ -33,14 +34,13 @@
   background: color-mix(in srgb, #db7fb0 38%, transparent);
 }
 
-/* The couple's phone menu button: the gold of their desktop pills, running
-   behind the crest so the whole thing reads as one tappable control. */
-.site-header__section-btn {
+/* The couple's phone header: a gold tag naming the current section (just a
+   label), then the crest, outlined, which opens their menu. */
+.site-header__section-tag {
   align-items: center;
-  gap: 8px;
-  padding: 3px 3px 3px 12px;
-  border: none;
-  border-radius: 10px;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
   background: #f2ca50;
   color: #000;
   font-family: var(--font-sans);
@@ -48,11 +48,19 @@
   font-weight: 500;
   line-height: 1;
   white-space: nowrap;
-  cursor: pointer;
 }
 
-.site-header__section-btn.is-open {
-  background: #e2b83a;
+.site-header__crest-btn {
+  padding: 3px;
+  border: 1px solid color-mix(in srgb, var(--obw-bone) 45%, transparent);
+  border-radius: 10px;
+  background: none;
+  cursor: pointer;
+  transition: border-color var(--obw-duration-fast) ease;
+}
+
+.site-header__crest-btn.is-open {
+  border-color: #f2ca50;
 }
 
 /* Mobile menu: a dark card like the landing's (14px corners, blur over the
@@ -250,7 +258,8 @@
   }
 
   .site-header__menu-btn,
-  .site-header__section-btn {
+  .site-header__section-tag,
+  .site-header__crest-btn {
     display: inline-flex;
   }
 

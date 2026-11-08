@@ -273,16 +273,18 @@ export function AppTopBar() {
           {showSignOutPill ? (
             <>
               <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest site-header__crest--desktop" />
-              {/* Phones: the section they are in plus the crest, one gold button that opens their menu. */}
+              {/* Phones: a gold tag naming the section they are in, and the crest opens their menu. */}
+              <span className="site-header__section-tag">
+                <currentRoute.icon size={14} aria-hidden />
+                {t(currentRoute.i18nKey)}
+              </span>
               <button
                 type="button"
-                className={`site-header__section-btn${mobileNavOpen ? ' is-open' : ''}`}
+                className={`site-header__crest-btn${mobileNavOpen ? ' is-open' : ''}`}
                 aria-expanded={mobileNavOpen}
                 aria-controls="site-header-mobile-panel"
                 aria-label={mobileNavOpen ? t('navigation.menu.close') : t('navigation.menu.open')}
                 onClick={() => setMobileNavOpen((current) => !current)}>
-                <currentRoute.icon size={16} aria-hidden />
-                <span>{t(currentRoute.i18nKey)}</span>
                 <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest" />
               </button>
             </>
