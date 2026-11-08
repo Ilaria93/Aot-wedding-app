@@ -86,6 +86,7 @@ export const it = {
     garrison: 'Guarnigione',
   },
   logisticsCategories: {
+    lodging: 'Alloggio',
     location: 'Location & Ricevimento',
     beauty: 'Beauty',
     transfer: 'Spostamenti',
@@ -375,7 +376,6 @@ export const it = {
     contacts: {
       title: 'Contatti utili',
       coupleKicker: 'Gli sposi',
-      lodgingKicker: 'Alloggio · Residence',
       callWho: 'Chi vuoi chiamare?',
       whatsappWho: 'A chi vuoi scrivere?',
     },

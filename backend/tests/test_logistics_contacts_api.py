@@ -111,3 +111,13 @@ def test_admin_can_update_and_delete_contacts(api_client, admin_headers):
     admin_list_response = api_client.get("/admin/contacts", headers=admin_headers)
     assert admin_list_response.status_code == 200
     assert admin_list_response.json() == []
+
+
+def test_lodging_is_a_supplier_category(api_client, admin_headers):
+    response = api_client.post(
+        "/admin/contacts",
+        headers=admin_headers,
+        json={"category": "lodging", "label": "Long Beach Village", "is_active": True},
+    )
+    assert response.status_code == 200
+    assert api_client.get("/contacts").json()[0]["category"] == "lodging"
