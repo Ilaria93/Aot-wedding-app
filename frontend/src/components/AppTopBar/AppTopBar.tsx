@@ -335,7 +335,7 @@ export function AppTopBar() {
             </div>
           </div>
           {canManageWedding && !onAdminPage ? (
-            // On the guest site the couple's panel replaces the guests' account block.
+            // On the guest site the couple's panel gets its own block, above Account.
             <div className="app-user-menu__section">
               <p className="app-user-menu__section-label">{t('navigation.menu.sectionAdmin')}</p>
               <div className="app-user-menu__actions">
@@ -349,21 +349,10 @@ export function AppTopBar() {
                     {item.label}
                   </NavLink>
                 ))}
-                <button
-                  type="button"
-                  className="app-user-menu__action app-user-menu__action--danger"
-                  onClick={() => {
-                    closeMobileNav();
-                    void handleSignOut();
-                  }}>
-                  <LogOut size={15} aria-hidden />
-                  {t('common.signOut')}
-                </button>
               </div>
             </div>
-          ) : (
-            <AppUserMenuContent onNavigate={closeMobileNav} />
-          )}
+          ) : null}
+          <AppUserMenuContent onNavigate={closeMobileNav} />
         </div>
       ) : null}
     </header>
