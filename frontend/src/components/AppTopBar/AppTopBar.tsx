@@ -44,6 +44,13 @@ const HOME_ANCHORS = [
   { href: '#contacts', i18nKey: 'landing.nav.contacts', icon: Contact },
 ] as const;
 
+/** Guests' menu: the detail pages, in their own block under the home sections. */
+const DETAIL_PAGES = [
+  { to: '/tema', i18nKey: 'navigation.menu.themeDetails', icon: Shield },
+  // Gallery temporarily hidden — bring back together with <GallerySection /> in HomePage.
+  // { to: '/album', i18nKey: 'navigation.menu.photos', icon: ImageIcon },
+] as const;
+
 type NavItem = {
   key: string;
   label: string;
@@ -292,6 +299,19 @@ export function AppTopBar() {
               onNavigate={closeMobileNav}
             />
           ))}
+          {canManageWedding ? null : (
+            <div className="app-user-menu__section">
+              <p className="app-user-menu__section-label">{t('navigation.menu.sectionMore')}</p>
+              <div className="app-user-menu__actions">
+                {DETAIL_PAGES.map((page) => (
+                  <Link key={page.to} to={page.to} className="app-user-menu__action" onClick={closeMobileNav}>
+                    <page.icon size={15} aria-hidden />
+                    {t(page.i18nKey)}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
           <AppUserMenuContent onNavigate={closeMobileNav} />
         </div>
       ) : null}

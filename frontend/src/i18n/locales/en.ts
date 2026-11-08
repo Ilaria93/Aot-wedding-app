@@ -13,6 +13,9 @@ export const en = {
       primary: 'Main navigation',
       open: 'Open menu',
       close: 'Close menu',
+      sectionMore: 'More to explore',
+      themeDetails: 'More about the theme',
+      photos: 'See our photos',
     },
     userMenu: {
       openLabel: 'Account menu',
