@@ -13,6 +13,11 @@ export const en = {
       primary: 'Main navigation',
       open: 'Open menu',
       close: 'Close menu',
+      sectionHome: 'Homepage',
+      sectionAdmin: 'Admin',
+      sectionMore: 'More to explore',
+      themeDetails: 'More about the theme',
+      photos: 'See our photos',
     },
     userMenu: {
       openLabel: 'Account menu',
@@ -650,7 +655,7 @@ export const en = {
   },
   admin: {
     nav: {
-      rsvp: 'Home',
+      rsvp: 'Overview',
       contacts: 'Contacts',
       gallery: 'Gallery',
       invites: 'Invites',

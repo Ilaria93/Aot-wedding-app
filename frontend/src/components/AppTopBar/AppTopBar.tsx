@@ -1,4 +1,4 @@
-import { BookHeart, Contact, Gift, Home, Image as ImageIcon, LogOut, MapPin, Menu, Send, X, Mail } from 'lucide-react';
+import { BookHeart, CircleHelp, Contact, Gift, Home, Image as ImageIcon, LayoutDashboard, LogOut, MapPin, Send, Shield, Mail } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { ComponentType } from 'react';
@@ -17,35 +17,39 @@ import './styles/AppTopBar.scss';
 
 type NavIcon = ComponentType<{ size?: number; 'aria-hidden'?: boolean }>;
 
-const ADMIN_ROUTES: { to: string; i18nKey: 'admin.nav.rsvp' | 'admin.nav.contacts' | 'admin.nav.gallery' | 'admin.nav.invites'; icon: NavIcon }[] = [
-  { to: '/admin/rsvp', i18nKey: 'admin.nav.rsvp', icon: Home },
+const ADMIN_ROUTES: {
+  to: string;
+  i18nKey: 'navigation.tabs.home' | 'admin.nav.rsvp' | 'admin.nav.contacts' | 'admin.nav.gallery' | 'admin.nav.invites';
+  icon: NavIcon;
+}[] = [
+  // "Home" is the guest site itself, so the couple can see it without logging out.
+  { to: '/', i18nKey: 'navigation.tabs.home', icon: Home },
+  { to: '/admin/rsvp', i18nKey: 'admin.nav.rsvp', icon: LayoutDashboard },
   { to: '/admin/invites', i18nKey: 'admin.nav.invites', icon: Send },
   { to: '/admin/contacts', i18nKey: 'admin.nav.contacts', icon: Contact },
   { to: '/admin/gallery', i18nKey: 'admin.nav.gallery', icon: ImageIcon },
 ];
 
 // Same order as the sections on the home page — keep the two in step.
+// Icons only show in the phone section tag.
 const HOME_ANCHORS = [
-  { href: '#theme', i18nKey: 'navigation.tabs.tema' },
-  { href: '#story', i18nKey: 'landing.nav.story' },
-  { href: '#ceremony', i18nKey: 'landing.nav.ceremony' },
+  { href: '#theme', i18nKey: 'navigation.tabs.tema', icon: Shield },
+  { href: '#story', i18nKey: 'landing.nav.story', icon: BookHeart },
+  { href: '#ceremony', i18nKey: 'landing.nav.ceremony', icon: MapPin },
   // Gallery temporarily hidden from the home page — uncomment together with <GallerySection /> in HomePage.
-  // { href: '#gallery', i18nKey: 'landing.nav.gallery' },
-  { href: '#rsvp', i18nKey: 'landing.nav.rsvp' },
-  { href: '#gift', i18nKey: 'landing.nav.gift' },
-  { href: '#faq', i18nKey: 'landing.nav.faq' },
-  { href: '#contacts', i18nKey: 'landing.nav.contacts' },
+  // { href: '#gallery', i18nKey: 'landing.nav.gallery', icon: ImageIcon },
+  { href: '#rsvp', i18nKey: 'landing.nav.rsvp', icon: Mail },
+  { href: '#gift', i18nKey: 'landing.nav.gift', icon: Gift },
+  { href: '#faq', i18nKey: 'landing.nav.faq', icon: CircleHelp },
+  { href: '#contacts', i18nKey: 'landing.nav.contacts', icon: Contact },
 ] as const;
 
-/** The five sections guests look for most, pinned to the bottom of the screen on phones; every other section stays in the menu. */
-const BOTTOM_NAV = [
-  { href: '#story', icon: BookHeart },
-  { href: '#ceremony', icon: MapPin },
-  { href: '#rsvp', icon: Mail },
-  { href: '#gift', icon: Gift },
-  { href: '#contacts', icon: Contact },
+/** Guests' menu: the detail pages, in their own block under the home sections. */
+const DETAIL_PAGES = [
+  { to: '/tema', i18nKey: 'navigation.menu.themeDetails', icon: Shield },
+  // Gallery temporarily hidden — bring back together with <GallerySection /> in HomePage.
+  // { to: '/album', i18nKey: 'navigation.menu.photos', icon: ImageIcon },
 ] as const;
-const BOTTOM_NAV_HREFS: readonly string[] = BOTTOM_NAV.map((item) => item.href);
 
 type NavItem = {
   key: string;
@@ -61,9 +65,8 @@ type NavItem = {
  * this screen", so the desktop bar and the mobile panel can't drift apart.
  */
 function getNavItems(isHome: boolean, canManageWedding: boolean, t: TranslateFn): NavItem[] {
-  // The couple only ever manages the wedding, never browses it as a guest —
-  // off the home page they get just their three control-panel sections.
-  if (canManageWedding && !isHome) {
+  // Once logged in the couple keep their own nav on every page, guest site included.
+  if (canManageWedding) {
     return ADMIN_ROUTES.map((route) => ({
       key: route.to,
       label: t(route.i18nKey),
@@ -115,6 +118,7 @@ function NavItemLink({ item, className, activeClassName, isActive, onNavigate }:
   return (
     <NavLink
       to={item.target}
+      end={item.target === '/'}
       className={({ isActive }) => `${className}${isActive && activeClassName ? ` ${activeClassName}` : ''}`}
       onClick={onNavigate}>
       {content}
@@ -129,23 +133,33 @@ export function AppTopBar() {
   const { t } = useI18n();
   const { canManageWedding, signOut } = useAuth();
   const isHome = location.pathname === '/';
-  // Admin already has its own mobile nav (bottom tab bar, see AdminMobileNav)
-  // — the hamburger here would just duplicate it.
-  const isAdmin = location.pathname.startsWith('/admin');
   // The couple's desktop nav folds sign-out into the pill row instead of a
   // separate account dropdown — there's nothing else in that menu for them.
-  const showSignOutPill = canManageWedding && !isHome;
+  const showSignOutPill = canManageWedding;
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeAnchor, setActiveAnchor] = useState('');
+  // Phones name where you are in a lilac tag beside the crest (the menu button):
+  // the couple's panel section, or for guests the home section on screen.
+  const adminRoute = ADMIN_ROUTES.find((route) => route.to !== '/' && location.pathname.startsWith(route.to));
+  const guestAnchor = HOME_ANCHORS.find((anchor) =>
+    location.pathname === '/tema' ? anchor.href === '#theme' : anchor.href === activeAnchor,
+  );
+  const currentSection =
+    canManageWedding && adminRoute
+      ? { icon: adminRoute.icon, label: t(adminRoute.i18nKey) }
+      : !canManageWedding && guestAnchor
+        ? { icon: guestAnchor.icon, label: t(guestAnchor.i18nKey) }
+        : { icon: Home, label: t('navigation.tabs.home') };
   /* Only the home page hides the bar: there it would cover the hero cover art.
      Every other screen needs its navigation from the first pixel. */
   const isVisible = !isHome || isScrolled;
   const navItems = getNavItems(isHome, canManageWedding, t);
-  // The bottom bar only exists on the guest-facing pages that have these sections (the invite letter and RSVP
-  // screens are full-screen flows of their own).
-  const showBottomNav = !canManageWedding && (isHome || location.pathname === '/tema');
-  const menuItems = showBottomNav ? navItems.filter((item) => !BOTTOM_NAV_HREFS.includes(item.key)) : navItems;
+  // Phone menu: the guest sections and the couple's panel (minus Home, which the
+  // home sections already cover), ordered by where you are.
+  const onAdminPage = canManageWedding && location.pathname.startsWith('/admin');
+  const homeItems = getNavItems(isHome, false, t);
+  const panelItems = getNavItems(isHome, true, t).filter((item) => item.target !== '/');
   const closeMobileNav = () => setMobileNavOpen(false);
   // One pill style everywhere; guests get the soft translucent variant, the
   // couple's control panel keeps the bright gold one.
@@ -153,8 +167,9 @@ export function AppTopBar() {
   const desktopNavClassName = `obw-nav__links obw-nav__links--pill${showSignOutPill ? '' : ' obw-nav__links--soft'}`;
 
   async function handleSignOut() {
-    await signOut();
+    // Leave first: signing out on an admin page would bounce to the login.
     navigate('/');
+    await signOut();
   }
 
   useEffect(() => {
@@ -188,12 +203,6 @@ export function AppTopBar() {
   useEffect(() => {
     setMobileNavOpen(false);
   }, [location.pathname]);
-
-  // Leaves room under the page for the bottom bar (see .guest-bottom-nav).
-  useEffect(() => {
-    document.body.classList.toggle('has-guest-bottom-nav', showBottomNav);
-    return () => document.body.classList.remove('has-guest-bottom-nav');
-  }, [showBottomNav]);
 
   useEffect(() => {
     if (!mobileNavOpen) {
@@ -251,49 +260,32 @@ export function AppTopBar() {
             ) : null}
           </nav>
 
-          {isAdmin ? null : (
-            <button
-              type="button"
-              className={`site-header__menu-btn${mobileNavOpen ? ' is-open' : ''}`}
-              aria-expanded={mobileNavOpen}
-              aria-controls="site-header-mobile-panel"
-              aria-label={mobileNavOpen ? t('navigation.menu.close') : t('navigation.menu.open')}
-              onClick={() => setMobileNavOpen((current) => !current)}>
-              {mobileNavOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
-          )}
-
           {showSignOutPill ? (
-            <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest" />
+            <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest site-header__crest--desktop" />
           ) : (
             <AppUserMenu />
           )}
+
+          {/* Phones: a tag naming the current section (styled like the desktop pills, not clickable)
+              and the crest, which opens the menu. */}
+          <span className="site-header__section-tag">
+            <currentSection.icon size={16} aria-hidden />
+            {currentSection.label}
+          </span>
+          <button
+            type="button"
+            className={`site-header__crest-btn${mobileNavOpen ? ' is-open' : ''}`}
+            aria-expanded={mobileNavOpen}
+            aria-controls="site-header-mobile-panel"
+            aria-label={mobileNavOpen ? t('navigation.menu.close') : t('navigation.menu.open')}
+            onClick={() => setMobileNavOpen((current) => !current)}>
+            <img src="/assets/wedding/stemma.webp" alt="" className="site-header__crest" />
+          </button>
         </div>
       </div>
 
       {/* Blurs the page behind the open menu; a tap on it closes the menu. In
           body, not here: the header's backdrop-filter would trap a fixed child. */}
-      {showBottomNav
-        ? createPortal(
-            <nav className={`guest-bottom-nav${isVisible ? ' is-visible' : ''}`} aria-hidden={!isVisible} aria-label={t('navigation.menu.primary')}>
-              {BOTTOM_NAV.map((entry) => {
-                const item = navItems.find((candidate) => candidate.key === entry.href);
-                if (!item) return null;
-                return (
-                  <a
-                    key={entry.href}
-                    href={item.target}
-                    tabIndex={isVisible ? 0 : -1}
-                    className={`guest-bottom-nav__item${entry.href === activeAnchor ? ' is-active' : ''}`}>
-                    <entry.icon size={20} aria-hidden />
-                    <span>{item.label}</span>
-                  </a>
-                );
-              })}
-            </nav>,
-            document.body,
-          )
-        : null}
       {mobileNavOpen
         ? createPortal(<div className="site-header__scrim" aria-hidden onClick={closeMobileNav} />, document.body)
         : null}
@@ -302,7 +294,9 @@ export function AppTopBar() {
           id="site-header-mobile-panel"
           className="site-header__mobile-panel obw-fade-up"
           aria-label={t('navigation.menu.primary')}>
-          {menuItems.map((item) => (
+          {/* The section you are in on top (home sections, or the couple's panel on
+              admin pages), the other one in its own block further down. */}
+          {(onAdminPage ? panelItems : homeItems).map((item) => (
             <NavItemLink
               key={item.key}
               item={item}
@@ -312,6 +306,52 @@ export function AppTopBar() {
               onNavigate={closeMobileNav}
             />
           ))}
+          {onAdminPage ? (
+            <div className="app-user-menu__section">
+              <p className="app-user-menu__section-label">{t('navigation.menu.sectionHome')}</p>
+              <div className="app-user-menu__actions">
+                {HOME_ANCHORS.map((anchor) => (
+                  <a key={anchor.href} href={`/${anchor.href}`} className="app-user-menu__action" onClick={closeMobileNav}>
+                    <anchor.icon size={15} aria-hidden />
+                    {t(anchor.i18nKey)}
+                  </a>
+                ))}
+              </div>
+            </div>
+          ) : null}
+          <div className="app-user-menu__section">
+            <p className="app-user-menu__section-label">{t('navigation.menu.sectionMore')}</p>
+            <div className="app-user-menu__actions">
+              {DETAIL_PAGES.map((page) => (
+                <NavLink
+                  key={page.to}
+                  to={page.to}
+                  className={({ isActive }) => `app-user-menu__action${isActive ? ' is-active' : ''}`}
+                  onClick={closeMobileNav}>
+                  <page.icon size={15} aria-hidden />
+                  {t(page.i18nKey)}
+                </NavLink>
+              ))}
+            </div>
+          </div>
+          {canManageWedding && !onAdminPage ? (
+            // On the guest site the couple's panel gets its own block, above Account.
+            <div className="app-user-menu__section">
+              <p className="app-user-menu__section-label">{t('navigation.menu.sectionAdmin')}</p>
+              <div className="app-user-menu__actions">
+                {panelItems.map((item) => (
+                  <NavLink
+                    key={item.key}
+                    to={item.target}
+                    className={({ isActive }) => `app-user-menu__action${isActive ? ' is-active' : ''}`}
+                    onClick={closeMobileNav}>
+                    {item.icon ? <item.icon size={15} aria-hidden /> : null}
+                    {item.label}
+                  </NavLink>
+                ))}
+              </div>
+            </div>
+          ) : null}
           <AppUserMenuContent onNavigate={closeMobileNav} />
         </div>
       ) : null}

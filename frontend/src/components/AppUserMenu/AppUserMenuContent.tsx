@@ -23,8 +23,9 @@ export function AppUserMenuContent({ onNavigate }: AppUserMenuContentProps) {
 
   async function handleSignOut() {
     onNavigate();
-    await signOut();
+    // Leave first: signing out on an admin page would bounce to the login.
     navigate('/');
+    await signOut();
   }
 
   return (

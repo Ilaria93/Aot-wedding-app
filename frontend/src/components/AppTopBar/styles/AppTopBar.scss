@@ -6,26 +6,40 @@
   object-fit: cover;
 }
 
-.site-header__menu-btn {
+.site-header__section-tag,
+.site-header__crest-btn {
   display: none;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: 1px solid var(--obw-border-dark);
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--obw-bone) 6%, transparent);
-  color: var(--obw-bone);
-  cursor: pointer;
-  transition:
-    border-color var(--obw-duration-fast) ease,
-    background var(--obw-duration-fast) ease,
-    transform var(--obw-duration-fast) var(--obw-ease-out);
 }
 
-.site-header__menu-btn:hover,
-.site-header__menu-btn.is-open {
-  border-color: color-mix(in srgb, #db7fb0 70%, transparent);
+/* Phone header: a lilac tag naming the current section (a label shaped like
+   the desktop pills, as tall as the crest), then the outlined crest, which
+   opens the menu. */
+.site-header__section-tag {
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  /* The lilac of the menu's active item (petals, #db7fb0). */
+  background: color-mix(in srgb, #db7fb0 38%, transparent);
+  color: var(--obw-bone);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.site-header__crest-btn {
+  padding: 3px;
+  border: 1px solid color-mix(in srgb, #db7fb0 70%, transparent);
+  border-radius: 10px;
+  background: none;
+  cursor: pointer;
+  transition: background var(--obw-duration-fast) ease;
+}
+
+.site-header__crest-btn.is-open {
   background: color-mix(in srgb, #db7fb0 38%, transparent);
 }
 
@@ -110,6 +124,12 @@
 .site-header__mobile-panel .app-user-menu__action:hover,
 .site-header__mobile-panel .app-user-menu__action:focus-visible {
   background: color-mix(in srgb, #db7fb0 20%, transparent);
+  color: var(--obw-bone);
+}
+
+/* The detail page you are on, lit like the active home section. */
+.site-header__mobile-panel .app-user-menu__action.is-active {
+  background: color-mix(in srgb, #db7fb0 38%, transparent);
   color: var(--obw-bone);
 }
 
@@ -223,8 +243,13 @@
     display: none;
   }
 
-  .site-header__menu-btn {
+  .site-header__section-tag,
+  .site-header__crest-btn {
     display: inline-flex;
+  }
+
+  .site-header__crest--desktop {
+    display: none;
   }
 
   /* Its content now lives inside the mobile panel below, opened by the
@@ -246,67 +271,8 @@
     transition: none;
   }
 
-  .site-header__menu-btn:active {
-    transform: none;
-  }
-
   .site-header__scrim {
     animation: none;
   }
 }
 
-/* Phone-only tab bar with the sections guests look for most. Portaled to
-   <body> (the header's backdrop-filter would trap a fixed child). */
-.guest-bottom-nav {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .guest-bottom-nav {
-    position: fixed;
-    inset: auto 0 0 0;
-    z-index: 40;
-    display: flex;
-    justify-content: space-around;
-    padding: 6px max(6px, env(safe-area-inset-left)) max(6px, env(safe-area-inset-bottom));
-    border-top: 1px solid var(--obw-border-dark);
-    background: color-mix(in srgb, var(--obw-void) 90%, transparent);
-    backdrop-filter: blur(14px);
-    /* Like the top bar, it stays away while the cover is on screen (it would sit on "Offri il tuo cuore"). */
-    opacity: 0;
-    transform: translateY(100%);
-    pointer-events: none;
-    transition: opacity 250ms ease, transform 250ms ease;
-  }
-
-  .guest-bottom-nav.is-visible {
-    opacity: 1;
-    transform: none;
-    pointer-events: auto;
-  }
-
-  body.has-guest-bottom-nav {
-    padding-bottom: calc(64px + env(safe-area-inset-bottom));
-  }
-}
-
-.guest-bottom-nav__item {
-  flex: 1 1 0;
-  min-width: 0;
-  min-height: 48px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  color: color-mix(in srgb, var(--obw-bone) 62%, var(--obw-stone));
-  font-family: var(--font-sans);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-}
-
-.guest-bottom-nav__item.is-active {
-  color: var(--obw-gold-bright);
-}
