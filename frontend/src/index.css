@@ -174,56 +174,68 @@ section[id] {
   border: 0;
 }
 
-/* Phones: no text below 14px (guests found the small labels hard to read).
-   One block for the whole site; each selector is the rule that set the small
-   size, prefixed with :root so it wins whatever order the stylesheets load. */
+/* Couple's panel on phones: no text below 14px (the small labels were hard
+   to read). Only admin classes, so the guest site keeps its own sizes; each
+   selector is the rule that set the small size, prefixed with :root so it
+   wins whatever order the stylesheets load. */
 @media (max-width: 640px) {
-  /* Shared building blocks */
-  :root .obw-kicker,
-  :root .obw-btn,
-  :root .obw-meta,
-  :root .obw-field-label,
-  :root .field-label,
-  :root .obw-choice__title,
-  :root .obw-choice__desc,
-  :root .obw-summary__label,
-  :root .obw-nav__brand-sub,
-  :root .action-button,
-  :root .app-user-menu__section-label,
-  :root .language-switcher__chip,
-  :root .lightbox__caption,
-  /* Home */
-  :root .mission-hero__scroll-label,
-  :root .landing-story__stage-meta,
-  :root .landing-story__stage-count,
-  :root .landing-story__dossier-field dt,
-  :root .landing-ceremony__area,
-  :root .landing-ceremony__time dt,
-  :root .landing-ceremony__actions .obw-btn,
-  :root .landing-theme__terms dt,
-  :root .obw-gift-row span,
-  :root .gift__card .gift__rows .obw-gift-row span,
-  :root .invite-request__field label,
-  :root .invite-request__privacy,
-  /* Theme page */
-  :root .tema-page__note,
-  :root .tema-page__terms dt,
-  /* Invite letter and guest RSVP */
-  :root .envelope-invite__letter .envelope-invite__of,
-  :root .envelope-invite__rsvp-actions .obw-btn,
-  :root .envelope-invite__hint,
-  :root .envelope-invite__gift-holder,
-  :root .envelope-invite__gift-iban,
-  :root .envelope-invite__rsvp-hint,
-  :root .guest-rsvp-page .rsvp-guest-summary__name,
-  :root .rsvp-guest-card__badge,
-  :root .rsvp-field-error {
+  /* Shared panel pieces */
+  :root .obw-portal-kicker,
+  :root .obw-portal-btn,
+  :root :is(.admin-layout__content, .admin-modal-backdrop) .obw-portal-field__label,
+  :root .admin-layout__hero-code,
+  :root .stat-card__label,
+  :root .stat-card__unit,
+  :root .stat-card__subtitle,
+  :root .filter-pills__item,
+  :root .pagination__btn,
+  :root .admin-modal__danger,
+  :root :is(.admin-layout__content, .admin-modal-backdrop) .rsvp-guest-card__badge,
+  :root :is(.admin-layout__content, .admin-modal-backdrop) .rsvp-field-error,
+  /* Riepilogo */
+  :root .admin-rsvp__section-count,
+  :root .admin-rsvp__confirmed-badge,
+  :root .admin-rsvp__guest-meta,
+  :root .admin-rsvp__table-menu-item,
+  :root .admin-rsvp__kitchen-label,
+  :root .admin-rsvp__table-panel-kicker,
+  :root .admin-rsvp__table-name,
+  :root .admin-rsvp__table-counter,
+  :root .admin-rsvp__map-button,
+  :root .admin-rsvp__menu-item-label,
+  :root .admin-rsvp__children-label,
+  :root .admin-rsvp__new-table-input,
+  :root .admin-rsvp__new-table-submit,
+  :root .admin-rsvp__table-edit-actions .obw-portal-btn,
+  :root .admin-rsvp__table-edit-delete,
+  /* Inviti */
+  :root .admin-invites__meta,
+  :root .admin-invites__card .obw-portal-btn,
+  :root .invite-form__roles legend,
+  :root .invite-form__field > span,
+  :root .invite-form__field small,
+  :root .admin-invites__send-option span,
+  :root .admin-invites__send-list em,
+  /* Contatti */
+  :root .admin-contacts__form-eyebrow,
+  :root .admin-contacts__field-label,
+  :root .admin-contacts__submit-btn,
+  :root .admin-contacts__cancel-link,
+  :root .admin-contacts__supplier-pill,
+  :root .admin-contacts__supplier-info-item,
+  :root .admin-contacts__supplier-note,
+  /* Galleria */
+  :root .admin-gallery__live-toggle-text strong,
+  :root .admin-gallery__live-toggle-text span:last-child,
+  :root .admin-gallery__control-btn,
+  :root .admin-gallery__live-banner-tag,
+  :root .admin-gallery__backup-badge,
+  :root .admin-gallery__backup-text,
+  :root .admin-photo-card__tag,
+  :root .admin-photo-card__time,
+  :root .admin-photo-card__caption,
+  :root .admin-photo-card__status,
+  :root .admin-photo-card--add {
     font-size: 14px;
-  }
-
-  /* At 14px the dossier's labels no longer fit beside their values: stack them. */
-  :root .landing-story__dossier-field {
-    grid-template-columns: 1fr;
-    gap: 2px;
   }
 }
