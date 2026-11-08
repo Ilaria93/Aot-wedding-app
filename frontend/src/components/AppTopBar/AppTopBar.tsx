@@ -155,6 +155,11 @@ export function AppTopBar() {
      Every other screen needs its navigation from the first pixel. */
   const isVisible = !isHome || isScrolled;
   const navItems = getNavItems(isHome, canManageWedding, t);
+  // Phone menu: the guest sections and the couple's panel (minus Home, which the
+  // home sections already cover), ordered by where you are.
+  const onAdminPage = canManageWedding && location.pathname.startsWith('/admin');
+  const homeItems = getNavItems(isHome, false, t);
+  const panelItems = getNavItems(isHome, true, t).filter((item) => item.target !== '/');
   const closeMobileNav = () => setMobileNavOpen(false);
   // One pill style everywhere; guests get the soft translucent variant, the
   // couple's control panel keeps the bright gold one.
@@ -289,7 +294,9 @@ export function AppTopBar() {
           id="site-header-mobile-panel"
           className="site-header__mobile-panel obw-fade-up"
           aria-label={t('navigation.menu.primary')}>
-          {navItems.map((item) => (
+          {/* The section you are in on top (home sections, or the couple's panel on
+              admin pages), the other one in its own block further down. */}
+          {(onAdminPage ? panelItems : homeItems).map((item) => (
             <NavItemLink
               key={item.key}
               item={item}
@@ -299,24 +306,64 @@ export function AppTopBar() {
               onNavigate={closeMobileNav}
             />
           ))}
-          {canManageWedding ? null : (
+          {onAdminPage ? (
             <div className="app-user-menu__section">
-              <p className="app-user-menu__section-label">{t('navigation.menu.sectionMore')}</p>
+              <p className="app-user-menu__section-label">{t('navigation.menu.sectionHome')}</p>
               <div className="app-user-menu__actions">
-                {DETAIL_PAGES.map((page) => (
-                  <NavLink
-                    key={page.to}
-                    to={page.to}
-                    className={({ isActive }) => `app-user-menu__action${isActive ? ' is-active' : ''}`}
-                    onClick={closeMobileNav}>
-                    <page.icon size={15} aria-hidden />
-                    {t(page.i18nKey)}
-                  </NavLink>
+                {HOME_ANCHORS.map((anchor) => (
+                  <a key={anchor.href} href={`/${anchor.href}`} className="app-user-menu__action" onClick={closeMobileNav}>
+                    <anchor.icon size={15} aria-hidden />
+                    {t(anchor.i18nKey)}
+                  </a>
                 ))}
               </div>
             </div>
+          ) : null}
+          <div className="app-user-menu__section">
+            <p className="app-user-menu__section-label">{t('navigation.menu.sectionMore')}</p>
+            <div className="app-user-menu__actions">
+              {DETAIL_PAGES.map((page) => (
+                <NavLink
+                  key={page.to}
+                  to={page.to}
+                  className={({ isActive }) => `app-user-menu__action${isActive ? ' is-active' : ''}`}
+                  onClick={closeMobileNav}>
+                  <page.icon size={15} aria-hidden />
+                  {t(page.i18nKey)}
+                </NavLink>
+              ))}
+            </div>
+          </div>
+          {canManageWedding && !onAdminPage ? (
+            // On the guest site the couple's panel replaces the guests' account block.
+            <div className="app-user-menu__section">
+              <p className="app-user-menu__section-label">{t('navigation.menu.sectionAdmin')}</p>
+              <div className="app-user-menu__actions">
+                {panelItems.map((item) => (
+                  <NavLink
+                    key={item.key}
+                    to={item.target}
+                    className={({ isActive }) => `app-user-menu__action${isActive ? ' is-active' : ''}`}
+                    onClick={closeMobileNav}>
+                    {item.icon ? <item.icon size={15} aria-hidden /> : null}
+                    {item.label}
+                  </NavLink>
+                ))}
+                <button
+                  type="button"
+                  className="app-user-menu__action app-user-menu__action--danger"
+                  onClick={() => {
+                    closeMobileNav();
+                    void handleSignOut();
+                  }}>
+                  <LogOut size={15} aria-hidden />
+                  {t('common.signOut')}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <AppUserMenuContent onNavigate={closeMobileNav} />
           )}
-          <AppUserMenuContent onNavigate={closeMobileNav} />
         </div>
       ) : null}
     </header>

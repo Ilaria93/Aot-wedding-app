@@ -13,6 +13,8 @@ export const it = {
       primary: 'Navigazione principale',
       open: 'Apri menu',
       close: 'Chiudi menu',
+      sectionHome: 'Sezione homepage',
+      sectionAdmin: 'Sezione admin',
       sectionMore: 'Approfondimenti',
       themeDetails: 'Scopri di più sul tema',
       photos: 'Scopri le nostre foto',
