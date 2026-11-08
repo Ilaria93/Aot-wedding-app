@@ -71,9 +71,11 @@
   align-items: baseline;
   gap: 4px;
   margin: 4px 0 2px;
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  line-height: 1.15;
+  /* The serif of the site's dates: the script font made the figures hard to read. */
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.1;
   color: var(--obw-gold-bright);
 }
 
