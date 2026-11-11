@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from constants.rsvp_party import MAX_PARTY_GUESTS
 from models.rsvp_guest_model import RsvpGuest
 from models.rsvp_model import RSVP
+from models.staff_guest_model import StaffGuest
 from models.user_model import User
 from schemas.auth_schema import UserRoleEnum
 from services.admin_invite_service import list_admin_invites
@@ -67,6 +68,15 @@ def compute_rsvp_stats(db: Session) -> dict:
     for meal_choice, count in meal_choice_rows:
         by_meal_choice[meal_choice] = int(count)
 
+    # Suppliers' people eat too: the kitchen needs guests + staff, per menu.
+    staff_by_meal_choice: dict[str, int] = {}
+    for meal_choice, count in db.query(StaffGuest.meal_choice, func.count(StaffGuest.id)).group_by(StaffGuest.meal_choice).all():
+        staff_by_meal_choice[meal_choice] = int(count)
+    staff_count = sum(staff_by_meal_choice.values())
+    meals_by_choice = dict(by_meal_choice)
+    for meal_choice, count in staff_by_meal_choice.items():
+        meals_by_choice[meal_choice] = meals_by_choice.get(meal_choice, 0) + count
+
     total_children = (
         db.query(func.count(RsvpGuest.id))
         .join(RSVP, RsvpGuest.rsvp_id == RSVP.id)
@@ -85,4 +95,7 @@ def compute_rsvp_stats(db: Session) -> dict:
         "invites": _invite_stats(db, int(total_participants)),
         "by_faction": by_faction,
         "by_meal_choice": by_meal_choice,
+        "staff_count": staff_count,
+        "meals_total": int(total_participants) + staff_count,
+        "meals_by_choice": meals_by_choice,
     }

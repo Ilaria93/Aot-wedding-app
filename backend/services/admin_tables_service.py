@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from models.rsvp_model import RSVP
+from models.staff_guest_model import StaffGuest
 from models.wedding_table_model import WeddingTable
 from schemas.admin_tables_schema import CreateTableRequest, UpdateTableRequest
 
@@ -38,7 +39,7 @@ def delete_table(db: Session, table_id: int) -> None:
     if not table:
         raise HTTPException(status_code=404, detail="Table not found")
 
-    if db.query(RSVP).filter(RSVP.table_id == table_id).first():
+    if db.query(RSVP).filter(RSVP.table_id == table_id).first() or db.query(StaffGuest).filter(StaffGuest.table_id == table_id).first():
         raise HTTPException(status_code=409, detail="Table still has guests assigned")
 
     db.delete(table)
