@@ -8,6 +8,7 @@ import {
   Plus,
   Shield,
   Trash2,
+  UtensilsCrossed,
   Users,
   Utensils,
   Wheat,
@@ -33,16 +34,22 @@ import {
   assignRsvpTable,
   createAdminTable,
   deleteAdminTable,
+  deleteStaffGuest,
   fetchAdminRsvpEntries,
   fetchAdminRsvpStats,
   fetchAdminTables,
+  fetchStaffGuests,
   updateAdminTable,
+  updateStaffGuest,
   type AdminRsvpEntry,
   type AdminRsvpEntryFilter,
   type AdminRsvpStats,
   type AdminTable,
+  type StaffGuest,
 } from '@/services/adminDashboardApi';
 import type { MealChoiceId } from '@/services/rsvpApi';
+import { StaffGuestDialog } from './StaffGuestDialog';
+import { StaffGuestsPanel } from './StaffGuestsPanel';
 import './styles/AdminRsvpPage.scss';
 
 const STAT_LABELS = {
@@ -94,12 +101,13 @@ const MEAL_ICON: Record<MealChoiceId, ComponentType<{ size?: number; strokeWidth
 
 type TableUsage = AdminTable & { assignedCount: number };
 
-// Pairs the admin-managed table catalog with how many confirmed guests are
-// actually assigned to each one — capacity comes from the catalog, headcount
-// from the (paginated-through) entries list.
-function computeTableUsage(
+// Pairs the admin-managed table catalog with how many people are actually
+// assigned to each one — capacity comes from the catalog, headcount from the
+// (paginated-through) entries list plus the suppliers' people (staff).
+export function computeTableUsage(
   tables: AdminTable[],
   allEntries: AdminRsvpEntry[],
+  staff: Pick<StaffGuest, 'table_id'>[] = [],
 ): { tables: TableUsage[]; unassignedCount: number } {
   const assignedByTableId = new Map<number, number>();
   let unassignedCount = 0;
@@ -110,6 +118,13 @@ function computeTableUsage(
       continue;
     }
     assignedByTableId.set(entry.table_id, (assignedByTableId.get(entry.table_id) ?? 0) + guestCount);
+  }
+  for (const person of staff) {
+    if (person.table_id == null) {
+      unassignedCount += 1;
+      continue;
+    }
+    assignedByTableId.set(person.table_id, (assignedByTableId.get(person.table_id) ?? 0) + 1);
   }
   return {
     tables: tables.map((table) => ({ ...table, assignedCount: assignedByTableId.get(table.id) ?? 0 })),
@@ -129,6 +144,9 @@ export function AdminRsvpPage() {
   const [total, setTotal] = useState(0);
   const [counts, setCounts] = useState({ all: 0, special_diet: 0, children: 0 });
   const [tables, setTables] = useState<AdminTable[]>([]);
+  const [staff, setStaff] = useState<StaffGuest[]>([]);
+  const [staffDialog, setStaffDialog] = useState<{ guest: StaffGuest | null } | null>(null);
+  const [staffDeleteTarget, setStaffDeleteTarget] = useState<StaffGuest | null>(null);
   const [tableUsage, setTableUsage] = useState<{ tables: TableUsage[]; unassignedCount: number }>({
     tables: [],
     unassignedCount: 0,
@@ -153,13 +171,15 @@ export function AdminRsvpPage() {
 
   const loadSummary = useCallback(async () => {
     try {
-      const [statsResponse, allEntriesFirst, tablesResponse] = await Promise.all([
+      const [statsResponse, allEntriesFirst, tablesResponse, staffResponse] = await Promise.all([
         fetchAdminRsvpStats(),
         fetchAdminRsvpEntries({ filter: 'all', page: 1, pageSize: 1 }),
         fetchAdminTables(),
+        fetchStaffGuests(),
       ]);
       setStats(statsResponse);
       setTables(tablesResponse);
+      setStaff(staffResponse);
 
       // No server-side table-usage aggregate exists — fetch every confirmed
       // party (page_size caps at 50) and tally it against the catalog client-side.
@@ -175,7 +195,7 @@ export function AdminRsvpPage() {
       const allEntries = pages.flatMap((response) => response.items);
       // The pills count people, not parties: a family with one vegetarian is one person under 'special diets'.
       setCounts(countGuests(allEntries));
-      setTableUsage(computeTableUsage(tablesResponse, allEntries));
+      setTableUsage(computeTableUsage(tablesResponse, allEntries, staffResponse));
     } catch (caughtError) {
       setError(getApiErrorMessage(caughtError, t('admin.rsvpEntries.loadFailed')));
     } finally {
@@ -297,6 +317,27 @@ export function AdminRsvpPage() {
     }
   }
 
+  async function handleAssignStaffTable(guest: StaffGuest, tableId: number | null) {
+    try {
+      await updateStaffGuest(guest.id, { table_id: tableId });
+      void loadSummary();
+    } catch (caughtError) {
+      setError(getApiErrorMessage(caughtError, t('admin.staff.saveFailed')));
+    }
+  }
+
+  async function confirmDeleteStaff() {
+    if (!staffDeleteTarget) return;
+    try {
+      await deleteStaffGuest(staffDeleteTarget.id);
+      setStaffDeleteTarget(null);
+      void loadSummary();
+    } catch (caughtError) {
+      setStaffDeleteTarget(null);
+      setError(getApiErrorMessage(caughtError, t('admin.staff.saveFailed')));
+    }
+  }
+
   function closeAddTableModal() {
     setIsAddTableModalOpen(false);
     setNewTable(EMPTY_TABLE_DRAFT);
@@ -327,7 +368,8 @@ export function AdminRsvpPage() {
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   const menuSummary = useMemo(
-    () => MEAL_CHOICE_SUMMARY_IDS.map((mealId) => ({ mealId, count: stats?.by_meal_choice?.[mealId] ?? 0 })),
+    // The kitchen cooks for guests and staff alike.
+    () => MEAL_CHOICE_SUMMARY_IDS.map((mealId) => ({ mealId, count: stats?.meals_by_choice?.[mealId] ?? 0 })),
     [stats],
   );
 
@@ -523,6 +565,15 @@ export function AdminRsvpPage() {
             </button>
           </section>
 
+          <StaffGuestsPanel
+            staff={staff}
+            tables={tables}
+            onAdd={() => setStaffDialog({ guest: null })}
+            onEdit={(guest) => setStaffDialog({ guest })}
+            onDelete={setStaffDeleteTarget}
+            onAssignTable={(guest, tableId) => void handleAssignStaffTable(guest, tableId)}
+          />
+
           <section className="admin-rsvp__menu-panel">
             <div className="admin-rsvp__menu-panel-head">
               <div className="admin-rsvp__menu-panel-title-wrap">
@@ -553,6 +604,22 @@ export function AdminRsvpPage() {
                 <span>{t('admin.rsvpEntries.childrenSummaryLabel')}</span>
               </div>
               <strong>{stats?.by_meal_choice?.baby ?? 0}</strong>
+            </div>
+
+            <div className="admin-rsvp__children-row">
+              <div className="admin-rsvp__children-label">
+                <UtensilsCrossed size={18} aria-hidden />
+                <span>{t('admin.rsvpEntries.staffSummaryLabel')}</span>
+              </div>
+              <strong>{stats?.staff_count ?? 0}</strong>
+            </div>
+
+            <div className="admin-rsvp__children-row admin-rsvp__meals-total">
+              <div className="admin-rsvp__children-label">
+                <Utensils size={18} aria-hidden />
+                <span>{t('admin.rsvpEntries.mealsTotalLabel')}</span>
+              </div>
+              <strong>{stats?.meals_total ?? 0}</strong>
             </div>
           </section>
         </aside>
@@ -594,6 +661,38 @@ export function AdminRsvpPage() {
               </button>
             </div>
           </form>
+        </AdminModal>
+      ) : null}
+
+      {staffDialog ? (
+        <StaffGuestDialog
+          guest={staffDialog.guest}
+          tables={tables}
+          onClose={() => setStaffDialog(null)}
+          onSaved={loadSummary}
+        />
+      ) : null}
+
+      {staffDeleteTarget ? (
+        <AdminModal
+          titleId="admin-rsvp-delete-staff-title"
+          title={t('admin.staff.deleteTitle')}
+          role="alertdialog"
+          onClose={() => setStaffDeleteTarget(null)}
+          t={t}>
+          <p className="admin-modal__body">{t('admin.staff.deleteBody', { name: staffDeleteTarget.name })}</p>
+          <div className="admin-modal__actions">
+            <button type="button" className="admin-rsvp__table-edit-delete" onClick={() => void confirmDeleteStaff()}>
+              <Trash2 size={14} aria-hidden />
+              {t('common.delete')}
+            </button>
+            <button
+              type="button"
+              className="obw-portal-btn obw-portal-btn--secondary"
+              onClick={() => setStaffDeleteTarget(null)}>
+              {t('common.cancel')}
+            </button>
+          </div>
         </AdminModal>
       ) : null}
 

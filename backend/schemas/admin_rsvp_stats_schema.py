@@ -26,3 +26,7 @@ class AdminRsvpStatsResponse(BaseModel):
     invites: InviteStats
     by_faction: dict[FactionEnum, int]
     by_meal_choice: dict[MealChoiceEnum, int]
+    # Staff = suppliers' people who eat at the reception (see StaffGuest); meals = guests + staff.
+    staff_count: int
+    meals_total: int
+    meals_by_choice: dict[MealChoiceEnum, int]

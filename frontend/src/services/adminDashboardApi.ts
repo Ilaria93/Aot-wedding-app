@@ -30,6 +30,10 @@ export type AdminRsvpStats = {
   total_children: number;
   by_faction: Record<string, number>;
   by_meal_choice: Partial<Record<MealChoiceId, number>>;
+  /** Suppliers' people who eat at the reception; meals = guests + staff. */
+  staff_count: number;
+  meals_total: number;
+  meals_by_choice: Partial<Record<MealChoiceId, number>>;
 };
 
 export type AdminRsvpGuestDetail = {
@@ -141,4 +145,37 @@ export async function updateAdminTable(tableId: number, payload: UpdateTablePayl
 
 export async function deleteAdminTable(tableId: number): Promise<void> {
   await apiClient.delete(`/admin/tables/${tableId}`);
+}
+
+/** A supplier's person (band member, photographer...) who eats at the reception: no invite, menu filled in by the couple. */
+export type StaffGuest = {
+  id: number;
+  name: string;
+  role: string | null;
+  meal_choice: MealChoiceId;
+  intolerance: IntoleranceId;
+  dietary_notes: string | null;
+  table_id: number | null;
+  table_label: string | null;
+};
+
+export type StaffGuestPayload = Omit<StaffGuest, 'id' | 'table_label'>;
+
+export async function fetchStaffGuests(): Promise<StaffGuest[]> {
+  const { data } = await apiClient.get<StaffGuest[]>('/admin/staff-guests');
+  return data;
+}
+
+export async function createStaffGuest(payload: StaffGuestPayload): Promise<StaffGuest> {
+  const { data } = await apiClient.post<StaffGuest>('/admin/staff-guests', payload);
+  return data;
+}
+
+export async function updateStaffGuest(id: number, payload: Partial<StaffGuestPayload>): Promise<StaffGuest> {
+  const { data } = await apiClient.patch<StaffGuest>(`/admin/staff-guests/${id}`, payload);
+  return data;
+}
+
+export async function deleteStaffGuest(id: number): Promise<void> {
+  await apiClient.delete(`/admin/staff-guests/${id}`);
 }

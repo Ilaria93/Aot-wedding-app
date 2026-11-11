@@ -12,6 +12,7 @@ from models import (  # noqa: F401
     refresh_token_session_model,
     rsvp_guest_model,
     rsvp_model,
+    staff_guest_model,
     user_model,
 )
 

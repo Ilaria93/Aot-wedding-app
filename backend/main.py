@@ -12,6 +12,7 @@ from routes.admin_logistics_contact_route import router as admin_logistics_conta
 from routes.admin_photo_album_route import router as admin_photo_album_router
 from routes.admin_rsvp_entries_route import router as admin_rsvp_entries_router
 from routes.admin_rsvp_table_route import router as admin_rsvp_table_router
+from routes.admin_staff_guest_route import router as admin_staff_guest_router
 from routes.admin_tables_route import router as admin_tables_router
 from routes.guest_rsvp_route import router as guest_rsvp_router
 from routes.invite_link_route import router as invite_link_router
@@ -70,6 +71,7 @@ app.include_router(admin_photo_album_router)
 app.include_router(admin_rsvp_entries_router)
 app.include_router(admin_rsvp_table_router)
 app.include_router(admin_tables_router)
+app.include_router(admin_staff_guest_router)
 app.include_router(invite_link_router)
 app.include_router(guest_rsvp_router)
 app.include_router(invite_request_router)
