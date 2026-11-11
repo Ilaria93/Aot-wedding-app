@@ -647,3 +647,73 @@
   background: color-mix(in srgb, var(--obw-burgundy) 20%, transparent);
 }
 
+
+/* Staff and suppliers (band, photographer...): seated at the guests' tables, fed by the same kitchen. */
+.admin-rsvp__staff-hint {
+  margin: 8px 0 0;
+  font-size: 0.8rem;
+  color: color-mix(in srgb, #eee5dc 65%, transparent);
+}
+
+.admin-rsvp__staff-list {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-rsvp__staff-row {
+  display: grid;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--obw-border);
+}
+
+.admin-rsvp__staff-info {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.admin-rsvp__staff-meta {
+  font-size: 0.8rem;
+  color: color-mix(in srgb, #eee5dc 70%, transparent);
+}
+
+.admin-rsvp__staff-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-rsvp__staff-actions select {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.admin-rsvp__staff-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.admin-rsvp__staff-field > span {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--obw-gold-bright);
+}
+
+.admin-rsvp__staff-field small,
+.admin-rsvp__staff-message {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #e0828f;
+}
+
+.admin-rsvp__meals-total strong {
+  color: var(--obw-gold-bright);
+}
